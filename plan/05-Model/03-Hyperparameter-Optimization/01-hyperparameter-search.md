@@ -130,9 +130,9 @@ All hyperparameter search files are in `05-Model/03-Hyperparameter-Optimization/
 ```mermaid
 flowchart LR
     Dir[05-Model/03-Hyperparameter-Optimization]
-    Dir --> 01[01-hyperparameter-search.md]
-    Dir --> 02[02-search-space.md]
-    Dir --> 03[03-pruning-strategy.md]
+    Dir --> N01[01-hyperparameter-search.md]
+    Dir --> N02[02-search-space.md]
+    Dir --> N03[03-pruning-strategy.md]
 ```
 
 ## 9. Next Steps

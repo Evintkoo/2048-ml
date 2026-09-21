@@ -187,9 +187,9 @@ All data normalization files are in `06-Data/04-Preprocessing/`:
 ```mermaid
 flowchart LR
     Dir[06-Data/04-Preprocessing]
-    Dir --> 01[01-data-cleaning.md]
-    Dir --> 02[02-feature-engineering.md]
-    Dir --> 03[03-data-normalization.md]
+    Dir --> N01[01-data-cleaning.md]
+    Dir --> N02[02-feature-engineering.md]
+    Dir --> N03[03-data-normalization.md]
 ```
 
 ## 10. Next Steps

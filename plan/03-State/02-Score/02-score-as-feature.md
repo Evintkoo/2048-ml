@@ -46,7 +46,7 @@ flowchart LR
     F18 -.->|Index 18| F19
     F20 -.->|Index 20| F21
     F22 -.->|Index 22| F23
-    F24 -.->|Index 24| F24
+    
 ```
 
 > **Note:** The feature vector is structured as follows:

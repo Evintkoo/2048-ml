@@ -126,9 +126,9 @@ flowchart TD
 ```mermaid
 flowchart LR
     Dir[06-Data/01-Collection]
-    Dir --> 01[01-data-collection-strategy.md]
-    Dir --> 02[02-self-play-data.md]
-    Dir --> 03[03-random-play-data.md]
+    Dir --> N01[01-data-collection-strategy.md]
+    Dir --> N02[02-self-play-data.md]
+    Dir --> N03[03-random-play-data.md]
 ```
 
 ## 9. Next Steps

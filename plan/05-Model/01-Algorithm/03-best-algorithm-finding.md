@@ -140,9 +140,9 @@ flowchart LR
     Dir --> Hyperopt[03-Hyperparameter-Optimization]
     Dir --> Eval[04-Evaluation]
     
-    Algo --> 01[01-algorithm-research.md]
-    Algo --> 02[02-model-comparison.md]
-    Algo --> 03[03-best-algorithm-finding.md]
+    Algo --> N01[01-algorithm-research.md]
+    Algo --> N02[02-model-comparison.md]
+    Algo --> N03[03-best-algorithm-finding.md]
 ```
 
 ## 9. Next Steps

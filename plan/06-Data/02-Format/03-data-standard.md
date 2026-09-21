@@ -164,9 +164,9 @@ All data standard files are in `06-Data/02-Format/`:
 ```mermaid
 flowchart LR
     Dir[06-Data/02-Format]
-    Dir --> 01[01-data-schema.md]
-    Dir --> 02[02-data-format.md]
-    Dir --> 03[03-data-standard.md]
+    Dir --> N01[01-data-schema.md]
+    Dir --> N02[02-data-format.md]
+    Dir --> N03[03-data-standard.md]
 ```
 
 ## 9. Next Steps

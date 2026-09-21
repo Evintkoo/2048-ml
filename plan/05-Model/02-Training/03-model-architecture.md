@@ -135,9 +135,9 @@ All model architecture files are in `05-Model/02-Training/`:
 ```mermaid
 flowchart LR
     Dir[05-Model/02-Training]
-    Dir --> 01[01-training-pipeline.md]
-    Dir --> 02[02-training-loop.md]
-    Dir --> 03[03-model-architecture.md]
+    Dir --> N01[01-training-pipeline.md]
+    Dir --> N02[02-training-loop.md]
+    Dir --> N03[03-model-architecture.md]
 ```
 
 ## 8. Next Steps

@@ -153,9 +153,9 @@ All algorithm research findings will be documented in `05-Model/01-Algorithm/`:
 ```mermaid
 flowchart TD
     Research[05-Model/01-Algorithm]
-    Research --> 01[01-algorithm-research.md]
-    Research --> 02[02-model-comparison.md]
-    Research --> 03[03-best-algorithm-finding.md]
+    Research --> N01[01-algorithm-research.md]
+    Research --> N02[02-model-comparison.md]
+    Research --> N03[03-best-algorithm-finding.md]
 ```
 
 ## 6. Next Steps
