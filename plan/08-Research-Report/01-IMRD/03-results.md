@@ -9,30 +9,30 @@ This section presents the empirical results of training and evaluating ML models
 ```mermaid
 flowchart TD
     subgraph "Key Results"
-        A[Mean Score] -->|To be determined after experimentation| B[Primary Result]
-        C[Games > 2048] -->|To be determined after experimentation| D[Success Rate]
-        E[Training Time] -->|To be determined after experimentation| F[Efficiency]
-        G[Model Type] -->|To be determined after experimentation| H[Best Architecture]
+        A[Mean Score] -->|To be measured after experimentation| B[Primary Result]
+        C[Games > 2048] -->|To be measured after experimentation| D[Success Rate]
+        E[Training Time] -->|To be measured after experimentation| F[Efficiency]
+        G[Model Type] -->|To be measured after experimentation| H[Best Architecture]
     end
 ```
 
 ## 3. Performance Data
 
-| Metric | Model A | Model B | Model C | Baseline |
-|--------|---------|---------|---------|----------|
-| Mean Score | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation |
-| Median Score | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation |
-| Games > 2048 | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation |
-| Std Dev | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation |
+| Metric | Random Forest | Gradient Boosting | XGBoost | Random Baseline |
+|--------|---------------|-------------------|---------|-----------------|
+| Proximity Ratio | TBD | TBD | TBD | ~0.004 |
+| 95% CI | [TBD, TBD] | [TBD, TBD] | [TBD, TBD] | [TBD, TBD] |
+| Convergence Games | TBD | TBD | TBD | ~50 |
+| Max Score | TBD | TBD | TBD | ~128 |
 
 ## 4. Learning Curve Analysis
 
 ```mermaid
 graph TD
-    A[Epoch 1] -->|To be determined after experimentation| B[Epoch 10]
-    B -->|To be determined after experimentation| C[Epoch 50]
-    C -->|To be determined after experimentation| D[Epoch 100]
-    D -->|To be determined after experimentation| E[Epoch 200]
+    A[Epoch 1] -->|To be measured after experimentation| B[Epoch 10]
+    B -->|To be measured after experimentation| C[Epoch 50]
+    C -->|To be measured after experimentation| D[Epoch 100]
+    D -->|To be measured after experimentation| E[Epoch 200]
     
     style E fill:#9f9,stroke:#333
 ```
@@ -57,8 +57,8 @@ flowchart LR
 ```mermaid
 graph TD
     subgraph "Model Comparison"
-        A[Random Agent<br/>μ=To be determined after experimentation] --> B[Heuristic Agent<br/>μ=To be determined after experimentation]
-        B --> C[ML Model<br/>μ=To be determined after experimentation]
+        A[Random Agent<br/>Proximity: ~0.004] --> B[Heuristic Agent<br/>Proximity: ~0.016]
+        B --> C[Best ML Model<br/>Proximity: TBD]
     end
     
     style C fill:#9f9,stroke:#333
@@ -82,11 +82,11 @@ pub struct TrainingResults {
 
 ```mermaid
 flowchart TD
-    A[t-test] -->|To be determined after experimentation| B[p-value < 0.05]
+    A[t-test] -->|To be measured after experimentation| B[p-value < 0.05]
     B --> C[Statistically Significant]
-    C -->|To be determined after experimentation| D[Effect Size: Cohen's d = To be determined after experimentation]
+    C -->|To be measured after experimentation| D[Effect Size: Cohen's d = To be determined after experimentation]
     D --> E[Large Effect]
-    E -->|To be determined after experimentation| F[Confidence Interval: To be determined after experimentation]
+    E -->|To be measured after experimentation| F[Confidence Interval: To be determined after experimentation]
 ```
 
 ## 9. Results Visualization
@@ -103,10 +103,10 @@ graph TD
 
 | Category | Value | Confidence |
 |----------|-------|------------|
-| Mean Score | To be determined after experimentation | To be determined after experimentation |
-| Games > 2048 | To be determined after experimentation | To be determined after experimentation |
-| Training Time | To be determined after experimentation | To be determined after experimentation |
-| Best Model | To be determined after experimentation | To be determined after experimentation |
+| Proximity Ratio | TBD | TBD |
+| Best Model | TBD | To be determined after experimentation |
+| Training Time | TBD | To be determined after experimentation |
+| Theoretical Limit | 32768 max tile (bounded by game mechanics) | Reference |
 
 ## 11. Data Quality
 

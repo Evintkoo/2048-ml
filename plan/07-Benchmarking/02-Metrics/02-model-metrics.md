@@ -122,12 +122,14 @@ flowchart LR
 
 | Feature | Importance Score | Category |
 |---------|-----------------|----------|
-| Grid values | 0.35 | Raw board |
-| Empty count | 0.20 | Board state |
-| Max tile | 0.25 | Board state |
-| Monotonicity | 0.10 | Derived |
-| Smoothness | 0.05 | Derived |
-| Move count | 0.05 | Game state |
+| Grid values | TBD | Raw board |
+| Empty count | TBD | Board state |
+| Max tile | TBD | Board state |
+| Monotonicity | TBD | Derived |
+| Smoothness | TBD | Derived |
+| Move count | TBD | Game state |
+
+> Feature importance values are TBD until model training completes.
 
 ## 9. Model Comparison Metrics
 

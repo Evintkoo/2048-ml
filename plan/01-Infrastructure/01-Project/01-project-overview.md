@@ -99,11 +99,9 @@ flowchart TD
 - Automated model selection identifies a viable algorithm
 
 ### Tier 2: Intermediate Milestone
-- Identify the top-performing model by ceiling comparison
+- Identify the top-performing model by proximity ratio comparison
 - Training pipeline is fully automated and reproducible
-- Model comparison demonstrates clear ceiling differences between algorithms
-- Training pipeline is fully automated and reproducible
-- Model comparison demonstrates clear performance differences between algorithms
+- Model comparison demonstrates clear proximity differences between algorithms
 
 ### Tier 3: Advanced Milestone
 - The highest-ceiling model achieves score ≥ 2048 in meaningful trials
@@ -113,19 +111,18 @@ flowchart TD
 - Comprehensive IMRD research report published with validated findings
 
 ### Tier 4: Stretch Goal
-- The best model achieves a score ratio ≥ 80% of theoretical maximum
+- The best model achieves a proximity ratio ≥ 80% of theoretical maximum
 - Statistical evidence shows one algorithm significantly outperforms others
-- Model gets closest to the theoretical limit defined by game mechanics (max tile 32768, board capacity 16 cells)
-- Research findings contribute to understanding of automl on sequential decision-making
 - Best model identified and documented with strong statistical evidence
 - Research findings contribute to understanding of automl on sequential decision-making
 
 ### Theoretical Limit Definition
-The theoretical maximum score is bounded by the 2048 game mechanics:
+The theoretical maximum is bounded by 2048 game mechanics:
 - **Maximum tile value**: 32768 (2^15, on a 4×4 board with 16 cells)
 - **Maximum board occupancy**: 16 tiles
-- **Theoretical max score**: Sum of all possible merges, bounded by game mechanics
-- **Success metric**: Score/Theoretical_Max ratio (proximity to limit)
+- **Theoretical max score**: Bounded by sum of all possible merges (exact value determined by optimal play)
+- **Success metric**: Proximity ratio = `model_score / theoretical_max_score` (0.0 to 1.0)
+- **Note**: The proximity ratio measures how close each model gets to the theoretical maximum score, not the maximum tile value
 
 ### Non-Negotiable Criteria (All Tiers)
 - Automated model selection identifies best algorithm

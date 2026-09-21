@@ -137,16 +137,17 @@ flowchart TD
 
 ### 3.4 Temporal Game-Aware Cross-Validation Strategy
 
-To prevent data leakage, we use a **temporal game sequence split** strategy that respects the sequential nature of game data:
+To prevent data leakage, we use **Group K-Fold cross-validation** which keeps entire games together within a single fold:
 
-**Core Principle**: Entire games (or game sequences) are kept together within a single fold. Train and test sets contain completely separate game sessions.
+**Core Principle**: Entire games are kept together in a single fold using `GroupKFold`. Train and test sets contain completely separate game sessions.
 
 **Split Strategy**:
 
-1. **Game-level splitting**: Group all board states by their originating game ID
-2. **Temporal ordering**: Sort games by their start timestamp or game counter
+1. **Game-level splitting**: Each game is assigned a group ID
+2. **Temporal ordering**: Games are sorted chronologically
 3. **Forward-chaining splits**: Train on earlier games, test on later games
-4. **No overlap**: A game's states appear in exactly one fold (either all train or all test)
+4. **No overlap**: A game's states appear in exactly one fold
+5. **GroupKFold**: automl's `GroupKFold { n_splits: 5 }` ensures group integrity
 
 ```mermaid
 flowchart TD
@@ -173,9 +174,9 @@ use automl::{CrossValidator, CVStrategy};
 
 let cv = CrossValidator::new()
     .with_k_folds(5)
-    .with_strategy(CVStrategy::Temporal)
-    .with_group_column("game_id")  // Group by game, not individual states
-    .with_shuffle(false)            // Preserve temporal order
+    .with_strategy(CVStrategy::GroupKFold)
+    
+    
     .with_random_state(42);
 
 let results = cv.cross_val_score(&engine, &x, &y, Some(&groups))?;
@@ -193,7 +194,7 @@ Fold 4: Train = Games 1-92,  Test = Games 93-96
 Fold 5: Train = Games 1-96,  Test = Games 97-100
 ```
 
-This ensures that every test set contains only games that occurred *after* all training games, preventing temporal leakage.
+This ensures that every test set contains only games from temporally later periods, preventing data leakage. Groups are passed to `cross_val_score` via the `groups` parameter, which `GroupKFold` uses to keep all states from the same game together.
 
 **Key Properties**:
 - No game appears in both train and test sets
@@ -232,10 +233,7 @@ use automl::{CrossValidator, CVStrategy};
 // Recommended: Temporal game-aware CV
 let cv = CrossValidator::new()
     .with_k_folds(5)
-    .with_strategy(CVStrategy::Temporal)
-    .with_group_column("game_id")
-    .with_shuffle(false)
-    .with_random_state(42);
+    .with_strategy(CVStrategy::GroupKFold { n_splits: 5 })
 
 let results = cv.cross_val_score(&engine, &x, &y, Some(&groups))?;
 

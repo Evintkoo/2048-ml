@@ -84,7 +84,7 @@ flowchart TD
 flowchart TB
     Config[TrainingConfig]
     Config --> Task[Task Type: MultiClassification]
-    Config --> Model[Model Type: Auto]
+    Config --> Model[Model Type: Specific Model]
     Config --> CV[Cross-Validation: 5-fold]
     Config --> Seed[Random Seed: 42]
     Config --> Split[Validation Split: 0.2]
@@ -93,8 +93,9 @@ flowchart TB
 ```
 
 **Configuration Details:**
-- **Task Type**: `MultiClassification` — 4 output classes (up, down, left, right)
-- **Model Type**: `Auto` — automl selects best classifier from `ModelType` enum (DecisionTree, RandomForest, GradientBoosting, XGBoost, LightGBM, SVM, KNN, etc.)
+- **Task Type**: `MultiClassification` — 4 output classes (0=up, 1=down, 2=left, 3=right)
+- **Model Type**: Specific models from `ModelType` enum — each candidate (RandomForest, GradientBoosting, XGBoost, LightGBM, CatBoost, ExtraTrees, SVM, KNN) trained separately for comparison
+- **Purpose**: Each model is trained independently to enable ceiling comparison, NOT auto-selected
 - **Labels**: Integer-encoded actions where 0=up, 1=down, 2=left, 3=right
 
 ## 5. Theoretical-Limit-Oriented Training
