@@ -27,19 +27,21 @@ let (x_processed, y_processed) = preprocessor.fit_transform(df)?;
 ### 2.2 Feature Engineering
 
 For 2048, features include:
-- Board state (4x4 grid flattened to 16 features)
-- Score
-- Move count
-- Available moves count
-- Tile statistics (max, min, mean, variance)
+- Board state (4x4 grid flattened to 16 features: grid_0 through grid_15)
+- Empty count
+- Max tile log
 - Monotonicity
-- Empty tiles count
-- Merges possible
+- Smoothness
+- Corner value
+- Available moves
+- Merges available
+- Score normalized
+- Move count normalized
 
 ```rust
 let feature_config = FeatureSelector::new()
     .with_method(SelectionMethod::Correlation(0.95))
-    .with_target_column("score");
+    .with_target_column("action");
 ```
 
 ## 3. Cross-Validation Configuration
@@ -72,8 +74,8 @@ experiment:
   version: "1.0"
   
 training:
-  task_type: regression
-  model_type: gradient_boosting
+  task_type: multiclassification
+  model_type: classification
   n_estimators: 200
   max_depth: 6
   learning_rate: 0.1

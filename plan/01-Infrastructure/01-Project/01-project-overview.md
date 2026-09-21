@@ -92,8 +92,27 @@ flowchart TD
 
 ## 8. Success Criteria
 
-- Model achieves score ≥ 2048 consistently
+### Tier 1: Minimum Viable Milestone
+- Model achieves score > 512 in at least 50% of games
+- Full data pipeline from game simulation to trained model works end-to-end
+- Automated model selection identifies a viable algorithm
+
+### Tier 2: Intermediate Milestone
+- Model achieves score > 1024 in at least 30% of games
+- Training pipeline is fully automated and reproducible
+- Model comparison demonstrates clear performance differences between algorithms
+
+### Tier 3: Advanced Milestone
+- Model achieves score > 2048 in at least 10% of games
+- Benchmark results demonstrate meaningful automl capability on sequential games
+- Comprehensive IMRD research report published with validated findings
+
+### Tier 4: Stretch Goal
+- Model achieves score ≥ 2048 consistently in a meaningful subset of games
+- Best model identified and documented with strong statistical evidence
+- Research findings contribute to understanding of automl on sequential decision-making
+
+### Non-Negotiable Criteria (All Tiers)
 - Automated model selection identifies best algorithm
-- Full data pipeline from game simulation to trained model
 - Comprehensive IMRD research report published
 - Benchmark results demonstrate automl capability on sequential games

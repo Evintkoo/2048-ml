@@ -172,3 +172,147 @@ let preprocessor = DataPreprocessor::new(
 );
 let features = preprocessor.fit_transform(&raw_features)?;
 ```
+
+## 8. Feature Validation
+
+### 8.1 Purpose
+
+Validate that the extracted features are meaningful, non-redundant, and contribute to model performance. Feature validation ensures the model is not learning spurious correlations and that each feature provides genuine predictive signal.
+
+### 8.2 Verifying Feature Importance
+
+After training, verify feature importance using multiple methods to confirm consistency:
+
+```rust
+pub struct FeatureValidationResult {
+    pub feature_names: Vec<String>,
+    pub permutation_importance: Vec<f64>,      // Permutation-based importance
+    pub impurity_importance: Vec<f64>,          // Tree-based impurity decrease
+    pub shap_values: Vec<f64>,                  // SHAP values for model-agnostic importance
+    pub consistency_score: f64,                 // Correlation between importance methods
+}
+```
+
+**Validation methods**:
+1. **Permutation importance**: Shuffle each feature's values and measure the drop in model accuracy. A good feature causes a significant accuracy drop when shuffled.
+2. **Impurity importance**: For tree-based models, measure the total reduction in impurity (Gini/entropy) contributed by each feature.
+3. **SHAP values**: Compute SHAP values to understand the direction and magnitude of each feature's contribution to predictions.
+4. **Consistency check**: The ranking of features by permutation importance and impurity importance should correlate at least ρ ≥ 0.7.
+
+### 8.3 What Constitutes a "Good" Feature Set
+
+A good feature set satisfies all of the following criteria:
+
+| Criterion | Threshold | Description |
+|-----------|-----------|-------------|
+| No redundancy | Pairwise correlation < 0.8 | Features should not be near-duplicates |
+| Non-zero importance | Permutation importance > 0.01 | Each feature must contribute meaningfully |
+| Low variance ratio | > 95% of features have variance > 0.01 | No near-constant features |
+| Model performance gain | Δ accuracy > 2% | Removing any feature degrades accuracy by > 2% |
+| Domain coherence | All features have interpretable meaning | No unexplained features |
+
+**Minimum feature set for 2048** (domain-informed):
+
+```rust
+pub const REQUIRED_FEATURES: [&str; 5] = [
+    "max_tile_log",         // Single most important strategic indicator
+    "empty_count",          // Second most important — future mobility
+    "monotonicity",         // Critical for positional play
+    "smoothness",           // Important for merge efficiency
+    "corner_value",         // Key heuristic for board control
+];
+```
+
+### 8.4 Ablation Studies
+
+Systematically remove features one at a time to measure their individual contribution:
+
+```rust
+pub struct AblationStudy {
+    pub baseline_accuracy: f64,           // All 25 features
+    pub results: Vec<AblationResult>,     // Results per feature removed
+    pub critical_features: Vec<String>,   // Features whose removal causes >5% drop
+    pub redundant_features: Vec<String>,  // Features whose removal causes <1% drop
+}
+
+pub struct AblationResult {
+    pub feature_name: String,
+    pub accuracy_without: f64,
+    pub accuracy_drop: f64,               // baseline_accuracy - accuracy_without
+    pub rank_impact: usize,               // Rank by impact magnitude
+}
+```
+
+**Ablation procedure**:
+
+1. Train the full model with all 25 features → record baseline accuracy
+2. For each feature i (i = 1 to 25):
+   - Remove feature i from the dataset
+   - Retrain the model with remaining 24 features
+   - Record the accuracy change
+3. Rank features by the magnitude of accuracy drop
+4. Identify critical features (drop > 5%) and redundant features (drop < 1%)
+
+### 8.5 Expected Feature Importance Ranking
+
+Based on 2048 domain knowledge and established heuristics, the expected importance ranking from highest to lowest is:
+
+```rust
+pub const EXPECTED_IMPORTANCE_RANKING: Vec<(&str, f64)> = vec![
+    // Tier 1: Critical strategic features (expected importance > 0.15)
+    ("max_tile_log", 0.22),
+    ("empty_count", 0.18),
+    ("corner_value", 0.16),
+    
+    // Tier 2: Important positional features (expected importance 0.05-0.15)
+    ("monotonicity", 0.12),
+    ("smoothness", 0.10),
+    ("available_moves", 0.08),
+    ("merges_available", 0.07),
+    
+    // Tier 3: Moderate features (expected importance 0.01-0.05)
+    ("score_normalized", 0.04),
+    ("move_count_norm", 0.03),
+    ("grid_0", 0.03),     // Top-left corner
+    ("grid_1", 0.02),     // Top row
+    ("grid_4", 0.02),     // Left column
+    
+    // Tier 4: Low importance features (expected importance < 0.01)
+    ("grid_2", 0.005),    // Less critical positions
+    ("grid_3", 0.005),
+    // ... remaining grid positions have diminishing importance
+    // ... derived statistical features provide marginal additional signal
+];
+```
+
+**Domain rationale**:
+
+- **`max_tile_log`** is the strongest predictor because having a high tile is the primary objective of 2048 — boards with higher maximum tiles are objectively in better positions
+- **`empty_count`** captures board capacity; more empty tiles means more future merge opportunities and lower risk of game over
+- **`corner_value`** reflects the corner-positioning heuristic that top players use; the top-left corner (or another fixed corner) is where the max tile should ideally reside
+- **`monotonicity`** and **`smoothness`** capture the spatial structure of the board; monotonic boards are easier to merge tiles on, and smooth boards minimize wasted merge potential
+- **Raw grid cells** have lower importance individually because their signal is captured by the derived strategic features, but they still provide useful granular information about specific board positions
+
+### 8.6 Validation Checklist
+
+Before proceeding to model training, verify:
+
+```rust
+pub struct FeatureValidationChecklist {
+    pub all_features_non_constant: bool,
+    pub pairwise_correlation_below_threshold: bool,
+    pub ablation_critical_features_identified: bool,
+    pub importance_ranking_matches_domain_knowledge: bool,
+    pub permutation_and_impurity_consistent: bool,
+    pub no_leaking_features_present: bool,
+}
+```
+
+**Checks**:
+- [ ] All 25 features have non-zero variance
+- [ ] No feature has pairwise correlation > 0.8 with another feature
+- [ ] Ablation study identifies at least 3 critical features
+- [ ] Feature importance ranking aligns with expected ranking (Section 8.5)
+- [ ] Permutation importance and impurity importance rankings correlate ρ ≥ 0.7
+- [ ] No feature is a direct label leakage (e.g., the score of the current game should not be used as a feature if it reveals the label)
+- [ ] All features are computable from the raw board state without access to future game states

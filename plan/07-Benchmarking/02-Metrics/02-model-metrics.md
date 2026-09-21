@@ -37,10 +37,12 @@ flowchart TD
 
 | Metric | Description | Target |
 |--------|-------------|--------|
-| Move Accuracy | % of correct move predictions | ≥ 60% |
-| Direction Accuracy | % of correct direction | ≥ 50% |
-| Value Accuracy | MAE of tile value prediction | ≤ 50 |
+| Move Accuracy | % of correct move predictions | ≥ 45% |
+| Direction Accuracy | % of correct direction | ≥ 40% |
+| Value Accuracy | MAE of tile value prediction | ≤ 100 |
 | Policy Entropy | Measure of exploration | Balanced |
+
+> **Note on targets**: These targets are deliberately set as progressive milestones. A score of 45% move accuracy corresponds to significantly better than random (25% for 4 actions). Achieving >60% would be a stretch goal. The targets should be iteratively revised based on initial baseline results.
 
 ## 4. Decision Quality Metrics
 
@@ -138,7 +140,8 @@ graph TD
 
 ## 10. Quality Gates
 
-1. Move accuracy ≥ 55% for model deployment
-2. Loss must converge within 100 epochs
-3. Validation loss must not exceed training loss by more than 20%
-4. All model metrics must be logged and reproducible
+1. Move accuracy ≥ 40% for baseline model acceptance
+2. Move accuracy ≥ 55% for deployment consideration
+3. Loss must converge within reasonable training time (not strictly epoch-bound for tree-based models)
+4. Validation performance must not degrade significantly from training performance (no severe overfitting)
+5. All model metrics must be logged and reproducible

@@ -11,8 +11,8 @@ The automl framework provides `TrainingConfig` and `OptimizationConfig` structur
 ```rust
 use automl::{TrainingConfig, TaskType, ModelType};
 
-let config = TrainingConfig::new(TaskType::Regression, "score")
-    .with_model(ModelType::Auto)  // Auto-select best model
+let config = TrainingConfig::new(TaskType::MultiClassification, "action")
+    .with_model(ModelType::Auto)  // Auto-select best classification model
     .with_cv(5)                    // 5-fold cross-validation
     .with_random_state(42)         // Reproducible
     .with_max_depth(6)             // Tree depth limit
@@ -23,14 +23,16 @@ let config = TrainingConfig::new(TaskType::Regression, "score")
 
 ### 2.2 Task Type for 2048
 
-Since 2048 is a game where the goal is to maximize the score, the task type is **Regression**:
+Since 2048 requires choosing one of 4 discrete directions (Up/Down/Left/Right), the task type is **MultiClassification**:
 
 | Property | Value | Rationale |
 |----------|-------|-----------|
-| TaskType | `Regression` | Score is a continuous value |
-| Target | `score` | Maximum tile value achieved |
-| Metric | `r2` / `rmse` | Standard regression metrics |
+| TaskType | `MultiClassification` | Action space is 4 discrete directions |
+| Target | `action` | 0=Up, 1=Down, 2=Left, 3=Right |
+| Metric | `accuracy` / `f1_macro` | Standard classification metrics |
 | Validation | 5-fold CV | Robust evaluation |
+
+Note: `ModelType::Auto` will automatically select the best classification model from the candidate set.
 
 ### 2.3 Model Type Strategy
 
@@ -42,7 +44,7 @@ ModelType::Auto
 vec![ModelType::GradientBoosting, ModelType::RandomForest, ModelType::XGBoost]
 
 // Phase 3: Fine-tuning
-ModelType::GradientBoosting  // Best for sequential decisions
+ModelType::GradientBoosting  // Best for discrete action classification
 ```
 
 ## 3. Hyperparameter Optimization Configuration

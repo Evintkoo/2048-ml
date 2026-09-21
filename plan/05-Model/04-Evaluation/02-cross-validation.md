@@ -58,15 +58,18 @@ flowchart TB
         Stratified[Stratified K-Fold]
         Shuffle[Shuffle Split]
         Time[Time Series Split]
+        Temporal[Temporal Game Split]
     end
     
     KFold --> |K=5| Stratified
     Stratified --> |Class Balance| Shuffle
     Shuffle --> |Random| Time
-    Time --> |Sequential| Select[Select Strategy]
+    Time --> |Sequential| Temporal
+    Temporal --> |No Leakage| Select[Select Strategy]
     
     style KFold fill:#e3f2fd
     style Stratified fill:#e8f5e9
+    style Temporal fill:#fff3e0
 ```
 
 ### 3.1 Stratified K-Fold
@@ -104,21 +107,171 @@ flowchart TD
     Test --> Eval[Evaluate]
 ```
 
-## 4. Cross-Validation Configuration
+### 3.3 Temporal Data Problem: Why Random CV Leaks
+
+Game data has an inherent temporal structure that violates the i.i.d. assumption of standard K-Fold cross-validation. Each game produces a sequence of board states where later states depend on earlier states. Random CV shuffles all states together, causing the following leakage problems:
+
+1. **Future state leakage**: A model trained on states from game epoch 50 can "predict" states from game epoch 10 (because they share similar board patterns), but this does not reflect real generalization to truly unseen game sequences
+2. **Sequence contamination**: Adjacent moves within a single game are highly correlated — placing a train state from move 80 and a test state from move 82 in different folds means the model has seen essentially the same game trajectory
+3. **Score correlation**: States from high-scoring games tend to cluster together (good opening sequences lead to good mid-game states), so random splitting can put correlated high-score states in both train and test sets
+
+```mermaid
+flowchart TD
+    subgraph "Random CV — Leakage"
+        subgraph "Game A (temporal sequence)"
+            S1[State 1] --> S2[State 2] --> S3[State 3] --> S4[State 4]
+        end
+        subgraph "Random Shuffle"
+            S3 --> Fold_Train[Train Fold]
+            S4 --> Fold_Test[Test Fold]
+        end
+        S3 -.->|Highly correlated| S4
+        style S3 fill:#ffcdd2
+        style S4 fill:#ffcdd2
+    end
+    
+    subgraph "Problem: Test state S4 is highly correlated with train state S3"
+        Leakage[DATA LEAKAGE — Model sees similar states]
+    end
+```
+
+### 3.4 Temporal Game-Aware Cross-Validation Strategy
+
+To prevent data leakage, we use a **temporal game sequence split** strategy that respects the sequential nature of game data:
+
+**Core Principle**: Entire games (or game sequences) are kept together within a single fold. Train and test sets contain completely separate game sessions.
+
+**Split Strategy**:
+
+1. **Game-level splitting**: Group all board states by their originating game ID
+2. **Temporal ordering**: Sort games by their start timestamp or game counter
+3. **Forward-chaining splits**: Train on earlier games, test on later games
+4. **No overlap**: A game's states appear in exactly one fold (either all train or all test)
+
+```mermaid
+flowchart TD
+    subgraph "Temporal Game-Aware CV"
+        G1[Game 1<br/>States 1-50] -->|Train| Fold1_Train[Train Fold 1]
+        G2[Game 2<br/>States 1-55] -->|Train| Fold1_Train
+        G3[Game 3<br/>States 1-48] -->|Train| Fold1_Train
+        G4[Game 4<br/>States 1-60] -->|Test| Fold1_Test[Test Fold 1]
+        G5[Game 5<br/>States 1-52] -->|Test| Fold1_Test
+        
+        G1 -->|Train| Fold2_Train[Train Fold 2]
+        G2 -->|Train| Fold2_Train
+        G4 -->|Train| Fold2_Train
+        G5 -->|Train| Fold2_Train
+        G6[Game 6<br/>States 1-45] -->|Test| Fold2_Test[Test Fold 2]
+        G7[Game 7<br/>States 1-58] -->|Test| Fold2_Test
+    end
+```
+
+**Implementation**:
 
 ```rust
 use automl::{CrossValidator, CVStrategy};
 
 let cv = CrossValidator::new()
     .with_k_folds(5)
+    .with_strategy(CVStrategy::Temporal)
+    .with_group_column("game_id")  // Group by game, not individual states
+    .with_shuffle(false)            // Preserve temporal order
+    .with_random_state(42);
+
+let results = cv.cross_val_score(&engine, &x, &y, Some(&groups))?;
+```
+
+**Fold definitions for 5-fold temporal CV**:
+
+```
+Total games: 100 (chronologically ordered)
+
+Fold 1: Train = Games 1-80,  Test = Games 81-84
+Fold 2: Train = Games 1-84,  Test = Games 85-88
+Fold 3: Train = Games 1-88,  Test = Games 89-92
+Fold 4: Train = Games 1-92,  Test = Games 93-96
+Fold 5: Train = Games 1-96,  Test = Games 97-100
+```
+
+This ensures that every test set contains only games that occurred *after* all training games, preventing temporal leakage.
+
+**Key Properties**:
+- No game appears in both train and test sets
+- Test games always chronologically follow training games
+- Each fold uses an expanding window (training set grows over time)
+- Game states within a test game are never seen during training
+
+### 3.5 Stratified Temporal CV (Recommended)
+
+For best results, combine stratification with temporal ordering:
+
+```mermaid
+flowchart TD
+    Data[All Games<br/>Chronologically Sorted]
+    Data --> Bin[Stratify by Score Range]
+    Bin --> Low[Low Score Games]
+    Bin --> Medium[Medium Score Games]
+    Bin --> High[High Score Games]
+    
+    Low --> Temporal[Temporal Split Within Each Stratum]
+    Medium --> Temporal
+    High --> Temporal
+    
+    Temporal --> Fold[5 Stratified Temporal Folds]
+    
+    style Fold fill:#fff3e0
+```
+
+Each stratum (score range) is temporally split independently, ensuring both class balance and temporal consistency.
+
+## 4. Cross-Validation Configuration
+
+```rust
+use automl::{CrossValidator, CVStrategy};
+
+// Recommended: Temporal game-aware CV
+let cv = CrossValidator::new()
+    .with_k_folds(5)
+    .with_strategy(CVStrategy::Temporal)
+    .with_group_column("game_id")
+    .with_shuffle(false)
+    .with_random_state(42);
+
+let results = cv.cross_val_score(&engine, &x, &y, Some(&groups))?;
+
+// Alternative: Stratified K-Fold (if temporal ordering is not available)
+let cv_stratified = CrossValidator::new()
+    .with_k_folds(5)
     .with_strategy(CVStrategy::Stratified)
     .with_shuffle(true)
     .with_random_state(42);
-
-let results = cv.cross_val_score(&engine, &x, &y)?;
 ```
 
+**Configuration Notes**:
+- Always specify `group_column` when game data has temporal structure
+- Set `shuffle = false` for temporal CV to preserve ordering
+- Use `Stratified` with score bins when game outcomes are imbalanced
+- Never shuffle game IDs — this would cause temporal leakage
+
 ## 5. Cross-Validation Process
+
+```mermaid
+flowchart TD
+    Process[Cross-Validation Process]
+    Process --> Init[Initialize CV Config]
+    Init --> Split[Create Temporal Splits<br/>by Game ID]
+    Split --> Verify[Verify No Leakage<br/>Check Game Separation]
+    Verify --> Loop{For Each Fold}
+    Loop --> |Train| TrainModel[Train on Training Games]
+    TrainModel --> |Test| TestModel[Test on Temporal Held-Out Games]
+    TestModel --> Collect[Collect Metrics]
+    Collect --> Loop
+    Loop --> |All folds done| Aggregate[Aggregate Results]
+    Aggregate --> Report[Generate Report]
+    
+    style Verify fill:#fff3e0
+    style Aggregate fill:#e8f5e9
+```
 
 ```mermaid
 flowchart TD
@@ -173,5 +326,6 @@ flowchart LR
 ## 8. Next Steps
 
 1. Define evaluation metrics
-2. Execute cross-validation
+2. Execute cross-validation with temporal splits
 3. Analyze results
+4. Verify no data leakage between folds

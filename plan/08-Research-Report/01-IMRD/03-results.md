@@ -9,10 +9,10 @@ This section presents the empirical results of training and evaluating ML models
 ```mermaid
 flowchart TD
     subgraph "Key Results"
-        A[Mean Score] -->|2048| B[Primary Result]
-        C[Games > 2048] -->|30%| D[Success Rate]
-        E[Training Time] -->|2 hours| F[Efficiency]
-        G[Model Type] -->|Neural Network| H[Best Architecture]
+        A[Mean Score] -->|To be determined after experimentation| B[Primary Result]
+        C[Games > 2048] -->|To be determined after experimentation| D[Success Rate]
+        E[Training Time] -->|To be determined after experimentation| F[Efficiency]
+        G[Model Type] -->|To be determined after experimentation| H[Best Architecture]
     end
 ```
 
@@ -20,19 +20,19 @@ flowchart TD
 
 | Metric | Model A | Model B | Model C | Baseline |
 |--------|---------|---------|---------|----------|
-| Mean Score | 1536 | 2048 | 1024 | 128 |
-| Median Score | 768 | 1024 | 512 | 64 |
-| Games > 2048 | 20% | 30% | 10% | 0% |
-| Std Dev | 384 | 256 | 512 | 64 |
+| Mean Score | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation |
+| Median Score | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation |
+| Games > 2048 | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation |
+| Std Dev | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation | To be determined after experimentation |
 
 ## 4. Learning Curve Analysis
 
 ```mermaid
 graph TD
-    A[Epoch 1] -->|low score| B[Epoch 10]
-    B -->|improving| C[Epoch 50]
-    C -->|converging| D[Epoch 100]
-    D -->|stabilized| E[Epoch 200]
+    A[Epoch 1] -->|To be determined after experimentation| B[Epoch 10]
+    B -->|To be determined after experimentation| C[Epoch 50]
+    C -->|To be determined after experimentation| D[Epoch 100]
+    D -->|To be determined after experimentation| E[Epoch 200]
     
     style E fill:#9f9,stroke:#333
 ```
@@ -57,8 +57,8 @@ flowchart LR
 ```mermaid
 graph TD
     subgraph "Model Comparison"
-        A[Random Agent<br/>μ=128] --> B[Heuristic Agent<br/>μ=512]
-        B --> C[ML Model<br/>μ=2048]
+        A[Random Agent<br/>μ=To be determined after experimentation] --> B[Heuristic Agent<br/>μ=To be determined after experimentation]
+        B --> C[ML Model<br/>μ=To be determined after experimentation]
     end
     
     style C fill:#9f9,stroke:#333
@@ -82,11 +82,11 @@ pub struct TrainingResults {
 
 ```mermaid
 flowchart TD
-    A[t-test] --> B[p-value < 0.05]
+    A[t-test] -->|To be determined after experimentation| B[p-value < 0.05]
     B --> C[Statistically Significant]
-    C --> D[Effect Size: Cohen's d = 0.8]
+    C -->|To be determined after experimentation| D[Effect Size: Cohen's d = To be determined after experimentation]
     D --> E[Large Effect]
-    E --> F[Confidence Interval: [1800, 2300]]
+    E -->|To be determined after experimentation| F[Confidence Interval: To be determined after experimentation]
 ```
 
 ## 9. Results Visualization
@@ -103,10 +103,10 @@ graph TD
 
 | Category | Value | Confidence |
 |----------|-------|------------|
-| Mean Score | 2048 | 95% CI [1800, 2300] |
-| Games > 2048 | 30% | 95% CI [25%, 35%] |
-| Training Time | 2 hours | Reproducible |
-| Best Model | Neural Network | Confirmed |
+| Mean Score | To be determined after experimentation | To be determined after experimentation |
+| Games > 2048 | To be determined after experimentation | To be determined after experimentation |
+| Training Time | To be determined after experimentation | To be determined after experimentation |
+| Best Model | To be determined after experimentation | To be determined after experimentation |
 
 ## 11. Data Quality
 

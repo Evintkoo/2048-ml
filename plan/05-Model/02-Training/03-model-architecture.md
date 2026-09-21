@@ -6,22 +6,22 @@ Define the architecture of the machine learning model used to predict optimal mo
 
 ## 2. Architecture Overview
 
-The model architecture is designed to consume 25-dimensional board state features and output 4 directional actions.
+The model architecture is designed to consume 25-dimensional board state features and output 4 directional actions using tree-based ensemble methods.
 
-```mermaid
-flowchart TD
-    Input[Input Layer<br/>25 Features] --> Hidden1[Hidden Layer 1<br/>64 neurons, ReLU]
-    Hidden1 --> Hidden2[Hidden Layer 2<br/>32 neurons, ReLU]
-    Hidden2 --> Hidden3[Hidden Layer 3<br/>16 neurons, ReLU]
-    Hidden3 --> Output[Output Layer<br/>4 Actions, Softmax]
-    
-    style Input fill:#e3f2fd
-    style Output fill:#e8f5e9
-```
+### 2.1 Tree-Based Model Architecture
 
-## 3. Model Architecture Components
+Tree-based models are the primary architecture for this project. Each model type has a distinct structure optimized for tabular data:
 
-### 3.1 Feature Input Layer
+| Model Type | Structure | Key Parameters |
+|------------|-----------|----------------|
+| RandomForest | Ensemble of decision trees | n_estimators, max_depth, min_samples_split |
+| GradientBoosting | Sequential additive trees | n_estimators, learning_rate, max_depth, subsample |
+| XGBoost | Regularized gradient boosting | n_estimators, max_depth, learning_rate, reg_lambda |
+| LightGBM | Leaf-wise growing trees | n_estimators, max_depth, num_leaves, learning_rate |
+| CatBoost | Ordered boosting with categorical handling | n_estimators, depth, learning_rate |
+| ExtraTrees | Randomized decision tree ensemble | n_estimators, max_depth, min_samples_split |
+
+### 2.2 Feature Input Layer
 
 ```mermaid
 flowchart LR
@@ -30,84 +30,88 @@ flowchart LR
     Concat --> Input[Input Vector<br/>25 dimensions]
 ```
 
-### 3.2 Hidden Layers
+### 2.3 Tree Ensemble Architecture
 
 ```mermaid
 flowchart TD
-    Layer1[Layer 1: Dense(64)]
-    Layer1 --> Activation1[ReLU Activation]
-    Activation1 --> Dropout1[Dropout 0.2]
+    Input[Input Features<br/>25 Dimensions] --> TreeEnsemble[Tree Ensemble]
+    TreeEnsemble --> Tree1[Decision Tree 1]
+    TreeEnsemble --> Tree2[Decision Tree 2]
+    TreeEnsemble --> TreeN[Decision Tree N]
     
-    Layer2[Layer 2: Dense(32)]
-    Layer2 --> Activation2[ReLU Activation]
-    Activation2 --> Dropout2[Dropout 0.2]
+    subgraph "Tree Structure"
+        Tree1 --> Split1[Feature Split]
+        Split1 --> Leaf1[Leaf Value]
+        Split1 --> Leaf2[Leaf Value]
+    end
     
-    Layer3[Layer 3: Dense(16)]
-    Layer3 --> Activation3[ReLU Activation]
-    Activation3 --> Dropout3[Dropout 0.1]
+    TreeEnsemble --> Aggregation[Aggregation<br/>Mean / Vote / Add]
+    Aggregation --> Output[Output<br/>4 Action Scores]
     
-    Layer1 --> Layer2
-    Layer2 --> Layer3
-```
-
-### 3.3 Output Layer
-
-```mermaid
-flowchart TD
-    Hidden3[Last Hidden Layer<br/>16 neurons] --> Output[Output Layer<br/>4 neurons]
-    Output --> Softmax[Softmax]
-    Softmax --> Action[Action Probabilities<br/>Up, Down, Left, Right]
-    
+    style Input fill:#e3f2fd
     style Output fill:#e8f5e9
-    style Action fill:#fff3e0
 ```
 
-## 4. Model Variants
+### 2.4 Model Variants
 
 ```mermaid
 flowchart TB
     subgraph "Model Variants"
         A[Gradient Boosting]
         B[Random Forest]
-        C[Neural Network]
         D[XGBoost]
         E[Logistic Regression]
+        F[SVM]
+        G[KNN]
     end
     
     A --> Evaluation
     B --> Evaluation
-    C --> Evaluation
     D --> Evaluation
     E --> Evaluation
+    F --> Evaluation
+    G --> Evaluation
     
     Evaluation[Architecture Evaluation]
 ```
 
-## 5. Neural Network Architecture Details
+### 2.5 Tree-Based Model Architecture Details
 
 ```rust
-pub struct ModelArchitecture {
-    pub input_dim: usize,           // 25 features
-    pub hidden_layers: Vec<usize>,  // [64, 32, 16]
-    pub output_dim: usize,          // 4 actions
-    pub dropout_rates: Vec<f64>,    // [0.2, 0.2, 0.1]
-    pub activation: ActivationType, // ReLU
+pub struct TreeModelArchitecture {
+    pub model_type: ModelType,           // GradientBoosting, RandomForest, XGBoost, etc.
+    pub n_estimators: usize,             // Number of trees in the ensemble
+    pub max_depth: usize,                // Maximum depth of each tree
+    pub learning_rate: f64,              // Shrinkage parameter for boosting
+    pub min_samples_split: usize,        // Minimum samples to split a node
+    pub max_features: Option<usize>,     // Features considered per split
+    pub subsample: Option<f64>,          // Row subsampling rate
+    pub regularization: f64,             // L1/L2 regularization strength
+}
+
+pub struct ModelType {
+    pub name: String,                    // e.g., "GradientBoosting", "RandomForest"
+    pub is_ensemble: bool,               // True for ensemble methods
+    pub is_boosting: bool,               // True for boosting-based methods
+    pub supports_categorical: bool,      // True if native categorical support
 }
 ```
 
 ```mermaid
 flowchart TD
-    NN[Neural Network Model]
-    NN --> Config[Architecture Config]
-    NN --> Init[Weight Initialization]
-    NN --> Train[Trainable Layers]
-    NN --> Loss[Loss Function]
-    NN --> Optim[Optimizer]
+    TB[Tree-Based Model]
+    TB --> Config[Architecture Config]
+    TB --> Train[Fit Ensemble]
+    TB --> Evaluate[Cross-Validation]
+    TB --> Ensemble[Aggregate Predictions]
     
-    Config --> |25-64-32-16-4| Init
-    Init --> |Xavier/He| Train
-    Train --> |CrossEntropy| Loss
-    Loss --> |Adam/AdamW| Optim
+    Config --> |n_estimators, max_depth| Train
+    Train --> |fitted trees| Evaluate
+    Evaluate --> |best params| Ensemble
+    Ensemble --> |predictions| Output[Output<br/>4 Action Scores]
+    
+    style TB fill:#e8f5e9
+    style Output fill:#fff3e0
 ```
 
 ## 6. Model Integration

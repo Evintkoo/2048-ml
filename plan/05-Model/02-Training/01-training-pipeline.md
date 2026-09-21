@@ -2,16 +2,16 @@
 
 ## 1. Purpose
 
-Define the complete training pipeline that takes collected data and produces a trained machine learning model capable of playing the 2048 game.
+Define the complete training pipeline that takes collected game data and produces a trained supervised classification model capable of predicting optimal moves in the 2048 game.
 
 ## 2. Pipeline Overview
 
-The training pipeline follows a structured flow from raw data to a deployable model.
+The training pipeline follows a structured flow from raw game data to a deployable classification model.
 
 ```mermaid
 flowchart TD
     subgraph "Training Pipeline"
-        Data[Raw Data]
+        Data[Raw Game Data]
         Preprocess[Preprocessing]
         Feature[Feature Engineering]
         Train[Model Training]
@@ -27,7 +27,7 @@ flowchart TD
     Evaluate --> Select
     Select --> Export
     
-    Export --> Deploy[Deployed Model]
+    Export --> Deploy[Deployed Classification Model]
 ```
 
 ## 3. Pipeline Stages
@@ -36,9 +36,9 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    Collection[Data Collection<br/>06-Data/]
+    Collection[Game Data Collection<br/>06-Data/]
     Loading[Load Data<br/>CSV/Parquet]
-    Validation[Validate Data]
+    Validation[Validate Data<br/>State-Action Pairs]
     
     Collection --> Loading
     Loading --> Validation
@@ -63,16 +63,16 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    X[Features]
-    Y[Targets]
+    X[Features<br/>Board State]
+    Y[Targets<br/>Action Labels]
     
     X --> Engine[TrainEngine]
     Y --> Engine
-    Engine --> Model[Trained Model]
+    Engine --> Model[Trained Classifier]
     
     subgraph "automl Engine"
         Engine[TrainEngine]
-        Engine --> Config[TrainingConfig]
+        Engine --> Config[TrainingConfig<br/>TaskType: MultiClassification]
         Engine --> Optimizer[HyperOptX Optimizer]
         Engine --> CV[CrossValidator]
     end
@@ -83,7 +83,7 @@ flowchart TD
 ```mermaid
 flowchart TB
     Config[TrainingConfig]
-    Config --> Task[Task Type: Regression]
+    Config --> Task[Task Type: MultiClassification]
     Config --> Model[Model Type: Auto]
     Config --> CV[Cross-Validation: 5-fold]
     Config --> Seed[Random Seed: 42]
@@ -91,6 +91,11 @@ flowchart TB
     
     style Config fill:#e3f2fd
 ```
+
+**Configuration Details:**
+- **Task Type**: `MultiClassification` — 4 output classes (up, down, left, right)
+- **Model Type**: `Auto` — automl selects best classifier from `ModelType` enum (DecisionTree, RandomForest, GradientBoosting, XGBoost, LightGBM, SVM, KNN, etc.)
+- **Labels**: Integer-encoded actions where 0=up, 1=down, 2=left, 3=right
 
 ## 5. Pipeline Execution Flow
 
@@ -103,12 +108,12 @@ sequenceDiagram
     participant Select as Selector
     participant Export as Exporter
     
-    Data->>Preprocess: Raw training data
-    Preprocess->>Train: Processed features
-    Train->>Eval: Trained model
-    Eval->>Select: Evaluation metrics
+    Data->>Preprocess: Raw game state-action pairs
+    Preprocess->>Train: Processed features & labels
+    Train->>Eval: Trained classifier
+    Eval->>Select: Classification metrics
     Select->>Export: Best model
-    Export->>Deploy: Serialized model
+    Export->>Deploy: Serialized classifier
 ```
 
 ## 6. Pipeline Monitoring
@@ -139,6 +144,6 @@ flowchart LR
 
 ## 8. Next Steps
 
-1. Configure training parameters
-2. Execute training loop
-3. Validate model architecture
+1. Configure training parameters for multi-class classification
+2. Execute training loop with supervised game data
+3. Validate model architecture and classification accuracy

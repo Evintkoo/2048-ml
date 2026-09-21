@@ -64,6 +64,45 @@ flowchart TD
 | Inference Time | — | ≤ 1 ms | Pending |
 | Accuracy | — | ≥ 85% | Pending |
 
+### 5.1 Automl-Compatible Model Candidates
+
+Since the automl framework does not implement neural networks, the candidate models are restricted to the following automl-compatible algorithms:
+
+| Model | Category | Expected Performance |
+|-------|----------|---------------------|
+| RandomForest | Tree-based | Good baseline, robust to overfitting |
+| GradientBoosting | Tree-based | Expected to perform best on tabular data |
+| XGBoost | Tree-based | Strong gradient boosting, competitive accuracy |
+| LightGBM | Tree-based | Fast training, high performance |
+| CatBoost | Tree-based | Handles categorical features well |
+| ExtraTrees | Tree-based | Randomized tree ensemble, good diversity |
+| SVM | Linear/Kernel | Decent for smaller datasets |
+| KNN | Instance-based | Simple baseline, distance-based |
+| LogisticRegression | Linear | Baseline linear model |
+
+### 5.2 Why Tree-Based Models Are Expected to Perform Best
+
+The 2048 game data is **tabular** in nature — each sample consists of a fixed-length feature vector derived from the board state. Tree-based models (GradientBoosting, RandomForest, XGBoost) are expected to outperform other candidates for several reasons:
+
+1. **Tabular data affinity**: Tree-based algorithms inherently excel on structured, tabular data with mixed feature types
+2. **Non-linear relationships**: The relationship between board state features and optimal moves is highly non-linear; tree splits capture these interactions naturally
+3. **Feature importance**: Tree models provide interpretable feature importance, which aligns with known 2048 heuristics (monotonicity, empty count, max tile)
+4. **Robustness to scaling**: Unlike SVM or KNN, tree-based models do not require feature scaling
+5. **Gradient boosting dominance**: Empirically, gradient boosting variants consistently rank among the top performers on tabular benchmark datasets
+
+### 5.3 Evaluation Criteria
+
+Models are evaluated on the following criteria:
+
+| Criterion | Weight | Description |
+|-----------|--------|-------------|
+| Predictive Accuracy | 40% | R² score and RMSE on held-out test set |
+| Training Speed | 20% | Time to convergence and fit |
+| Inference Speed | 15% | Prediction latency per sample |
+| Model Size | 15% | Disk and memory footprint |
+| Interpretability | 10% | Feature importance clarity |
+| Robustness | 10% | Performance stability across game types |
+
 ## 6. Algorithm Rationale
 
 ```mermaid
