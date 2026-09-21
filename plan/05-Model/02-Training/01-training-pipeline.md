@@ -97,7 +97,16 @@ flowchart TB
 - **Model Type**: `Auto` — automl selects best classifier from `ModelType` enum (DecisionTree, RandomForest, GradientBoosting, XGBoost, LightGBM, SVM, KNN, etc.)
 - **Labels**: Integer-encoded actions where 0=up, 1=down, 2=left, 3=right
 
-## 5. Pipeline Execution Flow
+## 5. Ceiling-Oriented Training
+
+The training pipeline is optimized for finding each model's score ceiling:
+
+1. Train each model with maximum budget (high n_estimators, early stopping disabled)
+2. Run each trained model against the game environment until convergence
+3. Track the maximum score achieved by each model
+4. Compare ceilings across models
+
+## 6. Pipeline Execution Flow
 
 ```mermaid
 sequenceDiagram

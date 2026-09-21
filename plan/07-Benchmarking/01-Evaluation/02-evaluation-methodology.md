@@ -9,10 +9,10 @@ Establish the systematic methodology for evaluating the 2048 ML model's performa
 ```mermaid
 mindmap
   root((Evaluation))
-    Score Performance
-      Mean Score
-      Median Score
-      Max Score
+    Score Ceiling
+      Maximum Score Achieved
+      Ceiling Confidence Interval
+      Convergence Score
       Score Distribution
     Efficiency
       Games per Second
@@ -47,10 +47,18 @@ flowchart TD
 
 | Test Type | Description | Games Required |
 |-----------|-------------|----------------|
-| Baseline Test | Random agent comparison | 1000 |
-| Standard Test | Heuristic agent comparison | 1000 |
-| Stress Test | High-difficulty scenarios | 500 |
-| Convergence Test | Training progression | 100 per epoch |
+| Ceiling Estimation | Determine each model's max score | 10,000 per model |
+| Baseline Test | Random agent comparison | 1,000 |
+| Standard Test | Heuristic agent comparison | 1,000 |
+| Stress Test | High-difficulty edge cases | 500 |
+| Convergence Test | Training progression tracking | 100 per epoch |
+
+### Ceiling Estimation Protocol
+1. Run each model for extended sessions until score converges
+2. Track maximum score achieved across all games
+3. Compute 95% confidence interval for ceiling estimate
+4. Compare ceilings using Mann-Whitney U test
+5. Report ceiling, not mean score, as the primary evaluation metric
 
 ## 5. Metric Collection
 
@@ -71,6 +79,8 @@ pub struct ScoreMetrics {
     pub min: u64,
     pub max: u64,
     pub percentiles: [u64; 10],
+    pub ceiling_score: u64,
+    pub ceiling_confidence: f64,
     pub games_above_2048: usize,
     pub games_above_4096: usize,
 }

@@ -36,7 +36,7 @@
 
 ```rust
 // Training
-let config = TrainingConfig::new(TaskType::Regression, "target");
+let config = TrainingConfig::new(TaskType::MultiClassification, "action");
 let mut engine = TrainEngine::new(config);
 engine.fit(&df)?;
 let predictions = engine.predict(&df)?;

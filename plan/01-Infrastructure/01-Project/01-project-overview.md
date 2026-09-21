@@ -10,13 +10,13 @@
 
 ## 1. Purpose
 
-This project builds a machine learning system that uses the Evintkoo/automl framework (Rust-based AutoML) to train models capable of achieving the highest possible score in the 2048 game. The system serves as both a practical application and a research platform for evaluating automl capabilities on sequential decision-making problems.
+This project builds a machine learning system that uses the Evintkoo/automl framework (Rust-based AutoML) to find the maximum achievable score ceiling for each candidate algorithm in the 2048 game. The system serves as both a practical application and a research platform for evaluating automl capabilities on sequential decision-making problems.
 
 ## 2. Goals
 
-1. **Primary:** Create a machine learning model that achieves the highest score in 2048 using only the automl module
-2. **Evaluation:** Test and benchmark the capability of automl to determine the actual quality, capability, and results of the automl engine system
-3. **Research:** Identify which machine learning algorithm is best suited for the 2048 game problem
+1. **Primary:** Find the maximum score ceiling for each candidate algorithm using the automl module
+2. **Evaluation:** Benchmark the ceiling capability of automl to determine its actual quality on sequential decision-making problems
+3. **Research:** Identify which machine learning algorithm achieves the highest score ceiling in the 2048 game
 
 ## 3. Scope
 
@@ -93,22 +93,29 @@ flowchart TD
 ## 8. Success Criteria
 
 ### Tier 1: Minimum Viable Milestone
-- Model achieves score > 512 in at least 50% of games
+- Determine each model's score ceiling (maximum achievable score) through systematic evaluation
+- Establish baseline ceilings for Random Forest, Gradient Boosting, XGBoost, and other candidates
 - Full data pipeline from game simulation to trained model works end-to-end
 - Automated model selection identifies a viable algorithm
 
 ### Tier 2: Intermediate Milestone
-- Model achieves score > 1024 in at least 30% of games
+- Identify the top-performing model by ceiling comparison
+- Training pipeline is fully automated and reproducible
+- Model comparison demonstrates clear ceiling differences between algorithms
 - Training pipeline is fully automated and reproducible
 - Model comparison demonstrates clear performance differences between algorithms
 
 ### Tier 3: Advanced Milestone
-- Model achieves score > 2048 in at least 10% of games
+- The highest-ceiling model achieves score ≥ 2048 in meaningful trials
+- Benchmark results demonstrate automl capability on sequential decision-making
+- Comprehensive IMRD research report published
 - Benchmark results demonstrate meaningful automl capability on sequential games
 - Comprehensive IMRD research report published with validated findings
 
 ### Tier 4: Stretch Goal
-- Model achieves score ≥ 2048 consistently in a meaningful subset of games
+- The best model's ceiling approaches theoretical maximum (2048 tile or beyond)
+- Statistical evidence shows one algorithm significantly outperforms others
+- Research findings contribute to understanding of automl on sequential decision-making
 - Best model identified and documented with strong statistical evidence
 - Research findings contribute to understanding of automl on sequential decision-making
 

@@ -78,18 +78,30 @@ flowchart TB
 ```mermaid
 flowchart TB
     Volume[Collection Volume Targets]
-    Volume --> V1[Self-Play: 10,000 games]
+    Volume --> V1[Self-Play: 10,000 games per model]
     Volume --> V2[Random Play: 5,000 games]
     Volume --> V3[Heuristic Play: 5,000 games]
-    Volume --> V4[Total: 20,000 games]
+    Volume --> V4[Total: 20,000+ games]
+    Volume --> Ceiling[Extended Runs for Ceiling Estimation]
+    Ceiling --> CeilingGames[5,000+ extended games per model]
     
     V1 --> Storage[Data Storage]
     V2 --> Storage
     V3 --> Storage
     V4 --> Storage
+    CeilingGames --> Storage
     
     style Storage fill:#e8f5e9
+    style CeilingGames fill:#fff3e0
 ```
+
+### Ceiling Estimation
+
+To accurately estimate each model's score ceiling:
+- Extended sessions (500+ moves per game) until game over
+- Multiple independent runs with different seeds
+- Track running maximum to identify convergence
+- Use confidence intervals to quantify ceiling estimates
 
 ## 6. Data Quality Checks
 

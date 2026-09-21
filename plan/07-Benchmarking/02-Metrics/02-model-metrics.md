@@ -35,12 +35,14 @@ flowchart TD
 
 ## 3. Prediction Metrics
 
-| Metric | Description | Target |
-|--------|-------------|--------|
-| Move Accuracy | % of correct move predictions | ≥ 45% |
-| Direction Accuracy | % of correct direction | ≥ 40% |
-| Value Accuracy | MAE of tile value prediction | ≤ 100 |
-| Policy Entropy | Measure of exploration | Balanced |
+| Metric | Description | Purpose |
+|--------|-------------|----------|
+| Move Accuracy | % of correct move predictions | Indicator of ceiling proximity |
+| Direction Accuracy | % of correct direction | Indicator of ceiling proximity |
+| Value Accuracy | MAE of tile value prediction | Board state understanding |
+| Policy Entropy | Measure of exploration | Balanced exploration vs exploitation |
+
+> **Note on targets**: Targets are not fixed thresholds. The purpose of these metrics is to identify each model's ceiling — the maximum score it can achieve. Metrics serve as indicators of how close a model is to its performance ceiling.
 
 > **Note on targets**: These targets are deliberately set as progressive milestones. A score of 45% move accuracy corresponds to significantly better than random (25% for 4 actions). Achieving >60% would be a stretch goal. The targets should be iteratively revised based on initial baseline results.
 
