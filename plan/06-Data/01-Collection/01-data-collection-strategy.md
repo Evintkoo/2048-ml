@@ -95,13 +95,15 @@ flowchart TB
     style CeilingGames fill:#fff3e0
 ```
 
-### Ceiling Estimation
+### Theoretical Limit Proximity Estimation
 
-To accurately estimate each model's score ceiling:
+To accurately estimate how close each model gets to the theoretical maximum:
 - Extended sessions (500+ moves per game) until game over
 - Multiple independent runs with different seeds
 - Track running maximum to identify convergence
-- Use confidence intervals to quantify ceiling estimates
+- Compute proximity ratio: `max_score / theoretical_limit`
+- Use confidence intervals to quantify proximity estimates
+- Theoretical limit: 32768 max tile on 4×4 board (bounded by game mechanics)
 
 ## 6. Data Quality Checks
 

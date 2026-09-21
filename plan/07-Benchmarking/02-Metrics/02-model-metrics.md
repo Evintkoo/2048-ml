@@ -37,12 +37,12 @@ flowchart TD
 
 | Metric | Description | Purpose |
 |--------|-------------|----------|
-| Move Accuracy | % of correct move predictions | Indicator of ceiling proximity |
-| Direction Accuracy | % of correct direction | Indicator of ceiling proximity |
+| Move Accuracy | % of correct move predictions | Indicator of theoretical-limit proximity |
+| Direction Accuracy | % of correct direction | Indicator of theoretical-limit proximity |
 | Value Accuracy | MAE of tile value prediction | Board state understanding |
 | Policy Entropy | Measure of exploration | Balanced exploration vs exploitation |
 
-> **Note on targets**: Targets are not fixed thresholds. The purpose of these metrics is to identify each model's ceiling — the maximum score it can achieve. Metrics serve as indicators of how close a model is to its performance ceiling.
+> **Note on targets**: Models are evaluated by proximity to the theoretical maximum score, not by fixed thresholds. The theoretical limit is bounded by game mechanics (max tile 32768, max board occupancy 16). `proximity_ratio = ceiling_score / theoretical_limit`.
 
 > **Note on targets**: These targets are deliberately set as progressive milestones. A score of 45% move accuracy corresponds to significantly better than random (25% for 4 actions). Achieving >60% would be a stretch goal. The targets should be iteratively revised based on initial baseline results.
 
@@ -142,8 +142,9 @@ graph TD
 
 ## 10. Quality Gates
 
-1. Move accuracy ≥ 40% for baseline model acceptance
-2. Move accuracy ≥ 55% for deployment consideration
-3. Loss must converge within reasonable training time (not strictly epoch-bound for tree-based models)
-4. Validation performance must not degrade significantly from training performance (no severe overfitting)
-5. All model metrics must be logged and reproducible
+1. Proximity ratio > 0.3 for baseline model acceptance
+2. Proximity ratio > 0.5 for deployment consideration
+3. Loss must converge within reasonable training time
+4. Validation performance must not degrade significantly (no severe overfitting)
+5. All model metrics including proximity_ratio must be logged and reproducible
+6. Theoretical limit must be documented and cited

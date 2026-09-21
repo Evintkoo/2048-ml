@@ -10,13 +10,13 @@
 
 ## 1. Purpose
 
-This project builds a machine learning system that uses the Evintkoo/automl framework (Rust-based AutoML) to find the maximum achievable score ceiling for each candidate algorithm in the 2048 game. The system serves as both a practical application and a research platform for evaluating automl capabilities on sequential decision-making problems.
+This project builds a machine learning system that uses the Evintkoo/automl framework (Rust-based AutoML) to evaluate how close each candidate algorithm gets to the theoretical maximum score of the 2048 game. The system serves as both a practical application and a research platform for evaluating automl capabilities on sequential decision-making problems.
 
 ## 2. Goals
 
-1. **Primary:** Find the maximum score ceiling for each candidate algorithm using the automl module
-2. **Evaluation:** Benchmark the ceiling capability of automl to determine its actual quality on sequential decision-making problems
-3. **Research:** Identify which machine learning algorithm achieves the highest score ceiling in the 2048 game
+1. **Primary:** Determine how close each candidate algorithm reaches the theoretical maximum score of the 2048 game
+2. **Evaluation:** Benchmark the theoretical-limit proximity of automl on sequential decision-making problems
+3. **Research:** Identify which machine learning algorithm comes closest to the theoretical maximum
 
 ## 3. Scope
 
@@ -113,11 +113,19 @@ flowchart TD
 - Comprehensive IMRD research report published with validated findings
 
 ### Tier 4: Stretch Goal
-- The best model's ceiling approaches theoretical maximum (2048 tile or beyond)
+- The best model achieves a score ratio ≥ 80% of theoretical maximum
 - Statistical evidence shows one algorithm significantly outperforms others
+- Model gets closest to the theoretical limit defined by game mechanics (max tile 32768, board capacity 16 cells)
 - Research findings contribute to understanding of automl on sequential decision-making
 - Best model identified and documented with strong statistical evidence
 - Research findings contribute to understanding of automl on sequential decision-making
+
+### Theoretical Limit Definition
+The theoretical maximum score is bounded by the 2048 game mechanics:
+- **Maximum tile value**: 32768 (2^15, on a 4×4 board with 16 cells)
+- **Maximum board occupancy**: 16 tiles
+- **Theoretical max score**: Sum of all possible merges, bounded by game mechanics
+- **Success metric**: Score/Theoretical_Max ratio (proximity to limit)
 
 ### Non-Negotiable Criteria (All Tiers)
 - Automated model selection identifies best algorithm

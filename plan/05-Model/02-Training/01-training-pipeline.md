@@ -97,14 +97,16 @@ flowchart TB
 - **Model Type**: `Auto` — automl selects best classifier from `ModelType` enum (DecisionTree, RandomForest, GradientBoosting, XGBoost, LightGBM, SVM, KNN, etc.)
 - **Labels**: Integer-encoded actions where 0=up, 1=down, 2=left, 3=right
 
-## 5. Ceiling-Oriented Training
+## 5. Theoretical-Limit-Oriented Training
 
-The training pipeline is optimized for finding each model's score ceiling:
+The training pipeline is optimized for finding how close each model gets to the theoretical maximum:
 
 1. Train each model with maximum budget (high n_estimators, early stopping disabled)
 2. Run each trained model against the game environment until convergence
 3. Track the maximum score achieved by each model
-4. Compare ceilings across models
+4. Compute proximity ratio: `max_score / theoretical_limit` (theoretical_limit = 32768)
+5. Compare proximity ratios across models
+6. The model closest to the theoretical limit wins
 
 ## 6. Pipeline Execution Flow
 

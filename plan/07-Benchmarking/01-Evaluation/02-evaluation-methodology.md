@@ -43,11 +43,21 @@ flowchart TD
     end
 ```
 
-## 4. Test Suite Structure
+## 4. Theoretical Limit
+
+The 2048 game has a bounded theoretical maximum:
+- **Max tile**: 32768 (2^15) on a 4×4 board
+- **Max board occupancy**: 16 tiles
+- **Theoretical max score**: Determined by optimal play
+- **Proximity ratio**: `model_score / theoretical_max` (0.0 to 1.0)
+
+Models are evaluated by their proximity ratio, not absolute score.
+
+## 5. Test Suite Structure
 
 | Test Type | Description | Games Required |
 |-----------|-------------|----------------|
-| Ceiling Estimation | Determine each model's max score | 10,000 per model |
+| Ceiling Estimation | Determine proximity to theoretical limit | 10,000 per model |
 | Baseline Test | Random agent comparison | 1,000 |
 | Standard Test | Heuristic agent comparison | 1,000 |
 | Stress Test | High-difficulty edge cases | 500 |
@@ -56,9 +66,10 @@ flowchart TD
 ### Ceiling Estimation Protocol
 1. Run each model for extended sessions until score converges
 2. Track maximum score achieved across all games
-3. Compute 95% confidence interval for ceiling estimate
-4. Compare ceilings using Mann-Whitney U test
-5. Report ceiling, not mean score, as the primary evaluation metric
+3. Compute proximity ratio: `ceiling_score / theoretical_limit`
+4. Compute 95% confidence interval for proximity ratio
+5. Compare proximity ratios using statistical tests
+6. The model with the highest proximity ratio wins
 
 ## 5. Metric Collection
 
@@ -81,6 +92,8 @@ pub struct ScoreMetrics {
     pub percentiles: [u64; 10],
     pub ceiling_score: u64,
     pub ceiling_confidence: f64,
+    pub theoretical_limit: u64,
+    pub proximity_ratio: f64,  // ceiling_score / theoretical_limit
     pub games_above_2048: usize,
     pub games_above_4096: usize,
 }
