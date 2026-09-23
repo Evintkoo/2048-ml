@@ -1,4 +1,15 @@
-# Simulation Engine — Canonical Data Generation
+# Plan 01 — Simulation Engine: the repository status is explicit and evidence based
+
+> **Status: PARTIAL.** Reusable policy/random simulation and batch seeds implemented; plan-scale rollout-labeled baseline not run (current 20k projection ~103 hours).
+
+**Goal:** State the current implementation and evidence boundary for simulation engine.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Reusable policy/random simulation and batch seeds implemented; plan-scale rollout-labeled baseline not run (current 20k projection ~103 hours).
 
 > **MVP: `Random` / `Model` agents only.** Generates `TrainingSample { [f64;27], action:u8, score:u64 metadata }` for `TaskType::MultiClassification`. Headless only, no UI.
 
@@ -152,3 +163,30 @@ pub struct TrainingSample {
 - **RNG / parallel:** `02-randomness.md` (`wrapping_add`, `TrainingConfig::with_random_state(42)`, rayon threads)
 - **Dataset:** `03-multi-game.md` (`GameDataset { states:Vec<[f64;27]>, actions:Vec<u8>, scores:Vec<u64> }`)
 - **Headless only:** No UI — `01-Game/04-game-ui.md` is debug stub; canonical viz `04-Visualization/01-visualization.md`
+
+## Implementation Record
+
+- Implemented reusable seeded `GameSimulator` for random and caller-provided policies, with configuration validation, checked rejection of invalid policy actions, per-game histories, scores, and terminal results.
+- Added `simulate_random_batch` with deterministic global-seed plus game-ID derivation. Existing data collection additionally records feature/action rows and rollout labels.
+- Validation: root unit suite passed. The full 10k-game rollout-labeled baseline remains unrun; current measured collection throughput projects a substantial multi-hour run and is recorded in the project ledger.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/02-Environment/03-Simulation-Engine/01-simulation-engine.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/02-Environment/03-Simulation-Engine/01-simulation-engine.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/02-Environment/03-Simulation-Engine/01-simulation-engine.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/02-Environment/03-Simulation-Engine/01-simulation-engine.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/02-Environment/03-Simulation-Engine/01-simulation-engine.md` exits 0.
+6. `grep -q '^## Open questions$' plans/02-Environment/03-Simulation-Engine/01-simulation-engine.md` exits 0.
+7. `grep -q '^## Later$' plans/02-Environment/03-Simulation-Engine/01-simulation-engine.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/02-Environment/03-Simulation-Engine/01-simulation-engine.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Reusable policy/random simulation and batch seeds implemented; plan-scale rollout-labeled baseline not run (current 20k projection ~103 hours). Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

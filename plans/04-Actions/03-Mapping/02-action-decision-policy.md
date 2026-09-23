@@ -1,4 +1,15 @@
-# Action Decision Policy — Greedy + masked_argmax Only
+# Plan 02 — Action Decision Policy: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for action decision policy.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Canonical inference:** `27-dim → 4 logits → masked_argmax` over valid `0..3`. No blending, no exploration.
 > **Heuristic agent** is a **separate baseline** in `02-Environment/03-Simulation-Engine/` — not blended.
@@ -38,3 +49,28 @@ Canonical `masked_argmax` in `01-model-output-to-action.md`.
 - `03-State/04-Encoding/01-state-vector.md:31` — state creation.
 - `04-Actions/02-Space/02-action-constraints.md` — `valid_actions` via `would_change`.
 - `04-Actions/03-Mapping/01-model-output-to-action.md` — `masked_argmax`.
+
+## Implementation Record
+
+- The live model policy is greedy validity-masked argmax over the AutoML four-class probability output. Heuristic play is a separate baseline policy, not blended with model inference.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/04-Actions/03-Mapping/02-action-decision-policy.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/04-Actions/03-Mapping/02-action-decision-policy.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/04-Actions/03-Mapping/02-action-decision-policy.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/04-Actions/03-Mapping/02-action-decision-policy.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/04-Actions/03-Mapping/02-action-decision-policy.md` exits 0.
+6. `grep -q '^## Open questions$' plans/04-Actions/03-Mapping/02-action-decision-policy.md` exits 0.
+7. `grep -q '^## Later$' plans/04-Actions/03-Mapping/02-action-decision-policy.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/04-Actions/03-Mapping/02-action-decision-policy.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

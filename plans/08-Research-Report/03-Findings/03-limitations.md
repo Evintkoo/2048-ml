@@ -1,8 +1,19 @@
-# Limitations
+# Plan 03 — Limitations: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for limitations.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Note:** This section documents known limitations of the research design and approach. These limitations are identified before experimentation and will be updated based on actual findings.
 
-## 2. Limitations Framework
+## 1. Limitations Framework
 
 ```mermaid
 flowchart TD
@@ -34,18 +45,18 @@ flowchart TD
     end
 ```
 
-## 3. Technical Limitations
+## 2. Technical Limitations
 
 | Limitation | Impact | Mitigation | Status |
 |-----------|--------|------------|--------|
 | Training time | Unknown — to be measured | Parallel training | To be assessed |
 | Memory usage | Unknown — to be measured | Model compression | To be assessed |
-| automl constraints | Unknown — capability verification pending | Feature requests or fallback | To be assessed |
+| automl constraints | Verified candidate support is narrower than the original list; 8 model variants return only 2 probability columns | Keep the four-action candidate set to verified variants; record framework limitations | Partly assessed |
 | Rust bugs | Potential data corruption | Extensive testing | To be assessed |
 | Feature engineering fixed | Limited to 27 features | Future feature expansion | Acknowledged |
 | No RL methods | Cannot learn from rewards | Future work | Acknowledged |
 
-## 4. Methodological Limitations
+## 3. Methodological Limitations
 
 - **Limited game variants:** Only standard 4×4 2048 tested
 - **No external data:** All data from game simulation
@@ -57,9 +68,11 @@ flowchart TD
 - **Single-seed primary experiments:** Multi-seed validation planned but may be resource-intensive
 - **Feature engineering fixed:** The 27-dimensional feature vector is predetermined
 
-## 5. Framework Limitations
+## 4. Framework Limitations
 
-The automl framework capabilities are not fully verified. A **capability verification gate** is required before training begins:
+The pinned automl capability gate has been run (see project overview §6.2). It passed for five four-class candidates. Eight other tested variants returned only two probability columns and are excluded pending framework fixes. Group-aware cross-validation is implemented in the integration because the framework scoring helper does not forward groups. Standard dataset validation and resource comparisons are still outstanding.
+
+The original gate required:
 
 1. **API completeness:** Verify `TrainEngine`, `HyperOptX`, `ModelType` enum, and `CrossValidator` exist and are functional
 2. **Model coverage:** Confirm at least 4 candidate algorithms are available via `ModelType`
@@ -69,7 +82,7 @@ The automl framework capabilities are not fully verified. A **capability verific
 
 **If verification fails:** The project's goal will be modified to evaluate "what automl CAN do" rather than "what it should have done." A local training fallback using `smartcore`/`linfa` may be implemented.
 
-## 6. Statistical Limitations
+## 5. Statistical Limitations
 
 ### 6.1 Multiple Comparison Problem
 
@@ -103,7 +116,7 @@ While 10,000 games is expected to be sufficient for most comparisons, rare event
 
 **Mitigation:** Report percentiles (50th, 90th, 95th, 99th) alongside mean scores.
 
-## 7. Scope Limitations
+## 6. Scope Limitations
 
 **In Scope:**
 - Standard 4×4 2048
@@ -125,7 +138,7 @@ While 10,000 games is expected to be sufficient for most comparisons, rare event
 - Game UI development
 - Model deployment as web service
 
-## 8. Honest Assessment
+## 7. Honest Assessment
 
 These limitations are acknowledged and documented transparently:
 
@@ -137,10 +150,10 @@ These limitations are acknowledged and documented transparently:
 6. All results are preliminary and await full experimentation
 7. The exact feature importance ranking is TBD pending ablation study
 8. Multi-seed validation is planned but not yet completed
-9. automl capabilities are not yet verified (capability gate pending)
+9. standard-dataset framework validation and comparative resource measurements remain incomplete
 10. The PSPACE-hardness claim is conjectured, not proven
 
-## 9. Mitigation Strategies (Trimmed — No Generic Filler)
+## 8. Mitigation Strategies (Trimmed — No Generic Filler)
 
 | Limitation | Mitigation |
 |-----------|------------|
@@ -151,8 +164,33 @@ These limitations are acknowledged and documented transparently:
 
 > Generic rows (training time, PSPACE, 8×8 expansion) deleted — covered in Discussion §7 Future Work (2 lines each) and `07-computational-budget.md`.
 
-## 10. Conclusion
+## 9. Conclusion
 
 Despite limitations, the research provides a rigorous framework for evaluating automl effectiveness for game AI. The limitations are acknowledged and documented transparently. Future work should address these limitations for a more comprehensive understanding.
 
 All results will be reported honestly, including null results and failed experiments. No results are fabricated or selectively reported.
+
+## Implementation Record
+
+- Design limitations and reporting commitments are documented. Empirical limitations and the final framework capability report remain pending; this ticket does not contain study results.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/03-Findings/03-limitations.md` exits 0.
+2. `grep -q '^# Plan 03 — ' plans/08-Research-Report/03-Findings/03-limitations.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/03-Findings/03-limitations.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/03-Findings/03-limitations.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/03-Findings/03-limitations.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/03-Findings/03-limitations.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/03-Findings/03-limitations.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/03-Findings/03-limitations.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

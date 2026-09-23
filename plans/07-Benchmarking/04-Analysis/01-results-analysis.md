@@ -1,4 +1,15 @@
-# Results Analysis
+# Plan 01 — Results Analysis: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for results analysis.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -44,7 +55,7 @@ flowchart LR
 
 Compare current 10k-game run vs Random (~128) and Heuristic (~512) via Mann-Whitney U + bootstrap CI + Cohen's d (see `01-Evaluation/01-benchmarking-framework.md §6.4`). Identify key factors only post-training.
 
-## 9. Analysis Conclusions
+## 7. Analysis Conclusions
 
 ```rust
 pub struct AnalysisConclusion {
@@ -57,10 +68,35 @@ pub struct AnalysisConclusion {
 }
 ```
 
-## 10. Reporting
+## 8. Reporting
 
 All analysis results are compiled into:
 - Summary dashboard
 - Detailed statistical report
 - Visual charts and graphs
 - Actionable recommendations
+
+## Implementation Record
+
+- Benchmark outputs and a CSV report can summarize score distributions and corrected comparisons; there is no populated plan-scale results corpus. Trend, anomaly investigation, charts, and evidence-based conclusions remain pending.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/07-Benchmarking/04-Analysis/01-results-analysis.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/07-Benchmarking/04-Analysis/01-results-analysis.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/07-Benchmarking/04-Analysis/01-results-analysis.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/07-Benchmarking/04-Analysis/01-results-analysis.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/07-Benchmarking/04-Analysis/01-results-analysis.md` exits 0.
+6. `grep -q '^## Open questions$' plans/07-Benchmarking/04-Analysis/01-results-analysis.md` exits 0.
+7. `grep -q '^## Later$' plans/07-Benchmarking/04-Analysis/01-results-analysis.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/07-Benchmarking/04-Analysis/01-results-analysis.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

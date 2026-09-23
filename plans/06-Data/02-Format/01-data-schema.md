@@ -1,4 +1,15 @@
-# Data Schema
+# Plan 01 — Data Schema: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for data schema.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -239,3 +250,29 @@ Game 2:
 1. Implement schema validation
 2. Apply schema to all data pipelines
 3. Generate training CSV from game replay data
+
+## Implementation Record
+
+- Exact 27-feature plus integer-action schema is implemented, with separate score/game/move metadata. Root validation rejects wrong header/width, nonfinite or out-of-range features, and invalid actions.
+- Parquet ingestion is not implemented; CSV is the only live training source. State-dependent checking that each action is legal is ensured by collector labeling/masking but is not revalidated from the CSV alone.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/06-Data/02-Format/01-data-schema.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/06-Data/02-Format/01-data-schema.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/06-Data/02-Format/01-data-schema.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/06-Data/02-Format/01-data-schema.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/06-Data/02-Format/01-data-schema.md` exits 0.
+6. `grep -q '^## Open questions$' plans/06-Data/02-Format/01-data-schema.md` exits 0.
+7. `grep -q '^## Later$' plans/06-Data/02-Format/01-data-schema.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/06-Data/02-Format/01-data-schema.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

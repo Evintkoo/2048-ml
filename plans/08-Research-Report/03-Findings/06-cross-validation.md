@@ -1,6 +1,17 @@
-# Cross-Validation — GroupKFold by game_id (i.i.d.), Not Temporal
+# Plan 06 — Cross-Validation: the repository status is explicit and evidence based
 
-> **Fix:** Games are **i.i.d. conditional on seed** — order is irrelevant. **TimeSeries CV claim deleted.** Canonical is `GroupKFold` by `game_id` to keep a game's states together. Bound nested cost correctly.
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for cross-validation.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+
+> Game-level train/validation/test partitions are chronological. Within the training partition, GroupKFold by `game_id` keeps game states together; those folds are group-disjoint but not temporally ordered. Do not describe GroupKFold as chronological.
 
 ## 1. Why CV and Leakage Model
 
@@ -41,3 +52,28 @@ The splitter comes from `automl/src/training/cross_validation.rs`; the grouped s
 ## 5. Decision
 
 Use 5-fold GroupKFold for model selection; final ranking still uses held-out 10k benchmark games (not CV score) to avoid optimistic bias.
+
+## Implementation Record
+
+- Project grouped CV is implemented and checks game separation, but reports accuracy only. This file still contains an obsolete `unimplemented!` code example and incorrectly calls GroupKFold chronological in its earlier framing; the actual contract is group-disjoint, not ordered. Needs standards-pass cleanup.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/03-Findings/06-cross-validation.md` exits 0.
+2. `grep -q '^# Plan 06 — ' plans/08-Research-Report/03-Findings/06-cross-validation.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/03-Findings/06-cross-validation.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/03-Findings/06-cross-validation.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/03-Findings/06-cross-validation.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/03-Findings/06-cross-validation.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/03-Findings/06-cross-validation.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/03-Findings/06-cross-validation.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

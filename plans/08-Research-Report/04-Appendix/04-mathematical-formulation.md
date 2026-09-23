@@ -1,4 +1,15 @@
-# Mathematical Formulation — Definitions, Assumptions, and Optional Results
+# Plan 04 — Mathematical Formulation: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for mathematical formulation.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > This appendix is not the primary source of the AutoML contribution. It contains formal definitions and optional mathematical context. Only results with verified assumptions and complete proofs may be labeled theorems. Incomplete arguments and conjectures must not be presented as established results.
 
@@ -517,3 +528,28 @@ Therefore, the gate construction is **incomplete**: for arbitrary QBF instances 
 5. **Convergence rate characterization:** What is the exact convergence rate for non-convex loss functions?
 6. **Computational lower bounds:** What is the minimum computation required to achieve ε-optimal play?
 7. **Robustness bounds:** How does model performance degrade under distribution shift?
+
+## Implementation Record
+
+- Mathematical statements are not part of the software implementation. The appendix contains arguments explicitly marked incomplete/conjectural but also has summary rows marked “complete” without established derivations; independently audit every theorem, especially score bounds, PAC, sufficiency, and complexity, before publication.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/04-Appendix/04-mathematical-formulation.md` exits 0.
+2. `grep -q '^# Plan 04 — ' plans/08-Research-Report/04-Appendix/04-mathematical-formulation.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/04-Appendix/04-mathematical-formulation.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/04-Appendix/04-mathematical-formulation.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/04-Appendix/04-mathematical-formulation.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/04-Appendix/04-mathematical-formulation.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/04-Appendix/04-mathematical-formulation.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/04-Appendix/04-mathematical-formulation.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

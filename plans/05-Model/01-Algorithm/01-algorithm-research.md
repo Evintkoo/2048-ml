@@ -1,4 +1,15 @@
-# Algorithm Research — Framework Capability and 2048 Case Study
+# Plan 01 — Algorithm Research: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for algorithm research.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > This is a secondary model-capability and case-study plan. The primary contribution is the Rust-native AutoML architecture defined in `plans/01-Infrastructure/01-Project/04-framework-contribution.md`.
 
@@ -170,3 +181,29 @@ flowchart TD
 2. Compare model performance metrics on classification accuracy and game score
 3. Select the best performing algorithm
 4. Document findings in `05-Model/01-Algorithm/03-best-algorithm-finding.md`
+
+## Implementation Record
+
+- Framework capability inspection narrowed the runnable four-class probability candidates to RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The working integration also contains grouped CV, model training, inference, and benchmark commands.
+- No standard-tabular framework evaluation, common-data algorithm comparison, or 10k-game model ranking has been completed. No winner or threshold pass is claimed.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/05-Model/01-Algorithm/01-algorithm-research.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/05-Model/01-Algorithm/01-algorithm-research.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/05-Model/01-Algorithm/01-algorithm-research.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/05-Model/01-Algorithm/01-algorithm-research.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/05-Model/01-Algorithm/01-algorithm-research.md` exits 0.
+6. `grep -q '^## Open questions$' plans/05-Model/01-Algorithm/01-algorithm-research.md` exits 0.
+7. `grep -q '^## Later$' plans/05-Model/01-Algorithm/01-algorithm-research.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/05-Model/01-Algorithm/01-algorithm-research.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

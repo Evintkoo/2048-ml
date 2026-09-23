@@ -1,4 +1,15 @@
-# Scoring Rules — Canonical
+# Plan 01 — Scoring Rules: the repository status is explicit and evidence based
+
+> **Status: DONE (2026-09-24).** Merge values, positions, per-turn gains, and accumulated score are tracked; root suite passes.
+
+**Goal:** State the current implementation and evidence boundary for scoring rules.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Merge values, positions, per-turn gains, and accumulated score are tracked; root suite passes.
 
 > **Canonical scoring.** Score is **metadata / evaluation only, never a training label.** See also `01-Infrastructure/01-Project/01-project-overview.md` Tiers and `03-State/01-Board/01-board-state.md` index 21.
 
@@ -100,8 +111,33 @@ pub struct RewardSignal {
 
 ## 9. Cross-References
 
+## 10. Implementation Record
+
+`RawBoardState::execute_move` returns score delta and per-merge events with resultant tile value, board position, and turn index. The reusable `ScoreTracker` accumulates total score, per-turn deltas, and merge history in `GameResult` metadata. This metadata is not added to the 27-feature vector or action target. Tests verify score and merge positions for all four directions.
+
 - **Board + 27-dim:** `03-State/01-Board/01-board-state.md`
 - **Win/lose & valid moves:** `02-win-lose-conditions.md` (`would_change`), `03-valid-moves.md`
 - **RNG/seed hygiene:** `03-Simulation-Engine/02-randomness.md` (`ChaCha8Rng`, `spawn_prob_4:0.1`, `with_random_state(42)`)
 - **Training row:** `03-Simulation-Engine/01-simulation-engine.md` — `TrainingSample { [f64;27], u8, u64 }`
 - **Project tiers / heuristic ~512:** `01-Infrastructure/01-Project/01-project-overview.md`
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/02-Environment/02-Rules/01-scoring-rules.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/02-Environment/02-Rules/01-scoring-rules.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/02-Environment/02-Rules/01-scoring-rules.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/02-Environment/02-Rules/01-scoring-rules.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/02-Environment/02-Rules/01-scoring-rules.md` exits 0.
+6. `grep -q '^## Open questions$' plans/02-Environment/02-Rules/01-scoring-rules.md` exits 0.
+7. `grep -q '^## Later$' plans/02-Environment/02-Rules/01-scoring-rules.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/02-Environment/02-Rules/01-scoring-rules.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Merge values, positions, per-turn gains, and accumulated score are tracked; root suite passes. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

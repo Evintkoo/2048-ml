@@ -1,4 +1,15 @@
-# Game Validation
+# Plan 02 — Game Validation: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for game validation.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -142,3 +153,28 @@ Game validation runs automatically:
 - Before each release
 - After each configuration update
 - As part of CI pipeline
+
+## Implementation Record
+
+The root game engine has automated tests for merge/scoring rules, no-op behavior, game-over detection, tile validation, deterministic spawning and spawn frequency, directional movement, and 500 seeded random boards × all four actions. These are implementation tests, not an independent manual audit. The 90/10 frequency test checks 10,000 spawns against a broad three-sigma interval.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/09-Quality/02-Validation/02-game-validation.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/09-Quality/02-Validation/02-game-validation.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/09-Quality/02-Validation/02-game-validation.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/09-Quality/02-Validation/02-game-validation.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/09-Quality/02-Validation/02-game-validation.md` exits 0.
+6. `grep -q '^## Open questions$' plans/09-Quality/02-Validation/02-game-validation.md` exits 0.
+7. `grep -q '^## Later$' plans/09-Quality/02-Validation/02-game-validation.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/09-Quality/02-Validation/02-game-validation.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

@@ -1,4 +1,15 @@
-# Canonical Scope and Traceability
+# Plan 00 — Canonical Scope and Traceability: the repository status is explicit and evidence based
+
+> **Status: DONE (2026-09-24).** Read fully; governs all lower-level plan files.
+
+**Goal:** State the current implementation and evidence boundary for canonical scope and traceability.
+**Builds on:** [00](00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Read fully; governs all lower-level plan files.
 
 This file is the scope authority for every document under `plans/`.
 
@@ -26,8 +37,8 @@ The canonical training state uses the 16 board cells plus the current score (17 
 
 ## Plan Traceability
 
-| Plan Area | Research Role | Authority |
-|-----------|---------------|-----------|
+| Plan area | Research role | Authority |
+|---|---|---|
 | `01-Infrastructure` | Framework and system architecture | `01-Project/04-framework-contribution.md` |
 | `02-Environment` | 2048 case-study environment | Game rules and simulation plans |
 | `03-State` / `04-Actions` | Case-study representation and policy interface | State/action plans |
@@ -38,3 +49,24 @@ The canonical training state uses the 16 board cells plus the current score (17 
 | `09-Quality` | Correctness, CI, review, and reproduction controls | Quality plans |
 
 If a lower-level document conflicts with this file, the lower-level document must be revised or explicitly marked as a case-study-only detail.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/00-scope-and-traceability.md` exits 0.
+2. `grep -q '^# Plan 00 — ' plans/00-scope-and-traceability.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/00-scope-and-traceability.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/00-scope-and-traceability.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/00-scope-and-traceability.md` exits 0.
+6. `grep -q '^## Open questions$' plans/00-scope-and-traceability.md` exits 0.
+7. `grep -q '^## Later$' plans/00-scope-and-traceability.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/00-scope-and-traceability.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Read fully; governs all lower-level plan files. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

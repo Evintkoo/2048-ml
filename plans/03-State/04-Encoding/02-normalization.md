@@ -1,4 +1,15 @@
-# Normalization — Deterministic Divisors + automl Scaler
+# Plan 02 — Normalization: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for normalization.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Cross-ref:** creation canonical in `01-state-vector.md:31` `create_state_vector`; see `01-state-vector.md §4` for preprocessor. This file = normalization rules.
 > **No `move_count_norm`.** Deleted — not in 27, not predictive. Do not reintroduce.
@@ -11,7 +22,7 @@ All 27 features are already [0,1] via fixed divisors:
 |---------|-----------|---------|
 | grid `0..15` | `fn(v: u32) -> f64` | `v as f64 / 32768.0` |
 | empty_count |  | `empty as f64 / 16.0` |
-| max_tile_log |  | `(max as f64 + 1.0).log2() / 15.0` |
+| max_tile_log |  | `0 if max==0 else log2(max) / 15.0` |
 | monotonicity/smoothness |  | already [0,1] |
 | merges_available |  | `merges as f64 / 16.0` |
 | score_normalized idx21 |  | `(score as f64 + 1.0).log10() / 6.0` |
@@ -76,3 +87,29 @@ fn validate_normalization(v: &[f64;27]) -> Result<()> {
     } Ok(())
 }
 ```
+
+## Implementation Record
+
+- Deterministic scaling is implemented before storage. Feature and CSV validators apply the declared per-feature range rule, including the uncapped score feature.
+- The current trainer does not fit or persist a `DataPreprocessor`; preprocessing integration remains pending. Tree-based training currently consumes the deterministic feature values directly.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/03-State/04-Encoding/02-normalization.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/03-State/04-Encoding/02-normalization.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/03-State/04-Encoding/02-normalization.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/03-State/04-Encoding/02-normalization.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/03-State/04-Encoding/02-normalization.md` exits 0.
+6. `grep -q '^## Open questions$' plans/03-State/04-Encoding/02-normalization.md` exits 0.
+7. `grep -q '^## Later$' plans/03-State/04-Encoding/02-normalization.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/03-State/04-Encoding/02-normalization.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

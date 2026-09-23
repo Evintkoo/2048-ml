@@ -1,4 +1,15 @@
-# Feature Extraction — Detailed Appendix
+# Plan 02 — Feature Extraction: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for feature extraction.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Canonical encoding:** `04-Encoding/01-state-vector.md:31` `create_state_vector`. This file is the **detailed appendix** for the 11 derived features — no duplication of the canonical impl.
 > **Total dims:** 27 = 16 raw grid + 11 derived. Most features are in [0,1]; `score_normalized` is finite and non-negative but may exceed 1 for scores above 1,000,000.
@@ -20,12 +31,12 @@ grid_0..grid_15 : u32 tile → f64 / 32768
 | Idx | Name | Formula | Divisor |
 |-----|------|---------|---------|
 | 16 | empty_count | `empty_cells() as f64 / 16.0` | 16 |
-| 17 | max_tile_log | `(max_tile as f64 + 1.0).log2() / 15.0` | 15 (log2) |
-| 18 | monotonicity | `monotonicity()` — monotonic rows/cols score | — |
+| 17 | max_tile_log | `0 if max_tile==0 else log2(max_tile)/15.0` | 15 (log2) |
+| 18 | monotonicity | fraction of adjacent pairs equal or containing an empty cell (provisional; freeze before training) | 24 comparisons |
 | 19 | smoothness | `1.0 / (1.0 + diff_sum as f64 / 100.0)` | — |
-| 20 | merges_available | `possible_merges() as f64 / 16.0` | 16 |
+| 20 | merges_available | `mergeable_cells() as f64 / 16.0` | 16 |
 | 21 | score_normalized | `(score as f64 + 1.0).log10() / 6.0` | 6 (log10) |
-| 22 | adjacency_merge_score | `sum_adjacent_equal / 16.0` | 16 |
+| 22 | adjacency_merge_score | `sum_adjacent_equal / (16.0 * 32768.0)` | 16 × 32768 |
 | 23 | corner_max | `corner_tile() as f64 / 32768.0` | 32768 |
 | 24 | edge_tiles_occupied | `edge_occupied as f64 / 12.0` | 12 |
 | 25 | col_worst | `min_col_sum as f64 / 8192.0` | 8192 |
@@ -45,7 +56,7 @@ Rationale: mobility.
 ```rust
 fn max_tile_log(grid: &[u32; 16]) -> f64 {
     let max = grid.iter().copied().max().unwrap_or(0);
-    if max > 0 { (max as f64 + 1.0).log2() / 15.0 } else { 0.0 }
+    if max > 0 { (max as f64).log2() / 15.0 } else { 0.0 }
 }
 ```
 
@@ -53,7 +64,8 @@ fn max_tile_log(grid: &[u32; 16]) -> f64 {
 
 ```rust
 fn monotonicity(grid: &[u32; 16]) -> f64 {
-    (calculate_row_monotonicity(grid) + calculate_col_monotonicity(grid)) / 2.0
+    // Provisional explicit definition: fraction of 24 adjacent pairs that
+    // are equal or contain an empty cell. Freeze before training.
 }
 ```
 
@@ -88,8 +100,8 @@ fn edge_tiles_occupied(board: &Board) -> f64 { board.edge_tiles_occupied() as f6
 
 ```rust
 fn merges_available(grid: &[u32; 16]) -> f64 {
-    // count adjacent equal pairs → /16
-    count_adjacent_equal(grid) as f64 / 16.0
+    // Count each tile participating in one or more equal adjacent pairs once.
+    mergeable_cell_count(grid) as f64 / 16.0
 }
 ```
 
@@ -103,7 +115,7 @@ Only score feature; `score` is never a target.
 ### 3.9 Adjacency Merge Score — idx 22
 
 ```rust
-fn adjacency_merge_score(board: &Board) -> f64 { board.adjacency_merge_score() } // sum_equal/16
+fn adjacency_merge_score(board: &Board) -> f64 { board.adjacency_merge_score() } // sum_equal/(16*32768)
 ```
 
 ### 3.10 Column Worst — idx 25
@@ -158,3 +170,29 @@ let features = preprocessor.fit_transform(&raw_features)?;
 > **Future research, not MVP.** SHAP / ablation / importance ranking TBD post-training — 2 lines only; do not invent numbers.
 
 Validate post-hoc via permutation / impurity importance; replace any hypothesized ranking with measured values after training.
+
+## Implementation Record
+
+- All 11 derived features are implemented in `src/state.rs` using the documented deterministic formulas. Tests cover canonical order, score feature, randomized boards, and maximum merge density.
+- Post-training feature importance, SHAP, and ablation are not yet measured; these remain future research tasks.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/03-State/01-Board/02-feature-extraction.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/03-State/01-Board/02-feature-extraction.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/03-State/01-Board/02-feature-extraction.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/03-State/01-Board/02-feature-extraction.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/03-State/01-Board/02-feature-extraction.md` exits 0.
+6. `grep -q '^## Open questions$' plans/03-State/01-Board/02-feature-extraction.md` exits 0.
+7. `grep -q '^## Later$' plans/03-State/01-Board/02-feature-extraction.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/03-State/01-Board/02-feature-extraction.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

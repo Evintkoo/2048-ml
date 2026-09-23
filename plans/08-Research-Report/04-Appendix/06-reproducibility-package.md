@@ -1,4 +1,15 @@
-# Reproducibility Package
+# Plan 06 — Reproducibility Package: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for reproducibility package.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -16,8 +27,9 @@ This section specifies the reproducibility package required to replicate the Rus
 │   └── src/lib.rs
 ├── src/                        # Single root MVP crate
 │   ├── game_engine/            # board, rules, score, simulation
-│   ├── data_pipeline/          # features, labels, storage
-│   └── evaluation/             # benchmark, statistics, ranking
+│   ├── data_pipeline.rs        # features, labels, storage and splits
+│   ├── evaluation.rs           # score summaries and statistical comparisons
+│   └── main.rs                 # CLI, training, benchmark and report workflows
 ├── framework_benchmarks/      # Standard tabular framework-validation data/configs
 ├── data/                      # 2048 data generation and processing
 │   ├── training_data/
@@ -200,17 +212,23 @@ pub struct ExperimentConfig {
 
 Verification checklist — mark an item complete only after the corresponding artifact and independent check exist:
 - [ ] Code is publicly available
-- [ ] All dependencies are version-pinned
+- [x] Rust dependencies are locked in `Cargo.lock` (this does not pin toolchain distribution)
 - [ ] Docker environment is provided
 - [ ] Framework benchmark data/configuration is available
-- [ ] 2048 data-generation procedure is available
-- [ ] Seeds are fixed and documented
+- [x] 2048 data-generation procedure is available in `cargo run -- data-collector collect --help`
+- [x] Seeds are fixed and documented per dataset/run manifest
 - [ ] All scripts are executable
 - [ ] Determinism is verified across repeated runs
-- [ ] Statistical tests are reproducible
+- [x] Statistical analysis is reproducible from benchmark CSVs via `benchmark compare` and `benchmark report`; verify manifests alongside outputs
 - [ ] Figures are generated from raw data
 - [ ] Paper references match code versions
 - [ ] Framework artifacts can be reloaded with equivalent predictions
+
+The checked items describe implemented procedures, not a completed research replication. Committed run artifacts, published data, standard-dataset framework validation, and independent artifact reproduction remain outstanding. Dataset and benchmark manifests include SHA-256 checksums of their CSV files, source revision when available, protocol, seed sequence, summary, dependency submodule pin where applicable, elapsed time, and result path.
+
+## Implementation Record
+
+- Root source is one Rust crate with a pinned AutoML submodule; collector and benchmark CLIs emit manifests. Docker, public dataset/DOI, external framework dataset configs, complete experiment scripts, figures, and independent reproduction are absent. Several sample paths and Python requirements in this package do not match the actual Rust-only source tree and require correction.
 
 ## 7. Reproducibility Failure Modes
 
@@ -233,3 +251,24 @@ For publication, the following must be provided:
 - Results (raw and processed)
 - Figures (generated from raw data)
 - Statistical analysis (reproducible scripts)
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/04-Appendix/06-reproducibility-package.md` exits 0.
+2. `grep -q '^# Plan 06 — ' plans/08-Research-Report/04-Appendix/06-reproducibility-package.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/04-Appendix/06-reproducibility-package.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/04-Appendix/06-reproducibility-package.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/04-Appendix/06-reproducibility-package.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/04-Appendix/06-reproducibility-package.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/04-Appendix/06-reproducibility-package.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/04-Appendix/06-reproducibility-package.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

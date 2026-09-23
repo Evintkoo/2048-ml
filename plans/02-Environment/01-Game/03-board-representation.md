@@ -1,4 +1,15 @@
-# Board Representation
+# Plan 03 — Board Representation: the repository status is explicit and evidence based
+
+> **Status: DONE (2026-09-24).** `[u32;16]` representation and directional transforms audited; merge-position coverage added.
+
+**Goal:** State the current implementation and evidence boundary for board representation.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: `[u32;16]` representation and directional transforms audited; merge-position coverage added.
 
 > **Scope:** This file covers ONLY board layout `[u32;16]` and geometric transforms that implement moves (`slide_left` via `rotate`/`transpose`). Feature engineering is NOT here — see canonical.
 
@@ -143,3 +154,24 @@ pub fn raw_features(board: &Board) -> [f64; 16] {
 - **RNG / seed:** `03-Simulation-Engine/02-randomness.md`
 - **Valid moves `would_change`:** `02-Rules/03-valid-moves.md`
 - **Visualization (headless JSON export):** `04-Visualization/01-visualization.md` (this file is NOT visualization)
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/02-Environment/01-Game/03-board-representation.md` exits 0.
+2. `grep -q '^# Plan 03 — ' plans/02-Environment/01-Game/03-board-representation.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/02-Environment/01-Game/03-board-representation.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/02-Environment/01-Game/03-board-representation.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/02-Environment/01-Game/03-board-representation.md` exits 0.
+6. `grep -q '^## Open questions$' plans/02-Environment/01-Game/03-board-representation.md` exits 0.
+7. `grep -q '^## Later$' plans/02-Environment/01-Game/03-board-representation.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/02-Environment/01-Game/03-board-representation.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** `[u32;16]` representation and directional transforms audited; merge-position coverage added. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

@@ -1,4 +1,15 @@
-# Randomness and Determinism — Canonical Seed Hygiene
+# Plan 02 — Randomness and Determinism: the repository status is explicit and evidence based
+
+> **Status: PARTIAL.** Per-game ChaCha8 and spawn tests pass; cross-component SeedManager linkage is not implemented.
+
+**Goal:** State the current implementation and evidence boundary for randomness and determinism.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Per-game ChaCha8 and spawn tests pass; cross-component SeedManager linkage is not implemented.
 
 > **Canonical RNG:** `ChaCha8Rng::seed_from_u64(seed)` per game; global seed linked to **Evintkoo/automl `TrainingConfig::with_random_state(42)`** (see `01-Infrastructure/02-Configuration/02-training-config.md` §6). Spawn 90/10 via `spawn_prob_4:0.1`. Headless only.
 
@@ -134,3 +145,30 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 }).with_random
 - **Training seed:** `01-Infrastructure/02-Configuration/02-training-config.md` §6 (`with_random_state(42)`)
 - **Board layout / features:** `01-Game/03-board-representation.md` (`[u32;16]`), `03-State/01-Board/01-board-state.md` (`/32768`, index 21 `/6.0`)
 - **CV:** `05-Model/04-Evaluation/02-cross-validation.md` (`GroupKFold` vs `TimeSeriesSplit`)
+
+## Implementation Record
+
+- Games use `ChaCha8Rng::seed_from_u64`; initial tiles, random actions, and spawned tiles share the per-game RNG. Four-tile spawn probability is configurable and defaults to 0.1.
+- Batch game seeds are `global_seed.wrapping_add(game_id)` and do not depend on Rayon scheduling. Collector manifests record seed range and thread count. AutoML/CV seeds are configured separately at their call sites, not automatically synchronized by a shared `SeedManager`.
+- Validation: deterministic same-seed checks and a 10,000-spawn frequency check pass in the root test suite. Cross-platform/version identity is not claimed beyond the pinned dependency versions.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/02-Environment/03-Simulation-Engine/02-randomness.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/02-Environment/03-Simulation-Engine/02-randomness.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/02-Environment/03-Simulation-Engine/02-randomness.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/02-Environment/03-Simulation-Engine/02-randomness.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/02-Environment/03-Simulation-Engine/02-randomness.md` exits 0.
+6. `grep -q '^## Open questions$' plans/02-Environment/03-Simulation-Engine/02-randomness.md` exits 0.
+7. `grep -q '^## Later$' plans/02-Environment/03-Simulation-Engine/02-randomness.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/02-Environment/03-Simulation-Engine/02-randomness.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Per-game ChaCha8 and spawn tests pass; cross-component SeedManager linkage is not implemented. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

@@ -1,4 +1,15 @@
-# Valid Moves — Canonical
+# Plan 03 — Valid Moves: the repository status is explicit and evidence based
+
+> **Status: DONE (2026-09-24).** `would_change`, valid list/mask and policy validation are implemented; empirical 10k action-frequency study remains unmeasured.
+
+**Goal:** State the current implementation and evidence boundary for valid moves.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: `would_change`, valid list/mask and policy validation are implemented; empirical 10k action-frequency study remains unmeasured.
 
 > **Canonical validity:** `board.would_change(dir)` — single source. Do not duplicate `get_valid_moves` logic elsewhere.
 
@@ -113,3 +124,30 @@ pub enum HeuristicStrategy { Monotonicity, Corner, Empty }
 - **Scoring (metadata):** `01-scoring-rules.md` (label is `action:u8`, score `u64` metadata)
 - **Simulation / dataset:** `03-Simulation-Engine/01-simulation-engine.md` + `03-multi-game.md`
 - **CV:** `05-Model/04-Evaluation/02-cross-validation.md` (`GroupKFold` group-integrity vs `TimeSeriesSplit` temporal)
+
+## Implementation Record
+
+- `RawBoardState::would_change`, `get_valid_moves`, and `valid_mask` provide the canonical validity APIs; policy simulation rejects a selected move that would not change the board.
+- Added coverage comparing validity to actual execution across a deterministic family of boards and checking terminal boards have no valid direction.
+- Validation: root unit suite passed. The proposed ≥10k-game move-frequency analysis and confidence intervals remain unmeasured.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/02-Environment/02-Rules/03-valid-moves.md` exits 0.
+2. `grep -q '^# Plan 03 — ' plans/02-Environment/02-Rules/03-valid-moves.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/02-Environment/02-Rules/03-valid-moves.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/02-Environment/02-Rules/03-valid-moves.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/02-Environment/02-Rules/03-valid-moves.md` exits 0.
+6. `grep -q '^## Open questions$' plans/02-Environment/02-Rules/03-valid-moves.md` exits 0.
+7. `grep -q '^## Later$' plans/02-Environment/02-Rules/03-valid-moves.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/02-Environment/02-Rules/03-valid-moves.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** `would_change`, valid list/mask and policy validation are implemented; empirical 10k action-frequency study remains unmeasured. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

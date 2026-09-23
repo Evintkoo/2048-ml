@@ -21,14 +21,18 @@ env/
 
 # Generated datasets, models, and experiment outputs
 /data/generated/
+/data/raw/
+/data/processed/
 /datasets/generated/
 /models/
 /artifacts/
 /runs/
 /results/
+/reports/generated/
 *.model
 *.weights
 *.parquet
+*.tmp
 
 # Environment and local configuration
 .env

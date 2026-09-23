@@ -1,4 +1,15 @@
-# Data Collection Strategy
+# Plan 01 — Data Collection Strategy: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for data collection strategy.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -38,7 +49,7 @@ flowchart TB
 
 > **Canonical volumes (configurable):** Training data contains **20,000 games**: 15,000 self-play + 5,000 random-play. This yields **14,000 train / 3,000 validation / 3,000 test** after chronological game-level splitting. The heuristic agent is a separate benchmark baseline and contributes no training rows. Volumes are configurable, but the 70/15/15 split and game-level group integrity must be preserved. This section is the source of truth.
 
-## 6. Theoretical Limit Estimation
+## 5. Theoretical Limit Estimation
 
 To establish the performance ceiling for each model:
 - Extended sessions (500+ moves per game) until game over
@@ -48,14 +59,14 @@ To establish the performance ceiling for each model:
 - Use confidence intervals to quantify score estimates
 - **Models are ranked by mean score** (heuristic baseline ~512 serves as practical reference)
 
-## 7. Data Quality Checks
+## 6. Data Quality Checks
 
 - Completeness: all 27+action columns present, `NF==28`, no NaN/Inf.
 - Consistency: `game_id` groups intact for `GroupKFold`.
 - Validity: `action` ∈ {0,1,2,3} and in `valid_moves`; header regex `grid_0..row_worst,action`.
 - Balance: no class filter — keep heavy-tailed distribution; report class counts only.
 
-## 8. Data Pipeline Definition
+## 7. Data Pipeline Definition
 
 This section defines exactly how a game play is converted to CSV rows for training.
 
@@ -88,7 +99,7 @@ Feature Vector = [
     smoothness,                               // 1: smoothness score (0-1)
     merges_available,                         // 1: possible merges / 16
     score_normalized,                         // 1: log10(score+1)/6.0
-    adjacency_merge_score,                    // 1: adjacent mergeable pairs / 16
+    adjacency_merge_score,                    // 1: equal-adjacent tile sum / (16 * 32768)
     corner_max,                               // 1: max tile in corner / 32768
     edge_tiles_occupied,                      // 1: edge tiles occupied / 12
     col_worst,                                // 1: minimum column sum normalized
@@ -183,24 +194,25 @@ Example row breakdown:
 
 Verification: `head -1 file.csv | tr ',' '\n' | wc -l` → 28; `awk -F, 'NR>1{print NF}' file.csv | sort -u` → 28.
 
-### 8.8 Train/Validation/Test Split for Sequential Data (Chronological GroupKFold, No Shuffle)
+### 8.8 Train/Validation/Test Split by Chronological Game ID (No Shuffle)
 
 Because game data is sequential (each game is a correlated trajectory), standard random splitting would cause data leakage. The split is done **by `game_id` with `shuffle=false` and chronological ordering — grouped by `game_id`, no shuffle, no stratification across time**:
 
 | Split | Percentage | Method | Canonical 20k total |
 |-------|-----------|--------|---------------------|
-| **Train** | 70% | First 70% of games chronologically (`GroupKFold` grouped by `game_id`, `shuffle=false`) | 14,000 games |
+| **Train** | 70% | First 70% of games chronologically, kept intact by `game_id` | 14,000 games |
 | **Validation** | 15% | Next 15% of games chronologically | 3,000 games |
 | **Test** | 15% | Final 15% of games chronologically | 3,000 games |
 
 Rules:
-- **Entire games** go to one split — never split a single game across splits (`GroupKFold` with `groups=game_id`; see `05-Model/04-Evaluation/02-cross-validation.md`).
+- **Entire games** go to one split — never split a single game across splits. Use the chronological holdout splitter; AutoML's `GroupKFold` is not chronological.
 - **No shuffle** (`shuffle=false`). Games are assigned in chronological collection order: First 70% → train, next 15% → val, last 15% → test. **Do NOT shuffle before assignment — shuffling leaks future states into train** and violates temporal ordering.
 - **No stratification across time.** Do not rebalance splits by score or any other label across time; chronological order is preserved. Stratification across the time axis would leak future distribution into train.
 - Each split respects chronological order; collection methods are interleaved only insofar as they were run chronologically — do not intermix to break time order.
 - No game appears in more than one split.
+- Within the training partition, `GroupKFold` may be used for model selection because game trajectories are the grouping unit; its folds are group-disjoint but not time-ordered.
 - The split ensures the model is evaluated on game trajectories it has never seen during training and that are strictly future relative to train.
-- **Volumes are configurable** — 20,000 (14k/3k/3k) is the canonical default; adjust via config but preserve 70/15/15 chronological `GroupKFold` proportions.
+- **Volumes are configurable** — 20,000 (14k/3k/3k) is the canonical default; adjust via config but preserve the chronological 70/15/15 game-level holdout.
 
 ### 8.9 CSV File Format — Classification Only
 
@@ -221,12 +233,38 @@ Files are stored per storage spec in `06-Data/03-Storage/` (canonical) or `data/
 - `06-Data/03-Storage/heuristic_play.csv` (or `data/heuristic_play.csv`)
 > Previous paths `06-Data/01-Collection/*.csv` were inconsistent with `06-Data/03-Storage/01-dataset-storage.md`; storage location is `06-Data/03-Storage/` (see `06-Data/03-Storage/01-dataset-storage.md`).
 
-## 9. Data Collection Files Location
+## 8. Data Collection Files Location
 
 Files in `06-Data/01-Collection/`: `01-data-collection-strategy.md` (this hub), `02-self-play-data.md`, `03-random-play-data.md`.
 
-## 10. Next Steps
+## 9. Next Steps
 
 1. Collect self-play data
 2. Collect random play data
 3. Validate and store collected data
+
+## Implementation Record
+
+- Random trajectories are rollout-relabeled through a seeded, fixed-thread collection command. The command writes the canonical training CSV, aligned provenance sidecar, and hash-bearing manifest.
+- The required 15k single-agent plus 5k random corpus, post-split rollout-cache protocol, and action distribution report have not been produced. The current collector labels before splitting and has no persistent label cache; the plan requires the split/cache ordering to be resolved before claiming the canonical experiment.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/06-Data/01-Collection/01-data-collection-strategy.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/06-Data/01-Collection/01-data-collection-strategy.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/06-Data/01-Collection/01-data-collection-strategy.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/06-Data/01-Collection/01-data-collection-strategy.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/06-Data/01-Collection/01-data-collection-strategy.md` exits 0.
+6. `grep -q '^## Open questions$' plans/06-Data/01-Collection/01-data-collection-strategy.md` exits 0.
+7. `grep -q '^## Later$' plans/06-Data/01-Collection/01-data-collection-strategy.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/06-Data/01-Collection/01-data-collection-strategy.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

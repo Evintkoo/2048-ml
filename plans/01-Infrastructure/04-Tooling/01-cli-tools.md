@@ -1,8 +1,21 @@
-# CLI Tools Specification
+# Plan 01 — CLI Tools Specification: the repository status is explicit and evidence based
+
+> **Status: DONE (2026-09-24).** Root CLI subcommands and help checked; corrected file-vs-directory collection example and required metadata flow.
+
+**Goal:** State the current implementation and evidence boundary for cli tools specification.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Root CLI subcommands and help checked; corrected file-vs-directory collection example and required metadata flow.
 
 > **Single binary with subcommands (MVP).** `Cargo.toml` is a single crate at root (see `03-Dependencies/01-rust-deps.md` §4); the 3-crate split (`game-engine` / `data-collector` / `benchmark`) is conceptual — commands below are **subcommands of one binary** (`cargo run -- <subcommand>`), not separate `[[bin]]` targets. Future optional: split into workspace members post-MVP. Verify via `cargo run -- --help`; `automl serve` is out-of-scope per initial-plan.
 
-## 1. automl CLI Usage
+## 1. AutoML Framework CLI Usage
+
+These commands refer to the `automl` framework's own binary, built from `automl/`; they do not describe the root `game2048-ml` executable. Verify each framework subcommand against `automl/README.md` and `cd automl && cargo run -- --help` before relying on it.
 
 ### 1.1 Training
 
@@ -69,13 +82,25 @@ cargo run -- data-collector preprocess --input data/raw/ --output data/processed
 cargo run -- data-collector validate --input data/processed/
 ```
 
+The implemented collector takes a CSV output file, not a directory. It writes a metadata sidecar and manifest next to the CSV. `preprocess` currently validates deterministic, already-encoded features; it does not accept an output argument.
+
+```bash
+cargo run -- data-collector collect --n-games 20 --rollouts 100 --output data/raw/random_play.csv
+cargo run -- data-collector validate --input data/raw/random_play.csv
+cargo run -- data-collector split --input data/raw/random_play.csv --metadata data/raw/random_play.metadata.csv --output-dir data/processed/splits
+cargo run -- train --data data/raw/random_play.csv --metadata data/raw/random_play.metadata.csv --model random_forest --cv-folds 5 --seed 42 --output models/policy.json
+```
+
 ### 2.3 Benchmark
 
 ```bash
-cargo run -- benchmark run --config config/benchmark/automl-benchmark.yaml
-cargo run -- benchmark compare --models model1.bin,model2.bin,model3.bin
-cargo run -- benchmark report --input results/ --output reports/
+cargo run -- benchmark run --model models/policy.json --n-games 10000 --seed 9999 --output results/policy.csv
+cargo run -- benchmark baseline --agent random --n-games 10000 --seed 9999 --output results/random.csv
+cargo run -- benchmark compare results/policy.csv results/random.csv --output results/comparison.csv
+cargo run -- benchmark report results/policy.csv results/random.csv --output results/report.csv
 ```
+
+`train` requires a row-aligned `--metadata` sidecar with game IDs. It reserves the final chronological 15% of distinct games by default (`--development-fraction 0.85`) from grouped CV and fitting. The AutoML fit still performs its own seeded stratified row split on development data. This distinction is documented in the training plan; the final test scoring/refit workflow remains pending.
 
 ## 3. CLI Configuration
 
@@ -97,3 +122,24 @@ All CLI tools will return:
 - Exit code 1 on error
 - Exit code 2 on configuration error
 - Structured error messages to stderr
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/01-Infrastructure/04-Tooling/01-cli-tools.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/01-Infrastructure/04-Tooling/01-cli-tools.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/01-Infrastructure/04-Tooling/01-cli-tools.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/01-Infrastructure/04-Tooling/01-cli-tools.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/01-Infrastructure/04-Tooling/01-cli-tools.md` exits 0.
+6. `grep -q '^## Open questions$' plans/01-Infrastructure/04-Tooling/01-cli-tools.md` exits 0.
+7. `grep -q '^## Later$' plans/01-Infrastructure/04-Tooling/01-cli-tools.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/01-Infrastructure/04-Tooling/01-cli-tools.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Root CLI subcommands and help checked; corrected file-vs-directory collection example and required metadata flow. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

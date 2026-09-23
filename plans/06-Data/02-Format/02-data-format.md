@@ -1,4 +1,15 @@
-# Data Format — Storage Formats (CSV Canonical)
+# Plan 02 — Data Format: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for data format.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -32,3 +43,28 @@ fn write_parquet(states: &[[f64;27]], actions: &[u8], path: &str) -> PolarsResul
 ```
 
 Parquet is **not** a second pipeline — just an alternative serialization of the same 27+action table. No Binary/JSON pipelines (deleted — out of scope).
+
+## Implementation Record
+
+- CSV is implemented and validated end-to-end. Parquet serialization is not implemented; it remains optional under this plan.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/06-Data/02-Format/02-data-format.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/06-Data/02-Format/02-data-format.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/06-Data/02-Format/02-data-format.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/06-Data/02-Format/02-data-format.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/06-Data/02-Format/02-data-format.md` exits 0.
+6. `grep -q '^## Open questions$' plans/06-Data/02-Format/02-data-format.md` exits 0.
+7. `grep -q '^## Later$' plans/06-Data/02-Format/02-data-format.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/06-Data/02-Format/02-data-format.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

@@ -1,4 +1,15 @@
-# Model Comparison
+# Plan 02 — Model Comparison: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for model comparison.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > This comparison characterizes AutoML-supported models and the 2048 case study. It does not define the primary framework contribution.
 
@@ -70,13 +81,10 @@ flowchart LR
 | Model | Mean Game Score (rank) | Valid-Action Accuracy (≥60%) | F1 Macro (≥0.55) | Inference Time (≤1ms) | Notes |
 |-------|------------------------|------------------------------|-----------------|----------------------|-------|
 | Random Forest | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Baseline |
-| Gradient Boosting | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Strong candidate |
-| XGBoost | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | High performance |
-| LightGBM | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Fast training |
 | Extra Trees | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Fast ensemble |
-| SVM | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Kernel-based |
 | KNN | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Non-parametric |
-| Logistic Regression | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Linear baseline |
+| AdaBoost | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Verified four-class output |
+| Naive Bayes | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Verified four-class output |
 
 > **Canonical:** Rank by **Mean Game Score** (≥512 beats heuristic, highest wins). Gates: Valid-Action Accuracy ≥60%, F1 ≥0.55. If proximity reported as optional analysis: `model_mean / heuristic_mean (≈512)` single ratio only, not a gate.
 >
@@ -156,4 +164,32 @@ flowchart TD
 
 ## 6. Conclusion
 
+Candidate availability is gated by the pinned framework's four-class probability output. The current integration candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The original GradientBoosting, XGBoost, LightGBM, SVM, and LogisticRegression entries are excluded until the framework passes multiclass probability checks. No game-performance comparison has been completed; table values remain TBD.
+
 Based on the comparison results, the best model will be selected and documented in `05-Model/01-Algorithm/03-best-algorithm-finding.md`.
+
+## Implementation Record
+
+- Five supported four-class candidate names are documented, and the root CLI can train a selected candidate and benchmark a saved model. Grouped CV checks game-level integrity.
+- A uniform candidate run on the same adequate dataset has not been performed; all metric cells remain TBD and there is no selected model.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/05-Model/01-Algorithm/02-model-comparison.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/05-Model/01-Algorithm/02-model-comparison.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/05-Model/01-Algorithm/02-model-comparison.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/05-Model/01-Algorithm/02-model-comparison.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/05-Model/01-Algorithm/02-model-comparison.md` exits 0.
+6. `grep -q '^## Open questions$' plans/05-Model/01-Algorithm/02-model-comparison.md` exits 0.
+7. `grep -q '^## Later$' plans/05-Model/01-Algorithm/02-model-comparison.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/05-Model/01-Algorithm/02-model-comparison.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

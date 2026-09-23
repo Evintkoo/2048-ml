@@ -1,4 +1,15 @@
-# Dependencies — automl Capabilities for 2048
+# Plan 02 — Dependencies: the repository status is explicit and evidence based
+
+> **Status: DONE (2026-09-24).** Corrected group-CV chronology and AutoML fit/inference behavior; five verified four-class candidates listed.
+
+**Goal:** State the current implementation and evidence boundary for dependencies.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Corrected group-CV chronology and AutoML fit/inference behavior; five verified four-class candidates listed.
 
 > **Focus:** automl capabilities table for 2048. For `Cargo.toml` pins see `03-Dependencies/01-rust-deps.md`.
 
@@ -20,13 +31,13 @@ Canonical task: `TaskType::MultiClassification` on 27-dim state → `action: u8`
 
 | Feature | Module (`automl/src/...`) | 2048 Wiring |
 |---------|---------------------------|-------------|
-| `TrainingConfig::new(TaskType::MultiClassification, "action")` | `training/config.rs` | Target `action` u8 0–3; `.with_cv(5)` → `cv_folds` field; `.with_random_state(42)` → `random_seed` |
-| `ModelType` variants (classification) | `training/config.rs` | `RandomForest`, `GradientBoosting`, `XGBoost`, `LightGBM`, `CatBoost`, `DecisionTree`, `ExtraTrees`, `AdaBoost`, `SVM`, `KNN`, `NaiveBayes`, `LogisticRegression`, `Auto` |
-| `CrossValidator` + `CVStrategy` | `training/cross_validation.rs` | `CVStrategy::GroupKFold { n_splits: 5 }` groups=`game_id`, `shuffle=false` (preserve chronology); `TimeSeriesSplit` for temporal forward-chain experiments; `CrossValidator::new(strategy).with_random_state(42)` |
+| `TrainingConfig::new(TaskType::MultiClassification, "action")` | `training/config.rs` | Target `action` u8 0–3; `.with_cv(5)` sets a config field but `TrainEngine::fit` does not execute CV; the root wrapper runs grouped CV separately. `.with_random_state(42)` sets `random_seed`. |
+| `ModelType` variants (four-class probability smoke passed) | `training/config.rs` + `training/engine.rs` | Eligible initial candidates: `RandomForest`, `ExtraTrees`, `AdaBoost`, `KNN`, `NaiveBayes`. Other variants may fit but currently return only two probability columns and are excluded until fixed and verified. |
+| `CrossValidator` + `CVStrategy` | `training/cross_validation.rs` | Root wrapper uses `CVStrategy::GroupKFold { n_splits: 5 }` with `groups=game_id` to prevent trajectory leakage. The pinned splitter sorts groups and assigns them round-robin; it is group-disjoint but not chronological. Use a separate forward-chaining procedure when chronology is required. |
 | `TrainEngine` | `training/engine.rs` | `fit(&df)` / `predict(&df)` on polars DataFrame with 27 feature cols + `action` |
 | `HyperOptX` + `OptimizationConfig` + `MedianPruner` | `optimizer/` | `OptimizeDirection::Maximize` (accuracy/score); `MedianPruner::new(false)` — `false`=maximize |
-| `DataPreprocessor` | `preprocessing/` | Standard scaling on 27-dim vector; no clustering passes |
-| `InferenceEngine` | `inference/` | Single-state `predict` → `argmax` over 4 logits |
+| `DataPreprocessor` | `preprocessing/` | Not currently used by the root collection/training path; feature encoding is deterministic and tree candidates are trained on the canonical numeric values. Any fitted transform must be fit on development training folds only. |
+| `InferenceEngine` | `inference/` | Root policy calls `predict_proba_array`, verifies four columns, then masks illegal moves before `argmax` |
 
 > **Not used for MultiClassification.** `KMeans`, `DBSCAN`, `SOM` require `TaskType::Clustering`; regression-only types (`LinearRegression`, `Ridge`, `Lasso`, `ElasticNet`, `PolynomialRegression`, `GaussianProcess`, `SGD` as regressor) are not candidates for 27-dim → `action` classification. Listed here for completeness only — do not benchmark them for 2048.
 
@@ -35,7 +46,7 @@ Canonical task: `TaskType::MultiClassification` on 27-dim state → `action: u8`
 Cross-reference: canonical feature definition lives in `03-State/01-Board/02-feature-extraction.md` and `06-Data/02-Format/01-data-schema.md`. This file shows only the wiring shape.
 
 ```
-27 feature cols (f64) + 1 target col (u8):
+The current root schema is 27 numeric feature columns (f64) + 1 target column (`action`, u8):
   grid_0..grid_15     — tile values / 32768  (indices 0–15)
   empty_count/16, max_tile_log/log2/15, monotonicity, smoothness,
   merges_available/16, score_normalized log10(score+1)/6 (idx 21),
@@ -85,3 +96,24 @@ git submodule status automl          # hash must match §1
 cargo test -p automl --lib -- training::config::tests  # smoke
 cargo test -p automl --lib -- training::cross_validation::tests
 ```
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/01-Infrastructure/01-Project/02-dependencies.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/01-Infrastructure/01-Project/02-dependencies.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/01-Infrastructure/01-Project/02-dependencies.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/01-Infrastructure/01-Project/02-dependencies.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/01-Infrastructure/01-Project/02-dependencies.md` exits 0.
+6. `grep -q '^## Open questions$' plans/01-Infrastructure/01-Project/02-dependencies.md` exits 0.
+7. `grep -q '^## Later$' plans/01-Infrastructure/01-Project/02-dependencies.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/01-Infrastructure/01-Project/02-dependencies.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Corrected group-CV chronology and AutoML fit/inference behavior; five verified four-class candidates listed. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

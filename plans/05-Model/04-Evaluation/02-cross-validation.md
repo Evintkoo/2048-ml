@@ -1,4 +1,15 @@
-# Cross-Validation
+# Plan 02 — Cross-Validation: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for cross-validation.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -327,3 +338,29 @@ flowchart LR
 2. Execute cross-validation with temporal splits
 3. Analyze results
 4. Verify no data leakage between folds
+
+## Implementation Record
+
+- The project wrapper runs seeded group folds, explicitly checks there is no game ID overlap, fits on each training fold, and reports fold and mean accuracy. It does not provide temporal forward chaining, stratified temporal folds, F1, or per-fold game-score metrics.
+- Validation on an adequate plan-scale corpus has not yet been run; the wrapper is implementation plumbing, not experiment results.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/05-Model/04-Evaluation/02-cross-validation.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/05-Model/04-Evaluation/02-cross-validation.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/05-Model/04-Evaluation/02-cross-validation.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/05-Model/04-Evaluation/02-cross-validation.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/05-Model/04-Evaluation/02-cross-validation.md` exits 0.
+6. `grep -q '^## Open questions$' plans/05-Model/04-Evaluation/02-cross-validation.md` exits 0.
+7. `grep -q '^## Later$' plans/05-Model/04-Evaluation/02-cross-validation.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/05-Model/04-Evaluation/02-cross-validation.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

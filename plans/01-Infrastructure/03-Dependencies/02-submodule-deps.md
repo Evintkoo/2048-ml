@@ -1,4 +1,15 @@
-# Submodule Dependency Management
+# Plan 02 — Submodule Dependency Management: the repository status is explicit and evidence based
+
+> **Status: DONE (2026-09-24).** Submodule hash matches pin; full submodule library suite passed 709/709.
+
+**Goal:** State the current implementation and evidence boundary for submodule dependency management.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Submodule hash matches pin; full submodule library suite passed 709/709.
 
 > Pinned commit: `64f5edad29c9e58ee7d33abf380418d5cfbbb561` — verify with `git submodule status automl`.
 
@@ -36,7 +47,27 @@ git add automl && git commit -m "chore: bump automl → <hash>"
 ## 4. Health Check
 
 ```bash
-test -d automl/.git && echo "OK" || echo "MISSING — run git submodule update --init"
-git -C automl rev-parse HEAD              # must match pinned hash
+git -C automl rev-parse HEAD              # must match pinned hash (submodule .git may be a file)
 git -C automl status --short              # must be empty (no local edits)
 ```
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/01-Infrastructure/03-Dependencies/02-submodule-deps.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/01-Infrastructure/03-Dependencies/02-submodule-deps.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/01-Infrastructure/03-Dependencies/02-submodule-deps.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/01-Infrastructure/03-Dependencies/02-submodule-deps.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/01-Infrastructure/03-Dependencies/02-submodule-deps.md` exits 0.
+6. `grep -q '^## Open questions$' plans/01-Infrastructure/03-Dependencies/02-submodule-deps.md` exits 0.
+7. `grep -q '^## Later$' plans/01-Infrastructure/03-Dependencies/02-submodule-deps.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/01-Infrastructure/03-Dependencies/02-submodule-deps.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Submodule hash matches pin; full submodule library suite passed 709/709. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

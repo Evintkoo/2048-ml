@@ -1,4 +1,15 @@
-# Research Questions — AutoML Framework and 4×4 Application
+# Plan 02 — Research Questions: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for research questions.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Canonical mapping:** 4 RQs, with the Rust-native AutoML architecture as the primary contribution and 2048 as the principal case study. Speculative theory is not treated as a primary research question.
 
@@ -53,3 +64,28 @@ RQ4 → CIs, effect sizes, seed sensitivity → 03-Findings/05-sensitivity-analy
 ```
 
 No result claimed before data; all answers pending `statistical_tests.rs` on `ScoreMetrics`.
+
+## Implementation Record
+
+- Research questions are defined, not answered. The named statistical module/API in the closing note does not exist under that path; score statistics live in `src/evaluation.rs`.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/02-Methodology/02-research-questions.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/08-Research-Report/02-Methodology/02-research-questions.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/02-Methodology/02-research-questions.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/02-Methodology/02-research-questions.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/02-Methodology/02-research-questions.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/02-Methodology/02-research-questions.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/02-Methodology/02-research-questions.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/02-Methodology/02-research-questions.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

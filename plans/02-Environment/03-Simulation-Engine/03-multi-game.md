@@ -1,4 +1,15 @@
-# Multi-Game Simulation — Canonical Batch
+# Plan 03 — Multi-Game Simulation: the repository status is explicit and evidence based
+
+> **Status: PARTIAL.** Fixed-thread collection, metadata, and manifests exist; checkpoint/resume, progress reporting, 10k baseline, and frequency CIs remain incomplete.
+
+**Goal:** State the current implementation and evidence boundary for multi-game simulation.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Fixed-thread collection, metadata, and manifests exist; checkpoint/resume, progress reporting, 10k baseline, and frequency CIs remain incomplete.
 
 > **Sample size canonical: 10k games minimum** for benchmarking (per `01-Infrastructure/01-Project/01-project-overview.md` §8 Tiers + `01-simulation-engine.md` §7 `SimulationConfig.n_games:10000`). Supervised only: `GameDataset { states:[f64;27], actions:u8, scores:u64 }` — **no `rewards`**.
 
@@ -127,3 +138,30 @@ fn checkpoint(results: &[GameResult], game_count: usize) {
 - **Features (27-dim, idx21 /6.0, grid /32768):** `03-State/01-Board/01-board-state.md`
 - **CV:** `05-Model/04-Evaluation/02-cross-validation.md` (`GroupKFold` groups=`game_id` vs `TimeSeriesSplit`)
 - **Headless only:** `01-Game/01-game-engine.md` (SimulatorConfig `seed:42, spawn_prob_4:0.1`), `01-Game/04-game-ui.md` deprecated stub
+
+## Implementation Record
+
+- Implemented fixed-thread Rayon collection, per-game `global_seed.wrapping_add(game_id)`, game-group metadata, rollout relabeling, CSV schema validation, and a JSON manifest with seeds, thread count, timing, row counts, and file hashes.
+- A reusable random-game batch API now supports deterministic game-ID ranges. The collector still materializes a whole requested batch before writing; it does not yet checkpoint/resume every 1,000 games or report live progress. The plan's 10k-game minimum and action-frequency confidence intervals are not complete until a full run and analysis are recorded.
+- Validation: deterministic batch coverage and root suite pass. Prior throughput measurement in the ledger projects approximately 103 hours for the current 20k rollout-labeled collection configuration; do not treat smoke runs as the required baseline.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/02-Environment/03-Simulation-Engine/03-multi-game.md` exits 0.
+2. `grep -q '^# Plan 03 — ' plans/02-Environment/03-Simulation-Engine/03-multi-game.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/02-Environment/03-Simulation-Engine/03-multi-game.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/02-Environment/03-Simulation-Engine/03-multi-game.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/02-Environment/03-Simulation-Engine/03-multi-game.md` exits 0.
+6. `grep -q '^## Open questions$' plans/02-Environment/03-Simulation-Engine/03-multi-game.md` exits 0.
+7. `grep -q '^## Later$' plans/02-Environment/03-Simulation-Engine/03-multi-game.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/02-Environment/03-Simulation-Engine/03-multi-game.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Fixed-thread collection, metadata, and manifests exist; checkpoint/resume, progress reporting, 10k baseline, and frequency CIs remain incomplete. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

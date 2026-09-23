@@ -1,4 +1,15 @@
-# Results — Results-Generation Interface (Pending Experimentation)
+# Plan 03 — Results: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for results.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Status: PENDING.** No results claimed. This file defines the concrete interfaces for the primary Rust-native AutoML framework evaluation and the downstream 2048 case-study outputs.
 
@@ -20,6 +31,10 @@ Framework results must report, for each named dataset and configuration:
 | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 
 No 2048 game score can substitute for this table.
+
+## Implementation Record
+
+- Results interface only; neither the required framework benchmark matrix nor plan-scale 2048 result tables are populated. Schema examples referring to non-existent modules/formats are specification sketches, not current output artifacts.
 
 ## 2. 2048 Case-Study Winner Protocol (Canonical: `07-Benchmarking/01-Evaluation/01-benchmarking-framework.md`)
 
@@ -66,7 +81,7 @@ pub fn bonferroni(p: f64, k: usize) -> f64; // min(p*k, 1.0)
 
 All tests use raw scores; no normality assumption. Report exact U/H, exact p, d, and CI.
 
-## 3. Table Shells (Populated by Pipeline, Not Hand-Edited)
+## 4. Table Shells (Populated by Pipeline, Not Hand-Edited)
 
 ### 3.1 Primary Ranking (output of `ranking_analysis.py`)
 
@@ -88,11 +103,11 @@ Heuristic row pinned at `~512` and Random at `~128` for reference only; still co
 
 Per-epoch: `epoch, train_loss, val_accuracy_4class, val_mean_score_100games`. Used by `03-Findings/01-key-findings.md`.
 
-## 4. Visualization Spec (Generated, Not Mocked)
+## 5. Visualization Spec (Generated, Not Mocked)
 
 1. Histogram of `score` per model (10k points, bin 128). 2. Bar chart mean ± bootstrap CI. 3. Ranked bar. 4. Box plot. 5. Learning curve (score vs epoch). All from `evaluation_v1.parquet`.
 
-## 5. Data-Quality Checklist (Automated)
+## 6. Data-Quality Checklist (Automated)
 
 - [ ] `game_id` unique, GroupKFold used
 - [ ] No NaN scores, `score` monotonic via `ScoreTracker`
@@ -100,6 +115,27 @@ Per-epoch: `epoch, train_loss, val_accuracy_4class, val_mean_score_100games`. Us
 - [ ] Seed 42 recorded in sidecar; secondary seeds separate files
 - [ ] 27-dim vector length asserted per row
 
-## 6. Honest Reporting
+## 7. Honest Reporting
 
 TBD cells remain TBD until pipeline runs. Null (no model beats `~512`) reported as primary finding if gate fails.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/01-IMRD/03-results.md` exits 0.
+2. `grep -q '^# Plan 03 — ' plans/08-Research-Report/01-IMRD/03-results.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/01-IMRD/03-results.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/01-IMRD/03-results.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/01-IMRD/03-results.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/01-IMRD/03-results.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/01-IMRD/03-results.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/01-IMRD/03-results.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

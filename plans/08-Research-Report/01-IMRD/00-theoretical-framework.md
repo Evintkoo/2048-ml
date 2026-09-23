@@ -1,4 +1,15 @@
-# Theoretical Framework — Rust-Native AutoML Architecture with 2048 Case Study
+# Plan 00 — Theoretical Framework: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for theoretical framework.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Note:** Core theory concerns AutoML system architecture, reproducible pipeline composition, validation, model selection, and resource-aware optimization. The POMDP and supervised-policy formulation support the 2048 case study. PSPACE, Markov-blanket, and unverified PAC claims are not core contributions.
 
@@ -43,3 +54,28 @@ PSPACE-hardness, Markov-blanket sufficiency, and feature-sufficiency claims are 
 ## 6. Summary
 
 The core framework claims are supported by architecture documentation, acceptance tests, matched benchmarks, resource measurements, and reproducibility evidence. The 2048 formulation supplies the application context; optional learning-theory bounds do not replace empirical validation.
+
+## Implementation Record
+
+- The code and plans implement the stated board/action/spawn/score contracts and the 27-feature supervised formulation. This document is a theory outline, not a verified formal analysis: citations, entropy interpretation, and theorem claims require independent source and assumption review before publication.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/01-IMRD/00-theoretical-framework.md` exits 0.
+2. `grep -q '^# Plan 00 — ' plans/08-Research-Report/01-IMRD/00-theoretical-framework.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/01-IMRD/00-theoretical-framework.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/01-IMRD/00-theoretical-framework.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/01-IMRD/00-theoretical-framework.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/01-IMRD/00-theoretical-framework.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/01-IMRD/00-theoretical-framework.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/01-IMRD/00-theoretical-framework.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

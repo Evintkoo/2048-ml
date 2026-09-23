@@ -1,4 +1,15 @@
-# Rust-Native AutoML Framework Contribution
+# Plan 04 — Rust-Native AutoML Framework Contribution: the repository status is explicit and evidence based
+
+> **Status: PARTIAL.** Contribution scope and evaluation dimensions are documented; framework architecture comparisons and standard-dataset/resource evidence remain pending.
+
+**Goal:** State the current implementation and evidence boundary for rust-native automl framework contribution.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Contribution scope and evaluation dimensions are documented; framework architecture comparisons and standard-dataset/resource evidence remain pending.
 
 ## 1. Primary Contribution
 
@@ -61,3 +72,24 @@ Comparisons must use documented datasets, splits, hardware, dependency versions,
 - Repeated simulation and policy evaluation.
 
 The case study provides application evidence and exposes framework limitations; it does not alone establish general AutoML superiority.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+2. `grep -q '^# Plan 04 — ' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+6. `grep -q '^## Open questions$' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+7. `grep -q '^## Later$' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Contribution scope and evaluation dimensions are documented; framework architecture comparisons and standard-dataset/resource evidence remain pending. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

@@ -1,10 +1,21 @@
-# Rust-Native AutoML Framework — 2048 ML Implementation Project
+# Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
+
+> **Status: PARTIAL.** Capability gate and verified model limits recorded; corpus, standard-dataset evaluation, and full results remain pending.
+
+**Goal:** State the current implementation and evidence boundary for rust-native automl framework.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Capability gate and verified model limits recorded; corpus, standard-dataset evaluation, and full results remain pending.
 
 > **Project:** 2048 Machine Learning System
 > **Version:** 1.0.0
 > **Author:** Evintkoo
 > **Created:** 2026-09-22
-> **Status:** Planning
+> **Status:** In progress — initial AutoML capability gate passed for the revised five-model four-class candidate set; full research training/evaluation remains to be executed (2026-09-24).
 
 ---
 
@@ -104,6 +115,35 @@ Because this project's goal #2 is to benchmark automl's capability, and the proj
 - If a required core capability is missing, stop the training milestone, record the missing capability, and revise the experiment scope. Do **not** add a local `smartcore`/`linfa` fallback: the core constraint is automl-only training.
 - The project's goal #2 then evaluates **what automl CAN do**, not what it should have done
 
+### 6.2 Verification Record (2026-09-24)
+
+The pinned submodule is present at `64f5edad29c9e58ee7d33abf380418d5cfbbb561`, matching the declared pin. Source inspection confirms `TrainEngine`, `HyperOptX`, `ModelType`, `TaskType::MultiClassification`, `CVStrategy::GroupKFold`, `CVStrategy::TimeSeriesSplit`, and `MedianPruner::new(minimize: bool)` exist. The focused config and cross-validation test modules pass (2 config tests and 5 CV tests).
+
+The initial capability gate passed for the revised candidate set:
+
+- `RandomForest`, `ExtraTrees`, `AdaBoost`, `KNN`, and `NaiveBayes` fit the four-action task and return four probability columns on the smoke dataset. `DecisionTree`, `LogisticRegression`, `SGD`, `SVM`, `GradientBoosting`, `XGBoost`, `LightGBM`, and `CatBoost` return two and are excluded from the 2048 candidate set until corrected and revalidated.
+- `CrossValidator::split` supports group arrays, but `cross_val_score` always calls it with `groups=None`; therefore grouped CV cannot currently be used through that helper. `GroupKFold` sorts group IDs and assigns groups round-robin, so it preserves group separation but does not implement the plan's chronological `shuffle=false` behavior.
+- `TrainEngine::fit` uses an internal train/validation split; it does not invoke `CrossValidator` or use `cv_folds`. The planned grouped validation must be performed explicitly through compatible APIs or implemented in the integration.
+- The full pinned AutoML library suite passes: 709 passed, 0 failed. The AutoML CLI help smoke completed successfully.
+
+Case-study training may use only the five verified multiclass variants above, after the dataset labeling, chronological split, and resource protocols are applied. This gate establishes API capability, not model quality or a winner.
+
+### 6.3 Feature Protocol Decisions (2026-09-24)
+
+The first feature encoder and randomized range checks exposed two underspecified formulas. The root implementation uses `max_tile_log = log2(max_tile)/15` for nonzero tiles (zero maps to zero), matching the documented `[0,1]` range through the planned 32768 canonical tile. It normalizes `adjacency_merge_score` as `sum_adjacent_equal_tile_values / (16 * 32768)`, because the listed `/16` alone can exceed 1. The `monotonicity` feature is currently a deterministic fraction of adjacent horizontal/vertical comparisons that are equal or contain an empty cell. This is a provisional operational definition; record it in feature plans and freeze before any training run. `score_normalized` is permitted above 1 when score exceeds one million, per the data schema.
+
+### 6.4 Rollout Labeling Budget (2026-09-24)
+
+A smoke collection with 2 games, 100 rollouts per valid action, and 2 fixed Rayon threads produced 213 rows in 37.24 seconds (5.72 rows/second). The observed mean was 106.5 rows/game. Linear estimates are about 52 hours for 10,000 games and 103 hours for 20,000 games at the same throughput and thread count. These are planning estimates from a small sample, not performance results; actual time depends on trajectory length, hardware, and parallel scaling. Use a pilot and record resource use before a multi-day canonical corpus run.
+
+### 6.5 Baseline and Evaluation Tooling (2026-09-24)
+
+The root crate now exposes seeded `benchmark baseline --agent random|heuristic`, `benchmark run`, `benchmark report`, and `benchmark compare` workflows. Game-level CSV outputs have JSON manifests. Reports include distribution summaries, tail thresholds, and bootstrap mean intervals. Comparisons check seed sequences, pair matching seeds with an exact sign test, use Mann-Whitney U for unmatched samples, apply Holm correction across pairwise tests, and report bootstrap mean-difference intervals and Cohen's d. The paired sign test is conservative, ignores ties, and is not Wilcoxon; the method is named in outputs.
+
+A 20-game seed-987 wiring sample yielded random mean 1,046.6 and heuristic mean 7,800.6. This is an implementation smoke measurement, far below the pre-registered 10,000-game protocol, and is not used as a baseline claim or populated in the results matrix.
+
+The framework contribution itself remains partially evaluated: the current repository has capability and API smoke evidence, but no standard-dataset results, matched external-framework comparisons, resource measurements, or independent replication. Do not treat the completed capability gate as completion of the framework contribution.
+
 **This verification is not optional.** Without it, the project cannot distinguish between "automl is incapable" and "our integration is broken."
 
 ## 7. Key Constraints
@@ -119,7 +159,7 @@ Because this project's goal #2 is to benchmark automl's capability, and the proj
 - AutoML capability and correctness gate completed
 - Framework benchmark protocol documented
 - Determine each model's score ceiling through systematic evaluation (10,000+ games)
-- Establish baseline scores for Random Forest, Gradient Boosting, XGBoost, and other candidates
+- Establish baseline scores for the verified four-class candidates: Random Forest, ExtraTrees, AdaBoost, KNN, and NaiveBayes
 - Full data pipeline from game simulation to trained model works end-to-end
 - Models are ranked by mean score
 
@@ -162,3 +202,24 @@ The theoretical maximum score for 2048 is not used as an optimization target. **
 - Bootstrap 95% CI and effect size reported; neither is an automatic exclusion gate
 - Best model identified and documented with strong statistical evidence
 - Research findings contribute to understanding of automl on sequential decision-making
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/01-Infrastructure/01-Project/01-project-overview.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/01-Infrastructure/01-Project/01-project-overview.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/01-Infrastructure/01-Project/01-project-overview.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/01-Infrastructure/01-Project/01-project-overview.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/01-Infrastructure/01-Project/01-project-overview.md` exits 0.
+6. `grep -q '^## Open questions$' plans/01-Infrastructure/01-Project/01-project-overview.md` exits 0.
+7. `grep -q '^## Later$' plans/01-Infrastructure/01-Project/01-project-overview.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/01-Infrastructure/01-Project/01-project-overview.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Capability gate and verified model limits recorded; corpus, standard-dataset evaluation, and full results remain pending. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

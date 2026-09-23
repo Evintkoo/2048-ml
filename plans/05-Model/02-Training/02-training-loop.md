@@ -1,4 +1,15 @@
-# Training Loop
+# Plan 02 — Training Loop: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for training loop.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -182,3 +193,29 @@ flowchart LR
 1. Select model type in `03-model-architecture.md` via `TrainingConfig::new(MultiClassification, "action").with_model(...)`
 2. Run fit with group-aware CV (`GroupKFold {n_splits:5}.with_random_state(42).split(n, None, Some(&groups))`)
 3. Evaluate gates: Valid-Action Accuracy ≥60%, F1 ≥0.55, Mean Game Score ≥512 (see `04-Evaluation/`)
+
+## Implementation Record
+
+- Training uses one classical `TrainEngine::fit` call and exports a serialized inference model. A project-owned `GroupKFold` wrapper prevents games appearing in both train and validation folds.
+- No iterative epoch/checkpoint loop is used. The wrapper currently reports fold accuracy only; full four-class F1/confusion diagnostics and final test scoring remain pending.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/05-Model/02-Training/02-training-loop.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/05-Model/02-Training/02-training-loop.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/05-Model/02-Training/02-training-loop.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/05-Model/02-Training/02-training-loop.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/05-Model/02-Training/02-training-loop.md` exits 0.
+6. `grep -q '^## Open questions$' plans/05-Model/02-Training/02-training-loop.md` exits 0.
+7. `grep -q '^## Later$' plans/05-Model/02-Training/02-training-loop.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/05-Model/02-Training/02-training-loop.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

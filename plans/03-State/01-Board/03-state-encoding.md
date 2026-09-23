@@ -1,4 +1,15 @@
-# State Encoding — Storage Format
+# Plan 03 — State Encoding: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for state encoding.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Distinct focus:** This file = **encoding for storage** (Parquet/CSV), `state-vector.md` = creation. Canonical impl in `04-Encoding/01-state-vector.md:31` `create_state_vector` — do not duplicate impl here.
 
@@ -36,3 +47,29 @@ pub fn validate_encoding(v: &[f64;27]) -> Result<()> {
     if !v.iter().all(|x| x.is_finite() && (0.0..=1.0).contains(x)) { return Err(..); } Ok(())
 }
 ```
+
+## Implementation Record
+
+- The training CSV uses the exact ordered 27-feature header plus `action` (28 columns). Game ID, move index, and raw score are stored in a separate row-aligned metadata CSV to preserve group provenance without adding model features.
+- The CSV reader checks header, width, finite feature values, ranges, and action labels. The plan's Parquet storage path is not implemented; CSV is the current supported format.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/03-State/01-Board/03-state-encoding.md` exits 0.
+2. `grep -q '^# Plan 03 — ' plans/03-State/01-Board/03-state-encoding.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/03-State/01-Board/03-state-encoding.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/03-State/01-Board/03-state-encoding.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/03-State/01-Board/03-state-encoding.md` exits 0.
+6. `grep -q '^## Open questions$' plans/03-State/01-Board/03-state-encoding.md` exits 0.
+7. `grep -q '^## Later$' plans/03-State/01-Board/03-state-encoding.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/03-State/01-Board/03-state-encoding.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

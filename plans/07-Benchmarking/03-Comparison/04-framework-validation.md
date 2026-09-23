@@ -1,4 +1,15 @@
-# Rust-Native AutoML Framework Validation
+# Plan 04 — Rust-Native AutoML Framework Validation: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for rust-native automl framework validation.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -62,3 +73,32 @@ Framework comparisons use named datasets, fixed splits, explicit preprocessing a
 ## 8. Relationship to the 2048 Study
 
 The framework validation gate must pass before the main 2048 training milestone. If a required capability fails, the failure becomes a documented framework result and the affected 2048 claim is not made. The final thesis must report both successful capabilities and negative framework findings.
+
+## 9. Execution Status
+
+The pinned framework's API, model probability shapes, group splitter, optimizer API, model serialization, and 2048 integration smoke paths have been checked in `src/framework_validation.rs`; the pinned AutoML library suite also passed 709 tests. The standard Iris/Wine/Breast Cancer dataset matrix, external framework comparisons, resource profiling, repeated-seed study, and CLI/API equivalence checks are not yet implemented. Therefore the full framework-validation gate is still pending, and 2048 smoke evidence must not be presented as framework validation.
+
+## Implementation Record
+
+- The pinned AutoML unit suite and local API/model/serialization smoke validation pass; these are capability checks only. The required named datasets, external baselines, resource study, repeated-seed reproducibility, and CLI/library equivalence study remain pending.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/07-Benchmarking/03-Comparison/04-framework-validation.md` exits 0.
+2. `grep -q '^# Plan 04 — ' plans/07-Benchmarking/03-Comparison/04-framework-validation.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/07-Benchmarking/03-Comparison/04-framework-validation.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/07-Benchmarking/03-Comparison/04-framework-validation.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/07-Benchmarking/03-Comparison/04-framework-validation.md` exits 0.
+6. `grep -q '^## Open questions$' plans/07-Benchmarking/03-Comparison/04-framework-validation.md` exits 0.
+7. `grep -q '^## Later$' plans/07-Benchmarking/03-Comparison/04-framework-validation.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/07-Benchmarking/03-Comparison/04-framework-validation.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

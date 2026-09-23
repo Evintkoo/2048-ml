@@ -1,8 +1,19 @@
-# Failure Analysis
+# Plan 04 — Failure Analysis: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for failure analysis.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Note:** This section anticipates potential failures and defines response protocols. Probability estimates are illustrative, not empirically determined. No actual failure data exists yet.
 
-## 2. Categories of Failure
+## 1. Categories of Failure
 
 | Failure Mode | Cause | Detection | Mitigation |
 |-------------|-------|-----------|------------|
@@ -16,7 +27,7 @@
 | Model type unsupported | Hypothesized model not available | ModelType enum missing | Use available models, log gap |
 | Cross-validation unavailable | Temporal splitting not supported | Validation fails | Use simple holdout, log gap |
 
-## 3. Null Results Analysis
+## 2. Null Results Analysis
 
 ### 3.1 Scenario: No Model Beats Heuristic
 
@@ -76,7 +87,7 @@ If the automl framework lacks required capabilities:
 3. Modify the project goal to "what automl CAN do"
 4. Publish the automl capability gap as a separate finding
 
-## 4. Failure Mode Assessment
+## 3. Failure Mode Assessment
 
 The following probability estimates are **illustrative and not empirically determined**. They will be revised based on actual experimental outcomes.
 
@@ -93,7 +104,7 @@ The following probability estimates are **illustrative and not empirically deter
 
 **These probabilities are placeholders. Actual probabilities will be assessed after the capability verification gate and initial experiments.**
 
-## 5. Honest Reporting Protocol
+## 4. Honest Reporting Protocol
 
 All results will be reported honestly, including:
 
@@ -111,7 +122,7 @@ All results will be reported honestly, including:
 - Overstate the importance of findings
 - Ignore failures or limitations
 
-## 6. Failure Analysis Template
+## 5. Failure Analysis Template
 
 For each experiment, the following will be reported:
 
@@ -150,8 +161,33 @@ For each experiment, the following will be reported:
 - {what went well, what didn't, what to improve}
 ```
 
-## 7. Conclusion
+## 6. Conclusion
 
 Failure analysis is not an afterthought — it is an integral part of the research methodology. By anticipating failures, documenting them, and responding appropriately, the research maintains scientific integrity and provides genuine insights into automl's capabilities for game AI.
 
 Null results are valid scientific findings. If automl cannot beat heuristic baselines for 2048, this is an important finding that advances the understanding of what automl can and cannot do for sequential decision-making problems.
+
+## Implementation Record
+
+- This file is a prospective failure protocol. No study failure log exists yet; listed probability estimates and scenarios are illustrative rather than observed.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/03-Findings/04-failure-analysis.md` exits 0.
+2. `grep -q '^# Plan 04 — ' plans/08-Research-Report/03-Findings/04-failure-analysis.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/03-Findings/04-failure-analysis.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/03-Findings/04-failure-analysis.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/03-Findings/04-failure-analysis.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/03-Findings/04-failure-analysis.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/03-Findings/04-failure-analysis.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/03-Findings/04-failure-analysis.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

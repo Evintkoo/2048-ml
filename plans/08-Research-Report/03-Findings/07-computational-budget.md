@@ -1,8 +1,19 @@
-# Computational Budget
+# Plan 07 — Computational Budget: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for computational budget.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Note:** This section provides estimated computational requirements based on planned experiments. These are estimates, not measured values. All costs are approximate and will be updated after actual experiments are run.
 
-## 2. Hardware Requirements
+## 1. Hardware Requirements
 
 ### 2.1 Training Hardware
 
@@ -24,7 +35,7 @@
 | Storage | 500GB SSD | 1 machine | Results, logs |
 | Network | Required | — | Data download, collaboration |
 
-## 3. Computational Cost Analysis
+## 2. Computational Cost Analysis
 
 ### 3.1 Training Cost
 
@@ -86,7 +97,7 @@
 
 **Note:** These are estimates based on planned experiments. Actual computational costs will depend on the specific automl implementation, game engine performance, and hardware used. All estimates should be updated after the capability verification gate and initial experiments.
 
-## 4. Scalability Analysis
+## 3. Scalability Analysis
 
 ### 4.1 Scaling with Number of Models
 
@@ -109,11 +120,11 @@
 
 **Note:** Linear scaling assumed. Actual scaling may vary.
 
-## 5. Cloud vs Local (Trimmed to 2 Lines + Reference)
+## 4. Cloud vs Local (Trimmed to 2 Lines + Reference)
 
 Local `c5.xlarge` (~$0.17/h) reference retained; cloud table trimmed to 2 lines. All runs are CPU-only (no GPU) via `rust:1.75-slim` Docker — see `04-Appendix/06-reproducibility-package.md` for Dockerfile.
 
-## 6. Memory Requirements
+## 5. Memory Requirements
 
 | Component | Memory Required | Peak Usage |
 |-----------|----------------|------------|
@@ -124,7 +135,7 @@ Local `c5.xlarge` (~$0.17/h) reference retained; cloud table trimmed to 2 lines.
 | Cross-validation | ~2GB | ~4GB |
 | **Total (est.)** | **~10GB** | **~20GB** |
 
-## 7. Storage Requirements
+## 6. Storage Requirements
 
 | Component | Size (est.) | Notes |
 |-----------|------------|-------|
@@ -135,7 +146,7 @@ Local `c5.xlarge` (~$0.17/h) reference retained; cloud table trimmed to 2 lines.
 | Docker images | ~2GB | Base + dependencies |
 | **Total (est.)** | **~5GB** | — |
 
-## 8. Budget Optimization
+## 7. Budget Optimization
 
 ### 8.1 Cost Reduction Strategies
 
@@ -168,7 +179,7 @@ Local `c5.xlarge` (~$0.17/h) reference retained; cloud table trimmed to 2 lines.
 - Failure analysis
 - Published baseline comparison
 
-## 9. Reproducibility Checklist
+## 8. Reproducibility Checklist
 
 - [ ] Docker image provided
 - [ ] All scripts documented and executable
@@ -183,8 +194,33 @@ Local `c5.xlarge` (~$0.17/h) reference retained; cloud table trimmed to 2 lines.
 - [ ] Local execution instructions provided
 - [ ] Parallel execution configuration provided
 
-## 10. Conclusion
+## 9. Conclusion
 
 The total estimated computational budget for the 2048 ML research is approximately **290 CPU hours** and **~$120-240** for comprehensive execution. These are estimates based on planned experiments and may vary significantly.
 
 All computations should be reproducible via Docker, ensuring that any researcher can replicate the results regardless of their local hardware configuration.
+
+## Implementation Record
+
+- Existing estimates are speculative and conflict with the measured rollout-labeling throughput recorded in the project ledger. Docker, cloud execution, full experiment scripts, and resource profiles are not implemented; recalculate budget from measured workload before scheduling research runs.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/03-Findings/07-computational-budget.md` exits 0.
+2. `grep -q '^# Plan 07 — ' plans/08-Research-Report/03-Findings/07-computational-budget.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/03-Findings/07-computational-budget.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/03-Findings/07-computational-budget.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/03-Findings/07-computational-budget.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/03-Findings/07-computational-budget.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/03-Findings/07-computational-budget.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/03-Findings/07-computational-budget.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

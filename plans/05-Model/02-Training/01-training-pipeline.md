@@ -1,4 +1,15 @@
-# Training Pipeline
+# Plan 01 — Training Pipeline: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for training pipeline.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 
@@ -99,6 +110,12 @@ flowchart TB
 - **Purpose**: Each model is trained independently to enable ceiling comparison, NOT auto-selected
 - **Labels**: Integer-encoded actions where 0=up, 1=down, 2=left, 3=right
 
+### Implemented CLI Protocol and Current Limitation
+
+The root `train` command requires the canonical data CSV and its aligned metadata sidecar. By default, it reserves the final 15% of distinct chronological game IDs before any grouped CV or fitting (`--development-fraction 0.85`); the holdout rows never enter the training DataFrame. Grouped CV runs only on the earlier development groups. The pinned AutoML `TrainEngine::fit` then makes its own seeded, stratified row-level validation split from that development data and fits the model on the remaining rows. The API has no switch to fit the complete development partition or to pass groups into its internal split. Consequently this is a safe test holdout, but not yet the full plan's chronological 70/15/15 train/validation/test model-selection protocol; final test scoring and refitting after selection still need a dedicated workflow. The generated `data-collector split` outputs provide explicit 70/15/15 game partitions for analysis and diagnostics.
+
+The integration currently allows only the verified four-probability-column models: RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. `cv_folds` is implemented in the root grouped-CV wrapper, not through `TrainEngine`'s internal fit.
+
 ## 5. Theoretical Limit Justification
 
 The theoretical maximum score is **not a fixed constant** — it is bounded by 2048 game mechanics and depends on optimal play. This section justifies the ranking approach:
@@ -176,3 +193,29 @@ flowchart LR
 1. Configure training parameters for multi-class classification
 2. Execute training loop with supervised game data
 3. Validate model architecture and classification accuracy
+
+## Implementation Record
+
+- The root CLI validates canonical training data, requires aligned game metadata, reserves chronological test games, runs grouped CV on development games, fits the selected verified candidate, and exports a JSON model. Current CV reports accuracy; the full plan's final untouched-test diagnostics and evaluation gates remain pending.
+- Fitted preprocessing and a complete 70/15/15 training-selection-final-refit lifecycle are not part of the live pipeline. The explicit split command creates game-disjoint CSV partitions for downstream workflows.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/05-Model/02-Training/01-training-pipeline.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/05-Model/02-Training/01-training-pipeline.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/05-Model/02-Training/01-training-pipeline.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/05-Model/02-Training/01-training-pipeline.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/05-Model/02-Training/01-training-pipeline.md` exits 0.
+6. `grep -q '^## Open questions$' plans/05-Model/02-Training/01-training-pipeline.md` exits 0.
+7. `grep -q '^## Later$' plans/05-Model/02-Training/01-training-pipeline.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/05-Model/02-Training/01-training-pipeline.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

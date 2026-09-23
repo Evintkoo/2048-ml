@@ -1,4 +1,15 @@
-# Unit Testing — 2048-Specific (Concrete Cases, Tarpaulin)
+# Plan 01 — Unit Testing: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for unit testing.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Purpose
 Unit tests for 4×4 game engine, feature extraction, and automl wiring. Distinct from integration (pipeline wiring) and game-validation (manual audit).
@@ -43,3 +54,28 @@ Pre-commit: `cargo fmt --check && cargo clippy -- -D warnings`.
 
 ## 5. Quality Gate
 Merge only if all 10 concrete cases pass + coverage ≥80% + clippy clean.
+
+## Implementation Record
+
+- Root tests cover core merge, no-op, terminal, seeded spawn, feature, batch, and action cases; the broader matrix is partly covered. No Tarpaulin config or measured coverage report is present, and the 80% gate is not verified.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/09-Quality/01-Testing/01-unit-testing.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/09-Quality/01-Testing/01-unit-testing.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/09-Quality/01-Testing/01-unit-testing.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/09-Quality/01-Testing/01-unit-testing.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/09-Quality/01-Testing/01-unit-testing.md` exits 0.
+6. `grep -q '^## Open questions$' plans/09-Quality/01-Testing/01-unit-testing.md` exits 0.
+7. `grep -q '^## Later$' plans/09-Quality/01-Testing/01-unit-testing.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/09-Quality/01-Testing/01-unit-testing.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

@@ -1,4 +1,15 @@
-# Visualization (Debug/Inspection Only)
+# Plan 01 — Visualization (Debug/Inspection Only): the repository status is explicit and evidence based
+
+> **Status: PARTIAL.** Result serialization and collection manifests exist; terminal charts and SVG exports are not implemented.
+
+**Goal:** State the current implementation and evidence boundary for visualization (debug/inspection only).
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Result serialization and collection manifests exist; terminal charts and SVG exports are not implemented.
 
 ## 1. Scope
 
@@ -103,3 +114,30 @@ Per the project scope:
 - No mobile visualization app
 
 All visualization outputs are static files (SVG, CSV, JSON) for external analysis tools.
+
+## Implementation Record
+
+- `GameResult` serializes to JSON and collection/evaluation commands write CSV plus JSON manifests for offline inspection.
+- Terminal board rendering, ASCII score charts, move timelines, SVG board export, and training-progress charts are not implemented. They are optional inspection outputs and are not used by the headless simulation pipeline. The game UI plan explicitly keeps rendering out of the MVP.
+- Status: partial; no web or interactive visualization is part of the project.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/02-Environment/04-Visualization/01-visualization.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/02-Environment/04-Visualization/01-visualization.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/02-Environment/04-Visualization/01-visualization.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/02-Environment/04-Visualization/01-visualization.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/02-Environment/04-Visualization/01-visualization.md` exits 0.
+6. `grep -q '^## Open questions$' plans/02-Environment/04-Visualization/01-visualization.md` exits 0.
+7. `grep -q '^## Later$' plans/02-Environment/04-Visualization/01-visualization.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/02-Environment/04-Visualization/01-visualization.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Result serialization and collection manifests exist; terminal charts and SVG exports are not implemented. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

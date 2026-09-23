@@ -1,4 +1,15 @@
-# Score as Feature
+# Plan 02 — Score as Feature: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for score as feature.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 ## 1. Concept
 
@@ -55,8 +66,34 @@ let accuracy = accuracy_score(&predicted_actions, &true_actions);
 let mean_game_score = benchmark_mean_score(&model, n_games); // downstream benchmark, not MSE on score
 ```
 
+## Implementation Record
+
+- Score appears only as feature index 21 using `log10(score + 1) / 6` and as sidecar metadata; action remains the only training label. No score delta or history features were added.
+- Feature index order and normalization are covered by root unit tests.
+
 ## 8. Score Distribution Analysis
 
 ```rust
 pub fn analyze_score_distribution(scores: &[u64]) -> ScoreDistribution { /* mean/median/std/skew */ }
 ```
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/03-State/02-Score/02-score-as-feature.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/03-State/02-Score/02-score-as-feature.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/03-State/02-Score/02-score-as-feature.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/03-State/02-Score/02-score-as-feature.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/03-State/02-Score/02-score-as-feature.md` exits 0.
+6. `grep -q '^## Open questions$' plans/03-State/02-Score/02-score-as-feature.md` exits 0.
+7. `grep -q '^## Later$' plans/03-State/02-Score/02-score-as-feature.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/03-State/02-Score/02-score-as-feature.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

@@ -1,10 +1,21 @@
-# Hypotheses
+# Plan 03 — Hypotheses: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for hypotheses.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Note:** This section defines hypotheses to be tested. No results are claimed. All answers are pending experimentation.
 
 The primary hypotheses concern the Rust-native AutoML framework. The 2048 hypotheses are application-case-study hypotheses. Architecture questions that cannot be reduced to a valid statistical test are evaluated through design evidence, correctness tests, benchmark comparisons, and documented trade-offs.
 
-## 2. Hypothesis Framework
+## 1. Hypothesis Framework
 
 ```mermaid
 flowchart TD
@@ -32,7 +43,7 @@ flowchart TD
     end
 ```
 
-## 3. Hypothesis Table
+## 2. Hypothesis Table
 
 | Hypothesis | H0 | H1 | α | Test |
 |-----------|----|----|---|------|
@@ -43,7 +54,7 @@ flowchart TD
 | H2 | μ_all = μ_max | μ_max > μ_second | 0.05 | Kruskal-Wallis |
 | H3 | μ_tuned = μ_default | μ_tuned > μ_default | 0.05 | Wilcoxon Signed-Rank |
 
-## 4. Hypothesis Test Design
+## 3. Hypothesis Test Design
 
 ```mermaid
 flowchart TD
@@ -58,7 +69,7 @@ flowchart TD
     H -->|No| J[Fail to Reject H0]
 ```
 
-## 5. Detailed Hypotheses
+## 4. Detailed Hypotheses
 
 ### H1: automl Model Performance
 
@@ -90,7 +101,7 @@ flowchart TD
 
 Feature groups are evaluated through predeclared ablations, held-out performance, uncertainty intervals, and sensitivity analysis. This analysis does not claim that the 27-dimensional feature set is a Markov blanket or sufficient statistic.
 
-## 6. Testing Procedure
+## 5. Testing Procedure
 
 ```mermaid
 flowchart TD
@@ -109,11 +120,11 @@ flowchart TD
     J -->|No| L[Fail to Reject H0]
 ```
 
-## 7. Effect Size and Power
+## 6. Effect Size and Power
 
 **Power analysis:** With n=10,000 per group and expected effect size d=0.8, the statistical power is expected to be high. This will be verified after data collection.
 
-## 8. Results Summary
+## 7. Results Summary
 
 | Hypothesis | Result | Decision |
 |-----------|--------|----------|
@@ -124,7 +135,7 @@ flowchart TD
 | H2 | TBD (pending application evaluation) | TBD |
 | H3 | TBD (pending application evaluation) | TBD |
 
-## 9. Hypothesis Testing Conclusions
+## 8. Hypothesis Testing Conclusions
 
 All hypothesis and framework-validation results will be reported after experimentation with proper statistical rigor:
 1. framework capabilities will be reported through acceptance tests, matched benchmarks, resource measurements, and reproducibility results
@@ -132,7 +143,7 @@ All hypothesis and framework-validation results will be reported after experimen
 3. Hyperparameter tuning effect will be validated through Wilcoxon Signed-Rank test
 4. Feature groups will be evaluated through ablation and sensitivity analysis; no Markov-blanket claim is made by default
 
-## 10. Reporting Standards
+## 9. Reporting Standards
 
 All hypothesis test results will be reported with:
 - Null and alternative statements
@@ -143,7 +154,7 @@ All hypothesis test results will be reported with:
 - Practical significance interpretation
 - Bonferroni correction applied for multiple comparisons
 
-## 11. Multiple Comparison Correction
+## 10. Multiple Comparison Correction
 
 All hypothesis tests will use Bonferroni correction:
 ```
@@ -153,10 +164,35 @@ where `n_comparisons` is the number of simultaneous tests.
 
 For example, if testing 7 models pairwise (21 comparisons), `α_corrected = 0.05 / 21 ≈ 0.0024`.
 
-## 12. Assumptions and Limitations
+## 11. Assumptions and Limitations
 
 1. **Repeated conditions:** Game outcomes are analyzed with respect to shared seeds, paired instances, and trained-model repetitions; independence is not assumed automatically.
 2. **Identical distribution:** All models are tested on the same declared game-instance protocol.
 3. **Fixed seed:** Seed = 42 is a reproducibility condition, not evidence of generalization.
 4. **Sample size:** Sample size is justified using a predeclared minimum practical effect and the experimental unit, not only the number of games.
 5. **Non-parametric tests:** No normality assumption required
+
+## Implementation Record
+
+- Framework and application hypotheses are predeclared; all outcomes remain pending because standard-dataset validation, model comparison, tuning, and ablation have not been run.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/02-Methodology/03-hypotheses.md` exits 0.
+2. `grep -q '^# Plan 03 — ' plans/08-Research-Report/02-Methodology/03-hypotheses.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/02-Methodology/03-hypotheses.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/02-Methodology/03-hypotheses.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/02-Methodology/03-hypotheses.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/02-Methodology/03-hypotheses.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/02-Methodology/03-hypotheses.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/02-Methodology/03-hypotheses.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

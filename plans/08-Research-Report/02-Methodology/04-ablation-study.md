@@ -1,4 +1,15 @@
-# Ablation Study — Exact Matrix (27 LOO + 8 Groups, GroupKFold, Cost-Capped)
+# Plan 04 — Ablation Study: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for ablation study.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **No TBD.** Every row maps to a `TrainingConfig` + `ScoreMetrics` evaluation (10k games, pre-registered MWU/Holm protocol, bootstrap CI, and effect size). Leakage control: `CrossValidator::GroupKFold` split on `game_id` (games are i.i.d. given seed; TimeSeries is not canonical).
 
@@ -40,3 +51,28 @@ Each removal vs full: report Mann-Whitney U p-values with Holm correction over t
 ## 4. Output
 
 `data/evaluation_data/ablation.parquet` with `config_id, removed_feature/group, mean, bootstrap_lo/hi, U, p_holm, d, significant`. Visualization: ranked Δ bar with CI — no "TBD" placeholder; TBD only until pipeline runs.
+
+## Implementation Record
+
+- No ablation configurations, artifact writer, or feature-removal evaluation pipeline are implemented. The stated 35×10k budget is an estimate and needs reconciliation with current measured throughput before execution.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/08-Research-Report/02-Methodology/04-ablation-study.md` exits 0.
+2. `grep -q '^# Plan 04 — ' plans/08-Research-Report/02-Methodology/04-ablation-study.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/08-Research-Report/02-Methodology/04-ablation-study.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/08-Research-Report/02-Methodology/04-ablation-study.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/08-Research-Report/02-Methodology/04-ablation-study.md` exits 0.
+6. `grep -q '^## Open questions$' plans/08-Research-Report/02-Methodology/04-ablation-study.md` exits 0.
+7. `grep -q '^## Later$' plans/08-Research-Report/02-Methodology/04-ablation-study.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/08-Research-Report/02-Methodology/04-ablation-study.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

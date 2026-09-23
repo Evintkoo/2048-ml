@@ -1,4 +1,15 @@
-# Action Encoding — Integer 0..3 Only
+# Plan 02 — Action Encoding: the repository status is explicit and evidence based
+
+> **Status: PLANNED.** Not yet restarted in strict sequence.
+
+**Goal:** State the current implementation and evidence boundary for action encoding.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
 
 > **Canonical:** `01-action-space.md` — 4 discrete actions. This file = label encoding. **No one-hot / binary / multi-output.**
 > **automl handles encoding internally** via `EncoderType` — do not manually expand `action` to 4 dims.
@@ -54,3 +65,28 @@ Canonical `masked_argmax` in `03-Mapping/01-model-output-to-action.md`.
 - `01-action-space.md` — action definitions.
 - `03-Mapping/01-model-output-to-action.md` — logits → action.
 - `automl/src/training/config.rs:11` `TaskType::MultiClassification`.
+
+## Implementation Record
+
+- `Direction::try_from_action` and `Direction as u8` implement the integer label mapping without a one-hot user-data encoding. The canonical training CSV validates action labels in `0..=3`.
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/04-Actions/01-Action/02-action-encoding.md` exits 0.
+2. `grep -q '^# Plan 02 — ' plans/04-Actions/01-Action/02-action-encoding.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/04-Actions/01-Action/02-action-encoding.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/04-Actions/01-Action/02-action-encoding.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/04-Actions/01-Action/02-action-encoding.md` exits 0.
+6. `grep -q '^## Open questions$' plans/04-Actions/01-Action/02-action-encoding.md` exits 0.
+7. `grep -q '^## Later$' plans/04-Actions/01-Action/02-action-encoding.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/04-Actions/01-Action/02-action-encoding.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.

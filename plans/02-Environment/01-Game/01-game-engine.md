@@ -1,4 +1,15 @@
-# 2048 Game Engine
+# Plan 01 — 2048 Game Engine: the repository status is explicit and evidence based
+
+> **Status: DONE (2026-09-24).** Added validated reusable simulator for random and policy play, game histories/results, and deterministic batch seed derivation; root suite passes.
+
+**Goal:** State the current implementation and evidence boundary for 2048 game engine.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+
+---
+
+## Decision and evidence
+
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Added validated reusable simulator for random and policy play, game histories/results, and deterministic batch seed derivation; root suite passes.
 
 ## 1. Purpose
 
@@ -150,7 +161,13 @@ impl Default for SimulatorConfig {
 | Precomputed move tables / bitboard / SIMD | **Optional, not MVP** — mark out-of-scope; profile after 10k baseline works | Precomputed tables, bitboard u64, SIMD batch — add only if >2× gain measured |
 | Serialization | `[f64;27]` + `u8` + `u64` score to Parquet/CSV — see 06-Data | — |
 
-## 8. Cross-References
+## 8. Implementation Record
+
+Implemented in `src/game_engine/mod.rs`: fixed-size validated board state, four `Direction` encodings, pure slide transforms, checked merge scoring, valid-move detection, seeded 90/10 tile spawning, reusable `SimulatorConfig`/`GameSimulator`, random and policy-driven execution, and per-game simulation entrypoints. The model and heuristic policies now use the shared simulator. The random simulator is reproducible across repeated fixed-seed calls; illegal policy moves return an error. Root tests cover move rules, spawn behavior, configuration validation, and simulation determinism.
+
+Detailed per-merge history, complete trajectory records, and a standalone simulation configuration file are not part of the current MVP implementation. `game_over` records the terminal no-move state; the optional move cap remains a safety limit.
+
+## 9. Cross-References
 
 - **RNG / seed hygiene (canonical):** `03-Simulation-Engine/02-randomness.md`
 - **Board transforms:** `01-Game/03-board-representation.md` (grid normalization `/32768`)
@@ -158,3 +175,24 @@ impl Default for SimulatorConfig {
 - **Training row:** `03-Simulation-Engine/01-simulation-engine.md` — `TrainingSample { state_features:[f64;27], action:u8, score:u64 metadata }`, `TaskType::MultiClassification`
 - **Features (27-dim):** `03-State/01-Board/01-board-state.md` (16 raw + 11 derived, score at index 21 `/6.0`)
 - **Out-of-scope UI:** Headless only — debug print only in `01-Game/04-game-ui.md` (deprecated stub), canonical viz JSON in `04-Visualization/01-visualization.md`
+
+---
+
+## Verification (definition of done)
+
+1. `test -f plans/02-Environment/01-Game/01-game-engine.md` exits 0.
+2. `grep -q '^# Plan 01 — ' plans/02-Environment/01-Game/01-game-engine.md` exits 0.
+3. `grep -q '^> \\*\\*Status:' plans/02-Environment/01-Game/01-game-engine.md` exits 0.
+4. `grep -q '^\*\*Goal:' plans/02-Environment/01-Game/01-game-engine.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/02-Environment/01-Game/01-game-engine.md` exits 0.
+6. `grep -q '^## Open questions$' plans/02-Environment/01-Game/01-game-engine.md` exits 0.
+7. `grep -q '^## Later$' plans/02-Environment/01-Game/01-game-engine.md` exits 0.
+8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/02-Environment/01-Game/01-game-engine.md` exits 0.
+
+## Open questions
+
+- **The plan-scale evidence remains bounded by current results.** Added validated reusable simulator for random and policy play, game histories/results, and deterministic batch seed derivation; root suite passes. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+
+## Later
+
+- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
