@@ -1,6 +1,6 @@
 # CLI Tools Specification
 
-> **Verify CLI via `cargo run -- --help`; `automl serve` is out-of-scope per initial-plan.**
+> **Single binary with subcommands (MVP).** `Cargo.toml` is a single crate at root (see `03-Dependencies/01-rust-deps.md` §4); the 3-crate split (`game-engine` / `data-collector` / `benchmark`) is conceptual — commands below are **subcommands of one binary** (`cargo run -- <subcommand>`), not separate `[[bin]]` targets. Future optional: split into workspace members post-MVP. Verify via `cargo run -- --help`; `automl serve` is out-of-scope per initial-plan.
 
 ## 1. automl CLI Usage
 
@@ -50,45 +50,31 @@ automl info --data data.csv
 automl serve --port 8080  # out-of-scope per initial-plan
 ```
 
-## 2. Custom CLI Tools
+## 2. Custom CLI Tools (single binary, subcommands)
 
-### 2.1 Game Simulation CLI
+> **Workspace note:** These are subcommands of the single MVP binary, not separate crates. `cargo run -- <subcommand> --help` is the canonical invocation until a workspace split.
+
+### 2.1 Game Simulation
 
 ```bash
-# Run a single game
-./game-engine simulate --seed 42 --model model.bin
-
-# Run batch simulation
-./game-engine simulate --n-games 1000 --model model.bin --output results/
-
-# Run with logging
-./game-engine simulate --seed 42 --verbose --log training.log
+cargo run -- game-engine simulate --seed 42 --model model.bin
+cargo run -- game-engine simulate --n-games 1000 --model model.bin --output results/
 ```
 
-### 2.2 Data Collection CLI
+### 2.2 Data Collection
 
 ```bash
-# Collect training data from self-play
-./data-collector collect --n-games 10000 --output data/raw/
-
-# Preprocess collected data
-./data-collector preprocess --input data/raw/ --output data/processed/
-
-# Validate data integrity
-./data-collector validate --input data/processed/
+cargo run -- data-collector collect --n-games 10000 --output data/raw/
+cargo run -- data-collector preprocess --input data/raw/ --output data/processed/
+cargo run -- data-collector validate --input data/processed/
 ```
 
-### 2.3 Benchmark CLI
+### 2.3 Benchmark
 
 ```bash
-# Run full benchmark suite
-./benchmark run --config config/benchmark/automl-benchmark.yaml
-
-# Compare models
-./benchmark compare --models model1.bin,model2.bin,model3.bin
-
-# Generate benchmark report
-./benchmark report --input results/ --output reports/
+cargo run -- benchmark run --config config/benchmark/automl-benchmark.yaml
+cargo run -- benchmark compare --models model1.bin,model2.bin,model3.bin
+cargo run -- benchmark report --input results/ --output reports/
 ```
 
 ## 3. CLI Configuration

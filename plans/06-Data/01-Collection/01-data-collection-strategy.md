@@ -4,98 +4,39 @@
 
 Define the strategy for collecting training data for the 2048 game machine learning model.
 
-## 2. Data Collection Overview
+## 2. Data Sources
 
-Data is collected through multiple game simulation strategies to ensure diverse and comprehensive training data.
+Two supervised sources (no HumanPlay — out of scope) feed the single canonical dataset. The heuristic agent is benchmark-only:
 
-```mermaid
-flowchart TD
-    subgraph "Data Collection Strategy"
-        subgraph "Collection Methods"
-            SelfPlay[Self-Play Data]
-            RandomPlay[Random Play Data]
-            HumanPlay[Human Play Data]
-            HeuristicPlay[Heuristic Play Data]
-        end
-        
-        SelfPlay --> Combine[Combine Data]
-        RandomPlay --> Combine
-        HumanPlay --> Combine
-        HeuristicPlay --> Combine
-        
-        Combine --> Store[Store in 06-Data/]
-        Store --> Preprocess[Preprocessing]
-    end
-    
-    SelfPlay --> |Agent vs Agent| Combine
-    RandomPlay --> |Random moves| Combine
-    HumanPlay --> |Human gameplay| Combine
-    HeuristicPlay --> |Strategy AI| Combine
-```
+| Source | File | Games | Role |
+|--------|------|-------|------|
+| Self-play | `02-self-play-data.md` | 15,000 | High-quality agent trajectories |
+| Random play | `03-random-play-data.md` | 5,000 | Wide state coverage |
+| Heuristic play | Benchmark-only | 0 training games | Separate rule-based baseline |
+
+All sources produce `(state_features[27], action: u8)` rows after mandatory `RolloutLabeler` relabeling (§8.3, 100 sims). Tile spawn is stochastic 90% `2` / 10% `4` per move.
 
 ## 3. Collection Pipeline
 
-```mermaid
-flowchart TD
-    Start[Start Collection]
-    Start --> Configure[Configure Simulation]
-    Configure --> Run[Run Simulations]
-    Run --> Record[Record Game Results]
-    Record --> Validate[Validate Data]
-    Validate --> Store[Store Data]
-    
-    subgraph "Simulation Config"
-        Configure --> Agent[Agent Type]
-        Configure --> NGames[Number of Games]
-        Configure --> Seed[RNG Seed]
-    end
-    
-    style Configure fill:#e3f2fd
-    style Store fill:#e8f5e9
-```
+Configure → Run simulations (ChaCha8Rng seeded) → Record `(state, original_action)` → Relabel via `RolloutLabeler` (100 sims) → Validate → Store to `06-Data/03-Storage/` (canonical) with `data/` symlink.
 
-## 4. Data Sources
-
-```mermaid
-flowchart TB
-    Sources[Data Sources]
-    Sources --> Source1[Self-Play<br/>06-Data/01-Collection/02-self-play-data.md]
-    Sources --> Source2[Random Play<br/>06-Data/01-Collection/03-random-play-data.md]
-    Sources --> Source3[Human Play<br/>External Data]
-    Sources --> Source4[Heuristic Play<br/>Strategy-based]
-    
-    Source1 --> Combined[Combined Dataset]
-    Source2 --> Combined
-    Source3 --> Combined
-    Source4 --> Combined
-    
-    style Source1 fill:#e3f2fd
-    style Source2 fill:#fff3e0
-```
-
-## 5. Collection Volume
+## 4. Collection Volume
 
 ```mermaid
 flowchart TB
     Volume[Collection Volume Targets — Canonical]
-    Volume --> V1[Self-Play: 10,000 games]
+    Volume --> V1[Self-Play: 15,000 games]
     Volume --> V2[Random Play: 5,000 games]
-    Volume --> V3[Heuristic Play: 5,000 games]
-    Volume --> V4[Total: 20,000 games<br/>14k train / 3k val / 3k test<br/>70% / 15% / 15% chronological]
-    Volume --> Ceiling[Extended Runs for Ceiling Estimation]
-    Ceiling --> CeilingGames[5,000+ extended games per model]
-    
-    V1 --> Storage[Data Storage]
+    Volume --> V3[Heuristic: benchmark only — excluded from training]
+    Volume --> V4[Total: 20,000 games<br/>14k train / 3k val / 3k test<br/>70% / 15% / 15% chronological GroupKFold shuffle=false]
+    V1 --> Storage[Store: 06-Data/03-Storage/ — canonical]
     V2 --> Storage
-    V3 --> Storage
+    V3 -.-> Storage
     V4 --> Storage
-    CeilingGames --> Storage
-    
     style Storage fill:#e8f5e9
-    style CeilingGames fill:#fff3e0
 ```
 
-> **Canonical volumes (configurable):** Total **20,000 games** → **14,000 train / 3,000 val / 3,000 test** after chronological 70/15/15 split by `game_id` (`shuffle=false`). Breakdown: 10k self-play + 5k random + 5k heuristic = 20k. Volumes are **configurable** via `SelfPlayConfig.n_games` / `RandomPlayConfig.n_games` etc. but must preserve 70/15/15 chronological `GroupKFold` proportions and sum to the configured total. Do not use inconsistent 5k vs 10k contradictions across docs — this section is the source of truth.
+> **Canonical volumes (configurable):** Training data contains **20,000 games**: 15,000 self-play + 5,000 random-play. This yields **14,000 train / 3,000 validation / 3,000 test** after chronological game-level splitting. The heuristic agent is a separate benchmark baseline and contributes no training rows. Volumes are configurable, but the 70/15/15 split and game-level group integrity must be preserved. This section is the source of truth.
 
 ## 6. Theoretical Limit Estimation
 
@@ -109,24 +50,10 @@ To establish the performance ceiling for each model:
 
 ## 7. Data Quality Checks
 
-```mermaid
-flowchart TD
-    Quality[Data Quality Checks]
-    Quality --> Q1[Completeness Check]
-    Quality --> Q2[Consistency Check]
-    Quality --> Q3[Validity Check]
-    Quality --> Q4[Balance Check]
-    
-    Q1 --> Pass{All Pass?}
-    Q2 --> Pass
-    Q3 --> Pass
-    Q4 --> Pass
-    Pass --> |Yes| Accept[Accept Data]
-    Pass --> |No| Reject[Reject and Re-collect]
-    
-    style Accept fill:#c8e6c9
-    style Reject fill:#ffcdd2
-```
+- Completeness: all 27+action columns present, `NF==28`, no NaN/Inf.
+- Consistency: `game_id` groups intact for `GroupKFold`.
+- Validity: `action` ∈ {0,1,2,3} and in `valid_moves`; header regex `grid_0..row_worst,action`.
+- Balance: no class filter — keep heavy-tailed distribution; report class counts only.
 
 ## 8. Data Pipeline Definition
 
@@ -177,7 +104,10 @@ The action taken at turn t by the agent is NOT the training label. **There is no
 
 1. For each board state, evaluate all valid actions
 2. For each action, simulate 100 random plays to game end
-3. The action with the highest average final score becomes the label
+3. Derive each rollout seed as `label_seed = base_seed + game_id * 1_000_000 + move_idx * 1_000 + action`
+4. The action with the highest average final score becomes the label; ties are resolved by the fixed order `Up, Down, Left, Right`
+
+Labels are generated after the game-level train/validation/test assignment, cached by `(dataset_version, game_id, move_idx, base_seed)`, and never recomputed differently for separate model variants. The relabeling stage must report total states, rollouts, wall time, and cache hit rate before training begins.
 
 ```rust
 pub struct RolloutLabeler {
@@ -293,13 +223,7 @@ Files are stored per storage spec in `06-Data/03-Storage/` (canonical) or `data/
 
 ## 9. Data Collection Files Location
 
-```mermaid
-flowchart LR
-    Dir[06-Data/01-Collection]
-    Dir --> N01[01-data-collection-strategy.md]
-    Dir --> N02[02-self-play-data.md]
-    Dir --> N03[03-random-play-data.md]
-```
+Files in `06-Data/01-Collection/`: `01-data-collection-strategy.md` (this hub), `02-self-play-data.md`, `03-random-play-data.md`.
 
 ## 10. Next Steps
 

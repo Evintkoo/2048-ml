@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-Track and record scores throughout game sessions for model training, evaluation, and benchmarking.
+Track scores for **analysis/benchmarking only**. Score is metadata — the supervised label is `action: u8 0..3` (`TaskType::MultiClassification`). ScoreTracker is a metadata logger, not a training input builder.
 
 ## 2. Score Structure
 
@@ -10,116 +10,94 @@ Track and record scores throughout game sessions for model training, evaluation,
 pub struct ScoreTracker {
     pub current_score: u64,
     pub score_history: Vec<ScoreEvent>,
-    pub turn_scores: Vec<u64>,           // Score gained per turn
-    pub total_merges: u64,                 // Total merge operations
-    pub max_tile_ever: u64,                // Highest tile seen
+    pub turn_scores: Vec<u64>,
+    pub total_merges: u64,
+    pub max_tile_ever: u64,
 }
-
 pub struct ScoreEvent {
     pub turn: u64,
-    pub tile_value: u64,               // Value of merged tile
-    pub score_gained: u64,               // Score added this merge
-    pub position: (usize, usize),        // Location of merge
-    pub cumulative_score: u64,           // Running total
+    pub tile_value: u64,        // merged tile value (e.g., 8 for 4+4→8)
+    pub score_gained: u64,        // == tile_value (the merged tile value)
+    pub position: (usize, usize),
+    pub cumulative_score: u64,
 }
 ```
 
-## 3. Score Recording
+## 3. Score Recording — Canonical
+
+> **2048 scoring rule:** merging two `value` tiles produces one `2*value` tile; **score gained = `2*value`** which equals the **merged tile value**. Pass `merged_tile_value` (not half).
 
 ```rust
 impl ScoreTracker {
-    pub fn record_merge(&mut self, turn: u64, value: u64, position: (usize, usize)) {
-        let score_gained = value * 2;  // Merge of two tiles
+    /// `merged_value` is the resulting tile (e.g., 8). Score gained == merged_value.
+    pub fn record_merge(&mut self, turn: u64, merged_value: u64, position: (usize, usize)) {
+        debug_assert!(merged_value.is_power_of_two(), "merged tile must be power of 2");
+        let score_gained = merged_value; // NOT value*2 where value is half — use merged value directly
         self.current_score += score_gained;
         self.turn_scores.push(score_gained);
         self.total_merges += 1;
-        
+        self.max_tile_ever = self.max_tile_ever.max(merged_value);
         self.score_history.push(ScoreEvent {
-            turn,
-            tile_value: value,
-            score_gained,
-            position,
+            turn, tile_value: merged_value, score_gained, position,
             cumulative_score: self.current_score,
         });
     }
 }
 ```
 
-## 4. Score Metrics
+## 4. Score Metrics (Benchmark Only)
 
 ```rust
 pub struct ScoreMetrics {
-    pub mean_score: f64,
-    pub median_score: u64,
-    pub std_dev_score: f64,
-    pub max_score: u64,
-    pub min_score: u64,
-    pub percentiles: [u64; 10],        // P10, P25, ..., P90, P99
-    pub games_above_2048: usize,
-    pub games_above_4096: usize,
-    pub games_above_8192: usize,
+    pub mean_score: f64, pub median_score: u64, pub std_dev_score: f64,
+    pub max_score: u64, pub min_score: u64,
+    pub percentiles: [u64; 10],
+    pub games_above_2048: usize, pub games_above_4096: usize, pub games_above_8192: usize,
 }
 ```
 
 ## 5. Training Sample — Action Classification (Not Score Regression)
 
-Score is **never the training target**. The canonical task is `TaskType::MultiClassification` — 27-dim features → 4 logits → `argmax` over actions `0..3`. Score, if persisted, is metadata for analysis only.
+Score is **never `y`**. Canonical: `27-dim → 4 logits → argmax`.
 
 ```rust
-// Training data: (state_features, action) pairs — classification
 pub struct TrainingSample {
-    pub state: [f64; 27],           // Board state features (27-dim)
-    pub action: u8,                   // Supervised label: 0=Up,1=Down,2=Left,3=Right
-    // Optional metadata for analysis only, NOT a training target:
-    // pub score: u64,              // game score at this state — never as `y`
+    pub state: [f64; 27],
+    pub action: u8,          // 0..3 — ONLY label (TaskType::MultiClassification)
+    // pub score: u64 — metadata only, sidecar for analysis
 }
 ```
-
-DataFrame / CSV row is `state_features: [f64;27], action: u8, score: u64 (metadata only)`.
 
 ## 6. Reward Structs — For Analysis Only, Not for Supervised automl
 
-> **Not used for training.** The supervised automl pipeline uses `(state, action)` classification. The struct below is retained only for post-hoc analysis and must be labeled accordingly — do not feed `reward` into automl.
+> Not used for training. Supervised pipeline uses `(state, action)` classification. Retained for post-hoc analysis — must not be fed into automl.
 
 ```rust
-// For analysis only, not for supervised automl
-pub struct Reward {
-    pub immediate_reward: f64,       // Score gained this turn — analysis only
-    pub survival_reward: f64,          // Small reward for each turn survived — analysis only
-    pub progress_reward: f64,         // Reward for increasing max tile — analysis only
-    pub final_reward: f64,             // Total game score — analysis only (evaluation metric)
-}
+// Analysis only — do not feed reward into automl
+pub struct Reward { pub immediate_reward: f64, pub survival_reward: f64, pub progress_reward: f64, pub final_reward: f64 }
 ```
 
-## 7. Score Logging
+## 7. Score Logging — Analysis Artifact
 
 ```rust
-// Log scores to CSV for analysis
-fn log_scores(scores: &[ScoreTracker], path: &str) -> Result<()> {
+// Implemented with finite checks; analysis only
+pub fn log_scores(trackers: &[ScoreTracker], path: &str) -> Result<()> {
+    for t in trackers { if !t.current_score.is_finite() as f64 { return Err(..); } }
     let mut wtr = csv::Writer::from_path(path)?;
-    for tracker in scores {
-        wtr.serialize(tracker)?;
-    }
-    wtr.flush()?;
+    for t in trackers { wtr.serialize((t.current_score, t.total_merges, t.max_tile_ever))?; }
+    wtr.flush()?; Ok(())
 }
 ```
 
-## 8. Score Visualization
+## 8. Score Visualization — Analysis Only
 
-Generate score distribution charts:
+Histogram generation is an analysis helper — not a training step. Implement only if needed for the report.
 
-```rust
-fn generate_score_histogram(scores: &[u64], path: &str) -> Result<()> {
-    // Create histogram of score distribution
-}
-```
-
-## 9. Score Quality Checks
+## 9. Score Quality Checks — Implemented
 
 ```rust
-fn validate_scores(scores: &[u64]) -> Result<()> {
-    // All scores must be non-negative
-    // Score must be sum of tile merges
-    // No score inflation
+pub fn validate_scores(scores: &[u64]) -> Result<()> {
+    for &s in scores { if ! (s as f64).is_finite() { return Err("non-finite score".into()); } }
+    Ok(())
 }
 ```

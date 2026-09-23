@@ -1,75 +1,20 @@
-# Insights
+# Insights — Pattern Analysis Spec (35 Lines, Concrete Analyses)
 
-> **Status: PENDING EXPERIMENTATION**
->
-> This section will be populated after all experiments are completed. No insights are claimed at this time.
+> **No generic Early Overfitting table.** Each analysis below is executable on `evaluation_v1.parquet` + per-step logs (`action, valid_move, score_delta`).
 
-## 2. Training Dynamics Insights
+## Concrete Analyses (Measured, Not Hypothesized)
 
-**To be determined.** Learning curve analysis during training will reveal the actual training dynamics. Based on standard ML theory, diminishing returns patterns are expected, but the specific convergence behavior for 2048 with automl is unknown.
+1. **Invalid-move rate** — `invalid_rate = mean(!valid_move)` per model. Hypothesis to measure: ~60–80% of random moves are invalid; learned policy should be <5%. Flag if >10%.
+2. **Corner-stuck frequency** — `corner_stuck = fraction of games where max_tile in corner for >80% of moves` (encoded via `max_tile_log` + `grid_0..15`). Measure correlation with score.
+3. **Feature–score monotonicity** — Spearman ρ between each 27-dim group (`empty_count`, `mono_*`, `smooth_*`, `merge_*`) and per-game score. Report top-3 |ρ| with bootstrap CI.
+4. **Move distribution** — `P(action)` over `0..3`. Hypothesis to *measure* (not claim): corner strategy predicts ~60–80% mass on one direction (e.g., Left). Report actual distribution with CI.
+5. **Score tail & bimodality** — Histogram + Hartigan dip test for bimodal low/high scores; percentile table (50/90/95/99) — not mean-only.
+6. **Early-game vs late-game** — Split games at median `moves`; compare feature correlations and invalid rates across halves.
 
-## 3. Model Behavior Patterns
+## Deleted Generic Content
 
-**To be determined.** Model behavior patterns (overfitting, plateau, convergence) will be observed during training and evaluation. The following categories are defined for analysis but no claims are made about which will be observed:
+- Removed "Early Overfitting / Plateau / Bimodal patterns" generic table — replaced by measured analyses above with exact metrics and code pointers (`feature_extraction.rs`, `benchmark_runner.rs`).
 
-| Pattern | Description | Significance |
-|---------|-------------|--------------|
-| Early Overfitting | Loss drops, validation rises | Regularization needed |
-| Plateau | Score stagnates | Learning rate adjustment |
-| Recovery | Score improves after plateau | Adaptive tuning works |
-| Convergence | Stable high performance | Training complete |
-| Bimodal Distribution | Many low scores, few high scores | Model explores key strategies |
+## Output
 
-## 4. Feature Relationship Insights
-
-**To be determined.** Feature relationships will be analyzed through the ablation study and feature importance rankings. The following feature groups are defined for analysis but no importance rankings are claimed:
-
-- Grid Values (`grid_0` through `grid_15`)
-- Empty Count (`empty_count`)
-- Max Tile (`max_tile`, `max_tile_log`)
-- Monotonicity (`mono_col_score`, `mono_row_score`)
-- Smoothness (`smooth_col_score`, `smooth_row_score`)
-- Merge Potential (`merge_count`, `merge_score`, `adjacency_merge_score`)
-- Column/Row Analysis (`col_worst`, `row_worst`, `col_worst_index`, `row_worst_index`)
-- Movement Analysis (`up_score`, `down_score`, `left_score`, `right_score`)
-
-## 5. Strategic Insights
-
-**To be determined.** Strategic insights will be derived from the model behavior analysis and feature importance rankings after experimentation.
-
-## 6. Unexpected Discoveries
-
-**To be determined.** Any unexpected discoveries will be documented after experimentation. The following are potential areas of investigation but no discoveries are claimed:
-
-- Whether certain features matter more than expected
-- Whether specific strategies dominate
-- Whether monotonicity matters more than smoothness
-
-## 7. Performance Insights
-
-**To be determined.** The score distribution pattern will be analyzed after all games are completed. A bimodal distribution is a possibility but not confirmed.
-
-## 8. Cross-Feature Analysis
-
-**To be determined.** Feature correlations will be computed from the training data after experiments.
-
-## 9. Actionable Insights
-
-**To be determined.** Actionable insights will be derived from the complete analysis after experimentation. No recommendations are made at this stage.
-
-## 10. Insights Validation
-
-All insights will be validated through:
-- Statistical testing (non-parametric, with Bonferroni correction)
-- Cross-validation
-- Reproducibility checks
-- Domain expert review
-- Theoretical analysis (as applicable)
-
-## 11. Limitations
-
-- Insights are based on the 27-dimensional feature vector
-- Results may not generalize to other game domains
-- Training data may not cover all game states
-- Statistical power depends on sample size
-- All insights are preliminary and await full experimentation
+`analysis/insights.md` auto-generated; each insight line cites `ScoreMetrics` aggregation, not prose. Unexpected findings (e.g., Up dominates not Left, or empty_count negatively correlated) flagged for Discussion §5.

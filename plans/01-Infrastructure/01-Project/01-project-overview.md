@@ -1,4 +1,4 @@
-# 2048 ML System — Project Overview
+# Rust-Native AutoML Framework — 2048 ML Implementation Project
 
 > **Project:** 2048 Machine Learning System
 > **Version:** 1.0.0
@@ -10,17 +10,20 @@
 
 ## 1. Purpose
 
-This project builds a machine learning system that uses the Evintkoo/automl framework (Rust-based AutoML) to maximize game score in the 2048 game. The winner is the model that achieves the highest mean score across 10,000+ games. Models are ranked by mean score, with the top performer being the winner.
+This project implements and evaluates the independently developed Evintkoo/automl framework as a Rust-native AutoML architecture. The `2048-ml` repository provides the main integration and case-study environment: a stochastic 4×4 game in which the framework trains supervised action policies.
+
+The 2048 environment, data-generation pipeline, feature extraction, and evaluation tools are experimental infrastructure. Model training, preprocessing, model comparison, and hyperparameter optimization must be performed through the AutoML framework.
 
 ## 2. Goals
 
-1. **Primary:** Maximize mean game score across all candidate algorithms
-2. **Evaluation:** Benchmark automl capability and rank models by score
-3. **Research:** Identify which algorithm achieves the highest mean score
+1. **Primary framework contribution:** Design, implement, and validate the Rust-native AutoML architecture.
+2. **Framework evaluation:** Measure correctness, reproducibility, accuracy, efficiency, and search behavior against established baselines.
+3. **2048 case study:** Demonstrate the framework in an end-to-end supervised stochastic policy-learning system.
 
 ## 3. Scope
 
 ### In Scope
+- AutoML framework architecture, implementation, and capability validation on standard tabular tasks
 - 2048 game environment creation and simulation
 - State representation and feature engineering
 - Action space definition and encoding
@@ -31,6 +34,7 @@ This project builds a machine learning system that uses the Evintkoo/automl fram
 
 ### Out of Scope
 - Using automl via frontend to run training (CLI/API only)
+- Claiming the globally highest or mathematically optimal 2048 score
 - Game UI development (headless simulation only)
 - Model deployment as a web service
 - Mobile or desktop application wrappers
@@ -79,7 +83,7 @@ flowchart TD
 
 ## 6. Dependencies
 
-- **automl submodule:** `https://github.com/Evintkoo/automl`
+- **automl submodule:** `https://github.com/Evintkoo/automl` pinned at `64f5edad29c9e58ee7d33abf380418d5cfbbb561` (v1.0.0-138-g64f5eda) — verify with `git submodule status automl`
   - Path: `automl/`
   - Provides: TrainEngine, TrainingConfig, ModelType, HyperOptX, InferenceEngine
 
@@ -97,7 +101,7 @@ Because this project's goal #2 is to benchmark automl's capability, and the proj
 
 **If verification fails:**
 - Document which automl capabilities are missing in `plans/01-Infrastructure/01-Project/01-project-overview.md`
-- If core training capability is missing (no supervised classification models), implement a local training fallback using `smartcore`/`linfa` directly (bypassing automl's abstraction)
+- If a required core capability is missing, stop the training milestone, record the missing capability, and revise the experiment scope. Do **not** add a local `smartcore`/`linfa` fallback: the core constraint is automl-only training.
 - The project's goal #2 then evaluates **what automl CAN do**, not what it should have done
 
 **This verification is not optional.** Without it, the project cannot distinguish between "automl is incapable" and "our integration is broken."
@@ -112,44 +116,49 @@ Because this project's goal #2 is to benchmark automl's capability, and the proj
 ## 8. Success Criteria
 
 ### Tier 1: Minimum Viable Milestone
+- AutoML capability and correctness gate completed
+- Framework benchmark protocol documented
 - Determine each model's score ceiling through systematic evaluation (10,000+ games)
 - Establish baseline scores for Random Forest, Gradient Boosting, XGBoost, and other candidates
 - Full data pipeline from game simulation to trained model works end-to-end
 - Models are ranked by mean score
 
 ### Tier 2: Intermediate Milestone
+- Framework architecture, data contracts, and design trade-offs documented
+- Framework benchmarks completed on standard tabular datasets
 - Rank all models by mean score across benchmark games
 - Training pipeline is fully automated and reproducible
 - Score-based comparison demonstrates clear differences between algorithms
-- Winner identified as the model with the highest mean score
+- Case-study winner identified from held-out mean score with uncertainty and practical-effect reporting
 
 ### Tier 3: Advanced Milestone
+- Framework results validated on standard tabular datasets
+- Framework performance and reproducibility compared with established implementations
 - The top-ranked model achieves mean score significantly exceeding heuristic baseline (~512)
 - Benchmark results demonstrate automl capability on sequential decision-making
 - Statistical tests confirm score superiority over all baselines
 
 ### Tier 4: Stretch Goal
-- The best model achieves the highest possible mean score across all candidates
+- The framework and 2048 pipeline are independently reproduced or validated by a second implementation
+- Framework architecture demonstrates a measurable advantage or clearly characterized trade-off over established alternatives
 - Statistical evidence shows one algorithm significantly outperforms all others
 - Results are publishable as research findings
 
-### Winner Determination
-- **Winner** = model with the highest mean score across ≥10,000 benchmark games
+### 2048 Case-Study Winner Determination
+- **Case-study winner** = model with the highest held-out mean score under the declared evaluation protocol
 - Ranking is based on mean score (primary), with median score and score consistency as tiebreakers
-- All results must be statistically significant (Mann-Whitney U, p < 0.05 after Bonferroni correction)
-- Bootstrap 95% CI on mean difference must not include zero
-- Comprehensive IMRD research report published
+- The primary baseline comparison must use the pre-registered Mann-Whitney U test with Holm correction
+- Bootstrap 95% CIs and effect sizes must be reported for practical interpretation
 - Benchmark results demonstrate meaningful automl capability on sequential games
 - Comprehensive IMRD research report published with validated findings
 
 ### Theoretical Limit Definition
-The theoretical maximum score for 2048 is an unsolved problem in combinatorial game theory. The maximum tile value on a 4×4 board is bounded at 32768 (2^15), but the exact maximum achievable score through optimal play is unknown. **Models are ranked by mean game score, not by proximity to a theoretical limit.** The heuristic agent (~512 mean score) serves as a practical baseline reference.
+The theoretical maximum score for 2048 is not used as an optimization target. **Models are ranked by mean game score under the predefined evaluation protocol, not by proximity to a theoretical limit.** The heuristic agent (~512 mean score) serves as a practical baseline reference.
 
 ### Non-Negotiable Criteria (All Tiers)
-- Models are ranked by mean game score across ≥10,000 benchmark games
-- The winner is the model with the highest mean score
-- Statistical significance confirmed (Mann-Whitney U, p < 0.05 after Bonferroni correction)
-- Bootstrap 95% CI on mean difference does not include zero
-- Cohen's d ≥ 0.5 (medium effect size)
+- Models are ranked by held-out game score with uncertainty and practical-effect reporting
+- The case-study winner is the model with the highest held-out mean score; this does not define framework success
+- Statistical comparison completed using the pre-registered Mann-Whitney U/Holm protocol
+- Bootstrap 95% CI and effect size reported; neither is an automatic exclusion gate
 - Best model identified and documented with strong statistical evidence
 - Research findings contribute to understanding of automl on sequential decision-making

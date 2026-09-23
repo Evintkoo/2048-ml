@@ -4,21 +4,9 @@
 
 Provide comprehensive analysis of benchmarking results for the 2048 ML system.
 
-## 2. Results Analysis Framework
+## 2. Pipeline — Raw → Validate (Keep Full Distribution) → Aggregate → Insights
 
-```mermaid
-flowchart TD
-    subgraph "Results Analysis Pipeline"
-        A[Raw Benchmark Data] --> B[Data Cleaning]
-        B --> C[Statistical Analysis]
-        C --> D[Trend Identification]
-        D --> E[Anomaly Detection]
-        E --> F[Pattern Recognition]
-        F --> G[Conclusions]
-    end
-    
-    G --> H[Final Report]
-```
+Raw benchmark data → validate (keep full heavy-tailed distribution, no truncation) → compute mean/median/std/percentiles → comparative stats vs baselines (see `01-Evaluation/01-benchmarking-framework.md §6.4`) → conclusions.
 
 ## 3. Data Processing Pipeline — Keep Full Distribution (No Truncation)
 
@@ -48,51 +36,13 @@ flowchart LR
 | Improvement | Score delta over time | Regression analysis |
 | Consistency | Win rate stability | Confidence intervals |
 
-## 5. Trend Analysis
+## 5. Heavy-Tail §3 & Anomaly §6 — Kept as Core
 
-```mermaid
-graph TD
-    A[Training Epochs] --> B[Score per Epoch]
-    B --> C[Plot Learning Curve]
-    C --> D[Identify Convergence Point]
-    D --> E[Analyze Plateau Region]
-    E --> F[Determine Optimal Stopping]
-```
+> **Tail is signal.** Scores are heavy-tailed; keep full distribution, report `p50/p90/p95/p99/max` per §3. Anomaly detection is **investigation only** — log z-scores, never filter (see §6 note). These two sections are the value-add; generic trend/visualization mermaids removed.
 
-## 6. Anomaly Detection — For Investigation Only, Not Filtering
+## 6. Comparative Analysis
 
-```mermaid
-flowchart TD
-    A[Score Data] --> B[Calculate Z-Scores<br/>for investigation only]
-    B --> C{Anomaly?}
-    C -->|Yes| D[Investigate Cause<br/>log only]
-    C -->|No| E[Normal Result]
-    D --> F[Log and Flag]
-    F --> G[Do NOT Filter<br/>keep full distribution]
-```
-
-> High scores are heavy-tailed signal, not anomalies to remove. Z-score flagging is for **diagnostics/logging only** — do **not** filter or truncate scores before aggregation (see §3). Keep full distribution; report percentiles.
-
-## 7. Comparative Analysis
-
-```mermaid
-flowchart LR
-    A[Current Run] --> B[Compare with Baselines]
-    B --> C[Compute Differences]
-    C --> D[Statistical Significance]
-    D --> E[Identify Key Factors]
-    E --> F[Actionable Insights]
-```
-
-## 8. Results Visualization
-
-```mermaid
-graph TD
-    Histogram[Score Histogram] -->|distribution| V1[Distribution Analysis]
-    LineChart[Score Over Time] -->|trend| V2[Trend Analysis]
-    BoxPlot[Score Box Plot] -->|spread| V3[Spread Analysis]
-    Scatter[Score vs Features] -->|correlation| V4[Correlation Analysis]
-```
+Compare current 10k-game run vs Random (~128) and Heuristic (~512) via Mann-Whitney U + bootstrap CI + Cohen's d (see `01-Evaluation/01-benchmarking-framework.md §6.4`). Identify key factors only post-training.
 
 ## 9. Analysis Conclusions
 

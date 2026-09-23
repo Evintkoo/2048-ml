@@ -1,111 +1,35 @@
-# Development Environment Setup
+# Development Environment Setup — Quickstart (20 lines)
 
-## 1. System Requirements
+> **For CLI subcommands see `04-Tooling/01-cli-tools.md`.** This file is setup only.
 
-| Requirement | Minimum | Recommended |
-|-------------|---------|-------------|
-| OS | macOS 14+, Linux (kernel 6.0+) | macOS 14+, Ubuntu 22.04+ |
-| RAM | 8 GB | 16 GB |
-| CPU | 4 cores | 8 cores |
-| Disk | 20 GB | 50 GB |
-| Rust | 1.75+ | 1.75+ |
+## 1. Requirements
 
-## 2. Installation Steps
+Rust **1.75+** (automl MSRV), 8 GB RAM, 20 GB disk. macOS 14+ or Ubuntu 22.04+.
 
-### 2.1 Install Rust
+## 2. Setup
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
-rustc --version
+rustc --version  # must be ≥1.75
+
+git clone --recurse-submodules https://github.com/Evintkoo/2048-ml
+cd 2048-ml
+git submodule update --init --recursive
+git submodule status automl  # pinned: 64f5edad...
+
+cargo build
+cargo test                   # includes automl smoke (see 03-Dependencies/02-submodule-deps.md §2)
+cargo run -- --help          # verify subcommands
 ```
 
-### 2.2 Install Dependencies
+## 3. Submodule Health Check
 
 ```bash
-# Build automl
-cd automl
-cargo build --release
-
-# Verify automl works
-./target/release/automl --help
+test -d automl/.git && echo "OK" || echo "MISSING"
+cargo test -p automl --lib -- training::config
 ```
 
-### 2.3 Initialize Project
+If `cargo: command not found` → `source "$HOME/.cargo/env"`.
 
-```bash
-# Initialize workspace
-cargo init --name 2048-ml
-
-# Add automl dependency
-cargo add automl --path automl
-```
-
-## 3. Environment Variables
-
-```bash
-# .env file
-export RUST_LOG=info
-export RUST_BACKTRACE=1
-export CARGO_TARGET_DIR=target
-export AUTOML_PATH=./automl
-export DATA_PATH=./data
-export RESULTS_PATH=./results
-```
-
-## 4. IDE Setup
-
-### VS Code
-
-```json
-{
-  "rust-analyzer.checkOnSave": true,
-  "rust-analyzer.cargo.features": "all",
-  "editor.formatOnSave": true,
-  "rust-analyzer.rustfmt.extraArgs": ["--emit=stdout"],
-  "files.associations": {
-    "*.yaml": "yaml",
-    "*.toml": "toml"
-  }
-}
-```
-
-### Pre-commit Hooks
-
-```bash
-#!/bin/bash
-cargo fmt -- --check
-cargo clippy -- -D warnings
-```
-
-## 5. Docker Environment
-
-```dockerfile
-FROM rust:1.75-slim
-
-WORKDIR /app
-COPY . .
-
-RUN cargo build --release
-
-CMD ["./target/release/2048-ml"]
-```
-
-## 6. Environment Validation
-
-```bash
-# Verify environment is ready
-cargo --version
-rustc --version
-cargo test --workspace
-automl --version
-```
-
-## 7. Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| `cargo: command not found` | `source "$HOME/.cargo/env"` |
-| `automl build fails` | Check `automl/Cargo.toml` dependencies |
-| `Permission denied` | `chmod +x scripts/*.sh` |
-| `Out of memory` | Reduce parallel jobs, increase swap |
+> Docker, cross-compile, `bench`/`audit`, env-var tables — Optional, not MVP (see `01-Project/03-tooling.md` §3). Not needed for local headless development.

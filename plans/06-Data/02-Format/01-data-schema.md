@@ -90,10 +90,12 @@ pub struct StateRecord {
     pub edge_tiles_occupied: f64,
     pub col_worst: f64,
     pub row_worst: f64,
-    pub action: u8, // 0-3 classification label
-    pub score: u64, // raw score for analysis only, not training label
-    pub done: bool,
+    pub action: u8, // 0-3 classification label — ONLY y
+    // score: u64 is OUTSIDE this struct — optional trailing CSV column `,score` for analysis only, never as y
+    // No done / reward / next_state — those are RL fields and must not appear
 }
+/// Optional metadata (not in training CSV):
+/// pub score: u64 — if stored, as trailing `,score` column after `action`, never as feature/label
 ```
 
 ## 5. Data Format Flow
@@ -147,7 +149,9 @@ flowchart LR
     Dir --> N03[03-data-standard.md]
 ```
 
-## 8. CSV Schema for AutoML
+## 8. CSV Schema for AutoML — Training = 28 cols; `score` Is Metadata
+
+> **Training CSV is exactly 28 columns** `grid_0..row_worst,action` — `score: u64` is **optional metadata** appended as trailing `,score` (29th col) for analysis only, **never** as `y` or feature. Training `DataFrame` mapping is `X: [f64;27]`, `y: u8` — `score` is not loaded as `y`. No `done`/`reward`/`next_state` columns.
 
 The automl framework consumes data in CSV format. The following defines the exact schema expected.
 
@@ -176,7 +180,7 @@ The automl framework consumes data in CSV format. The following defines the exac
 | `monotonicity` | `f64` | Monotonicity score of the board (0-1) |
 | `smoothness` | `f64` | Smoothness score of the board (0-1) |
 | `merges_available` | `f64` | Number of possible merges / 16 (0-1) |
-| `score_normalized` | `f64` | Normalized score `log10(score+1)/6.0` (0-1, max ~1.3M →6.1) |
+| `score_normalized` | `f64` | `log10(score+1)/6.0`; finite and non-negative, not globally capped at 1 |
 | `adjacency_merge_score` | `f64` | Adjacent mergeable pair values / 16 (0-1) |
 | `corner_max` | `f64` | Max tile in corner normalized (0-1) |
 | `edge_tiles_occupied` | `f64` | Edge tiles occupied / 12 (0-1) |

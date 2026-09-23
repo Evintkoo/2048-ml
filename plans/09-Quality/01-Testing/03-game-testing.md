@@ -1,64 +1,53 @@
-# Game Testing
+# Game Testing — Rule Validation Matrix (45 Lines, Automated cargo test)
 
-> **See canonical `09-Quality/01-Testing/01-unit-testing.md` (and `09-Quality/03-CI/01-ci-pipeline.md` for CI pipeline) — duplicate stub.** Trimmed repetitive mermaid; see canonical for framework.
+> **Distinct from `02-Validation/02-game-validation.md`:** Testing = automated `cargo test` (this file). Validation = manual audit + property tests (that file).
 
 ## 1. Purpose
+Automated `cargo test` validation of 4×4 rules, spawns, and score tracking on fixed seeds. 15 cases, no manual steps.
 
-Define game testing procedures for validating the 2048 game engine and ML model integration.
+## 2. Matrix (15 Cases)
 
-## 2. Game Testing Framework
+| # | Rule | Board Before → Action | Expected After | Score Δ | Seed |
+|---|------|----------------------|----------------|---------|------|
+| 1 | slide no-merge | `[2,0,4,0]` → Left | `[2,4,0,0]` | 0 | 42 |
+| 2 | single merge | `[2,2,0,0]` → Left | `[4,0,0,0]` | +4 | 42 |
+| 3 | double-merge | `[2,2,4,4]` → Left | `[4,8,0,0]` | +12 (4+8) | 42 |
+| 4 | single-merge cap | `[2,2,2,0]` → Left | `[4,2,0,0]` | +4 (one merge only) | 42 |
+| 5 | blocked / no-op | `[[2,4],[8,16]...]` full no adj equal → any dir | `would_change==false`, no spawn | 0 | 42 |
+| 6 | full board no moves | filled checkerboard | `is_game_over()==true` | — | — |
+| 7 | full board with merge | full but `[...] [2,2] ...]` | `is_game_over()==false` | — | — |
+| 8 | max tile `32768` | tile 32768 present | stays, next merge impossible (needs 17th cell) | — | 42 |
+| 9 | score overflow | near `u32::MAX` accumulation | `checked_add` returns `Err` or saturates | — | — |
+| 10 | spawn determinism | `ChaCha8Rng(42)` | same spawn sequence re-run | — | 42 |
+| 11 | spawn 90/10 | 1000 spawns seed 42 | ~900×2, ~100×4 (±3σ) | — | 42 |
+| 12 | action mapping | state → model predict → 0..3 | `action in 0..3` | — | 42 |
+| 13 | valid-move detection | property: brute `would_change` vs `execute_move` changes | must match for all 4 dirs | — | random |
+| 14 | corner slide | `[0,0,0,2]` → Right | `[0,0,0,2]` no shift? actually `[0,0,0,2]` stays | 0 | 42 |
+| 15 | multi-row merges | two rows each mergable | both rows merge independently | sum deltas | 42 |
 
-> **Trimmed — see canonical `09-Quality/01-Testing/01-unit-testing.md` §2 for test framework mermaid; and `09-Quality/03-CI/01-ci-pipeline.md` for CI pipeline.**
+Plus: **random property** — 500 random boards × 4 dirs: `would_change` matches `execute_move` board-diff.
 
-## 3. Game Test Categories
-
-| Category | Description | Examples |
-|----------|-------------|----------|
-| Functional | Game mechanics work | Move execution, merge logic |
-| Performance | Game speed | Games per second, latency |
-| Regression | No broken features | Existing features still work |
-| Boundary | Edge cases | Full board, no moves, max score |
-
-## 4. Functional Testing Pipeline
-
-> **Trimmed — see canonical `09-Quality/01-Testing/01-unit-testing.md` §7 and `09-Quality/03-CI/01-ci-pipeline.md` for pipeline mermaid.**
-
-## 5. Game Scenario Tests
-
-> **Trimmed — see canonical for scenario mermaid; duplicate removed.**
-
-## 6. Model Behavior Testing
-
-> **Trimmed — see canonical `09-Quality/01-Testing/01-unit-testing.md` and `09-Quality/03-CI/01-ci-pipeline.md` for model behavior mermaid.**
-
-## 7. Edge Case Testing
-
-> **Trimmed duplicate mindmap — see `09-Quality/01-Testing/01-unit-testing.md` for edge handling; canonical testing mermaid.**
-
-## 8. Game Testing Metrics
+## 3. Assertions
 
 ```rust
-pub struct GameTestMetrics {
-    pub n_games_tested: usize,
-    pub rules_passed: usize,
-    pub rules_failed: usize,
-    pub edge_cases_covered: usize,
-    pub edge_cases_passed: usize,
-    pub avg_game_duration_ms: u64,
-    pub model_move_validity: f64,    // % of valid moves
-    pub score_accuracy: f64,         // % of correct scores
+#[test] fn double_merge() {
+  let (board, delta) = engine.execute_move(2); // Left
+  assert_eq!(board.row(0), [4,8,0,0]);
+  assert_eq!(delta, 12);
+  assert!(engine.score_tracker().is_monotonic());
 }
 ```
 
-## 9. Test Automation
+## 4. Metrics
 
-> **Trimmed — see canonical `09-Quality/03-CI/01-ci-pipeline.md` §6 and `09-Quality/01-Testing/01-unit-testing.md` for automation mermaid.**
+```rust
+pub struct GameTestMetrics { pub n_games: usize, pub rules_passed: usize, pub score_accuracy: f64 }
+```
 
-## 10. Reporting
+## 5. Run
 
-Each game testing session produces:
-- Pass/fail status per test category
-- Edge case coverage report
-- Model behavior analysis
-- Performance metrics
-- Regression detection
+```bash
+cargo test --test game -- --nocapture   # 20+ tests (15 matrix + 5 property) ~5 min
+```
+
+Cross-ref `09-Quality/02-Validation/02-game-validation.md` for manual audit checklist; do not duplicate that content here.

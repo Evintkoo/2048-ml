@@ -1,4 +1,4 @@
-# Metrics
+# Metrics — Framework Validation and 2048 Case Study
 
 ## 1. Purpose
 
@@ -6,25 +6,25 @@ Define the evaluation metrics used to assess the 2048 game machine learning mode
 
 ## 2. Metrics Overview
 
-The primary task is **multi-class classification** (4 actions) with **game score** as the ultimate performance metric. Regression metrics (R², RMSE, MAE) are NOT used because the model does not predict scores — it predicts actions. Score is a downstream consequence of action quality, not a direct prediction target.
+The framework's primary validation metrics are task-appropriate classification quality, resource use, reproducibility, and artifact correctness on standard tabular tasks. In the 2048 case study, the task is **multi-class classification** (4 actions) with **game score** as a downstream application metric. Regression metrics (R², RMSE, MAE) are not used for the action target because the model predicts actions, not scores.
 
 ```mermaid
 flowchart TD
     subgraph "Metrics Categories — Canonical"
-        Primary[Primary Metric — Ranking]
-        Secondary[Secondary Metrics — Gates]
-        Tertiary[Tertiary Metrics — Informative]
+        Primary[Framework Metrics]
+        Secondary[Application Metrics]
+        Tertiary[Resource and Reproducibility Metrics]
         Optional[Optional Analysis — Not a Gate]
     end
     
-    Primary --> GameScore[Mean Game Score ≥512<br/>rank by mean — winner is highest]
+    Primary --> FrameworkQuality[Task quality, correctness, and reproducibility]
     
-    Secondary --> Acc[Valid-Action Accuracy ≥60%<br/>(on valid actions only)]
-    Secondary --> F1[F1 Macro ≥0.55<br/>(across 4 classes)]
+    Secondary --> Acc[Valid-Action Accuracy<br/>(on valid actions only)]
+    Secondary --> F1[F1 Macro<br/>(across 4 classes)]
     Secondary --> Precision[Precision]
     Secondary --> Recall[Recall]
     
-    Tertiary --> Speed[Inference Speed ≤1ms]
+    Tertiary --> Speed[Inference Speed and Resource Use]
     Tertiary --> Consistency[Score Std Dev]
     Tertiary --> Ceiling[Max Tile Reached]
 
@@ -108,7 +108,7 @@ flowchart LR
 ```mermaid
 flowchart TD
     subgraph "Composite Metrics — Canonical (Ranking)"
-        ModelPerf[Model Ranking: Mean Game Score<br/>primary — winner is highest mean]
+        ModelPerf[2048 Case-Study Ranking: Mean Game Score<br/>application metric — uncertainty reported]
     end
     
     ModelPerf --> Rank[Rank by Mean Game Score<br/>≥512 to beat heuristic]

@@ -1,112 +1,78 @@
-# Feature Normalization
+# Normalization — Deterministic Divisors + automl Scaler
 
-## 1. Purpose
+> **Cross-ref:** creation canonical in `01-state-vector.md:31` `create_state_vector`; see `01-state-vector.md §4` for preprocessor. This file = normalization rules.
+> **No `move_count_norm`.** Deleted — not in 27, not predictive. Do not reintroduce.
 
-Normalize all features to a consistent scale for optimal automl model performance.
+## 1. Deterministic Divisors (Canonical — No Fitting)
 
-## 2. Normalization Methods
+All 27 features are already [0,1] via fixed divisors:
 
-| Method | Formula | Use Case |
-|--------|---------|----------|
-| StandardScaler | (x - μ) / σ | Most features |
-| MinMaxScaler | (x - min) / (max - min) | Bounded features |
-| LogTransform | log(x + 1) | Score, tile values |
-| None | Raw values | Tree-based models |
+| Feature | Signature | Formula |
+|---------|-----------|---------|
+| grid `0..15` | `fn(v: u32) -> f64` | `v as f64 / 32768.0` |
+| empty_count |  | `empty as f64 / 16.0` |
+| max_tile_log |  | `(max as f64 + 1.0).log2() / 15.0` |
+| monotonicity/smoothness |  | already [0,1] |
+| merges_available |  | `merges as f64 / 16.0` |
+| score_normalized idx21 |  | `(score as f64 + 1.0).log10() / 6.0` |
+| adjacency_merge_score |  | `sum / 16.0` |
+| corner_max |  | `corner as f64 / 32768.0` |
+| edge_tiles_occupied |  | `occupied as f64 / 12.0` |
+| col_worst / row_worst |  | `min_sum as f64 / 8192.0` |
 
-## 3. Grid Value Normalization
+Correct signatures: `fn(value: u32) -> f64` (not `u8`). Max tile 32768 = 2^15.
 
-```rust
-// Tile values are powers of 2: 0, 2, 4, 8, ..., 32768
-// Normalize to [0, 1] by dividing by max possible tile
-fn normalize_grid_value(value: u8) -> f64 {
-    value as f64 / 32768.0
-}
-```
+## 2. Fitted Scaler vs Deterministic
 
-## 4. Count Feature Normalization
+| Layer | When | `ScalerType` |
+|-------|------|--------------|
+| Deterministic divisors | always (creation) | — (fixed math) |
+| `DataPreprocessor` fitted | optional, after divisors | `Standard` for linear/SVM/KNN; `None` for trees (scale-invariant) |
 
-```rust
-// All count features are bounded (canonical 11):
-// empty_count: [0, 16] → [0, 1]
-// merges_available: [0, 16] → [0, 1]
-// edge_tiles_occupied: [0, 12] → [0, 1]
-fn normalize_count(value: usize, max: usize) -> f64 {
-    value as f64 / max as f64
-}
-```
+Deterministic divisors are **not** a `ScalerType`; fitted `StandardScaler` is fitted on training `DataFrame` after divisors.
 
-## 5. Score Normalization
-
-```rust
-// Score can range from 0 to ~1,300,000
-// Use log10 normalization
-fn normalize_score(score: u64) -> f64 {
-    (score as f64 + 1.0).log10() / 6.0  // log10(1,000,000) ≈ 6
-}
-```
-
-## 6. Move Count Normalization
-
-```rust
-// Game length varies from ~10 to ~1000 moves
-fn normalize_move_count(moves: u64) -> f64 {
-    (moves as f64) / 1000.0
-}
-```
-
-## 7. automl Preprocessing Pipeline
+## 3. automl Pipeline — Correct APIs
 
 ```rust
 use automl::preprocessing::{DataPreprocessor, PreprocessingConfig, ScalerType, ImputeStrategy, EncoderType};
-
 let config = PreprocessingConfig::default()
-    .with_scaler(ScalerType::Standard)  // Z-score standardization (real API: with_scaler, not with_scaler_type)
-    .with_numeric_impute(ImputeStrategy::Mean) // real type: ImputeStrategy, not ImputationStrategy
-    .with_encoder(EncoderType::OneHot);       // real type: EncoderType, not EncodingType
-// Tree models (RandomForest, GradientBoosting, XGBoost) are scale-invariant —
-// use ScalerType::None to skip scaling, or Standard/MinMax if sharing a pipeline with linear models.
-
+    .with_scaler(ScalerType::Standard)      // or ScalerType::None for RandomForest/XGBoost/LightGBM
+    .with_numeric_impute(ImputeStrategy::Mean)
+    .with_encoder(EncoderType::OneHot);     // categoricals only; no action one-hot needed (automl handles label internally)
 let preprocessor = DataPreprocessor::new(config);
-let (x_normalized, _) = preprocessor.fit_transform(&raw_data)?;
+let df_norm = preprocessor.fit_transform(&df, &feature_cols)?;
 ```
 
-## 8. Normalization for Different Model Types
+Tree models: `ScalerType::None` is acceptable — skip scaling entirely, rely on deterministic divisors only.
 
-| Model Type | Needs Normalization | Recommended Method |
-|------------|-------------------|-------------------|
-| Linear Regression | Yes | StandardScaler |
-| Logistic Regression | Yes | StandardScaler |
-| SVM | Yes | StandardScaler |
-| KNN | Yes | MinMaxScaler |
-| Random Forest | No | None (tree-based) |
-| Gradient Boosting | No | None (tree-based) |
-| XGBoost | No | None (tree-based) |
-| Neural Networks | Yes | StandardScaler |
+## 4. Model-Specific Guidance
 
-## 9. Normalization Persistence
+| Model | Scaler |
+|-------|--------|
+| Linear/Logistic, SVM, KNN, MLP | `Standard` (or `MinMax`) |
+| RandomForest, GradientBoosting, XGBoost, LightGBM, CatBoost | `None` (optional) |
+
+## 5. Persistence
 
 ```rust
-// Save fitted preprocessor for consistent inference
-pub fn save_preprocessor(preprocessor: &DataPreprocessor, path: &str) -> Result<()> {
-    let config = preprocessor.get_config();
-    let json = serde_json::to_string(&config)?;
-    std::fs::write(path, json)?;
+pub fn save_preprocessor(p: &DataPreprocessor, path: &str) -> Result<()> {
+    std::fs::write(path, serde_json::to_string(&p.get_config())?)?; Ok(())
 }
-
-// Load preprocessor for inference
 pub fn load_preprocessor(path: &str) -> Result<DataPreprocessor> {
-    let json = std::fs::read_to_string(path)?;
-    let config: PreprocessingConfig = serde_json::from_str(&json)?;
-    Ok(DataPreprocessor::new(config))
+    let cfg: PreprocessingConfig = serde_json::from_str(&std::fs::read_to_string(path)?)?;
+    Ok(DataPreprocessor::new(cfg))
 }
 ```
 
-## 10. Validation
+## 6. Validation
+
+Deterministic divisors guarantee [0,1] before scaler. After any scaler, check finite:
 
 ```rust
-fn validate_normalization(original: &[f64], normalized: &[f64]) -> Result<()> {
-    // Check that normalization was applied correctly
-    // Verify no information loss
-    // Check distribution properties
+fn validate_normalization(v: &[f64;27]) -> Result<()> {
+    for (i, &x) in v.iter().enumerate() {
+        if !x.is_finite() { return Err(format!("{} not finite", i).into()); }
+        if !(0.0..=1.0).contains(&x) && scaler_is_none { /* deterministic must be [0,1] */ }
+    } Ok(())
 }
 ```

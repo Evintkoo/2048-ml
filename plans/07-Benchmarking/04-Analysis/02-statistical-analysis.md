@@ -1,4 +1,6 @@
-# Statistical Analysis
+# Statistical Analysis — Descriptive Foundations (Distinct from Significance-Testing Winner Protocol)
+
+> **Distinct focus vs `03-significance-testing.md`:** This file = descriptive foundations (distributions, CIs, test assumptions). `03-significance-testing.md` = winner determination protocol (adjusted α, ranking, power). No duplication — cross-ref there for ranking.
 
 ## 1. Purpose
 

@@ -1,78 +1,64 @@
 # Rust Dependencies Specification
 
-## 1. automl Crate Dependencies
+> **Scope:** This file = `Cargo.toml` pins & workspace layout. For automl capability table (TrainingConfig, ModelType, CV) see `01-Project/02-dependencies.md`. 27-dim canonical lives in `03-State/01-Board/02-feature-extraction.md` + `06-Data/02-Format/01-data-schema.md`.
 
-The automl submodule provides all ML dependencies. The 2048 project will re-export relevant modules:
+## 1. Root Cargo.toml (Single Crate MVP)
+
+No `automl/Cargo.toml` duplication — versions pinned to automl's manifest for compatibility.
 
 ```toml
 [dependencies]
-automl = { path = "automl" }
-ndarray = "0.16"
-polars = { version = "0.46", features = ["lazy", "csv", "json"] }
-rand = "0.8"
-rand_chacha = "0.3"
+automl = { path = "automl" }                    # pinned hash 64f5eda (v1.0.0-138)
+ndarray = "0.16"                                # pinned to automl; board arrays
+polars = { version = "0.46", features = ["lazy", "csv", "json"] } # DataFrame 27+1
+rand = "0.8"                                    # automl-compatible RNG
+rand_chacha = "0.3"                             # deterministic seeding
 ```
 
-## 2. Direct Dependencies for 2048 Engine
+## 2. Direct Dependencies for 2048 Engine (MVP)
 
-| Crate | Version | Purpose |
-|-------|---------|---------|
-| `rand` | 0.8 | Random tile placement |
-| `rand_chacha` | 0.3 | Deterministic RNG |
-| `clap` | 4.4 | CLI for game simulation |
-| `serde` | 1.0 | State serialization |
-| `serde_json` | 1.0 | Data persistence |
-| `ndarray` | 0.16 | Board state arrays |
-| `rayon` | 1.10 | Parallel game simulation (sync batch) |
-| `thiserror` | 2.0 | Error types |
-| `anyhow` | 1.0 | Error handling |
-| `tracing` | 0.1 | Logging |
-| `tracing-subscriber` | 0.3 | Log formatting |
-| `indicatif` | 0.17 | Progress bars |
-| `chrono` | 0.4 | Timestamps |
-| `uuid` | 1.7 | Session IDs |
+| Crate | Version | Pin Rationale | 2048 Use |
+|-------|---------|---------------|----------|
+| `rand` | 0.8 | Matches automl → single RNG graph | Tile placement |
+| `rand_chacha` | 0.3 | Matches automl ChaCha8Rng | `with_random_state(42)` reproducibility |
+| `clap` | 4.4 | Matches automl | Single binary subcommands |
+| `serde` / `serde_json` | 1.0 | Matches automl | State + DataFrame JSON |
+| `ndarray` | 0.16 | Matches automl | Board 4×4 fallback arrays |
+| `rayon` | 1.10 | Matches automl | Parallel batch simulation |
+| `thiserror` | 2.0 | Matches automl | Error types |
+| `anyhow` | 1.0 | Matches automl | Error handling |
+| `tracing` | 0.1 | Matches automl | Logging |
+| `tracing-subscriber` | 0.3 | Matches automl | Log formatting |
+| `indicatif` | 0.17 | Minimal UI | Progress bars |
+| `chrono` | 0.4 | — | Timestamps |
+| `uuid` | 1.7 | automl dep | Session IDs |
 
-> **Note:** `tokio` removed for MVP — sync batch with `rayon` only; `tokio` is future optional for async server.
+> `tokio` — **not MVP**. automl brings it for its server (out-of-scope per initial-plan). 2048 uses sync `rayon` batch only.
 
-## 3. Dependency Constraints
+## 3. Constraints
 
 | Constraint | Rationale |
 |------------|-----------|
-| Rust 1.75+ | automl requires this minimum |
-| No `unsafe` | Memory safety guarantee |
-| Send + Sync | Thread-safe game engine |
-| `#![deny(warnings)]` | Strict compilation |
+| Rust 1.75+ | automl MSRV |
+| No `unsafe` | Memory safety |
+| `Send + Sync` | Thread-safe engine via rayon |
+| `#![deny(warnings)]` | Strict CI (`cargo clippy -- -D warnings`) |
 
-## 4. Cargo Workspace Structure
+## 4. Workspace Layout
 
-> **MVP: Single crate sufficient — workspace split is future optional.** The 4-crate workspace (`game-engine` / `data-collector` / `trainer` / `benchmark`) below is **not MVP**; keep one `Cargo.toml` at root with `automl` submodule for now. `tokio` not needed for sync batch (keep `rayon` only for parallel simulation).
+> **MVP: Single crate — 4-crate workspace is future optional** (game-engine / data-collector / trainer / benchmark).
 
 ```
 2048-ml/
-├── Cargo.toml          # Single crate (MVP)
-├── src/
-└── automl/             # Submodule
+├── Cargo.toml     # single crate (MVP)
+├── src/           # subcommands: game-engine, data-collector, benchmark
+└── automl/        # submodule @ 64f5eda
 ```
 
-<details><summary>Future optional workspace (out of scope for MVP)</summary>
+The MVP uses one root crate with `src/game_engine/`, `src/data_pipeline/`, and `src/evaluation/` modules. Separate workspace members (`game-engine/`, `data-collector/`, `trainer/`, `benchmark/`) are out of scope until post-MVP.
 
-```mermaid
-flowchart TD
-    root[2048-ml/] --> Cargo[Cargo.toml<br/>Workspace root]
-    root --> automl[automl/<br/>Submodule]
-    root --> game[game-engine/<br/>2048 game engine]
-    root --> data[data-collector/<br/>Data collection]
-    root --> trainer[trainer/<br/>Training pipeline]
-    root --> bench[benchmark/<br/>Benchmarking]
-```
-</details>
+## 5. Audit & Lockfile
 
-## 5. Dependency Audit
-
-Run `cargo audit` weekly to check for security vulnerabilities in dependencies.
-
-## 6. Lock File Management
-
-- `Cargo.lock` must be committed for reproducible builds
-- `automl/Cargo.lock` must also be committed
-- Update dependencies only during scheduled maintenance windows
+- `cargo audit` — Optional, not MVP (weekly scheduled, not CI-blocking).
+- Commit `Cargo.lock` at root; `automl/Cargo.lock` stays in submodule (do not copy).
+- Update pins only during scheduled maintenance; bump must keep `rand`/`ndarray` aligned with `automl/Cargo.toml`.

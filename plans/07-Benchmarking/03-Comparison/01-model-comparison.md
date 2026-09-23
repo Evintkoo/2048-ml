@@ -1,122 +1,36 @@
-# Model Comparison
+# Model Comparison — automl ModelType Variants (Same Seed, 10k Games)
 
 ## 1. Purpose
 
-Compare different ML model architectures and training approaches for the 2048 game.
+Compare the real `automl` `ModelType` variants on the fixed 27→action `MultiClassification` task. No placeholder "Architecture A/B/C".
 
-## 2. Comparison Architecture
+## 2. Variants Under Test
 
-```mermaid
-flowchart TD
-    subgraph "Model Comparison System"
-        subgraph "Models Under Test"
-            M1[Model Architecture A<br/>Tree Ensemble A (e.g., RF)]
-            M2[Model Architecture B<br/>Tree Ensemble B (e.g., XGBoost)]
-            M3[Model Architecture C<br/>Ensemble of Best]
-        end
-        
-        subgraph "Common Evaluation"
-            EE[Equal Environment<br/>Same Game Rules]
-            ED[Equal Data<br/>Same Training Set]
-            ER[Equal Metrics<br/>Same Evaluation Criteria]
-        end
-        
-        subgraph "Results"
-            R[Comparison Results]
-            RK[Rankings]
-            RC[Recommendations]
-        end
-        
-        M1 --> EE
-        M2 --> EE
-        M3 --> EE
-        EE --> ED
-        ED --> ER
-        ER --> R
-        R --> RK
-        RK --> RC
-    end
-```
+| `ModelType` variant | Family | Notes |
+|---------------------|--------|-------|
+| `RandomForest` | Tree ensemble | Baseline ensemble |
+| `XGBoost` | Gradient boosting | Regularized boosting |
+| `LightGBM` | Gradient boosting | Leaf-wise boosting |
+| `ExtraTrees` | Tree ensemble | Extra-randomized |
+| `GradientBoosting` | Gradient boosting | Sequential additive |
+| (+ others if `automl` exposes them) | — | Add rows as engines evolve |
 
-## 3. Models Compared
+Add rows only for engines actually exposed by `automl` — no invented architectures.
 
-| Model | Architecture | Parameters | Training Time |
-|-------|-------------|-----------|---------------|
-| Random Forest | Ensemble of decision trees | 10K trees | 2 hours |
-| Gradient Boosting | Sequential additive trees | 100 estimators | 1 hour |
-| XGBoost | Regularized boosting | 100 estimators | 1 hour |
+## 3. Protocol — Identical Conditions
 
-## 4. Evaluation Process
+All variants: **10,000 games, same seed**, same engine, same 27-dim features, same 70/15/15 chronological `GroupKFold` split. Statistical tests per `01-Evaluation/01-benchmarking-framework.md §6.4` (Mann-Whitney U, bootstrap CI, Cohen's d, Bonferroni).
 
-```mermaid
-flowchart LR
-    A[Load Model A] --> B[Run 1000 Games]
-    B --> C[Record Metrics]
-    C --> D[Load Model B]
-    D --> E[Run 1000 Games]
-    E --> F[Record Metrics]
-    F --> G[Load Model C]
-    G --> H[Run 1000 Games]
-    H --> I[Record Metrics]
-    I --> J[Compare All Results]
-    J --> K[Generate Report]
-```
+## 4. Performance Matrix — To Be Filled Post-Training
 
-## 5. Head-to-Head Matches
+| Model | Mean | Median | Std | p vs #1 (Mann-Whitney) | Rank |
+|-------|------|--------|-----|------------------------|------|
+| RF | TBD | TBD | TBD | — | TBD |
+| XGBoost | TBD | TBD | TBD | — | TBD |
+| LightGBM | TBD | TBD | TBD | — | TBD |
+| ExtraTrees | TBD | TBD | TBD | — | TBD |
+| GBM | TBD | TBD | TBD | — | TBD |
+| Heuristic | ~512 | ~384 | ~256 | ref | — |
+| Random | ~128 | ~96 | ~96 | ref | — |
 
-```mermaid
-graph TD
-    A[Model A vs Model B] -->|Winner: Model B| Results[Win/Loss Matrix]
-    B[Model A vs Model C] -->|Winner: Model C| Results
-    C[Model B vs Model C] -->|Winner: Model C| Results
-    
-    Results --> Matrix[Win Rate Matrix]
-    Matrix -->|Model C wins most| Ranking[Model C = Rank 1]
-```
-
-## 6. Model Performance Matrix
-
-```mermaid
-flowchart LR
-    A[Score Metrics] -->|all models| M1[Comparison Matrix]
-    B[Speed Metrics] --> M1
-    C[Robustness Metrics] --> M1
-    D[Convergence Metrics] --> M1
-    M1 --> E[Final Ranking]
-```
-
-## 7. Model Selection Criteria
-
-1. Highest mean score across all test games
-2. Best score consistency (lowest variance)
-3. Fastest inference time
-4. Best generalization to unseen board states
-5. Statistical significance of improvements
-
-## 8. Results Summary
-
-```rust
-pub struct ModelComparisonResult {
-    pub model_a: ModelResult,
-    pub model_b: ModelResult,
-    pub model_c: ModelResult,
-    pub winner: String,
-    pub significance: bool,
-    pub confidence_level: f64,
-}
-```
-
-## 9. Recommendations
-
-Based on the comparison:
-- Deploy the top-ranked model
-- Investigate why lower-ranked models underperform
-- Consider ensemble of top 2 models if improvement ≥ 5%
-- Document findings for future iterations
-
-## 10. Documentation
-
-All comparison results are archived in:
-- `07-Benchmarking/03-Comparison/01-model-comparison.md` (this file)
-- Raw data stored in results database
-- Charts generated for each comparison run
+> Matrix is filled **post-training** — no pre-filled winners. Winner = highest held-out mean; use the pre-registered Mann-Whitney U/Holm comparison, bootstrap CI, and effect size to characterize uncertainty and practical magnitude. See `04-Analysis/03-significance-testing.md`.

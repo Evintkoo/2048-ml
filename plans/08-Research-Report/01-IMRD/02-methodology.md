@@ -1,119 +1,23 @@
-# Methodology
+# Methodology — Redirect (Canonical: 02-Methodology/01-experimental-design.md)
 
-## 1. Experimental Design
+> **This file is a 25-line redirect. Do not duplicate flowcharts or expand scope here. All protocol, variables, and gates are defined in `02-Methodology/01-experimental-design.md`.**
 
-The research employs a controlled experimental design to evaluate the 2048 ML system.
+The study is a controlled 4×4 supervised experiment: 27-dim feature vector → `TaskType::MultiClassification` (labels 0–3 = Up/Down/Left/Right) → `TrainEngine`/`HyperOptX` → benchmark-framework evaluation over **≥10,000 games** at **seed 42**.
 
-## 2. Methodology Framework
+**Canonical reference:** See `02-Methodology/01-experimental-design.md` for variables, trial structure, replication, bias controls, sample-size justification, and pre-registration. See `02-Methodology/03-hypotheses.md` for framework hypotheses F1–F3 and application hypotheses H1–H3, and `02-Methodology/04-ablation-study.md` for the ablation matrix.
 
-```mermaid
-flowchart TD
-    subgraph "Methodology"
-        subgraph "Setup"
-            A[Define Game Environment]
-            B[Configure automl]
-            C[Set Up Data Pipeline]
-        end
-        
-        subgraph "Execution"
-            D[Run Training Experiments]
-            E[Evaluate Model Performance]
-            F[Collect Metrics]
-        end
-        
-        subgraph "Analysis"
-            G[Statistical Analysis]
-            H[Compare Baselines]
-            I[Validate Results]
-        end
-        
-        A --> D
-        B --> D
-        C --> D
-        D --> E
-        E --> F
-        F --> G
-        G --> H
-        H --> I
-    end
-```
+**Pinned equipment (do not drift):**
 
-## 3. Experimental Setup
+| Component | Pinned Value | Notes |
+|-----------|--------------|-------|
+| automl | `v1.0.0` (`https://github.com/Evintkoo/automl`) | `TrainEngine`, `HyperOptX`, `CrossValidator::GroupKFold` |
+| Rust | `1.75` (pinned `Cargo.lock`) | No GPU |
+| Task | `TaskType::MultiClassification` | 4 actions 0–3 |
+| Features | 27-dim fixed | `game_id` column for GroupKFold |
+| polars | `0.46` | Parquet I/O |
+| Seed | `42` primary; `123,456,789,1011` secondary | Deterministic spawns |
+| Games | `10,000` per model/config | Winner = mean ranking |
 
-| Component | Configuration |
-|-----------|--------------|
-| Game Engine | Custom Rust 2048 |
-| automl Version | v1.0.0 |
-| Training Config | Default automl |
-| Evaluation Games | 10,000 per model |
-| Seed | 42 |
+**Statistical protocol:** pre-registered MWU with Holm correction; bootstrap 95% CIs and Cohen's d are reported as uncertainty and practical-magnitude measures, not extra automatic exclusion gates. See `07-Benchmarking/04-Analysis/02-statistical-analysis.md`.
 
-## 4. Data Collection Process
-
-```mermaid
-flowchart LR
-    A[Game Simulation] --> B[State Collection]
-    B --> C[Feature Extraction]
-    C --> D[Label Creation]
-    D --> E[Data Storage]
-    E --> F[Data Validation]
-    
-    style F fill:#9f9,stroke:#333
-```
-
-## 5. Model Training Procedure
-
-```mermaid
-flowchart TD
-    A[Initialize TrainingConfig] --> B[Create TrainEngine]
-    B --> C[Load Training Data]
-    C --> D[Configure HyperOptX]
-    D --> E[Start Training]
-    E --> F{Converged?}
-    F -->|No| E
-    F -->|Yes| G[Export Best Model]
-    G --> H[Evaluate Model]
-```
-
-## 6. Evaluation Methodology
-
-```mermaid
-graph TD
-    A[Define Metrics] --> B[Run Evaluation Games]
-    B --> C[Collect Scores]
-    C --> D[Compute Statistics]
-    D --> E[Compare with Baselines]
-    E --> F[Statistical Significance Test]
-    F --> G[Final Evaluation]
-```
-
-## 7. Controls
-
-- Same game engine for all experiments
-- Same data pipeline for all models
-- Same evaluation criteria
-- Same seed for reproducibility
-
-## 8. Reproducibility
-
-```mermaid
-flowchart LR
-    A[Seed] --> B[TrainingConfig]
-    B --> C[TrainEngine]
-    C --> D[Model]
-    D --> E[Evaluation]
-    E --> F[Results]
-    
-    style A fill:#f9f,stroke:#333
-    style F fill:#9f9,stroke:#333
-```
-
-## 9. Ethical Considerations
-
-This research uses simulation only. No human subjects are involved. All data is generated from game simulations.
-
-## 10. Methodology Limitations
-
-- Limited to 2048 game domain
-- automl framework constraints
-- Computational resource limitations
+**No duplication:** No flowchart copy here; no PSPACE/Markov/8×8/ensemble/RL in core.

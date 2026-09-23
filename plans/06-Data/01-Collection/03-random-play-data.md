@@ -1,151 +1,45 @@
-# Random Play Data
+# Random Play Data — Appendix (Wide Coverage, Relabeled)
 
 ## 1. Purpose
 
-Collect training data from random play games to provide baseline data and ensure diverse coverage of the board state space.
+Provide wide state-space coverage via uniformly random valid moves. Labels are **still relabeled** by `RolloutLabeler` — random actions are discarded.
 
-## 2. Random Play Overview
-
-Random play data provides a broad sampling of the state-action space, which is essential for training models that can handle diverse board configurations.
-
-```mermaid
-flowchart TD
-    subgraph "Random Play Data Collection"
-        RandomAgent[Random Agent]
-        Game[Game Engine]
-        Collector[Data Collector]
-        Store[Data Storage]
-        
-        RandomAgent --> |Random Moves| Game
-        Game --> |States| Collector
-        Collector --> Store
-        
-        style RandomAgent fill:#fff3e0
-        style Store fill:#e8f5e9
-    end
-```
-
-## 3. Random Play Process
-
-```mermaid
-flowchart TB
-    Process[Random Play Process]
-    Process --> Init[Initialize Random Agent]
-    Init --> Game[Start Game]
-    Game --> Move[Random Move Selection]
-    Move --> Check{Game Over?}
-    Check --> |No| Move
-    Check --> |Yes| Record[Record Game Data]
-    Record --> Next{More Games?}
-    Next --> |Yes| Init
-    Next --> |No| Final[Finalize Dataset]
-    
-    style Final fill:#e8f5e9
-```
-
-## 4. Random Agent Implementation
+## 2. RandomAgent — Seed-Managed
 
 ```rust
-pub struct RandomAgent {
-    rng: ChaCha8Rng,
-}
+use rand_chacha::ChaCha8Rng;
+use rand::{SeedableRng, Rng};
 
+pub struct RandomAgent { rng: ChaCha8Rng }
+impl RandomAgent {
+    pub fn new(seed: u64) -> Self { Self { rng: ChaCha8Rng::seed_from_u64(seed) } }
+}
 impl Agent for RandomAgent {
-    fn select_move(&self, board: &Board) -> Direction {
-        let valid = board.get_valid_moves();
-        valid[self.rng.gen_range(0..valid.len())]
+    fn select_move(&mut self, board: &Board) -> u8 {
+        let valid = board.get_valid_moves(); // Vec<u8> subset of {0,1,2,3}
+        let idx = self.rng.gen_range(0..valid.len());
+        valid[idx]
     }
 }
+// Seed: ChaCha8Rng(42) canonical; per-game seed = 42 + game_id for reproducibility
+// Spawn: 90% 2 / 10% 4 stochastic — same engine as self-play
 ```
 
-## 5. Data Collection Pipeline
+## 3. Collection & Relabeling
 
-```mermaid
-flowchart TD
-    Pipeline[Random Play Pipeline]
-    Pipeline --> Config[Configure Agent]
-    Config --> Simulate[Simulate Games]
-    Simulate --> Record[Record Each Move]
-    Record --> Validate[Validate Data]
-    Validate --> Store[Store to 06-Data/03-Storage/]
-    
-    Config --> |Random Agent| Simulate
-    Simulate --> |Game Results| Record
-    Record --> |State/Action (score metadata)| Validate
-    Validate --> |Clean Data| Store
-    
-    style Config fill:#e3f2fd
-    style Store fill:#e8f5e9
-```
+Same loop as `02-self-play-data.md §3` — record `(state, random_action)` then **mandatory** `RolloutLabeler { n_rollouts: 100 }` relabel (see `01-data-collection-strategy.md §8.3`). Random action is discarded; rollout `argmax` over valid moves becomes `action` label. Invalid moves masked.
 
-## 6. Random Play Data Characteristics
+## 4. Volume — Canonical (Configurable)
 
-```mermaid
-flowchart TB
-    subgraph "Data Characteristics"
-        Coverage[Wide State Coverage]
-        Volume[High Volume]
-        Noise[Higher Noise Level]
-        Diversity[Diverse Board States]
-    end
-    
-    Coverage --> Value[Good for exploration]
-    Volume --> Value
-    Noise --> Value
-    Diversity --> Value
-    
-    style Coverage fill:#e3f2fd
-    style Value fill:#fff3e0
-```
+**5,000 games** (~250k rows at ~50 moves/game) — canonical contribution to 20k total (10k self + 5k random + 5k heuristic-adjacent → 14k/3k/3k chronological `GroupKFold` `shuffle=false`, `groups=game_id`). See `01-data-collection-strategy.md §4`. Configurable via `n_games` but preserve 70/15/15.
 
-## 7. Random Play vs Self-Play
+## 5. Storage & Validation
 
-```mermaid
-flowchart TD
-    Comparison[Random vs Self-Play]
-    Comparison --> Random[Random Play]
-    Comparison --> SelfPlay[Self-Play]
-    
-    Random --> |Pros| RP1[Wide coverage]
-    Random --> |Pros| RP2[Unbiased]
-    Random --> |Cons| RC1[High noise]
-    Random --> |Cons| RC2[Low quality]
-    
-    SelfPlay --> |Pros| SP1[High quality]
-    SelfPlay --> |Pros| SP2[Learned strategy]
-    SelfPlay --> |Cons| SC1[Narrow distribution]
-    SelfPlay --> |Cons| SC2[Mode collapse]
-```
+CSV `06-Data/03-Storage/random_play.csv` — 28 cols `grid_0..row_worst,action`; no `done`/`reward`/`next_state`; `score: u64` is optional metadata. Validate `NF==28`, `action 0..3`.
 
-## 8. Data Collection Volume — Canonical (Configurable)
+## 6. Cross-References
 
-```mermaid
-flowchart TB
-    Volume[Volume Targets<br/>canonical 5,000 games — part of total 20k]
-    Volume --> NGames[5,000 games<br/>contributes to 20k total]
-    Volume --> NStates[~250,000 states<br/>~50 moves/game × 5k]
-    Volume --> Format[CSV/Parquet<br/>06-Data/03-Storage/]
-    
-    Volume --> Storage[06-Data/03-Storage/01-dataset-storage.md]
-    
-    style Volume fill:#e3f2fd
-    style Storage fill:#e8f5e9
-```
-
-> **Canonical volumes (configurable):** Random play **5,000 games** (~250k states at ~50 moves/game) is the canonical contribution to total **20,000 games** (10k self + 5k random + 5k heuristic → 14k train / 3k val / 3k test via chronological 70/15/15 `GroupKFold` `shuffle=false`). See `01-data-collection-strategy.md` §5. Previous value 10,000 was inconsistent — corrected to 5,000. `n_games` configurable but preserve proportions.
-
-## 9. Random Play Data Files Location
-
-```mermaid
-flowchart LR
-    Dir[06-Data/01-Collection]
-    Dir --> N01[01-data-collection-strategy.md]
-    Dir --> N02[02-self-play-data.md]
-    Dir --> N03[03-random-play-data.md]
-```
-
-## 10. Next Steps
-
-1. Run random play simulations
-2. Validate collected data
-3. Store in data storage
+- Volumes: `01-data-collection-strategy.md §4`
+- Labeling: `01-data-collection-strategy.md §8.3`
+- Schema: `02-Format/01-data-schema.md`
+- Normalization: `DataPreprocessor` fit on train only (`04-Preprocessing/03-data-normalization.md`)

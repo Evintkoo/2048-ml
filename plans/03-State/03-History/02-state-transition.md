@@ -1,114 +1,70 @@
-# State Transition Tracking
+# State Transition — Supervised Row
 
-## 1. Purpose
+> **Canonical row:** `(from_state: [f64;27], action: u8)` with `TaskType::MultiClassification`. No RL.
 
-Track how board states transition from one move to the next for sequence modeling and training data generation.
-
-## 2. State Transition Structure — Supervised Row Is `from_state → action` Only
+## 1. Structure — Training Fields vs Metadata
 
 ```rust
 pub struct StateTransition {
-    pub from_state: [f64; 27],       // State before move — used as X
-    pub action: u8,                    // Direction taken (0-3) — the ONLY supervised label (y)
-    pub to_state: [f64; 27],         // State after move — metadata only, not for training
-    pub reward: f64,                   // Score change — metadata/analysis only, not for supervised automl
-    pub done: bool,                    // Game over flag — metadata only, not for training
+    // ── training (only these feed automl) ──
+    pub from_state: [f64; 27],  // X — canonical 27
+    pub action: u8,             // y — 0..3 ONLY label
+    // ── metadata only (logged, never as y) ──
+    pub metadata: Option<TransitionMetadata>,
 }
-// Canonical supervised row: (from_state: [f64;27], action: u8) with TaskType::MultiClassification
-// `to_state`/`reward`/`done` must not be fed as targets or RL signals
+pub struct TransitionMetadata {
+    pub to_state: [f64; 27],  // state after move
+    pub reward: f64,            // score delta
+    pub done: bool,             // terminal
+}
 ```
 
-## 3. Transition Recording — Collect `(from_state, action)` for Classification
+## 2. Recording
 
 ```rust
 impl GameSimulator {
     pub fn record_transition(&mut self) -> StateTransition {
-        let from = self.board.to_encoding();
-        let action = self.last_action;
+        let from = create_state_vector(&self.board); // canonical
+        let action = self.last_action; // u8 0..3
         self.board.execute_move(action);
-        let to = self.board.to_encoding();
-        // Reward/done computed only as metadata for analysis, not for training
-        let reward = self.board.score as f64 - self.last_score as f64;
-
         StateTransition {
-            from_state: from,
-            action,                   // ONLY supervised label
-            to_state: to,             // metadata only
-            reward,                   // metadata only — not used as `y`
-            done: self.board.is_game_over(), // metadata only
+            from_state: from, action,
+            metadata: Some(TransitionMetadata {
+                to_state: create_state_vector(&self.board),
+                reward: self.board.score as f64 - self.last_score as f64,
+                done: self.board.is_game_over(),
+            }),
         }
     }
 }
 ```
 
-## 4. Transition Dataset
+## 3. Training Dataset — States → Actions Only
 
 ```rust
-pub struct TransitionDataset {
-    pub transitions: Vec<StateTransition>,
-    pub total_transitions: usize,
-}
-
-impl TransitionDataset {
-    // Convert to automl-compatible format
-    pub fn to_dataframe(&self) -> DataFrame { ... }
-    
-    // Split into train/val/test
-    pub fn split(&self, train_ratio: f64, val_ratio: f64) -> [Vec<StateTransition>; 3] { ... }
-}
-```
-
-## 5. Transition Analysis — Classification-Focused
-
-```rust
-// Analyze state distribution — classification focus; reward/terminal are metadata only
-pub fn analyze_transitions(transitions: &[StateTransition]) -> TransitionAnalysis {
-    // State visitation frequency
-    // Action distribution (class balance across 0..3) — primary
-    // Per-class F1 / confusion — primary
-    // Reward distribution — metadata only, not a metric
-    // Terminal state frequency — metadata only
-}
-```
-
-## 6. Transition Collection — No Replay Buffer (Supervised Only)
-
-> **No ReplayBuffer / RL sampling.** The pipeline is supervised classification (`state → action`). Transitions are flattened directly into a DataFrame of `(state_features, action)` rows. Buffer sampling logic is removed.
-
-```rust
-// No ReplayBuffer — collect transitions directly into a supervised dataset
-// Each StateTransition's `from_state` + `action` becomes one supervised row;
-// `reward`/`to_state`/`done` are not used for training (may be logged as metadata only).
-```
-
-## 7. State Transition for automl Training — States → Actions Only
-
-```rust
-// Create supervised learning dataset from transitions — maps states to actions only
 pub fn create_supervised_dataset(transitions: &[StateTransition]) -> TrainingData {
-    let states: Vec<[f64; 27]> = transitions.iter().map(|t| t.from_state).collect();
-    let actions: Vec<u8> = transitions.iter().map(|t| t.action).collect(); // u8 0..3, MultiClassification
-
-    TrainingData { states, targets: actions } // targets are actions, not reward/next_state
+    let states: Vec<[f64;27]> = transitions.iter().map(|t| t.from_state).collect();
+    let actions: Vec<u8> = transitions.iter().map(|t| t.action).collect(); // MultiClassification
+    TrainingData { states, targets: actions }
 }
 ```
 
-## 8. Transition Validation
+DataFrame conversion flattens `from_state` + `action` only; metadata dropped. Group by `game_id` for `GroupKFold`.
+
+## 4. No RL Replay Buffer
+
+> No `ReplayBuffer`, no sampling. Supervised classification only — flatten directly.
+
+## 5. Validation
 
 ```rust
-pub fn validate_transition(transition: &StateTransition) -> Result<()> {
-    // from_state must be [f64;27] with no NaN
-    // Action must be 0-3 (valid classification label)
-    // to_state/reward/done are metadata only — validate only if present
+pub fn validate_transition(t: &StateTransition) -> Result<()> {
+    if t.action > 3 { return Err("action >3".into()); }
+    if !t.from_state.iter().all(|v| v.is_finite() && (0.0..=1.0).contains(v)) { return Err("bad state".into()); }
+    Ok(())
 }
 ```
 
-## 9. Transition Data Persistence
+## 6. Persistence
 
-```rust
-// Save transitions to Parquet
-pub fn save_transitions(transitions: &[StateTransition], path: &str) -> Result<()> {
-    let df = create_dataframe(transitions)?;
-    df.write_parquet(path, &ParquetWriteOptions::default())?;
-}
-```
+Save combined dataset via canonical DataFrame → Parquet. See `01-move-history.md` for grouping.

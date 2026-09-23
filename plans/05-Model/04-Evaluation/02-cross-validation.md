@@ -176,7 +176,9 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
     .with_random_state(42);
 
 let splits = cv.split(n_samples, None, Some(&groups))?;
-// For scored CV: cross_val_score(&config, &x, &y, &CVStrategy::GroupKFold { n_splits: 5 }, Some(42))?;
+// Do not call automl::cross_val_score for GroupKFold: the current helper
+// passes groups=None internally. Score these splits in the project wrapper,
+// which receives the group array and trains/evaluates each returned split.
 ```
 
 **Fold definitions for 5-fold temporal CV**:
@@ -191,7 +193,7 @@ Fold 4: Train = Games 1-92,  Test = Games 93-96
 Fold 5: Train = Games 1-96,  Test = Games 97-100
 ```
 
-When using `TimeSeriesSplit`, every test set contains only games from temporally later periods, preventing leakage. `GroupKFold` ensures group integrity (no game split across folds) but does **not** enforce temporal order — combine with chronological sorting or use `TimeSeriesSplit` for strict forward-chaining. Groups are passed to `split()`/`cross_val_score` via the `groups` parameter, which `GroupKFold` uses to keep all states from the same game together.
+When using `TimeSeriesSplit`, every test set contains only later rows. For the canonical dataset, the project wrapper calls `CrossValidator::split(..., Some(&groups))` directly, then scores each split. The current automl `cross_val_score` helper is not group-aware and must not be used for this experiment.
 
 **Key Properties**:
 - No game appears in both train and test sets (GroupKFold guarantee)

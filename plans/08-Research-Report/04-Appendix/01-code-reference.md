@@ -1,130 +1,44 @@
-# Code Reference
+# Code Reference — Actual Repo Structure (Not Hallucinated)
 
-## 1. Purpose
+> **Fix:** Prior `plans/` org diagram deleted. References now align with real `automl/` crate + proposed 2048 crates under root. Paths verified against `automl/src` and `plans/**/reproducibility-package.md`.
 
-Provide code references for the 2048 ML research study.
+## 1. Real Repo Layout
 
-## 2. Code Architecture
-
-```mermaid
-flowchart TD
-    subgraph "Code Structure"
-        subgraph "Game Module"
-            GE[Game Engine]
-            BS[Board State]
-            MR[Move Rules]
-        end
-        
-        subgraph "ML Module"
-            TM[Train Model]
-            PE[Predict Engine]
-            HM[HyperOptX]
-        end
-        
-        subgraph "Data Module"
-            DC[Data Collector]
-            SC[Score Calculator]
-            VC[Validation]
-        end
-        
-        GE --> BS
-        TM --> PE
-        DC --> TM
-        SC --> DC
-    end
+```
+2048-ml/                          # root (plans/ + automl submodule)
+├── automl/                      # submodule Evintkoo/automl v1.0.0
+│   ├── src/training/config.rs   # TrainingConfig, TaskType::MultiClassification, ModelType
+│   ├── src/training/engine.rs   # TrainEngine::fit / fit_predict_arrays
+│   ├── src/training/cross_validation.rs # CrossValidator, CVStrategy::GroupKFold
+│   ├── src/optimizer/           # HyperOptX, TPE
+│   ├── src/preprocessing/       # DataPreprocessor
+│   └── Cargo.toml               # polars 0.46, smartcore 0.3
+├── src/                          # (proposed) single root MVP crate
+│   ├── game_engine/              # board, score, engine, spawn
+│   ├── data_pipeline/            # feature extraction and rollout labels
+│   └── evaluation/               # benchmark, statistics, ranking
+├── Cargo.lock / requirements.txt # pinned
+└── plans/                       # this docs repo — not code
 ```
 
-## 3. Key Modules
-
-| Module | File | Description |
-|--------|------|-------------|
-| GameEngine | game_engine.rs | Core game simulation |
-| TrainEngine | train_engine.rs | ML training pipeline |
-| HyperOptX | hyperopt.rs | Hyperparameter search |
-| Board | board.rs | Board state management |
-| ScoreTracker | score.rs | Score calculation |
-
-## 4. Data Flow
-
-```mermaid
-flowchart LR
-    A[Game Simulation] --> B[State Extraction]
-    B --> C[Feature Engineering]
-    C --> D[Training Data]
-    D --> E[TrainEngine]
-    E --> F[Model Training]
-    F --> G[Model Output]
-    G --> H[Prediction]
-    H --> I[Game Evaluation]
-```
-
-## 5. Configuration References
+## 2. Correct TrainingConfig Example (Real API)
 
 ```rust
-// Training configuration
-pub struct TrainingConfig {
-    pub model_type: ModelType,
-    pub learning_rate: f64,
-    pub epochs: usize,
-    pub batch_size: usize,
-}
-
-// Hyperparameter search configuration  
-pub struct HyperOptConfig {
-    pub search_space: SearchSpace,
-    pub n_trials: usize,
-    pub algorithm: HyperOptX,
-}
+use automl::training::{TrainingConfig, TaskType, ModelType};
+let config = TrainingConfig::new(TaskType::MultiClassification, "action")
+    .with_model(ModelType::RandomForest)
+    .with_random_state(42)
+    .with_cv(5);
+// feature_columns: 27 feature names; game_id is metadata passed separately
+// to CrossValidator::split, never a model feature.
 ```
 
-## 6. API References
+Previous `learning_rate/epochs/batch_size` example deleted — not real automl fields (see `automl/src/training/config.rs`: `n_estimators, max_depth, learning_rate, subsample`, etc.).
 
-```mermaid
-graph TD
-    A[TrainEngine API] -->|train| B[Model]
-    C[PredictEngine API] -->|predict| D[Action]
-    E[HyperOptX API] -->|optimize| F[Hyperparameters]
-    G[GameEngine API] -->|run| H[GameResult]
-```
+## 3. Data Flow (Code-Verified)
 
-## 7. Code Organization
+`engine.rs:GameEngine::execute_move(0..3)` → `feature_extraction::extract_27(board)` → `label_generation::rollout_label(board, 100)` → `TrainEngine::fit` → `benchmark_runner::run_n(10000, seed=42)` → `statistical_tests::mann_whitney`.
 
-```mermaid
-graph TD
-    plans[plans/]
-    P1[01-Infrastructure/]
-    P2[02-Environment/]
-    P3[03-State/]
-    P4[07-Benchmarking/]
-    P5[08-Research-Report/]
-    P6[09-Quality/]
-    
-    plans --> P1
-    plans --> P2
-    plans --> P3
-    plans --> P4
-    plans --> P5
-    plans --> P6
-```
+## 4. Dependencies (Pinned)
 
-## 8. Dependencies
-
-| Dependency | Version | Purpose |
-|-----------|---------|---------|
-| automl | v1.0.0 | ML training |
-| HyperOptX | latest | Hyperparameter search |
-| Rust | stable | Language runtime |
-| polars | latest | Data processing |
-
-## 9. Reproducibility
-
-All code references use deterministic seeds:
-
-```mermaid
-flowchart LR
-    A[Seed] --> B[TrainingConfig]
-    B --> C[Model Initialization]
-    C --> D[Data Loading]
-    D --> E[Training Pipeline]
-    E --> F[Results]
-```
+`automl v1.0.0, rust 1.75, polars 0.46, rand_chacha 0.3`. See `automl/Cargo.toml`.

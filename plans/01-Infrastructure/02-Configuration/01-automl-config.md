@@ -56,8 +56,9 @@ let opt_config = OptimizationConfig::default()
     .with_direction(OptimizeDirection::Maximize)
     .with_n_trials(100)
     .with_n_jobs(4);
-// Pruner is configured separately; MedianPruner requires minimize flag (false = maximize)
-let pruner = MedianPruner::new(false);
+// Pruner is separate; MedianPruner::new(minimize) — false = maximize (we maximize accuracy/score, so false)
+// Verified in automl/src/optimizer/pruners.rs:85,93 — `minimize: bool` field, false keeps higher values
+let pruner = MedianPruner::new(false); // false = maximize → prunes trials below median; true would be for minimize (loss)
 
 let mut search_space = SearchSpace::new();
 search_space.add(Parameter::new("n_estimators", ParameterType::Int(50, 300)));

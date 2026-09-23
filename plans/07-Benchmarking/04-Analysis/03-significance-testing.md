@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-Define the significance testing procedures for validating 2048 ML model improvements. This section provides PhD-level statistical rigor for model comparison and winner determination.
+Define the statistical procedures for the primary Rust-native AutoML framework benchmarks and the downstream 2048 case study. Statistical tests support claims; they do not substitute for architecture evidence, correctness testing, or a valid experimental unit.
 
 ## 2. Significance Testing Framework
 
@@ -36,7 +36,7 @@ graph TD
 
 ### 4.1 Mann-Whitney U Test
 
-Used for comparing two independent groups (e.g., Model A vs Random Agent).
+Used only when the comparison groups are independent at the declared unit of analysis. If models are evaluated on the same game instances, use a paired or clustered procedure instead of treating games as independent observations.
 
 **Null Hypothesis (H0):** The distributions of scores for both groups are identical.
 
@@ -105,7 +105,7 @@ graph TD
     F -->|No| H[Increase Sample Size]
 ```
 
-**Sample size justification:** With n=10,000 per group and expected effect size d=0.8, power ≈ 1.0. Even with d=0.2, power > 0.99.
+**Sample size justification:** Do not infer power from the number of game instances alone. Predeclare the experimental unit, minimum practically meaningful improvement, expected variance, number of trained-model repetitions, and clustering structure. Framework benchmarks and 2048 game evaluations require separate power or precision calculations.
 
 ## 7. Multiple Testing Correction
 

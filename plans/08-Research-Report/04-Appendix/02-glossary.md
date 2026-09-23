@@ -34,7 +34,7 @@ mindmap
 | Game Over | Board is full with no valid moves |
 | Heuristic Baseline | Agent using weighted evaluation function (mean score ~512) |
 | Random Baseline | Agent selecting moves uniformly at random (mean score ~128) |
-| Winner | Model with the highest mean score across ≥10,000 games |
+| Case-study winner | Model with the highest held-out mean score under the declared 2048 protocol; not a globally optimal policy |
 
 ## 4. ML Terminology
 
@@ -59,7 +59,7 @@ mindmap
 | TrainingConfig | Model configuration settings |
 | ModelType | Architecture specification (RF, GB, XGBoost, etc.) |
 | SearchSpace | Range of hyperparameters for optimization |
-| CrossValidator | Cross-validation strategy for temporal data splitting |
+| CrossValidator | `automl::training::CrossValidator` with `CVStrategy::GroupKFold { n_splits:5 }` on `game_id` (verified in `automl/src/training/cross_validation.rs` — not temporal; TimeSeriesSplit exists but is not canonical for i.i.d. games) |
 
 ## 6. Evaluation Terms
 
@@ -71,7 +71,7 @@ mindmap
 | Significance | Statistical importance (p < 0.05 after Bonferroni correction) |
 | Reproducibility | Consistent results with fixed seed |
 | Winner Determination | Model ranked #1 by mean score across ≥10,000 games |
-| Mean Score | Primary ranking metric — average across all games |
+| Mean Score | Primary 2048 case-study metric; framework validation uses task-appropriate quality and resource metrics |
 | Bootstrap CI | 95% confidence interval via resampling |
 | Effect Size | Magnitude of difference (Cohen's d ≥ 0.5) |
 

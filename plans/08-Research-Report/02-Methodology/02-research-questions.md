@@ -1,131 +1,55 @@
-# Research Questions
+# Research Questions — AutoML Framework and 4×4 Application
 
-> **Note:** This section defines research questions to be answered. All answers are pending experimentation.
+> **Canonical mapping:** 4 RQs, with the Rust-native AutoML architecture as the primary contribution and 2048 as the principal case study. Speculative theory is not treated as a primary research question.
 
-## 2. Research Questions Framework
+## 1. Purpose
 
-```mermaid
-mindmap
-  root((Research Questions))
-    Primary RQ
-      RQ1: Can automl train a competitive 2048 model?
-      RQ2: Which algorithm achieves the highest mean score?
-    Secondary RQs
-      SQ1: Which algorithm performs best?
-      SQ2: How does automl compare to heuristic baselines?
-      SQ3: What is the training convergence rate?
-      SQ4: How do different features contribute?
-    Tertiary RQs
-      TQ1: How do different configurations compare?
-      TQ2: What are the key features?
-      TQ3: How transferable are results?
-    Novel Questions
-      NQ1: Is the 2048 feature space a Markov blanket?
-      NQ2: What are the PAC-learning bounds?
-      NQ3: Is optimal play PSPACE-hard?
+Define the exact RQs for both the independent AutoML framework and the 4×4 supervised application pipeline.
+
+## 2. Canonical RQs
+
+| RQ | Question | automl API Mapping | Test (see 03-hypotheses.md) | Status |
+|----|----------|--------------------|-----------------------------|--------|
+| **RQ1** | What Rust-native architecture and data contracts are required to integrate preprocessing, training, validation, optimization, inference, serialization, and reproducibility in one AutoML system? | Architecture and implementation documentation | Architecture analysis and design-trade-off review | TBD |
+| **RQ2** | Does the implemented framework satisfy its correctness, reproducibility, efficiency, and interoperability requirements on standard tabular tasks? | Framework validation protocol in `07-Benchmarking/03-Comparison/04-framework-validation.md` | Capability, correctness, benchmark, and resource tests | TBD |
+| **RQ3** | Can the validated framework train a 4×4 policy whose mean score exceeds the heuristic baseline, and which `ModelType` performs best? | `TrainingConfig { task_type: MultiClassification, target: "action", feature_columns: 27 }` → `TrainEngine::fit` → benchmark framework | H1/H2 statistical protocol | TBD |
+| **RQ4** | What is the magnitude, robustness, and practical significance of the 2048 case-study result? | Same pipeline across training/evaluation seeds and controlled sensitivity conditions | CIs, effect sizes, seed and sensitivity analysis | TBD |
+
+Secondary diagnostics (not separate RQs): feature-group contribution, label quality, convergence learning curves, and framework search efficiency — answered in ablation, framework validation, and findings.
+
+## 3. RQ1 Detail — What is the architecture contribution?
+
+Document the module boundaries, data contracts, configuration model, model/task abstraction, validation flow, optimization lifecycle, serialization boundary, seed handling, resource control, and CLI/library interoperability. The contribution must identify a design rationale or measurable systems trade-off rather than treating Rust reimplementation alone as novelty.
+
+## 4. RQ2 Detail — Is the framework valid for this study?
+
+The framework track verifies the required APIs, preprocessing behavior, validation strategy, model training, hyperparameter search, serialization, and reproducibility on standard tabular tasks. A missing or failing capability is reported as a framework finding and blocks the corresponding 2048 claim.
+
+## 5. RQ3 Detail — Can automl beat ~512 and who wins?
+
+**H0 (H1):** μ_best ≤ μ_heuristic (~512). **H1:** μ_best > ~512. **Primary test:** pre-registered one-sided Mann-Whitney U at α=0.05 with Holm correction for the planned baseline comparisons. Report bootstrap 95% CI and effect size as evidence, not additional mandatory gates. **Ranking:** highest held-out mean over 10k games; use uncertainty intervals and repeated seeds to describe close results.
+
+**H0 (H2):** All 7 `ModelType` means equal. **H1:** At least one differs. **Test:** Kruskal-Wallis → Dunn post-hoc Bonferroni.
+
+## 6. RQ4 Detail — Magnitude and Reproducibility
+
+Report: winner mean, bootstrap 95% CI (~±20 at σ512/10k), d vs heuristic, and seed sensitivity `σ(μ_seeds)/mean(μ_seeds)`. If ranking flips across seeds → winner inconclusive, escalate to 50k.
+
+## 7. What Was Deleted and Why
+
+| Deleted | Reason | Where Folded |
+|---------|--------|--------------|
+| NQ1 Markov blanket, NQ2 PAC bounds, NQ3 PSPACE-hardness | Out-of-scope theory; not required to validate the framework or case study | Excluded from core claims unless separately proven |
+| TQ1–TQ3, extra SQ proliferation | Generic academic boilerplate | Merged into RQ1/RQ2 diagnostics |
+| 8×8 / ensemble / RL phrasing | Not initial-plan (4×4 supervised only) | Future Work Appendix |
+
+## 8. Traceability
+
+```
+RQ1 → framework-contribution.md → architecture and design-trade-off chapter
+RQ2 → framework-validation.md → capability/correctness/resource report
+RQ3 → H1+H2 in 03-hypotheses.md → winner table in 03-results.md → discussion
+RQ4 → CIs, effect sizes, seed sensitivity → 03-Findings/05-sensitivity-analysis.md + discussion
 ```
 
-## 3. Primary Research Questions
-
-| RQ | Question | Method | Status |
-|----|----------|--------|--------|
-| RQ1 | Can automl train a competitive 2048 model? | Benchmark against random and heuristic baselines with statistical significance testing | TBD |
-| RQ2 | Which algorithm achieves the highest mean score? | Rank all models by mean score across ≥10,000 games, with Mann-Whitney U test for significance | TBD |
-
-## 4. Secondary Research Questions
-
-| RQ | Question | Method | Status |
-|----|----------|--------|--------|
-| SQ1 | Which algorithm performs best? | Ablation study on model types | TBD |
-| SQ2 | How does automl compare to heuristic baselines? | Mean score comparison with bootstrap CI | TBD |
-| SQ3 | What is the training convergence rate? | Learning curve analysis with convergence diagnostics | TBD |
-| SQ4 | How do different features contribute? | Feature ablation study | TBD |
-
-## 5. Novel Research Questions
-
-| NQ | Question | Method | Status |
-|----|----------|--------|--------|
-| NQ1 | Is the 2048 feature space a Markov blanket? | Information-theoretic analysis + ablation study | TBD |
-| NQ2 | What are the PAC-learning bounds? | VC-dimension analysis | TBD |
-| NQ3 | Is optimal play PSPACE-hard? | Reduction from QBF (conjectured, not proven) | TBD |
-
-## 6. Hypothesis Questions
-
-```mermaid
-graph TD
-    A[RQ1] -->|H0| B[automl cannot train competitive model]
-    A -->|H1| C[automl can train competitive model]
-    D[RQ2] -->|H0| E[All algorithms produce equal mean scores]
-    D -->|H1| F[At least one algorithm produces higher mean score]
-```
-
-## 7. Research Question Mapping
-
-```mermaid
-flowchart LR
-    A[Research Questions] --> B[Methodology]
-    B --> C[Data Collection]
-    C --> D[Analysis]
-    D --> E[Answers]
-    E --> F[Conclusions]
-    
-    A -->|RQ1| M1[Benchmarking]
-    A -->|RQ2| M2[Algorithm Comparison]
-    A -->|NQ1| M3[Markov Blanket Analysis]
-    A -->|NQ2| M4[PAC-Learning Bounds]
-    A -->|NQ3| M5[PSPACE-Hardness Proof]
-```
-
-## 8. Question Prioritization
-
-| Priority | RQ | Justification |
-|----------|----|--------------|
-| P1 | RQ1 | Core feasibility question |
-| P1 | RQ2 | Winner determination |
-| P2 | SQ1 | Model selection |
-| P2 | SQ2 | Baseline comparison |
-| P3 | SQ3 | Training dynamics |
-| P3 | SQ4 | Feature engineering |
-| P4 | NQ1-NQ3 | Theoretical contributions |
-
-## 9. Answering the RQs
-
-### RQ1: Can automl train a competitive 2048 model?
-
-**Hypotheses:**
-- **H0:** The mean score of the best automl model is ≤ heuristic baseline (~512)
-- **H1:** The mean score of the best automl model > heuristic baseline (~512)
-
-**Test:** Mann-Whitney U test with Bonferroni correction
-
-**Answer:** TBD (pending experimentation)
-
-### RQ2: Which algorithm achieves the highest mean score?
-
-**Hypotheses:**
-- **H0:** All algorithms produce equal mean scores
-- **H1:** At least one algorithm produces a significantly higher mean score
-
-**Test:** Kruskal-Wallis test followed by Dunn's post-hoc test
-
-**Answer:** TBD (pending experimentation)
-
-### RQ3: Is the approach reproducible?
-
-**Answer:** TBD. Multi-seed validation (seeds 42, 123, 456, 789, 1011) will be conducted to assess reproducibility. Seed-based configuration ensures reproducibility is possible, but actual validation is pending.
-
-### NQ1: Is the 2048 feature space a Markov blanket?
-
-**Answer:** TBD. The 27-dimensional feature vector is conjectured to be a sufficient statistic for the score (Proposition 2 in theoretical framework), but empirical validation through the ablation study is required.
-
-### NQ2: What are the PAC-learning bounds?
-
-**Answer:** TBD. The standard PAC-learning framework applies (Theorem 4), but specific bounds for the 2048 problem depend on the actual VC-dimension of the trained model class, which will be determined empirically.
-
-### NQ3: Is optimal play PSPACE-hard?
-
-**Answer:** TBD. A reduction from QBF has been proposed (Conjecture 3), but the formal verification of this reduction remains incomplete. This is a target for further theoretical work.
-
-## 10. Conclusion
-
-All primary research questions have been formulated with proper hypotheses, test statistics, and significance levels. The novel questions provide theoretical contributions to be investigated through experimentation and further analysis. All answers are pending data collection.
+No result claimed before data; all answers pending `statistical_tests.rs` on `ScoreMetrics`.

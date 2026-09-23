@@ -1,141 +1,64 @@
-# Discussion
+# Discussion — Scope-Bound Interpretation (Pending Data)
 
-> **Status: PENDING EXPERIMENTATION**
->
-> This section will be populated after all experiments are completed. No interpretations or conclusions are drawn from results that do not yet exist.
+> **Status: PENDING.** No conclusions drawn. This file defines how the primary Rust-native AutoML framework results and the downstream 2048 case-study results will be interpreted.
 
-## 1. Interpretation of Results
+## 1. Primary Framework Interpretation
 
-**To be determined.** The interpretation of results will be written after all experiments are completed. The framework below defines how results will be interpreted.
+| Framework result | Interpretation |
+|------------------|----------------|
+| Capability and correctness criteria pass | The implemented architecture supports the declared workflow under the tested conditions |
+| Reproducibility fails | The framework cannot support the corresponding reproducibility claim; investigate seed, parallelism, and serialization boundaries |
+| Rust framework is faster or more resource-efficient | Report the measured trade-off and matched benchmark conditions; do not generalize beyond tested tasks |
+| Framework performs differently from established baselines | Analyze algorithm coverage, preprocessing, search budget, implementation differences, and failure modes |
+| Required capability fails | Report the failure as a primary framework result and block the affected 2048 conclusion |
 
-```mermaid
-flowchart TD
-    A[Review Results] --> B[Compare with Hypotheses]
-    B --> C[Explain Findings]
-    C --> D[Identify Limitations]
-    D --> E[Suggest Future Work]
-    E --> F[Conclude]
-```
+## 2. 2048 Case-Study Interpretation (Tied to H1–H3)
 
-## 2. Key Findings Analysis
+| Hypothesis | Gate | If Pass | If Fail |
+|------------|------|---------|---------|
+| **H1**: Best automl mean > heuristic ~512 | MWU/Holm; report CI and effect size | automl competitive for 4×4 tabular task | Null: supervised 27-dim insufficient; report as limits of automl for sequential puzzle |
+| **H2**: Alg differences exist | Kruskal-Wallis p<0.05 → Dunn post-hoc | Rank + name winner (RF/GB/XGB/LGBM/ET/SVM/KNN) | No rank claimed; all means equivalent |
+| **H3**: Tuning helps | Wilcoxon signed-rank tuned vs default | Report tuned config; log HyperOptX TPE gain | Defaults sufficient; tuning not cost-effective |
+| **Feature analysis**: 27-dim contributes | Ablation LOO + group removal, GroupKFold, uncertainty intervals | Feature groups ranked by Δmean | 27-dim redundant; smaller subset may be viable |
 
-**To be determined.** The following analysis framework will be applied after experimentation:
+All framework gates come from the framework-validation protocol. Application gates come from `02-Methodology/03-hypotheses.md`; feature analysis is exploratory and does not establish a Markov blanket.
 
-### 2.1 Model Performance
+## 3. Implications (In-Scope Only)
 
-The ML model's performance will be assessed by comparing mean scores against heuristic and random baselines. The winning model is identified by the highest mean score across ≥10,000 benchmark games, with statistical significance confirmed through Mann-Whitney U test.
+### 3.1 For automl Framework
+- If H1 passes: `TaskType::MultiClassification` + `TrainEngine` viable for 4×4 sequential decision via tabular features; `HyperOptX` justified.
+- If H1 fails with narrow CI: automl correctly detects ceiling — supervised tabular ≠ search/RL for 2048; fallback to heuristic documented.
+- HyperOptX sensitivity (H3) decides whether default `TrainingConfig` (max_depth 6, n_estimators 100, lr 0.1) suffices.
 
-### 2.2 automl Effectiveness
+### 3.2 For 27-dim Feature Engineering
+- Ablation (§04-ablation-study.md: 27 LOO + 8 groups: grid/empty/max/mono/smooth/merges/adjacency/corner) quantifies necessity.
+- If empty/max/mono dominate, confirms corner-strategy encoding.
+- If grid_0..15 dominate, suggests raw board suffices; if adjacency/merge groups dominate, confirms tactical signal.
 
-The automl framework's effectiveness will be assessed by whether any model significantly exceeds the heuristic baseline (~512 mean score). This demonstrates whether automated approaches can effectively learn game strategies from feature-engineered state representations.
+### 3.3 For Evaluation Methodology
+- Validates winner protocol (mean over 10k + pre-registered MWU/Holm + bootstrap CI/effect size) as replacement for single-split accuracy.
+- GroupKFold by `game_id` shows leakage control for game data (not TimeSeries).
 
-## 3. Comparison with Hypotheses
+## 3. Seed Sensitivity Tie-In (Not Hardware)
 
-| Hypothesis | Result | Status |
-|-----------|--------|--------|
-| automl can train competitive model | TBD | To be determined after experimentation |
-| Best model maximizes score | TBD | To be determined after ranking |
-| ML beats heuristic | TBD | To be determined after statistical testing |
+Primary seed 42; secondary 123/456/789/1011 (§05-sensitivity-analysis.md). Sensitivity = σ(μ_i)/mean(μ_i), interpreted together with the declared experimental unit and uncertainty. If ranking flips across conditions, the case-study winner is inconclusive; do not automatically resolve this by increasing game count. Hardware and parallelism are framework variables and must be reported where they can affect reproducibility.
 
-## 4. Unexpected Findings
+## 4. Limitations (In-Scope)
 
-**To be determined.** Any unexpected findings will be documented after experimentation. Potential areas of investigation include:
+- 4×4 only; 27-dim fixed; supervised only; rollout labels noisy (100 sims/action).
+- `automl` model list limited to what `ModelType` actually exposes (verify via `automl/src/training/config.rs`).
+- Bootstrap CI width ~20 at n=10k (σ≈512) — tail events (rare >2000 scores) under-sampled.
 
-- Higher variance in model scores
-- Slow convergence patterns
-- Feature importance rankings that differ from expectations
-- Overfitting or underfitting behavior
-- Data quality issues
+## 5. Unexpected Findings Protocol
 
-## 5. Implications
+Document any: ranking shift across seeds, overfit (train acc >> test mean), feature Δ opposite expectation, invalid-move rate anomaly (see `02-insights.md`). Each gets a dedicated paragraph with exact numbers, not generic prose.
 
-### 5.1 For automl Framework
+## 6. Conclusions (TBD)
 
-- If automl is effective for game AI tasks: This demonstrates the value of automated ML for sequential decision-making
-- If automl is not effective: This identifies limitations of current AutoML systems for game AI
-- Rust-based training: To be assessed for speed advantages
-- HyperOptX search: To be assessed for hyperparameter tuning effectiveness
-- Supervised classification: To be assessed for approximating optimal game strategies
+Will state framework-validation outcomes, application winner (or null), F1–F3 and H1–H3 decisions with exact statistics where applicable, and reproducibility claims — only after data.
 
-### 5.2 For ML Research
+## 7. Future Work (Scope-Bound, 2 Lines Each — Not Core)
 
-- Automated ML reduces manual configuration burden: To be assessed
-- Sequential games are tractable for automl: To be assessed
-- Results are reproducible with proper seed management: To be assessed after multi-seed validation
-- Non-parametric statistical tests provide rigorous evaluation: Methodological contribution
-- The 27-dimensional feature space is sufficient for game AI: To be assessed via ablation study
-
-### 5.3 For Game AI
-
-- Learned policies can compete with heuristic search methods: To be assessed
-- Feature engineering captures essential game knowledge: To be assessed
-- AutoML provides a viable alternative to manual feature engineering: To be assessed
-- Statistical rigor is essential for game AI evaluation: Methodological contribution
-
-## 6. Limitations
-
-### 6.1 Technical Limitations
-
-- **Limited to 2048 game complexity** — results may not generalize to other games
-- **Training time** — to be determined after experiments
-- **automl constraints** — limited to supervised classification models (capability verification pending)
-- **Rust implementation** — potential bugs in the automl submodule
-
-### 6.2 Methodological Limitations
-
-- **Single game domain** — only standard 4×4 2048 tested
-- **Supervised learning only** — no reward shaping or policy gradient methods
-- **Feature engineering fixed** — the 27-dimensional feature vector is predetermined
-- **Single-seed primary experiments** — multi-seed validation planned
-- **No human evaluation** — purely computer-based evaluation
-
-### 6.3 Statistical Limitations
-
-- **Sample size** — 10,000 games per model may not cover all edge cases
-- **Seed dependency** — results may vary with different seeds
-- **Multiple comparison** — Bonferroni correction may be overly conservative
-- **Effect size** — Cohen's d ≥ 0.5 threshold may miss small but meaningful effects
-
-## 7. Future Work
-
-### 7.1 Immediate Next Steps
-
-1. Complete all ablation studies
-2. Run multi-seed validation
-3. Extend theoretical analysis
-4. Complete state-of-the-art comparison
-5. Document all findings honestly
-
-### 7.2 Long-term Directions
-
-1. Apply automl to larger board variants (8×8, 16×16)
-2. Explore ensemble methods for improved performance
-3. Investigate transfer learning across game variants
-4. Extend to reinforcement learning approaches
-5. Develop real-time adaptation strategies
-
-## 8. Conclusions
-
-**To be determined.** The conclusions will be drawn from actual experimental data. The automl framework's effectiveness will be assessed based on whether any model significantly exceeds heuristic baselines, not assumed beforehand.
-
-## 9. Honest Assessment
-
-The following limitations are acknowledged:
-1. Results are specific to the 2048 game domain
-2. Generalizability to other games is untested
-3. Computational constraints may affect optimal model selection
-4. The exact maximum score for 2048 remains an open problem
-5. All results are preliminary and await full experimentation
-6. No conclusions are drawn before data collection
-7. Framework capabilities are not yet verified (capability verification gate pending)
-
-## 10. Recommendations
-
-1. Continue optimizing automl configuration
-2. Explore ensemble of top models
-3. Extend to larger board variants
-4. Investigate reinforcement learning approaches
-5. Conduct multi-seed validation
-6. Complete all ablation studies
-7. Document all findings honestly, including null results
-8. **Wait for actual experimental data before drawing conclusions**
+- **Larger boards / n×n theory:** n×n PSPACE claim belongs in Appendix only; not core IMRD.
+- **Ensemble/RL/MCTS/DQN reproduction:** Out-of-scope; Appendix optional 15-line extended-baseline note, not required for thesis.
+- **Information-theoretic / Markov blanket / PAC refinements:** Conjectures; Appendix if pursued.

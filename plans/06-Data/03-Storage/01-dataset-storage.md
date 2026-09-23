@@ -110,15 +110,16 @@ flowchart TD
 
 ## 6. Storage Configuration
 
+Canonical path is `06-Data/03-Storage/` with `data/` as symlink for runtime. No dual-source confusion.
+
 ```rust
+use std::path::PathBuf;
 pub struct DatasetStorageConfig {
-    pub storage_path: String,      // 06-Data/03-Storage/
-    pub format: StorageFormat,     // Parquet or CSV
-    pub compression: CompressionType, // Snappy, Zstd
-    pub partition_by: Vec<String>, // Partition strategy
-    pub cache_size: usize,         // Cache size in MB
+    pub storage_path: PathBuf, // canonical: "06-Data/03-Storage/" (symlinked as data/)
 }
 ```
+
+> Deleted `partition_by`/`cache_size`/`compression` — over-engineering for <5GB. MVP is `data/raw, data/processed, data/results` local only.
 
 ## 7. Data Access Pattern
 

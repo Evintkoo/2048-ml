@@ -1,77 +1,37 @@
-# Game UI (Optional / Not Required)
+# Game UI — Deprecated Stub (Debug-Only Renderer)
 
-## 1. Scope
+> **Status: DEPRECATED STUB — Out of scope (headless simulation only).**
+> UI is **not MVP**. This file exists only to document the one debug-only helper.
+> **Canonical visualization (headless JSON/SVG/CSV export):** `02-Environment/04-Visualization/01-visualization.md` — that file = structured export; **this file = minimal terminal print for debugging only.**
 
-This document defines the UI layer for the 2048 game. **Note:** The project scope explicitly excludes frontend usage per the initial plan. This document covers any visualization needed for debugging and data inspection.
+## Scope
 
-## 2. Terminal UI (Minimal)
+Project is **headless simulation only** per `01-Infrastructure/01-Project/01-project-overview.md` §3 (Out of Scope: Game UI). No web/browser/mobile/interactive UI in MVP. This file is Optional, not MVP — do not extend.
 
-```mermaid
-flowchart TD
-    subgraph "2048 Board"
-        C00["(0,0)"] --- C01["(0,1)"]
-        C01 --- C02["(0,2)"]
-        C02 --- C03["(0,3)"]
-        C10["(1,0)"] --- C11["(1,1)"]
-        C11 --- C12["(1,2)"]
-        C12 --- C13["(1,3)"]
-        C20["(2,0)"] --- C21["(2,1)"]
-        C21 --- C22["(2,2)"]
-        C22 --- C23["(2,3)"]
-        C30["(3,0)"] --- C31["(3,1)"]
-        C31 --- C32["(3,2)"]
-        C32 --- C33["(3,3)"]
-    end
-```
-
-> **See canonical `02-Environment/04-Visualization/01-visualization.md` — identical for debug only.** `render_board` duplicated here for historical reasons; do not maintain two copies.
+## Single Debug-Only Helper
 
 ```rust
-// Reference only — see canonical render_board in 02-Environment/04-Visualization/01-visualization.md
-fn render_board(board: &Board) -> String {
-    // Identical to canonical; debug-only terminal rendering
-    crate::visualization::render_board(board)
-}
-```
-
-## 3. Visualization (Debug Only)
-
-```rust
-// SVG output for board states
-fn render_svg(board: &Board, path: &str) -> Result<()> {
-    // Generate SVG file for board visualization
-}
-
-// CSV export for game logs
-fn export_game_log(result: &GameResult, path: &str) -> Result<()> {
-    // Export all moves, scores, board states to CSV
-}
-```
-
-## 4. Interactive Debug Mode
-
-```rust
-// Interactive game for debugging
-fn debug_game() {
-    loop {
-        render_board(&board);
-        let direction = read_direction();
-        board.execute_move(direction);
-        board.spawn_tile();
-        if board.is_game_over() { break; }
+/// Debug-only terminal render — for `cargo test` / `println!` inspection only. Not used in training loop.
+pub fn render_board(board: &Board) -> String {
+    let mut s = String::new();
+    s.push_str("+------+------+------+------+\n");
+    for r in 0..4 {
+        s.push('|');
+        for c in 0..4 {
+            let v = board.grid[r*4+c];
+            if v == 0 { s.push_str("     |"); } else { s.push_str(&format!("{:>5}|", v)); }
+        }
+        s.push_str(&format!("\n+------+------+------+------+\n"));
     }
+    s.push_str(&format!("Score: {}\n", board.score));
+    s
 }
 ```
 
-## 5. Not Required in Scope
+> Deleted: interactive `debug_game()` loop, `render_svg`, `export_game_log` (those belong in `04-Visualization/01-visualization.md` if needed at all). No duplication — single source is there.
 
-Per the project constraints:
-- No web-based frontend
-- No browser-based visualization
-- No mobile app interface
-- All interaction via CLI and data files
+## Out-of-Scope (Do Not Implement)
 
-The game engine runs headless, producing:
-- Game state logs (JSON/CSV)
-- Board snapshots (for data collection)
-- Training data (for ML models)
+- No web frontend, no browser viz, no mobile/desktop wrapper
+- No interactive game loop — headless `GameSimulator` only (`01-game-engine.md`)
+- Headless output is `GameResult` → `TrainingSample { [f64;27], u8, u64 score metadata }` → Parquet/CSV (see `06-Data/`)

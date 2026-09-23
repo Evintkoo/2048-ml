@@ -69,13 +69,14 @@ flowchart LR
 
 ```rust
 pub struct BenchmarkConfig {
-    pub n_games: usize,              // Default: 10000
+    pub n_games: usize,              // Canonical: 10000 for winner (≥10k; min 1000, recommended 5000)
     pub baseline_agent: AgentType,   // Random, Heuristic
     pub target_agent: AgentType,     // Model agent
     pub metrics: Vec<MetricType>,
     pub output_path: String,
     pub seed: u64,
 }
+// Canonical winner benchmark is 10,000 games (see §6.6). Lower values (1000) are for quick baselines only.
 ```
 
 ## 6. Baseline Comparisons
@@ -169,14 +170,16 @@ All comparisons must satisfy the following statistical requirements:
 - Multiple comparison correction: Bonferroni correction when comparing against multiple baselines
 - Reproducibility: All tests must use fixed random seeds
 
-### 6.5 Baseline Comparison Pipeline
+### 6.5 Baseline Comparison Pipeline — Canonical 10k Games
+
+> Canonical: **10,000 games** per agent for winner determination (see §6.6). Minimum 1,000 for quick checks per §6.3, but final ranking uses 10k.
 
 ```mermaid
 flowchart TD
     subgraph "Baseline Comparison"
-        A[Run Random Agent<br/>1000+ Games] --> B[Collect Scores]
-        C[Run Heuristic Agent<br/>1000+ Games] --> D[Collect Scores]
-        E[Run ML Model Agent<br/>1000+ Games] --> F[Collect Scores]
+        A[Run Random Agent<br/>10000 Games canonical] --> B[Collect Scores]
+        C[Run Heuristic Agent<br/>10000 Games canonical] --> D[Collect Scores]
+        E[Run ML Model Agent<br/>10000 Games canonical] --> F[Collect Scores]
         
         B --> G[Compute Statistics]
         D --> G
@@ -197,7 +200,7 @@ flowchart TD
 
 ### 6.6 Winner Determination and Ranking
 
-The winner is the model with the highest mean score across ≥10,000 benchmark games. Models are ranked by mean score.
+For the 2048 case study, the provisional winner is the model with the highest held-out mean score under the declared evaluation protocol. Models are also reported with uncertainty, practical effect, distributional metrics, and seed-level robustness. This ranking does not define the primary Rust-native AutoML framework contribution or imply globally optimal play.
 
 **Ranking Criteria** (in priority order):
 1. **Mean Score** (primary) — higher is better

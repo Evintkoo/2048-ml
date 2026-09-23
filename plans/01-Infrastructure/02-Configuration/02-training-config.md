@@ -24,19 +24,11 @@ let preprocessor = DataPreprocessor::new(preprocess_config);
 let (x_processed, y_processed) = preprocessor.fit_transform(df)?;
 ```
 
-### 2.2 Feature Engineering
+### 2.2 Feature Engineering — 27-dim canonical (cross-reference `03-State/01-Board/02-feature-extraction.md` + `06-Data/02-Format/01-data-schema.md`)
 
-For 2048, features include:
-- Board state (4x4 grid flattened to 16 features: grid_0 through grid_15)
-- Empty count
-- Max tile log
-- Monotonicity
-- Smoothness
-- Corner value
-- Available moves
-- Merges available
-- Score normalized
-- Move count normalized
+> This file shows only the wiring shape; canonical definitions are not duplicated here.
+
+For 2048, 27 features in canonical order: `grid_0..15` (/32768) + `empty_count/16`, `max_tile_log/log2/15`, `monotonicity`, `smoothness`, `merges_available/16`, `score_normalized` log10/6 (idx 21), `adjacency_merge_score`, `corner_max` (=max_corner/32768), `edge_tiles/12`, `col_worst/8192`, `row_worst/8192`; target `action: u8` 0–3.
 
 ```rust
 let feature_config = FeatureSelector::new()
@@ -49,11 +41,17 @@ let feature_config = FeatureSelector::new()
 ```rust
 use automl::{CrossValidator, CVStrategy};
 
-let cv = CrossValidator::new(CVStrategy::StratifiedKFold { n_splits: 5, shuffle: true })
+// Canonical for 2048: GroupKFold (groups=game_id, shuffle=false) to avoid leakage across moves of same game.
+// StratifiedKFold is valid for class-balance checks; TimeSeriesSplit for temporal forward-chain experiments.
+let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
     .with_random_state(42);
+let splits = cv.split(n_samples, None, Some(&groups))?; // groups: Array1<i64> game_id
 
-let splits = cv.split(x.nrows(), Some(&y), None)?;
-// Or free function: cross_val_score(&config, &x, &y, &CVStrategy::StratifiedKFold { n_splits: 5, shuffle: true }, Some(42))?;
+// Class-balance variant (not canonical — use only if leakage already controlled):
+// let cv2 = CrossValidator::new(CVStrategy::StratifiedKFold { n_splits: 5, shuffle: true }).with_random_state(42);
+// let splits2 = cv2.split(x.nrows(), Some(&y), None)?;
+// Do not use automl::cross_val_score for GroupKFold: it does not forward
+// groups. Use the project grouped-CV wrapper with groups=game_id.
 ```
 
 ## 4. Early Stopping Configuration
@@ -79,6 +77,7 @@ training:
   learning_rate: 0.1
   subsample: 0.8
   colsample_bytree: 0.8
+  # reg_alpha/reg_lambda: L1/L2 regularization — only for tree/boosting models (XGBoost/LightGBM/CatBoost); omit or keep minimal for RandomForest/ExtraTrees
   reg_alpha: 0.01
   reg_lambda: 1.0
   

@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This section specifies the complete reproducibility package required to replicate all experimental results. This follows the standards of reproducible research expected at the PhD level.
+This section specifies the reproducibility package required to replicate the Rust-native AutoML framework evaluation and the 2048 case-study results. The checklist records requirements and must not claim completion until each artifact has been independently verified.
 
 ## 2. Code Repository
 
@@ -10,32 +10,20 @@ This section specifies the complete reproducibility package required to replicat
 
 ```
 2048-ml-research/
-├── automl/                    # Evintkoo/automl submodule
+├── automl/                    # Primary Rust-native AutoML framework submodule
 │   ├── Cargo.toml
 │   ├── src/main.rs
 │   └── src/lib.rs
-├── game-engine/               # Custom Rust 2048 engine
-│   ├── Cargo.toml
-│   ├── src/game_engine.rs
-│   ├── src/board_state.rs
-│   ├── src/move_rules.rs
-│   └── src/score_calculator.rs
-├── training/                  # ML training pipeline
-│   ├── Cargo.toml
-│   ├── src/train_engine.rs
-│   ├── src/feature_extraction.rs
-│   ├── src/label_generation.rs
-│   └── src/model_evaluation.rs
-├── evaluation/                # Evaluation and benchmarking
-│   ├── Cargo.toml
-│   ├── src/benchmark_runner.rs
-│   ├── src/statistical_tests.rs
-│   └── src/ranking.rs
-├── data/                      # Data generation and processing
+├── src/                        # Single root MVP crate
+│   ├── game_engine/            # board, rules, score, simulation
+│   ├── data_pipeline/          # features, labels, storage
+│   └── evaluation/             # benchmark, statistics, ranking
+├── framework_benchmarks/      # Standard tabular framework-validation data/configs
+├── data/                      # 2048 data generation and processing
 │   ├── training_data/
 │   ├── evaluation_data/
 │   └── feature_configs/
-├── experiments/               # Experiment configurations
+├── experiments/               # Framework and 2048 experiment configurations
 │   ├── configs/
 │   │   ├── baseline_experiments.json
 │   │   ├── ablation_experiments.json
@@ -101,36 +89,20 @@ All data is available via:
 
 ## 4. Docker Environment
 
-### 4.1 Dockerfile
+### 4.1 Dockerfile (Fixed — No apt `polars`)
 
 ```dockerfile
 FROM rust:1.75-slim
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    polars \
+RUN apt-get update && apt-get install -y python3 python3-pip pkg-config libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
-
-# Copy all source code
 COPY . .
-
-# Build Rust projects
 RUN cargo build --release --all
-
-# Install Python dependencies
-RUN pip3 install -r requirements.txt
-
-# Set environment variables
-ENV RUST_LOG=info
-ENV SEED=42
-ENV N_GAMES=10000
-
-# Default command
+# polars 0.46, pyarrow etc come from pip, not apt — previous `apt-get install polars` deleted
+RUN pip install --no-cache-dir -r requirements.txt  # requirements.txt pinned: polars==0.46, pyarrow, etc.
+ENV RUST_LOG=info SEED=42 N_GAMES=10000 SEED_SECONDARY="123,456,789,1011"
 CMD ["./target/release/experiment_runner"]
 ```
 
@@ -226,17 +198,19 @@ pub struct ExperimentConfig {
 
 ## 6. Reproducibility Checklist
 
-All results verified for:
-- [x] Code is publicly available
-- [x] All dependencies are version-pinned
-- [x] Docker environment is provided
-- [x] Data is publicly available
-- [x] Seeds are fixed and documented
-- [x] All scripts are executable
-- [x] Results are deterministic (same seed → same results)
-- [x] Statistical tests are reproducible
-- [x] Figures are generated from raw data
-- [x] Paper references match code versions
+Verification checklist — mark an item complete only after the corresponding artifact and independent check exist:
+- [ ] Code is publicly available
+- [ ] All dependencies are version-pinned
+- [ ] Docker environment is provided
+- [ ] Framework benchmark data/configuration is available
+- [ ] 2048 data-generation procedure is available
+- [ ] Seeds are fixed and documented
+- [ ] All scripts are executable
+- [ ] Determinism is verified across repeated runs
+- [ ] Statistical tests are reproducible
+- [ ] Figures are generated from raw data
+- [ ] Paper references match code versions
+- [ ] Framework artifacts can be reloaded with equivalent predictions
 
 ## 7. Reproducibility Failure Modes
 

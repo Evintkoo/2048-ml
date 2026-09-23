@@ -1,127 +1,39 @@
-# Tooling Configuration
+# Tooling Configuration — MVP
 
-## 1. Build Tools
+> **MVP = 20 lines of cargo only.** All other tooling is Optional, not MVP (1-line note each). For CLI subcommands see `04-Tooling/01-cli-tools.md`; for environment setup see `04-Tooling/02-dev-environment.md`.
 
-### 1.1 Cargo (Primary Build System)
-
-```bash
-# Build automl
-cargo build --release
-
-# Run tests
-cargo test
-
-# Run benchmarks
-cargo bench
-
-# Format code
-cargo fmt
-
-# Lint
-cargo clippy
-```
-
-### 1.2 Makefile
+## 1. MVP Build & Quality (only these)
 
 ```bash
-make build      # cargo build --release
-make server     # build and run server on :8080
-make dev        # run server via cargo run (debug)
-make cli        # show CLI help
-make test       # cargo test
-make bench      # cargo bench
-make fmt        # cargo fmt
-make lint       # cargo clippy
-make clean      # cargo clean
+cargo build              # debug build
+cargo build --release    # release
+cargo test               # all tests (includes automl smoke)
+cargo fmt -- --check     # format check
+cargo clippy -- -D warnings  # lint
 ```
 
-### 1.3 Cross-Compilation — Optional, not MVP
+CI runs exactly these four. No Makefile required for MVP (cargo suffices).
 
-> **Optional, not MVP.** Keep minimal Cargo tools (`cargo build/test/fmt/clippy`) for MVP; cross-compilation below is future optional.
+## 2. Project Binary (2048-specific)
+
+Single binary with subcommands — not a multi-binary workspace (see `04-Tooling/01-cli-tools.md`):
 
 ```bash
-# Target aarch64 for mobile testing — optional, not MVP
-cargo build --release --target aarch64-apple-darwin
+cargo run -- --help                          # verify available subcommands
+cargo run -- game-engine simulate --help     # headless 2048 simulation
+cargo run -- data-collector collect --help   # collect 27-dim + action rows
+cargo run -- benchmark run --help            # mean-score benchmark (10k+ games)
 ```
 
-## 2. Development Tools
+## 3. Optional, not MVP — Keep Minimal
 
-| Tool | Command | Purpose |
-|------|---------|---------|
-| Rust Analyzer | rust-analyzer | IDE support |
-| cargo-edit | cargo add/rm | Dependency management |
-| cargo-outdated | cargo outdated | Check for updates |
-| cargo-audit | cargo audit | Security audit |
-| flamegraph | cargo flamegraph | Performance profiling |
-| criterion | cargo criterion | Benchmarking framework |
+| Tool / Feature | 1-line Note |
+|----------------|-------------|
+| `cargo bench` / `criterion` | Optional, not MVP — scheduled only; heuristic ~512 baseline is code, not a bench harness |
+| `cargo audit` | Optional, not MVP — weekly scheduled |
+| `cargo flamegraph` / `perf` | Optional, not MVP — profiling future |
+| Cross-compile (`--target aarch64-*`) | Optional, not MVP — local x86_64/arm64 dev only |
+| Docker (`docker build`/`run`) | Optional, not MVP — not needed for local headless simulation |
+| Frontend `automl serve` | Out-of-scope per initial-plan — mark Optional, not MVP |
 
-## 3. Testing Tools
-
-### 3.1 Unit Testing
-```bash
-cargo test --lib
-cargo test --bin automl
-```
-
-### 3.2 Integration Testing
-```bash
-cargo test --test integration
-```
-
-### 3.3 Benchmarking
-```bash
-cargo bench
-# Results in target/criterion/
-```
-
-### 3.4 Property Testing
-```bash
-cargo test --proptest
-```
-
-## 4. Debugging Tools
-
-| Tool | Purpose |
-|------|---------|
-| `cargo run --` | Debug run |
-| `RUST_BACKTRACE=1` | Stack traces |
-| `RUST_LOG=debug` | Logging |
-| `tracing-subscriber` | Structured logging |
-| `perf` | CPU profiling |
-| `valgrind` | Memory profiling |
-
-## 5. Docker — Optional, not MVP
-
-> **Optional, not MVP.** Docker is future optional; not needed for local MVP.
-
-```bash
-# Build Docker image — optional, not MVP
-docker build -t automl-2048 .
-
-# Run container — optional, not MVP
-docker run -p 8080:8080 automl-2048
-```
-
-## 6. CI/CD Pipeline
-
-> **MVP: Build/Test/Lint/Format via `cargo` only.** `Bench` (scheduled) and `Audit` (scheduled `cargo audit`) are **Optional, not MVP** — keep minimal.
-
-| Stage | Tool | Trigger | MVP |
-|-------|------|---------|-----|
-| Build | cargo | Push to main | Yes |
-| Test | cargo test | Pull request | Yes |
-| Lint | cargo clippy | Push | Yes |
-| Format | cargo fmt | Push | Yes |
-| Bench | cargo bench | Scheduled | Optional, not MVP |
-| Audit | cargo audit | Scheduled | Optional, not MVP |
-
-## 7. IDE Configuration
-
-### VS Code
-- Extension: rust-analyzer
-- Settings: `rust-analyzer.checkOnSave: true`
-- Format: rustfmt on save
-
-### IntelliJ Rust
-- Plugin: Rust
-- Edition: Ultimate
+> Out-of-scope per initial-plan (frontend serve, game UI, mobile) stays Optional, not MVP with minimal mention. No expanded sections for them.

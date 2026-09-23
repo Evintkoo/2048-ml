@@ -1,107 +1,105 @@
-# Results
+# Results — Results-Generation Interface (Pending Experimentation)
 
-> **Status: PENDING EXPERIMENTATION**
->
-> This section will be populated after all experiments are completed. All results are TBD until actual data is collected and analyzed.
+> **Status: PENDING.** No results claimed. This file defines the concrete interfaces for the primary Rust-native AutoML framework evaluation and the downstream 2048 case-study outputs.
 
-## 2. Results Summary
+## 1. Primary Framework Results
 
-All performance metrics, statistical test results, model rankings, and feature importance rankings are **to be determined** after experimentation.
+Framework results must report, for each named dataset and configuration:
 
-## 3. Performance Data
+- Predictive quality using task-appropriate metrics.
+- Training and inference time.
+- Peak memory and CPU use.
+- Hyperparameter-search budget and best-trial trajectory.
+- Failure rate and diagnostic category.
+- Repeated-run reproducibility.
+- Model serialization and reload equivalence.
+- CLI/library/API output equivalence.
 
-### 3.1 Primary Results Table
+| Dataset | Configuration | Metric | Time | Memory | Failures | Reproducibility | Reload Equivalent |
+|---------|---------------|--------|------|--------|----------|-----------------|-------------------|
+| TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 
-All values in the table below are **TBD** and will be populated after experiments:
+No 2048 game score can substitute for this table.
 
-| Metric | Random Forest | Gradient Boosting | XGBoost | LightGBM | ExtraTrees | SVM | KNN | Heuristic | Random |
-|--------|---------------|-------------------|---------|----------|------------|-----|-----|-----------|--------|
-| Mean Score | TBD | TBD | TBD | TBD | TBD | TBD | TBD | ~512 | ~128 |
-| Median Score | TBD | TBD | TBD | TBD | TBD | TBD | TBD | ~384 | ~64 |
-| Std Dev | TBD | TBD | TBD | TBD | TBD | TBD | TBD | ~256 | ~96 |
-| 95% CI | [TBD, TBD] | [TBD, TBD] | [TBD, TBD] | [TBD, TBD] | [TBD, TBD] | [TBD, TBD] | [TBD, TBD] | [~128, ~1024] | [~32, ~256] |
-| Games > Heuristic | TBD | TBD | TBD | TBD | TBD | TBD | TBD | — | — |
-| Rank | TBD | TBD | TBD | TBD | TBD | TBD | TBD | — | — |
-| Training Time | TBD | TBD | TBD | TBD | TBD | TBD | TBD | — | — |
+## 2. 2048 Case-Study Winner Protocol (Canonical: `07-Benchmarking/01-Evaluation/01-benchmarking-framework.md`)
 
-### 3.2 Statistical Test Results
+Winner = highest **mean score** over **≥10,000 games** at **seed 42**. The primary comparison uses the pre-registered Mann-Whitney U test with Holm correction; bootstrap CIs and effect sizes are reported alongside the ranking:
 
-All statistical test results are **TBD** and will be computed after data collection:
+1. **Mann-Whitney U p < 0.05 after Holm correction** for the pre-registered baseline comparisons,
+2. **Bootstrap 95% CI on mean difference** (10,000 resamples),
+3. **Effect size** reported for practical interpretation.
 
-| Comparison | Mann-Whitney U | p-value | Cohen's d | Significant? | CI 95% |
-|------------|----------------|---------|-----------|-------------|--------|
-| Best Model vs Random | TBD | TBD | TBD | TBD | [TBD, TBD] |
-| Best Model vs Heuristic | TBD | TBD | TBD | TBD | [TBD, TBD] |
-| Heuristic vs Random | TBD | TBD | TBD | TBD | [TBD, TBD] |
-| All Models (Kruskal-Wallis) | TBD | TBD | TBD | TBD | [TBD, TBD] |
+Random baseline `~128` is lower bound only.
 
-*All comparisons will use Bonferroni correction for multiple comparisons.*
+## 3. Concrete Schemas
 
-## 4. Learning Curve Analysis
+### 2.1 Parquet Schema (polars 0.46) — `ScoreMetrics`
 
-**To be determined.** Learning curves will be generated during training to assess convergence patterns. The expected pattern (based on prior work) is diminishing returns, but actual results may differ.
+Produced by `src/evaluation/benchmark_runner.rs` → `data/evaluation_data/evaluation_v1.parquet`:
 
-## 5. Score Distribution
+```rust
+pub struct ScoreMetrics {
+    pub model: String,          // e.g., "RandomForest" | "Heuristic" | "Random"
+    pub seed: u64,              // 42 primary
+    pub game_id: u64,           // 0..9999 — GroupKFold key
+    pub score: u32,             // sum of merges, overflow-checked u32
+    pub max_tile: u32,          // 2..32768
+    pub moves: u16,             // game length
+    pub action: u8,             // 0=Up 1=Down 2=Left 3=Right (for per-step logs)
+    pub valid_move: bool,       // did action change board?
+    pub duration_ms: u32,
+}
+// + run metadata sidecar: { automl: "v1.0.0", rust: "1.75", task: "MultiClassification", dim: 27 }
+```
 
-**To be determined.** The score distribution will be analyzed after all 10,000+ games per model are completed.
+GroupKFold MUST keep all rows from the same `game_id` in one fold. Do not claim that rows or games are independent merely because they use different IDs or the same seed. The analysis must declare whether the inferential unit is a row, game, seed, or trained-model run. See `02-Methodology/01-experimental-design.md` §5 and `03-Findings/06-cross-validation.md`.
 
-## 6. Comparative Results
+### 2.2 Statistical API — `src/evaluation/statistical_tests.rs`
 
-**To be determined.** Model comparison will be based on actual mean scores across ≥10,000 benchmark games.
+```rust
+pub fn mann_whitney(a: &[u32], b: &[u32]) -> (f64 /*U*/, f64 /*p*/);
+pub fn bootstrap_ci(a: &[u32], b: &[u32], resamples: usize, alpha: f64) -> (f64, f64); // (lo, hi) on mean diff
+pub fn cohens_d(a: &[u32], b: &[u32]) -> f64;
+pub fn kruskal_wallis(groups: &[&[u32]]) -> (f64 /*H*/, f64 /*p*/);
+pub fn bonferroni(p: f64, k: usize) -> f64; // min(p*k, 1.0)
+```
 
-## 7. Training Metrics
+All tests use raw scores; no normality assumption. Report exact U/H, exact p, d, and CI.
 
-Training metrics (final loss, final accuracy, convergence epoch, training time) will be recorded during experiments.
+## 3. Table Shells (Populated by Pipeline, Not Hand-Edited)
 
-## 8. Statistical Results
+### 3.1 Primary Ranking (output of `ranking_analysis.py`)
 
-All statistical results (test statistics, p-values, effect sizes, confidence intervals) will be computed after data collection using the procedures defined in `02-Methodology/03-hypotheses.md`.
+| Model | Mean | Median | SD | 95% CI (bootstrap) | Rank | Training time | MWU vs #2 |
+|-------|------|--------|----|---------------------|------|---------------|-----------|
+| TBD | TBD | TBD | TBD | [TBD, TBD] | TBD | TBD | p=TBD, d=TBD |
 
-## 9. Results Visualization
+Heuristic row pinned at `~512` and Random at `~128` for reference only; still computed from same 10k games.
 
-Required figures will be generated after experiments:
-1. Histogram — Score distribution for each model
-2. Line Chart — Learning curves (score vs epoch)
-3. Bar Chart — Mean score comparison with 95% CI error bars
-4. Box Plot — Score distribution spread
-5. Ranked Bar Chart — Models ranked by mean score
+### 3.2 Gate Table
 
-## 10. Results Summary Table
+| Comparison | U | p (Bonf.) | d | Bootstrap CI on diff | Gate pass? |
+|------------|---|-----------|---|----------------------|------------|
+| Best vs Heuristic (~512) | TBD | TBD | TBD | [TBD, TBD] | TBD |
+| Best vs 2nd best | TBD | TBD | TBD | [TBD, TBD] | TBD |
+| Kruskal-Wallis (7 models) | H=TBD | TBD | — | — | — |
 
-All summary values are **TBD** and will be populated after experimentation:
+### 3.3 Learning-Curve Hooks
 
-| Category | Value | Confidence |
-|----------|-------|------------|
-| Best Model | TBD | To be determined after experimentation |
-| Mean Score | TBD | Bootstrap 95% CI |
-| Median Score | TBD | To be determined after experimentation |
-| Statistical Significance | TBD | Mann-Whitney U p-value |
-| Effect Size | TBD | Cohen's d |
-| Winner Rank | TBD | Mean score ranking |
-| Training Time | TBD | Wall clock |
+Per-epoch: `epoch, train_loss, val_accuracy_4class, val_mean_score_100games`. Used by `03-Findings/01-key-findings.md`.
 
-## 11. Data Quality
+## 4. Visualization Spec (Generated, Not Mocked)
 
-All results will be verified for:
-- Reproducibility with seed
-- Statistical validity (proper test assumptions)
-- Absence of systematic bias (balanced evaluation)
-- Proper data collection procedures
-- Correct feature extraction (27-dimensional vector)
-- Valid label generation (rollout-based, 100 sims/action)
-- Bonferroni correction applied
-- Bootstrap confidence intervals computed
+1. Histogram of `score` per model (10k points, bin 128). 2. Bar chart mean ± bootstrap CI. 3. Ranked bar. 4. Box plot. 5. Learning curve (score vs epoch). All from `evaluation_v1.parquet`.
 
-## 12. Honest Reporting Standards
+## 5. Data-Quality Checklist (Automated)
 
-All results will be reported honestly, including:
-- Null results (if no model significantly beats heuristic)
-- Failed experiments (if training does not converge)
-- Inconclusive results (if statistical significance is not achieved)
-- Limitations and caveats
+- [ ] `game_id` unique, GroupKFold used
+- [ ] No NaN scores, `score` monotonic via `ScoreTracker`
+- [ ] `valid_move` rate logged (invalid-move audit in `02-insights.md`)
+- [ ] Seed 42 recorded in sidecar; secondary seeds separate files
+- [ ] 27-dim vector length asserted per row
 
-Results will NOT be:
-- Selectively reported to show only positive outcomes
-- Falsified or fabricated
-- Misleadingly presented
-- Overstated beyond what the data supports
+## 6. Honest Reporting
+
+TBD cells remain TBD until pipeline runs. Null (no model beats `~512`) reported as primary finding if gate fails.

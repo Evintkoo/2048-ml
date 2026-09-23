@@ -1,119 +1,129 @@
-# Multi-Game Simulation
+# Multi-Game Simulation — Canonical Batch
+
+> **Sample size canonical: 10k games minimum** for benchmarking (per `01-Infrastructure/01-Project/01-project-overview.md` §8 Tiers + `01-simulation-engine.md` §7 `SimulationConfig.n_games:10000`). Supervised only: `GameDataset { states:[f64;27], actions:u8, scores:u64 }` — **no `rewards`**.
 
 ## 1. Purpose
 
-Running multiple games in sequence to collect sufficient training data and benchmark different agents.
+Run N games sequentially/parallel to collect sufficient supervised rows for automl `TaskType::MultiClassification`. Headless only; results feed `06-Data/` Parquet/CSV.
 
 ## 2. Game Sequencing
 
 ```rust
 pub struct GameSequence {
     pub games: Vec<GameResult>,
-    pub total_games: usize,
-    pub seed: u64,
-    pub agent: AgentType,
+    pub total_games: usize, // 10000 canonical
+    pub seed: u64,          // global 42 → per-game via wrapping_add — see 02-randomness.md
+    pub agent: AgentType,   // Random | Model (MVP)
 }
-
 impl GameSequence {
     pub fn run(&mut self, n: usize) -> &GameSequence {
         for i in 0..n {
-            let game = self.run_single_game(i);
+            let game = self.run_single_game(i); // ChaCha8Rng::seed_from_u64(seed.wrapping_add(i as u64))
             self.games.push(game);
         }
         self
     }
+    fn run_single_game(&self, game_id: usize) -> GameResult { todo!() } // see 01-simulation-engine.md §4
 }
 ```
+
+> **Loop canonical:** `01-simulation-engine.md` §4 `SimulationBatch::run()` / `run_parallel()` — do not duplicate `GameRunner` variants here.
 
 ## 3. Batch Processing
 
-### 3.1 Sequential Mode
-```rust
-// Run games one at a time
-let results = (0..10000).map(|i| run_game(i)).collect();
-```
+### 3.1 Sequential (Deterministic)
 
-### 3.2 Parallel Mode
 ```rust
-// Run games in parallel using rayon
+// Canonical 10k — see §6
 let results: Vec<GameResult> = (0..10000)
-    .into_par_iter()
-    .map(|i| run_game_with_seed(seed + i as u64))
+    .map(|i| run_game_with_seed(seed.wrapping_add(i as u64)))
     .collect();
 ```
 
-## 4. Data Accumulation
+### 3.2 Parallel (rayon, deterministic if seeded per-game)
 
 ```rust
-pub struct GameDataset {
-    pub states: Vec<[f64; 27]>,      // State features
-    pub actions: Vec<u8>,            // Actions taken
-    pub rewards: Vec<f64>,           // Rewards
-    pub scores: Vec<u64>,           // Final scores
-    pub metadata: Vec<GameMetadata>, // Game info
-}
+use rayon::prelude::*;
+let results: Vec<GameResult> = (0..10000)
+    .into_par_iter()
+    .map(|i| run_game_with_seed(seed.wrapping_add(i as u64)))
+    .collect();
+// Fix thread count — see 02-randomness.md §8 (RAYON_NUM_THREADS, threads field)
+```
 
+## 4. Data Accumulation — NO `rewards`
+
+```rust
+/// Canonical dataset — supervised only. No RL tuple. score is metadata, never label.
+pub struct GameDataset {
+    pub states: Vec<[f64;27]>,        // BoardStateML::to_array() per turn (includes idx21 log10(score+1)/6.0)
+    pub actions: Vec<u8>,             // ONLY label: 0–3 (Up=0,Down=1,Left=2,Right=3)
+    pub scores: Vec<u64>,             // per-turn Board.score metadata for analysis — NEVER rewards
+    pub metadata: Vec<GameMetadata>,  // { game_id:u64, move_count, final_max_tile:u32 }
+    // DELETED: pub rewards: Vec<f64> — violates supervised-only canonical (TrainingSample is [f64;27]→u8)
+}
 impl GameDataset {
     pub fn from_games(games: Vec<GameResult>) -> Self {
-        let mut dataset = GameDataset::new();
-        for game in games {
-            dataset.extend_from_game(game);
-        }
-        dataset
+        let mut ds = GameDataset { states:Vec::new(), actions:Vec::new(), scores:Vec::new(), metadata:Vec::new() };
+        for g in games { ds.extend_from_game(g); }
+        ds
     }
+    fn extend_from_game(&mut self, g: GameResult) { todo!() } // flatten per-move rows
 }
+// DataFrame row: state_features:[f64;27], action:u8, score:u64, game_id:u64 (for GroupKFold groups)
+// See 01-simulation-engine.md §8 TrainingSample and 06-Data/02-Format/01-data-schema.md
 ```
+
+> **Critical:** Any `rewards:Vec<f64>` is **banned**. If you see it, delete it — project has no RL, no `RewardSignal` training.
 
 ## 5. Data Collection Pipeline
 
 ```
-Game 1 → Record State+Action → 
-Game 2 → Record State+Action → 
-...    → ...               → 
-Game N → Final Dataset → Preprocess → Training Data
+Game(i, seed.wrapping_add(i)) → record [f64;27] + u8 per valid move → GameDataset → Parquet/CSV → automl TrainEngine
 ```
 
-## 6. Sample Size Requirements
+> Cross-ref loops: `01-simulation-engine.md` §4 (`SimulationBatch`). Do not re-define `GameSimulator` here.
 
-| Goal | Minimum Games | Recommended | Confidence Level |
-|------|---------------|-------------|-----------------|
-| Baseline | 1,000 | 10,000 | 95% |
-| Training | 50,000 | 100,000 | 95% |
-| Benchmark | 100,000 | 1,000,000 | 99% |
-| Statistical Significance | 10,000 | 50,000 | 95% |
+## 6. Sample Size — Canonical 10k (Not Placeholder)
 
-## 7. Performance Targets
+| Goal | Canonical Minimum | Note |
+|------|-------------------|------|
+| Baseline / benchmark / statistical significance | **10,000 games** | Per project-overview Tiers & §2/§3 above — fixed, not 1,000 |
+| Training | 10,000 minimum; 50k–100k recommended if compute allows | log scaling; measure after 10k |
+| Evaluation CI | ≥10k for bootstrap 95% CI & Mann-Whitney U p<0.05 | see 07-Benchmarking/ |
 
-```rust
-pub struct PerformanceTargets {
-    pub games_per_second: usize,     // Target: 1000+ games/sec
-    pub memory_per_game: usize,      // Target: <1KB per game state
-    pub total_time_10k: Duration,    // Target: <10 seconds
-}
-```
+> **Deleted placeholder:** `PerformanceTargets { games_per_second: 1000 }` — **remove placeholder throughput claim**. Measure empirically and report actual `avg_game_duration_ms` in `SimulationMetrics` (see `01-simulation-engine.md` §6). Do not assert 1000 games/sec before measurement. Same for `total_time_10k: Duration` placeholder — delete.
 
-## 8. Progress Tracking
+## 7. Progress Tracking
 
 ```rust
 pub struct ProgressTracker {
     pub games_completed: usize,
-    pub total_games: usize,
-    pub current_score: u64,
+    pub total_games: usize,       // 10000 canonical
+    pub current_score: u64,       // metadata
     pub best_score: u64,
     pub avg_score_so_far: f64,
-    pub time_elapsed: Duration,
+    pub time_elapsed: std::time::Duration,
 }
-
-// Displayed via indicatif progress bar
+// Display via indicatif — optional, not MVP critical
 ```
 
-## 9. Checkpointing
+## 8. Checkpointing
 
 ```rust
-// Save progress every N games
 fn checkpoint(results: &[GameResult], game_count: usize) {
     if game_count % 1000 == 0 {
-        save_results(&results[game_count-1000..game_count]);
+        save_results(&results[game_count-1000..game_count]); // Parquet append
     }
 }
 ```
+
+## 9. Cross-References
+
+- **Loops / batch (canonical):** `01-simulation-engine.md` §4 (`SimulationBatch::run`/`run_parallel`)
+- **RNG / seed:** `02-randomness.md` (`ChaCha8Rng`, `wrapping_add`, `TrainingConfig::with_random_state(42)`, rayon threads)
+- **Training row:** `01-simulation-engine.md` §8 (`TrainingSample { [f64;27], u8, u64 }`)
+- **Scoring / win-lose / valid moves:** `02-Rules/01-scoring-rules.md` (metadata), `02-win-lose-conditions.md` (`would_change`), `03-valid-moves.md`
+- **Features (27-dim, idx21 /6.0, grid /32768):** `03-State/01-Board/01-board-state.md`
+- **CV:** `05-Model/04-Evaluation/02-cross-validation.md` (`GroupKFold` groups=`game_id` vs `TimeSeriesSplit`)
+- **Headless only:** `01-Game/01-game-engine.md` (SimulatorConfig `seed:42, spawn_prob_4:0.1`), `01-Game/04-game-ui.md` deprecated stub

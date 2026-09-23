@@ -1,15 +1,12 @@
-# Win/Lose Conditions
+# Win / Lose Conditions — Canonical
 
-## 1. Win Condition
+> **Canonical terminal check: `would_change`.** Thresholds are NOT re-stated here — **See `01-Infrastructure/01-Project/01-project-overview.md` Tiers 1–3** for ranking (heuristic ~512). No 65536 speculation.
 
-### 1.1 Primary Win
-- A tile with value **2048** is created on the board
-- The game does **not** automatically end (player can continue)
-- Score continues to accumulate beyond 2048
+## 1. Win Condition (Non-Terminal)
 
-### 1.2 Extended Win
-- Any tile value beyond 2048 (e.g., 4096, 8192)
-- These are "super wins" and indicate exceptional play
+- Tile `2048` created = *win* but **game does not stop** — player may continue to higher tiles.
+- No upper bound asserted here. Canonical max tile is `32768` (`2^15`) per `03-State/01-Board/01-board-state.md` (`max_tile_log /15`, grid normalization `/32768`). **Delete 65536 speculation — out of scope.**
+- Higher tiles (4096, 8192, ...) are strictly *continued play*, not new win variants to enumerate in `WinCondition`. Keep only:
 
 ```rust
 pub enum WinCondition {
@@ -17,19 +14,13 @@ pub enum WinCondition {
     Won2048,
     Won4096,
     Won8192,
-    Won16384,
-    Won32768,
-    Won65536,
+    // Not needed: Won16384/Won32768/Won65536 — delete speculation; track max_tile: u32 instead
 }
 ```
 
-## 2. Lose Condition
+## 2. Lose / Terminal — Canonical via `would_change`
 
-### 2.1 Game Over
-The game ends when ALL of the following are true:
-1. The board is completely full (no empty cells)
-2. No valid moves exist in any of the four directions
-3. No adjacent tiles have the same value
+> **Canonical:** `Board::would_change(dir)` / `get_valid_moves()` — single source in `02-Rules/03-valid-moves.md` and `01-Game/01-game-engine.md` §4.2.
 
 ```rust
 impl Board {
@@ -37,80 +28,76 @@ impl Board {
         if !self.is_full() { return false; }
         !self.has_valid_moves()
     }
-    
     fn is_full(&self) -> bool {
-        self.grid.iter().all(|row| row.iter().all(|cell| cell.is_some()))
+        !self.grid.contains(&0) // [u32;16], 0 = empty
     }
-    
     fn has_valid_moves(&self) -> bool {
-        [Direction::Up, Direction::Down, Direction::Left, Direction::Right]
-            .iter()
-            .any(|dir| self.would_change(*dir))
+        Direction::ALL.iter().any(|dir| self.would_change(*dir))
     }
 }
 ```
 
-## 3. Game State Machine
+Terminal iff **no valid moves in any of 4 dirs** (`would_change == false` ∀ dirs). Board-full alone is insufficient — `has_valid_moves()` is the check.
+
+## 3. State Machine
 
 ```mermaid
 stateDiagram-v2
     [*] --> PLAYING
-    PLAYING --> WON : 2048 tile created
-    WON --> PLAYING : continue playing
-    PLAYING --> LOST : board full, no moves
+    PLAYING --> WON : 2048 created (auto-continue)
+    WON --> PLAYING : continue
+    PLAYING --> LOST : is_game_over()==true
     LOST --> [*]
-    PLAYING --> PLAYING : max tiles reached
 ```
 
-## 4. End-of-Game Data
-
-When a game ends, collect the following:
+## 4. End-of-Game Data (Metadata)
 
 ```rust
 pub struct GameResult {
-    pub final_score: u64,
-    pub max_tile: u64,
+    pub final_score: u64,              // metadata, never label — see 01-scoring-rules.md
+    pub max_tile: u32,                 // max grid value (u32, not u64 speculation)
     pub move_count: u64,
-    pub board: Board,                    // Final board state
-    pub move_history: Vec<MoveRecord>,   // All moves made
-    pub board_history: Vec<Board>,       // Board snapshots
+    pub board: Board,                  // [u32;16] final
+    pub move_history: Vec<MoveRecord>, // Vec<(action:u8, score_delta:u64)>
     pub win_condition: WinCondition,
-    pub duration_ms: u64,                // Time taken
+    pub duration_ms: u64,
+    // Training rows derived separately: Vec<TrainingSample { [f64;27], action:u8, score:u64 }>
 }
 ```
 
-## 5. Success Criteria for ML Model
+## 5. Success Criteria — Reference Project Tiers (Do Not Duplicate Numbers)
 
-| Metric | Threshold | Description |
-|--------|-----------|-------------|
-| Mean Score ≥ 512 | ≥ 80% of games | Model exceeds heuristic baseline |
-| Mean Score ≥ 768 | ≥ 60% of games | Model beats heuristic by 1.5x |
-| Mean Score ≥ 1024 | ≥ 30% of games | Strong performance |
-| Highest Score | Max across all games | Winner determination |
-| Score Distribution | Percentiles | Ranking across models |
+> **See canonical:** `01-Infrastructure/01-Project/01-project-overview.md` §8
+> - **Tier 1 (MVP):** 10k+ games, determine score ceilings, pipeline works
+> - **Tier 2:** rank by mean score, automated reproducible pipeline
+> - **Tier 3:** top model **mean > heuristic ~512** with statistical significance
+> Case-study ranking = highest held-out mean score under the declared 2048 evaluation protocol, with uncertainty and practical-effect reporting. Do **not** interpret this as globally optimal play or as the framework's primary success criterion.
 
-## 6. Early Stopping Criteria
-
-For training efficiency, games can be stopped early if:
-- Score exceeds a threshold (e.g., 10000)
-- No progress for N moves (score hasn't increased)
-- Board state is repetitive (cycle detection)
+## 6. Early Stopping (Configurable, Not Hardcoded)
 
 ```rust
 pub struct EarlyStopCriteria {
     pub max_moves: u64,           // e.g., 1000
-    pub max_score: Option<u64>,   // e.g., Some(20000) — configurable; if using log-normalized score feature log10(score+1)/6.0, ensure threshold maps to same scale (20000 → ~4.3/6 ≈ 0.72). Set via config, not hardcoded.
-    pub stagnation_limit: u64,    // e.g., 100 moves without score increase
+    pub max_score: Option<u64>,   // configurable via config.toml — if using log-norm log10(score+1)/6.0, map: 20000 → ~0.72
+    pub stagnation_limit: u64,    // moves without score increase
 }
 ```
 
-> **Configurable:** `max_score` is an example threshold only — configure per run (e.g., `config.toml` `early_stop.max_score`). It is not the theoretical max (which is open); log-normalized feature uses `log10(score+1)/6.0`, so raw threshold must be mapped accordingly.
+> `max_score` is an example threshold only — configure per run. Not a theoretical max (open problem per project-overview). Raw threshold must map to normalized feature scale `log10(score+1)/6.0`.
 
 ## 7. Edge Cases
 
 | Case | Treatment |
 |------|-----------|
-| Game ends immediately | Record as failed game |
-| Score of 0 | No merges occurred |
-| Board full with moves remaining | Game continues |
-| 2048 tile created on first move | Extremely rare, valid |
+| Immediate terminal | record as failed game |
+| Score 0 | no merges — valid |
+| Full but has_valid_moves | **not** over — `would_change` decides |
+| 2048 on first moves | rare, valid |
+
+## 8. Cross-References
+
+- **Scoring (metadata only):** `01-scoring-rules.md`
+- **Valid moves:** `03-valid-moves.md` (`would_change`, `constrained_action`)
+- **Features / normalization:** `03-State/01-Board/01-board-state.md` (`/32768`, index 21 `/6.0`)
+- **CV:** `05-Model/04-Evaluation/02-cross-validation.md` (`GroupKFold` vs `TimeSeriesSplit`)
+- **RNG:** `03-Simulation-Engine/02-randomness.md` (`ChaCha8Rng`, `spawn_prob_4:0.1`)

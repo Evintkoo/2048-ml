@@ -98,38 +98,41 @@ pub struct TreeModelArchitecture {
 // Use the enum variants directly (e.g., ModelType::RandomForest, ModelType::Auto) — not a custom struct.
 ```
 
-```mermaid
-flowchart TD
-    TB[Tree-Based Model]
-    TB --> Config[Architecture Config]
-    TB --> Train[Fit Ensemble]
-    TB --> Evaluate[Cross-Validation]
-    TB --> Ensemble[Aggregate Predictions]
-    
-    Config --> |n_estimators, max_depth| Train
-    Train --> |fitted trees| Evaluate
-    Evaluate --> |best params| Ensemble
-    Ensemble --> |predictions| Output[Output<br/>4 Action Scores]
-    
-    style TB fill:#e8f5e9
-    style Output fill:#fff3e0
+### 2.6 Actionable TrainingConfig — Verified API (config.rs:174)
+
+Tree architecture is instantiated via `TrainingConfig`, not a custom struct. `n_estimators` is the tree count (not epochs).
+
+```rust
+use automl::{TrainingConfig, TaskType, ModelType};
+
+// Minimal: task + target column
+let config = TrainingConfig::new(TaskType::MultiClassification, "action")
+    .with_model(ModelType::RandomForest)
+    .with_n_estimators(150)
+    .with_max_depth(8)
+    .with_cv(5)
+    .with_random_state(42);
+
+// Boosting variant with learning rate
+let gb_config = TrainingConfig::new(TaskType::MultiClassification, "action")
+    .with_model(ModelType::GradientBoosting)
+    .with_n_estimators(200)
+    .with_max_depth(6)
+    .with_learning_rate(0.08)
+    .with_cv(5)
+    .with_random_state(42);
+
+// XGBoost / LightGBM / CatBoost / ExtraTrees / SVM / KNN likewise:
+// .with_model(ModelType::XGBoost) / LightGBM / CatBoost / ExtraTrees / SVM / KNN
+// Then: TrainEngine::new(config).fit(&df) → InferenceEngine::predict
+
+// Early stopping (optional, not epochs):
+// TrainingConfig { early_stopping: true, early_stopping_rounds: 50, ..Default::default() }
 ```
 
-## 6. Model Integration
+> **Keep §2.1 tree variants table** as the canonical reference for which `ModelType` to pass to `with_model`. The `TrainingConfig` snippet above is the actionable instantiation.
 
-```mermaid
-flowchart TD
-    Model[Trained Model]
-    Model --> Engine[TrainEngine]
-    Engine --> Pipeline[Training Pipeline]
-    Pipeline --> Data[06-Data/]
-    
-    Data --> |training data| Pipeline
-    Pipeline --> |model| Model
-    Model --> |predictions| Inference[InferenceEngine]
-```
-
-## 7. Architecture Files Location
+## 6. Architecture Files Location
 
 All model architecture files are in `05-Model/02-Training/`:
 
@@ -141,7 +144,7 @@ flowchart LR
     Dir --> N03[03-model-architecture.md]
 ```
 
-## 8. Next Steps
+## 7. Next Steps
 
 1. Select final model architecture
 2. Configure hyperparameters in `05-Model/03-Hyperparameter-Optimization/`

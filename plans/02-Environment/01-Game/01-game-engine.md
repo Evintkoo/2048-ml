@@ -2,126 +2,159 @@
 
 ## 1. Purpose
 
-Define the game engine implementation that simulates the 2048 game for data generation and model training.
+Define the headless 2048 simulation engine that generates supervised `([f64;27] → u8)` training data via Evintkoo/automl `TaskType::MultiClassification`. No UI/web — headless only.
 
-## 2. Game Rules Summary
+## 2. Game Rules Summary (Thin)
 
-2048 is played on a 4×4 grid. On each turn:
-1. A new tile (value 2 or 4) appears in a random empty cell
-2. The player slides all tiles in one direction (up/down/left/right)
-3. Tiles with the same value that collide merge into one tile with the summed value
-4. The game ends when the board is full and no moves are possible
-5. Score = sum of all merged tile values
+Thin summary only; **See canonical:** `02-Rules/01-scoring-rules.md`, `02-Rules/02-win-lose-conditions.md`, `02-Rules/03-valid-moves.md`.
+
+- 4×4 grid, start = 2 tiles spawned `2` 90% / `4` 10%
+- Slide all tiles in direction → merge equal neighbours once per tile per move → score += merged value
+- After each valid move spawn `2`/`4` (90/10) in random empty cell via `ChaCha8Rng` (**See: `03-Simulation-Engine/02-randomness.md` seed hygiene**)
+- Terminal when board full AND `would_change(dir) == false` for all 4 dirs (**heuristic baseline ~512** for later eval)
 
 ## 3. Engine Architecture
 
 ```mermaid
 flowchart TD
-    subgraph "Game Engine"
-        Board[Board State<br/>4×4 grid]
-        TileMgr[TileManager<br/>Spawner<br/>Random]
-        MoveProc[Move Processor<br/>Slide/Merge]
-        ScoreTrk[Score Tracker<br/>Calculator]
-        Ctrl[Game Controller<br/>Turn Mgr]
-    end
-    
-    Board <--> TileMgr
+    Board[Board [u32;16] + score/move_count/game_over<br/>Canonical: 03-State/01-Board/01-board-state.md]
+    RNG[ChaCha8Rng<br/>Seed Hygiene: 03-Simulation-Engine/02-randomness.md]
+    MoveProc[Move Processor<br/>slide_left + rotate/transpose]
+    ScoreTrk[Score Tracker<br/>u64 metadata only — NOT label]
+    Ctrl[GameController<br/>valid_moves via would_change]
     Board <--> MoveProc
-    Board <--> ScoreTrk
-    Board <--> Ctrl
+    RNG --> Board
     MoveProc --> ScoreTrk
-    TileMgr --> Board
     Ctrl --> Board
 ```
 
-## 4. Board Representation
+> **Canonical Board:** `03-State/01-Board/01-board-state.md` (`RawBoardState { grid: [u32;16], score: u64, move_count: u64, game_over: bool }`). Do not duplicate struct here.
 
-> **Canonical Board defined in `03-State/01-Board/01-board-state.md`, see there.** This section keeps a minimal description; do not duplicate the full struct.
+## 4. Core Operations
 
-Board is a 4×4 grid with `score`, `move_count`, `game_over` — see canonical for full definition (`RawBoardState` / `BoardStateML`). No duplicate struct here.
-
-## 5. Core Operations
-
-### 5.1 Move Execution
+### 4.1 Direction & Action Encoding (u8 0–3)
 
 ```rust
-pub enum Direction { Up, Down, Left, Right }
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Direction { Up = 0, Down = 1, Left = 2, Right = 3 }
 
+impl Direction {
+    pub const ALL: [Direction; 4] = [Self::Up, Self::Down, Self::Left, Self::Right];
+    pub fn from_u8(v: u8) -> Self { match v { 0=>Self::Up, 1=>Self::Down, 2=>Self::Left, 3=>Self::Right, _=>panic!("invalid action") } }
+}
+/// Supervised label: `action: u8` in 0..=3 — see 04-Actions/01-Action/01-action-space.md. TaskType::MultiClassification.
+```
+
+### 4.2 Move Execution (via would_change)
+
+```rust
 impl Board {
+    /// Canonical validity — also see 02-Rules/03-valid-moves.md
+    pub fn would_change(&self, dir: Direction) -> bool { /* clone + slide without spawn */ true }
+    pub fn get_valid_moves(&self) -> Vec<Direction> {
+        Direction::ALL.iter().copied().filter(|d| self.would_change(*d)).collect()
+    }
     pub fn execute_move(&mut self, dir: Direction) -> MoveResult {
-        // Slide and merge tiles in the given direction
-        // Returns MoveResult with:
-        // - whether the board changed
-        // - score gained
-        // - merged positions
+        // 1. slide/merge via slide_left + transforms (see 03-board-representation.md)
+        // 2. returns { changed: bool, score_gained: u64 }
+        // 3. caller spawns tile only if changed
+        todo!()
     }
-}
-```
-
-### 5.2 Tile Spawning
-
-```rust
-impl Board {
-    pub fn spawn_tile(&mut self) {
-        // Find all empty cells
-        // Select random empty cell
-        // Place 2 (90% probability) or 4 (10% probability)
-    }
-}
-```
-
-### 5.3 Game Over Detection
-
-```rust
-impl Board {
     pub fn is_game_over(&self) -> bool {
-        // Board is full AND no valid moves exist
-        // Check all four directions for possible merges
+        self.get_valid_moves().is_empty()
     }
 }
 ```
 
-## 6. Move Logic (Slide & Merge)
+### 4.3 Tile Spawn — Seeded RNG (Canonical RNG: 03-Simulation-Engine/02-randomness.md)
 
 ```rust
-fn slide_row(row: [Option<u64>; 4]) -> ([Option<u64>; 4], u64) {
-    // 1. Remove None values (compress)
-    // 2. Merge adjacent equal values (leftward)
-    // 3. Compress again
-    // 4. Return new row + score gained
+use rand_chacha::ChaCha8Rng;
+use rand::{Rng, SeedableRng};
+
+impl Board {
+    pub fn spawn_tile(&mut self, rng: &mut ChaCha8Rng, spawn_prob_4: f64) {
+        let empties: Vec<usize> = self.grid.iter().enumerate()
+            .filter(|(_, &v)| v == 0).map(|(i,_)| i).collect();
+        if empties.is_empty() { return; }
+        let idx = empties[rng.gen_range(0..empties.len())];
+        let val = if rng.gen_bool(spawn_prob_4) { 4 } else { 2 }; // 90/10: prob 0.1 for 4
+        self.grid[idx] = val;
+    }
 }
+/// Initial board: call spawn_tile twice with spawn_prob_4 = 0.1
+/// Global seed hygiene → TrainingConfig::with_random_state(42) and propagate via wrapping_add — see 03-Simulation-Engine/02-randomness.md
 ```
 
-## 7. Simulation Engine
+### 4.4 Slide Logic — Base op is slide_left
 
 ```rust
+fn slide_row_left(row: [u32; 4]) -> ([u32; 4], u64) {
+    // 1. compress non-zero left
+    // 2. merge adjacent equals once (leftward)
+    // 3. compress again → new row + score_gained
+    todo!()
+}
+/// Other directions via rotate/transpose — see 03-board-representation.md §3.2
+```
+
+## 5. Simulation Engine
+
+```rust
+use rand_chacha::ChaCha8Rng;
+use rand::SeedableRng;
+
 pub struct GameSimulator {
-    board: Board,
-    rng: ChaCha8Rng,  // Deterministic RNG
-    config: SimulatorConfig,
+    pub board: Board,          // [u32;16] canonical
+    pub rng: ChaCha8Rng,       // ChaCha8Rng::seed_from_u64(seed)
+    pub config: SimulatorConfig,
 }
 
 impl GameSimulator {
-    pub fn simulate(&mut self, action_sequence: &[Direction]) -> GameResult;
-    pub fn simulate_random(&mut self) -> GameResult;  // Random agent
-    pub fn simulate_with_model(&mut self, model: &dyn Model) -> GameResult;
+    pub fn new(seed: u64, config: SimulatorConfig) -> Self {
+        Self { board: Board::new(), rng: ChaCha8Rng::seed_from_u64(seed), config }
+    }
+    pub fn simulate_random(&mut self) -> GameResult { todo!() }
+    pub fn simulate_with_model(&mut self, model: &dyn Model) -> GameResult { todo!() }
+    // TrainingSample produced: ([f64;27], action: u8, score: u64 metadata) — see 03-Simulation-Engine/01-simulation-engine.md
 }
 ```
 
-## 8. Configuration
+## 6. Configuration
 
 ```rust
 pub struct SimulatorConfig {
-    pub board_size: usize,           // 4
-    pub spawn_prob_4: f64,           // 0.1
-    pub max_moves: u64,              // 1000
-    pub initial_tiles: usize,        // 2
+    pub board_size: usize,      // 4 — fixed, not configurable
+    pub spawn_prob_4: f64,      // 0.1 — canonical 90/10 (10% fours)
+    pub seed: u64,              // ChaCha8Rng seed; propagated via wrapping_add — see 02-randomness.md
+    pub max_moves: u64,         // 1000 — early-stop fallback
+    pub initial_tiles: usize,   // 2
 }
+
+impl Default for SimulatorConfig {
+    fn default() -> Self {
+        Self { board_size: 4, spawn_prob_4: 0.1, seed: 42, max_moves: 1000, initial_tiles: 2 }
+    }
+}
+/// Global reproducibility: SimulatorConfig.seed linked to TrainingConfig::with_random_state(42)
+/// — see 01-Infrastructure/02-Configuration/02-training-config.md & 03-Simulation-Engine/02-randomness.md
 ```
 
-## 9. Performance Considerations
+## 7. Performance Considerations
 
-- Game simulation must be fast (1000+ games/second)
-- Use `rayon` for parallel simulation of multiple games
-- Zero-allocation board state during moves
-- Pre-computed move tables for optimization
+| Concern | MVP | Optional (Not MVP) |
+|---------|-----|---------------------|
+| Board state | `[u32;16]` flat, empty=0, zero-alloc moves | — |
+| Parallelism | `rayon` par_iter over games (see 03-Simulation-Engine/03-multi-game.md) — thread count fixed for determinism | — |
+| Precomputed move tables / bitboard / SIMD | **Optional, not MVP** — mark out-of-scope; profile after 10k baseline works | Precomputed tables, bitboard u64, SIMD batch — add only if >2× gain measured |
+| Serialization | `[f64;27]` + `u8` + `u64` score to Parquet/CSV — see 06-Data | — |
+
+## 8. Cross-References
+
+- **RNG / seed hygiene (canonical):** `03-Simulation-Engine/02-randomness.md`
+- **Board transforms:** `01-Game/03-board-representation.md` (grid normalization `/32768`)
+- **Scoring / win-lose / valid-moves (canonical):** `02-Rules/01-scoring-rules.md`, `02-win-lose-conditions.md`, `03-valid-moves.md`
+- **Training row:** `03-Simulation-Engine/01-simulation-engine.md` — `TrainingSample { state_features:[f64;27], action:u8, score:u64 metadata }`, `TaskType::MultiClassification`
+- **Features (27-dim):** `03-State/01-Board/01-board-state.md` (16 raw + 11 derived, score at index 21 `/6.0`)
+- **Out-of-scope UI:** Headless only — debug print only in `01-Game/04-game-ui.md` (deprecated stub), canonical viz JSON in `04-Visualization/01-visualization.md`

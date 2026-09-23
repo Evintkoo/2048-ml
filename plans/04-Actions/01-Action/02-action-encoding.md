@@ -1,84 +1,56 @@
-# Action Encoding
+# Action Encoding — Integer 0..3 Only
 
-## 1. Purpose
+> **Canonical:** `01-action-space.md` — 4 discrete actions. This file = label encoding. **No one-hot / binary / multi-output.**
+> **automl handles encoding internally** via `EncoderType` — do not manually expand `action` to 4 dims.
 
-Encode the discrete 2048 actions into formats compatible with the automl framework.
+## 1. Integer Encoding — The Only Encoding
 
-## 2. Encoding Strategies
-
-### 2.1 Integer Encoding
-
-```mermaid
-flowchart LR
-    A["Action"] -->|0| B["Up"]
-    A -->|1| C["Down"]
-    A -->|2| D["Left"]
-    A -->|3| E["Right"]
-```
-
-| Integer | Direction |
-|---------|-----------|
+| Integer `u8` | Direction |
+|--------------|-----------|
 | 0 | Up |
 | 1 | Down |
 | 2 | Left |
 | 3 | Right |
 
-### 2.2 One-Hot Encoding
-
-Each action is represented as a 4-dimensional binary vector:
-
 ```mermaid
-graph LR
-    Up["Up: [1,0,0,0]"] --> A
-    Down["Down: [0,1,0,0]"] --> A
-    Left["Left: [0,0,1,0]"] --> A
-    Right["Right: [0,0,0,1]"] --> A
+flowchart LR
+    A["action: u8"] -->|0| B["Up"]
+    A -->|1| C["Down"]
+    A -->|2| D["Left"]
+    A -->|3| E["Right"]
 ```
 
 ```rust
-pub fn one_hot_encode(action: u8) -> [f64; 4] {
-    let mut encoding = [0.0f64; 4];
-    encoding[action as usize] = 1.0;
-    encoding
+pub fn encode_action(dir: Direction) -> u8 { dir as u8 } // 0..3
+pub fn decode_action(a: u8) -> Option<Direction> {
+    match a { 0=>Some(Up),1=>Some(Down),2=>Some(Left),3=>Some(Right), _=>None }
 }
 ```
 
-### 2.3 Binary Encoding
+## 2. Why No One-Hot / Binary
+
+> **Deleted:** §2.2 One-Hot 4-dim and §2.3 Binary 2-dim were hallucinated multi-output — task is `TaskType::MultiClassification` with **integer label** `0..3`, not 4 regression heads. automl's `EncoderType` / classifier handles internal encoding; user code stays `u8`.
+
+If a model needs one-hot internally, automl applies `EncoderType::OneHot` via `PreprocessingConfig` — not in user `TrainingSample`.
+
+## 3. automl Target
 
 ```rust
-pub fn binary_encode(action: u8) -> [f64; 2] {
-    match action {
-        0 => [0.0, 0.0], // Up
-        1 => [0.0, 1.0], // Down
-        2 => [1.0, 0.0], // Left
-        3 => [1.0, 1.0], // Right
-        _ => panic!("Invalid action"),
-    }
-}
-```
-
-## 3. Encoding for automl
-
-```rust
-pub struct ActionEncodingConfig {
-    pub method: EncodingMethod,    // Integer, OneHot, Binary
-    pub num_classes: usize,        // 4
-}
+let config = TrainingConfig::new(TaskType::MultiClassification, "action")
+    .with_model(ModelType::RandomForest);
+// action column is UInt8 0..3 — automl treats as categorical label
 ```
 
 ## 4. Decoding Model Output
 
 ```rust
-pub fn decode_action(encoding: &[f64]) -> u8 {
-    match encoding.len() {
-        1 => encoding[0] as u8,
-        4 => encoding.iter().position_max() as u8,
-        _ => panic!("Invalid encoding length"),
-    }
-}
+// 4 logits → argmax → u8 0..3, masked by valid actions
+pub fn decode_action(logits: &[f64;4], valid: &[u8]) -> u8 { masked_argmax(logits, valid) }
 ```
+Canonical `masked_argmax` in `03-Mapping/01-model-output-to-action.md`.
 
 ## 5. Path References
 
-- `03-State/04-Encoding/` - State encoding for comparison
-- `03-State/` modules that use action encodings as targets
+- `01-action-space.md` — action definitions.
+- `03-Mapping/01-model-output-to-action.md` — logits → action.
+- `automl/src/training/config.rs:11` `TaskType::MultiClassification`.

@@ -1,198 +1,154 @@
-# Simulation Engine
+# Simulation Engine — Canonical Data Generation
+
+> **MVP: `Random` / `Model` agents only.** Generates `TrainingSample { [f64;27], action:u8, score:u64 metadata }` for `TaskType::MultiClassification`. Headless only, no UI.
 
 ## 1. Purpose
 
-The simulation engine runs thousands of 2048 games to generate training data for the ML model. It supports different agent strategies for data collection.
+Run thousands of 2048 games headless to generate supervised training data (`state_features → action`) for Evintkoo/automl. Batch + parallel execution; score is metadata only.
 
 ## 2. Architecture
 
 ```mermaid
 flowchart TD
-    subgraph "Simulation Engine"
-        subgraph Agents
+    subgraph Simulation Engine
+        subgraph Agents [MVP Agents]
             Random[Random Agent]
-            Model[Model Agent<br/>trained]
-            Human[Human Agent<br/>reference only]
-            Heuristic[Heuristic Agent<br/>reference only]
+            Model[Model Agent<br/>InferenceEngine]
         end
-        
-        subgraph Runner
-            GR[Game Runner<br/>batch]
-        end
-        
-        subgraph Collector
-            DC[Data Collector<br/>GameResult →<br/>Training Data]
-        end
+        Runner[Game Runner<br/>batch + rayon]
+        Collector[Data Collector<br/>GameResult → TrainingSample]
     end
-    
-    Random -->|input| GR
-    Model -->|input| GR
-    Human -.->|reference only, not for benchmarking| GR
-    Heuristic -.->|reference only, baseline only| GR
-    
-    GR -->|output| DC
-    Random <--> GR
-    Model <--> GR
+    Random --> Runner
+    Model --> Runner
+    Runner --> Collector
 ```
 
-> **MVP: Only `Random` / `Model` agents.** `Human Agent` is **reference only, not for automl benchmarking**. `HeuristicAgent` is **reference/baseline only**, not MVP benchmarking path.
+> **MVP:** Only `Random` + `Model`. `Heuristic` / `Human` are **Appendix — reference only** (see §9). Not for automl benchmarking MVP.
 
-## 3. Agent Types
+## 3. Agent Types (MVP)
 
-### 3.1 Random Agent
+### 3.1 Random Agent (Baseline)
 
 ```rust
-pub struct RandomAgent {
-    rng: ChaCha8Rng,
-}
-
+use rand_chacha::ChaCha8Rng;
+pub struct RandomAgent { rng: ChaCha8Rng }
 impl Agent for RandomAgent {
     fn select_move(&self, board: &Board) -> Direction {
-        let valid = board.get_valid_moves();
+        let valid = board.get_valid_moves(); // would_change canonical — see 02-Rules/03-valid-moves.md
         valid[self.rng.gen_range(0..valid.len())]
     }
 }
 ```
 
-**Purpose:** Baseline comparison, data generation when no model is available.
-
-### 3.2 Model Agent
+### 3.2 Model Agent (Trained)
 
 ```rust
-pub struct ModelAgent {
-    model: InferenceEngine,  // automl model
-}
-
+pub struct ModelAgent { model: InferenceEngine } // automl InferenceEngine
 impl Agent for ModelAgent {
     fn select_move(&self, board: &Board) -> Direction {
-        let features = board_features(board);
-        let outputs = self.model.predict(&features);
-        output_to_action(&outputs)
+        let feats = board_features(board); // [f64;27] — see 03-State/01-Board/01-board-state.md
+        let logits = self.model.predict(&feats); // [f64;4]
+        constrained_action(&logits, board) // via would_change — see 02-Rules/03-valid-moves.md
     }
 }
 ```
 
-**Purpose:** Trained model evaluates board states and selects moves.
-
-### 3.3 Heuristic Agent — Reference Only (Baseline)
-
-> **Reference only, not for automl benchmarking.** Keep `Random` / `Model` for MVP; heuristic is separate baseline agent only.
-
-```rust
-pub struct HeuristicAgent {
-    strategy: HeuristicStrategy,
-}
-
-impl Agent for HeuristicAgent {
-    fn select_move(&self, board: &Board) -> Direction {
-        match self.strategy {
-            HeuristicStrategy::Monotonicity => best_monotonic_move(board),
-            HeuristicStrategy::Corner => best_corner_move(board),
-            HeuristicStrategy::Empty => best_empty_tile_move(board),
-        }
-    }
-}
-```
-
-**Purpose:** Baseline heuristic comparison — **out of scope for MVP automl pipeline**, run separately if needed.
-
-### 3.4 Human Agent — Reference Only, Not for Benchmarking
-
-> **Reference only, not for automl benchmarking.** Interactive human input is debug-only; not used in batch simulation or model evaluation for MVP.
-
-```rust
-// Reference only — not executed in MVP batch
-pub struct HumanAgent;
-impl Agent for HumanAgent {
-    fn select_move(&self, board: &Board) -> Direction { read_direction() }
-}
-```
+> `board_features` → `[f64;27]` includes `score_normalized` at index 21 `log10(score+1)/6.0` — canonical grid `/32768`.
 
 ## 4. Batch Simulation
 
 ```rust
 pub struct SimulationBatch {
-    pub n_games: usize,
+    pub n_games: usize,           // 10000 canonical — see 03-multi-game.md
     pub agent: Box<dyn Agent>,
     pub config: BatchConfig,
 }
-
 impl SimulationBatch {
     pub fn run(&self) -> Vec<GameResult> {
-        (0..self.n_games)
-            .map(|_| self.run_single_game())
-            .collect()
+        (0..self.n_games).map(|_| self.run_single_game()).collect()
     }
-    
     pub fn run_parallel(&self) -> Vec<GameResult> {
         use rayon::prelude::*;
-        (0..self.n_games)
-            .into_par_iter()
-            .map(|_| self.run_single_game())
-            .collect()
+        (0..self.n_games).into_par_iter().map(|_| self.run_single_game()).collect()
+        // NOTE: fix rayon thread count for determinism — see 02-randomness.md
     }
 }
 ```
 
 ## 5. Game Recording
 
-Every game records the complete state history:
-
 ```rust
 pub struct GameRecord {
-    pub game_id: Uuid,
+    pub game_id: u64,                      // not Uuid — simple u64 for GroupKFold groups
     pub agent_type: AgentType,
     pub start_time: DateTime<Utc>,
     pub end_time: DateTime<Utc>,
     pub final_result: GameResult,
-    pub move_history: Vec<MoveRecord>,     // Each move + state
-    pub board_history: Vec<BoardSnapshot>,  // Board at each step
-    pub score_history: Vec<u64>,           // Score progression
+    pub move_history: Vec<MoveRecord>,     // Vec<{action:u8, score_delta:u64}>
+    pub board_history: Vec<Board>,         // [u32;16] snapshots — not for training directly
+    pub score_history: Vec<u64>,
 }
 ```
 
-## 6. Performance Metrics
+## 6. Metrics (Post-Hoc on `score:u64`)
 
 ```rust
 pub struct SimulationMetrics {
     pub total_games: usize,
-    pub games_played: usize,
     pub avg_score: f64,
     pub max_score: u64,
     pub median_score: u64,
-    pub score_above_heuristic_rate: f64,     // % of games exceeding heuristic baseline (~512)
-    pub percentile_50: u64,                  // 50th percentile score
-    pub percentile_90: u64,                  // 90th percentile score
+    pub score_above_heuristic_rate: f64, // % > ~512 — canonical baseline
+    pub percentile_50: u64,
+    pub percentile_90: u64,
     pub avg_moves_per_game: f64,
     pub avg_game_duration_ms: u64,
 }
+/// Winner by mean score — see 01-Infrastructure/01-Project/01-project-overview.md Tiers 1–3
 ```
 
 ## 7. Configuration
 
 ```rust
 pub struct SimulationConfig {
-    pub n_games: usize,            // Default: 10000
-    pub parallel: bool,             // Default: true
-    pub threads: usize,             // Default: num_cpus
-    pub seed: u64,                  // For reproducibility
-    pub agent: AgentType,           // Random, Model, Heuristic
-    pub log_level: LogLevel,
-    pub output_format: OutputFormat, // JSON, CSV, Parquet
+    pub n_games: usize,              // 10000 — canonical sample (§6 Sample Size in 03-multi-game.md)
+    pub parallel: bool,              // true — rayon; fix threads via 02-randomness.md
+    pub threads: usize,              // num_cpus; set to 1 for full determinism
+    pub seed: u64,                   // → ChaCha8Rng; linked to TrainingConfig::with_random_state(42)
+    pub agent: AgentType,            // Random | Model (MVP)
+    pub output_format: OutputFormat, // Parquet | CSV
 }
 ```
 
-## 8. Data Output — Supervised Classification Row (No RL Tuple)
+> **Seed hygiene canonical:** `02-randomness.md` — `ChaCha8Rng::seed_from_u64(seed)`, `wrapping_add` derivation, `spawn_prob_4:0.1`.
 
-> **Canonical paradigm:** `TaskType::MultiClassification` — each row is `state_features → action`. Score is optional metadata, never a label. No `reward` / `next_state` / `done`.
+## 8. Data Output — Supervised Classification Row Only
+
+> **Canonical:** `TaskType::MultiClassification` — row = `state_features → action`. No `reward`/`next_state`/`done`.
 
 ```rust
-// Output structure for training data — supervised classification
 pub struct TrainingSample {
-    pub state_features: [f64; 27],    // Board features (27-dim, includes score feature at index 21)
-    pub action: u8,                   // Supervised label: Direction (0-3) — the ONLY target
-    pub score: u64,                   // Metadata for analysis/benchmarking only, NOT a training label
+    pub state_features: [f64;27], // BoardStateML::to_array() — 16 grid/32768 + 11 derived, idx21 score/6.0
+    pub action: u8,               // ONLY label: Direction 0–3 (Up=0,Down=1,Left=2,Right=3)
+    pub score: u64,               // metadata for analysis/benchmarking ONLY, never y
 }
-// DataFrame / CSV row: state_features: [f64;27], action: u8, score: u64 (metadata)
+// DataFrame: state_features:[f64;27], action:u8, score:u64, game_id:u64 (for GroupKFold groups)
+// See 06-Data/02-Format/01-data-schema.md and 03-multi-game.md GameDataset { states, actions, scores }
 ```
 
+> **No RL tuple.** Do not store `rewards:Vec<f64>` — violates supervised-only canonical (see `03-multi-game.md` critical fix). No `MoveSequence Vec<Board>` LSTM hint.
+
+## 9. Appendix — Reference Only (Not MVP, Not Benchmarking Path)
+
+> **2-line reference only.** Keep `Random`/`Model` for MVP; do not extend agents before 10k baseline.
+
+- **HeuristicAgent** — baseline heuristic (~512) for comparison only, **not MVP benchmarking**. `HeuristicAgent { strategy: Monotonicity|Corner|Empty }` — reference only, run separately if needed.
+- **HumanAgent** — `HumanAgent` interactive input — **debug-only, not for batch/benchmark**; `fn select_move(&self, _: &Board)->Direction { read_direction() }`.
+
+## 10. Cross-References
+
+- **Rules:** `02-Rules/01-scoring-rules.md` (score metadata), `02-win-lose-conditions.md` (would_change terminal), `03-valid-moves.md` (constrained_action)
+- **State:** `03-State/01-Board/01-board-state.md` (27-dim), `03-State/01-Board/02-feature-extraction.md`
+- **RNG / parallel:** `02-randomness.md` (`wrapping_add`, `TrainingConfig::with_random_state(42)`, rayon threads)
+- **Dataset:** `03-multi-game.md` (`GameDataset { states:Vec<[f64;27]>, actions:Vec<u8>, scores:Vec<u64> }`)
+- **Headless only:** No UI — `01-Game/04-game-ui.md` is debug stub; canonical viz `04-Visualization/01-visualization.md`

@@ -95,38 +95,27 @@ flowchart TB
     style Done fill:#e8f5e9
 ```
 
-## 5. Per-Feature Normalization
+## 5. Per-Feature Normalization — Deterministic Divisors (Primary) + Optional Fitted Scaler
 
-```mermaid
-flowchart TB
-    subgraph "Feature Normalization Map"
-        Grid[Grid Features<br/>StandardScaler]
-        Empty[Empty Count<br/>MinMaxScaler]
-        MaxTile[Max Tile Log<br/>Log Transform]
-        Mono[Monotonicity<br/>MinMaxScaler]
-        Smooth[Smoothness<br/>MinMaxScaler]
-        Corner[Corner Value<br/>MinMaxScaler]
-        Moves[Available Moves<br/>MinMaxScaler]
-        Merges[Merges Available<br/>MinMaxScaler]
-        Score[Score Normalized<br/>Already Scaled]
-        AdjMerge[Adjacency Merge Score<br/>MinMaxScaler]
-        ColWorst[Column Worst<br/>MinMaxScaler]
-        RowWorst[Row Worst<br/>MinMaxScaler]
-    end
-    
-    Grid --> Normalized[Normalized Features]
-    Empty --> Normalized
-    MaxTile --> Normalized
-    Mono --> Normalized
-    Smooth --> Normalized
-    Corner --> Normalized
-    Moves --> Normalized
-    Merges --> Normalized
-    Score --> Normalized
-    MoveCount --> Normalized
-    
-    style Normalized fill:#e8f5e9
-```
+**Primary (deterministic, no fit):** Every feature uses a fixed divisor — no data-dependent fit, no leakage.
+
+| Feature | Divisor / Formula | Range |
+|---------|-------------------|-------|
+| `grid_0..15` | `/ 32768.0` | [0,1] |
+| `empty_count` | `/ 16.0` | [0,1] |
+| `max_tile_log` | `log2(max)/15.0` | [0,1] |
+| `monotonicity` | `/ max_possible` | [0,1] |
+| `smoothness` | `1 - sum|Δlog|/max` | [0,1] |
+| `merges_available` | `/ 16.0` | [0,1] |
+| `score_normalized` | `log10(score+1)/6.0` | [0,~1.02] |
+| `adjacency_merge_score` | `/ (16*2048)` | [0,1] |
+| `corner_max` | `/ 32768.0` or binary | [0,1] |
+| `edge_tiles_occupied` | `/ 12.0` | [0,1] |
+| `col_worst` / `row_worst` | `/ (32768*4)` | [0,1] |
+
+**Optional (fitted, train only):** `DataPreprocessor` with `StandardScaler` may additionally z-score the 27-dim vector — but **fit on train only**, then transform val/test (see §8). Deterministic divisors above are always applied first. `Available Moves` / `MoveCount` is not a feature — deleted (not in 27). `Moves` in old diagram = `merges_available`.
+
+> **No contradiction:** §3–§4 `StandardScaler`/`MinMaxScaler` are the *optional fitted* path via `DataPreprocessor`; the deterministic table above is the *always-on* path. Use one or both, but never fit on val/test.
 
 ## 6. Normalization Pipeline
 
@@ -169,18 +158,23 @@ flowchart TD
     style Fix fill:#fff3e0
 ```
 
-## 8. Normalization Configuration
+## 8. Normalization Configuration — Two Paths
 
+**Path A (always on):** deterministic divisors per §5 — no fit needed.
+
+**Path B (optional fitted, train only):**
 ```rust
 use automl::preprocessing::{DataPreprocessor, PreprocessingConfig, ScalerType, ImputeStrategy};
-
-let preprocessor = DataPreprocessor::new(
+let mut preprocessor = DataPreprocessor::new(
     PreprocessingConfig::default()
-        .with_scaler(ScalerType::Standard) // real API: with_scaler, not with_scaler_type
-        .with_numeric_impute(ImputeStrategy::Mean) // real API: ImputeStrategy, not ImputationStrategy
+        .with_scaler(ScalerType::Standard) // real API: with_scaler
+        .with_numeric_impute(ImputeStrategy::Mean)
 );
-let normalized = preprocessor.fit_transform(&raw_features)?;
+let train_norm = preprocessor.fit_transform(&train_features)?; // fit on train only
+let val_norm = preprocessor.transform(&val_features)?;         // transform only
+let test_norm = preprocessor.transform(&test_features)?;
 ```
+Deterministic §5 normalization is applied before Path B. Never `fit` on val/test.
 
 ## 9. Normalization Files Location
 

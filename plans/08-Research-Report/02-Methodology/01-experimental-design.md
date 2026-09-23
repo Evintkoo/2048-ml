@@ -4,6 +4,10 @@
 
 Define the experimental design for the 2048 ML research study. This section provides the rigorous experimental framework expected at the PhD level, including formal variable definitions, trial structure, replication strategy, and bias controls.
 
+The design has two tracks: **framework validation** on standard tabular tasks, followed by **2048 application evaluation**. The framework track is a prerequisite and is specified in `07-Benchmarking/03-Comparison/04-framework-validation.md`. The 2048 track must not be used to conceal framework failures or missing capabilities.
+
+The framework track is the primary experiment. Its units are dataset–configuration–seed runs, and its outcomes include predictive quality, runtime, memory, search efficiency, failure rate, and artifact reproducibility. The 2048 track is a downstream case study whose units include trained-model runs, evaluation seeds, and game instances.
+
 ## 2. Experimental Design Overview
 
 ```mermaid
@@ -45,11 +49,15 @@ flowchart TD
 
 | Variable | Type | Values | Notes |
 |----------|------|--------|-------|
-| Model Architecture | Independent | RandomForest, GradientBoosting, XGBoost, LightGBM, ExtraTrees, SVM, KNN | 7 candidate models |
+| Framework Model Architecture | Independent | RandomForest, GradientBoosting, XGBoost, LightGBM, ExtraTrees, SVM, KNN | Candidate models exposed by AutoML |
+| Framework Configuration | Independent | Defaults, fixed search, TPE/other declared search | Matched search budget |
+| Application Model Architecture | Independent | AutoML-supported model types | 2048 case study |
 | Feature Set | Independent | 27-dimensional feature vector | Fixed across all models |
 | Training Algorithm | Independent | automl default, HyperOptX-tuned | Two configurations |
 | Hyperparameters | Independent | Search space defined in HyperOptX | TPE sampler |
-| Score | Dependent | Continuous | Primary metric |
+| Framework Quality | Dependent | Dataset-appropriate predictive metric | Primary framework metric |
+| Framework Resources | Dependent | Time, memory, failures, search efficiency | Systems evaluation |
+| Score | Dependent | Continuous | Primary 2048 case-study metric |
 | Median Score | Dependent | Continuous | Robustness check |
 | Training Time | Dependent | Continuous | Efficiency metric |
 | Convergence Epoch | Dependent | Discrete | Training dynamics |
@@ -59,6 +67,8 @@ flowchart TD
 | Evaluation Games | Control | Fixed (10,000) | Consistent sample size |
 
 ## 4. Experimental Procedure
+
+Before generating 2048 training data, complete the AutoML capability gate: verify the required APIs, model types, preprocessing, validation, optimization, serialization, and deterministic behavior. Record failures as framework findings and revise the affected 2048 claim before continuing.
 
 ```mermaid
 flowchart TD
@@ -111,22 +121,22 @@ flowchart LR
 
 ## 7. Bias Controls
 
-- **Fixed game rules** across all experiments (standard 4×4 board)
-- **Consistent data pipeline** for all models (same feature extraction, same label generation)
-- **Same evaluation criteria** for all models (same 10,000 games, same seed)
-- **Same seed** for reproducibility (primary seed = 42)
-- **Blinded analysis** where applicable (results evaluated without knowledge of model identity)
-- **Balanced evaluation** all models evaluated on identical game sequences
+- **Fixed game rules** across all experiments (standard 4×4 board, 0.9/0.1 spawn)
+- **Consistent data pipeline** for all models (same 27-dim extraction, rollout labels 100 sims/action, same `game_id` for GroupKFold)
+- **Same evaluation criteria** for all models (identical 10,000 game sequences, seed 42, same heuristic ~512 / random ~128 reference)
+- **Same seed** for reproducibility (primary `42`; secondary `123,456,789,1011`)
+- **No blinded analysis** — game scores are objective numeric; blinding adds no value and is removed
+- **Balanced evaluation** all models evaluated on identical game sequences (paired comparison valid for MWU)
 
-## 8. Equipment and Tools
+## 8. Equipment and Tools (Pinned — No Drift)
 
 | Tool | Version | Purpose | Notes |
 |------|---------|---------|-------|
-| automl | v1.0.0 | ML training | Evintkoo/automl |
-| HyperOptX | latest | Hyperparameter search | Verify API in automl submodule |
-| Rust | stable | Game engine | Custom 2048 implementation |
-| polars | latest | Data processing | CSV/Parquet I/O |
-| num_cpus | auto | Parallel training | Default: all available cores |
+| automl | `v1.0.0` | ML training | `TrainEngine`, `TaskType::MultiClassification`, `ModelType` enum, `CrossValidator::GroupKFold` |
+| Rust | `1.75` | Game engine + automl | Pinned `Cargo.lock`, no GPU |
+| polars | `0.46` | Data processing | Parquet I/O, pinned `requirements.txt` |
+| HyperOptX | `automl v1.0.0` bundled | Hyperparameter search | TPE + MedianPruner, verify in `automl/src/optimizer` |
+| Seed | `42` | Reproducibility | Primary; secondary seeds recorded in sidecar |
 
 ## 9. Ethical Considerations
 
@@ -143,28 +153,25 @@ All experiments use simulation only. No human subjects are involved. All data is
 
 ## 11. Sample Size Justification
 
-**Primary analysis:** 10,000 games per model
-- Provides 95% CI width of ~20 points (for σ=512)
-- Power ≥ 0.99 for detecting effect size d=0.5
-- Sufficient for Mann-Whitney U test with Bonferroni correction
+**2048 application analysis:** 10,000 games is an initial precision target, not an automatic power guarantee. Final sample-size justification must use the declared experimental unit, a minimum practically meaningful score difference, estimated variance, paired/clustered structure, and the number of trained-model repetitions.
 
 **Convergence analysis:** 100 games per epoch
 - Provides stable learning curve estimates
 - Sufficient for convergence detection
 
-**Ablation study:** 10,000 games per ablation configuration
-- Consistent with primary analysis sample size
-- Enables pairwise comparison with proper power
+**Framework validation:** Dataset-level repetitions and resource measurements are planned separately from 2048 game counts.
+
+**Ablation study:** Use the same evaluation protocol as the selected 2048 case-study comparison, with uncertainty estimates and an explicit practical-effect threshold. Do not infer validity from game count alone.
 
 ## 12. Data Quality Controls
 
-All results verified for:
-- Reproducibility with seed
-- Statistical validity (proper test assumptions)
-- Absence of systematic bias (balanced evaluation)
-- Proper data collection procedures
-- Correct feature extraction (27-dimensional vector)
-- Valid label generation (rollout-based, 100 sims/action)
+Validation checklist — mark complete only after evidence is produced:
+- [ ] Framework reproducibility with declared seeds
+- [ ] Statistical validity and test assumptions
+- [ ] Absence of systematic bias in framework and application comparisons
+- [ ] Proper data collection procedures
+- [ ] Correct feature extraction (27-dimensional vector)
+- [ ] Valid label generation (rollout-based, 100 sims/action)
 
 ## 13. Pre-registration
 

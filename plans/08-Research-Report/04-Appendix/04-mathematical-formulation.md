@@ -1,4 +1,6 @@
-# Mathematical Formulation — Complete Proofs
+# Mathematical Formulation — Definitions, Assumptions, and Optional Results
+
+> This appendix is not the primary source of the AutoML contribution. It contains formal definitions and optional mathematical context. Only results with verified assumptions and complete proofs may be labeled theorems. Incomplete arguments and conjectures must not be presented as established results.
 
 ## 1. Scoring Function
 
@@ -382,7 +384,7 @@ where `log2(17) = ln(17)/ln(2) ≈ 4.087`, so `16 × 4.087 = 65.4 bits`. ∎
 
 **Corollary 12 (Conditional).** If Proposition 6 holds, exhaustive search is infeasible for the 2048 game, justifying the use of learned policies and heuristic methods.
 
-## 2. Convergence Analysis — Complete Proofs
+## 2. Convergence Analysis — Optional Context
 
 ### 2.1 Theorem 2 (Convergence Rate — Standard Result)
 
@@ -398,7 +400,7 @@ where `C = (L × ||θ_0 - θ*||²) / 2`.
 
 **Corollary 2 (Conditional).** If the training objective were convex, the model would achieve `ε`-convergence in `O(C/ε)` epochs. However, this condition does not hold for the actual 2048 problem, and convergence behavior will be determined empirically.
 
-## 3. Information-Theoretic Analysis — Complete Proofs
+## 3. Information-Theoretic Analysis — Optional Context
 
 ### 3.1 Proposition 5 (Tile Spawn Entropy) — Complete Proof
 
@@ -433,13 +435,13 @@ This is the maximum entropy of a binary random variable with `p = 0.9`, which is
 H_total = N × H(spawn) ≈ 50 × 0.469 ≈ 23.5 bits
 ```
 
-## 4. Computational Complexity — Conjectured (Proof Incomplete)
+## 4. Computational Complexity — Appendix Conjecture (Deduplicated)
 
-### 4.1 Conjecture 7 (PSPACE-Hardness — Incomplete, ⏳ Conjecture)
+### 4.1 Conjecture 7 — See §1.9 (Single Source; Deduplicated)
 
-**Conjecture 7.** Determining the optimal move in 2048 is conjectured to be PSPACE-hard.
+**Conjecture 7.** Determining optimal 4×4 move is conjectured PSPACE-hard — **conjecture, gate needs >16 cells, unproven for 4×4**. For n×n, hardness known [Berg & Hartke 2014]; 4×4 remains open. Full sketch lives in §1.9 above; not repeated here. See `01-IMRD/00-theoretical-framework.md` §5 for 2-line core summary.
 
-*Proof sketch (incomplete — gate construction requires >16 cells, not yet verified for 4×4 board).* A polynomial-space reduction from QBF to 2048 has been proposed but is **incomplete**:
+*Pointer (not second proof):*
 
 **Definition.** QBF is the problem: given a quantified Boolean formula `Q₁x₁ ... Qₙxₙ φ(x₁, ..., xₙ)`, determine if the formula is true.
 
@@ -488,7 +490,7 @@ Therefore, the gate construction is **incomplete**: for arbitrary QBF instances 
 | T7 | Convergence Diagnostics | ✅ Complete | Diminishing returns proof |
 | P1 | Diminishing Returns | ✅ Complete | Derivative analysis |
 | P2 | Convergence Epoch | ✅ Complete | Logarithmic analysis |
-| P3 | Minimal Markov Blanket | ✅ Complete | Cardinality bound |
+| P3 | Minimal Markov Blanket | Not established | Requires a valid sufficiency argument and assumptions |
 | P4 | Feature Redundancy | ✅ Complete | Deterministic function property |
 | P5 | Tile Spawn Entropy | ✅ Complete | Bernoulli entropy formula |
 | P6 | Optimal Policy Stochasticity | ✅ Complete | Nature's adversarial spawns |

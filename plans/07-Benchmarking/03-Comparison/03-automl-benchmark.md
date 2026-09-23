@@ -1,8 +1,8 @@
-# AutoML Benchmark
+# Rust-Native AutoML Benchmark — Framework and 2048 Case Study
 
 ## 1. Purpose
 
-Benchmark the Evintkoo/automl framework's performance on the 2048 game ML task.
+Benchmark the independent Evintkoo/automl framework as the primary research object, then evaluate its integration in the 2048 case study. The canonical framework-validation protocol is in `04-framework-validation.md`.
 
 ## 2. AutoML Benchmark Architecture
 
@@ -57,7 +57,7 @@ pub struct AutoMLBenchmarkConfig {
 }
 ```
 
-## 4. Benchmark Scenarios
+## 4. Benchmark Scenarios — Framework Track
 
 | Scenario | Description | Trials | Expected Time |
 |----------|-------------|--------|---------------|
@@ -66,7 +66,18 @@ pub struct AutoMLBenchmarkConfig {
 | Bayesian Opt | TPE optimization | 50 | 1 hour |
 | Random Search | Random sampling | 50 | 1 hour |
 
-## 5. AutoML Performance Metrics
+The framework track must be completed before the 2048 application results are interpreted.
+
+## 5. Benchmark Scenarios — 2048 Application Track
+
+| Scenario | Description |
+|----------|-------------|
+| Default models | Supported AutoML model types with fixed defaults |
+| Tuned models | Same model types with a fixed search budget |
+| Feature variants | Raw grid, engineered features, and combined representation |
+| Robustness | Multiple training and evaluation seeds |
+
+## 6. Framework Performance Metrics
 
 ```mermaid
 flowchart LR
@@ -79,7 +90,11 @@ flowchart LR
     F -->|No| H[AutoML Limitation]
 ```
 
-## 6. Comparison with Manual Configuration
+## 7. Framework Architecture and Interoperability
+
+Measure configuration/API equivalence, model serialization and reload equivalence, failure handling, seed propagation, parallel execution behavior, and resource-budget compliance. These are framework outcomes and must be reported separately from 2048 game score.
+
+## 8. Comparison with Manual Configuration
 
 ```mermaid
 graph TD
@@ -91,7 +106,7 @@ graph TD
     E -->|No| G[Manual Preferred]
 ```
 
-## 7. automl Engine Capabilities
+## 9. automl Engine Capabilities
 
 ```mermaid
 flowchart TD
@@ -103,7 +118,7 @@ flowchart TD
     B -->|evaluates| F[InferenceEngine]
 ```
 
-## 8. Benchmark Results Structure
+## 10. Benchmark Results Structure
 
 ```rust
 pub struct AutoMLBenchmarkResult {
@@ -119,14 +134,21 @@ pub struct AutoMLBenchmarkResult {
 }
 ```
 
-## 9. Key Findings
+## 11. Hypotheses (Not Findings — To Be Tested Post-Validation)
 
-- automl achieves comparable or better results than manual configuration
-- Bayesian optimization converges faster than grid search
-- TrainEngine handles diverse model types effectively
-- HyperOptX provides efficient search across the configuration space
+> No findings before data. Framework hypotheses:
+- F1: The declared AutoML capability and correctness tests pass.
+- F2: The Rust-native framework provides a measurable quality, resource, reproducibility, or interoperability result under matched conditions.
+- F3: Hyperparameter search improves the declared validation objective or search efficiency at a fixed budget.
 
-## 10. Benchmark Reproducibility
+> Application hypotheses:
+- H1: A validated AutoML policy exceeds the heuristic mean under the declared 2048 evaluation protocol.
+- H2: Supported model types produce materially different case-study outcomes.
+- H3: Tuning changes case-study performance relative to the fixed configuration.
+
+Findings are filled post-training only.
+
+## 12. Benchmark Reproducibility
 
 All benchmark results are reproducible with seed-based configuration:
 

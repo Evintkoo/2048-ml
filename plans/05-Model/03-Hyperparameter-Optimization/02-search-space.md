@@ -57,44 +57,7 @@ flowchart TB
     LinP --> PT[penalty type]
 ```
 
-### 3.2 Training Parameters
-
-```mermaid
-flowchart TB
-    TP[Training Parameters]
-    TP --> BS2[Batch Size]
-    TP --> EP[Epochs]
-    TP --> LR2[Learning Rate]
-    TP --> OPT[Optimizer]
-    TP --> SCH[Scheduler]
-    TP --> WD[Weight Decay]
-    
-    BS2 --> |32-256| EP
-    EP --> |10-500| LR2
-    LR2 --> |0.0001-0.5| OPT
-    OPT --> |Adam/AdamW| SCH
-    SCH --> |Cosine/Step| WD
-```
-
-## 4. Search Space Visualization
-
-```mermaid
-flowchart TD
-    Vis[Search Space Visualization]
-    Vis --> Parallel[Parallel Coordinates]
-    Vis --> Scatter[Scatter Plot]
-    Vis --> Heatmap[Heatmap]
-    Vis --> Bar[Bar Chart]
-    
-    Parallel --> Analysis[Parameter Importance]
-    Scatter --> Analysis
-    Heatmap --> Analysis
-    Bar --> Analysis
-    
-    Analysis --> Best[Identify Best Region]
-```
-
-## 5. Search Space for automl HyperOptX
+## 4. Search Space for automl HyperOptX
 
 ```rust
 use automl::{SearchSpace, Parameter, ParameterType};
@@ -117,7 +80,7 @@ search_space.add(Parameter::new("l1_regularization", ParameterType::Float(0.0, 1
 search_space.add(Parameter::new("l2_regularization", ParameterType::Float(0.0, 1.0)));
 ```
 
-## 6. Parameter Importance
+## 5. Parameter Importance
 
 ```mermaid
 flowchart TD
@@ -132,7 +95,7 @@ flowchart TD
     style Narrow fill:#fff3e0
 ```
 
-## 7. Search Space Files
+## 6. Search Space Files
 
 All search space definitions are in `05-Model/03-Hyperparameter-Optimization/`:
 
@@ -144,7 +107,7 @@ flowchart LR
     Dir --> N03[03-pruning-strategy.md]
 ```
 
-## 8. Next Steps
+## 7. Next Steps
 
 1. Define pruning strategy in `05-Model/03-Hyperparameter-Optimization/03-pruning-strategy.md`
 2. Execute hyperparameter search

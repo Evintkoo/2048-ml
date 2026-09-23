@@ -1,67 +1,37 @@
-# Integration Testing
-
-> **See canonical `09-Quality/01-Testing/01-unit-testing.md` (and `09-Quality/03-CI/01-ci-pipeline.md` for CI pipeline) — duplicate stub.** Trimmed repetitive mermaid; see canonical for framework diagrams.
+# Integration Testing — Pipeline Matrix (40 Lines, No Trimmed Pointer)
 
 ## 1. Purpose
+Verify **wiring** between modules — not unit logic. Distinct from unit (single function) and CI pipeline (stages). Uses real fixtures, not mocks, with `seed 42`.
 
-Define integration testing procedures to verify component interactions in the 2048 ML system.
+## 2. Integration Levels
+- **Level 1:** Game+Score+State+Action (engine internal)
+- **Level 2:** Data Pipeline → TrainEngine (feature→label→fit)
+- **Level 3:** TrainEngine → GameSimulator round-trip (train → predict → benchmark 100 games)
+- **Level 4:** Config→All (TrainingConfig propagates to every crate)
 
-## 2. Integration Testing Architecture
+## 3. Integration Matrix (Concrete)
 
-> **Trimmed — see canonical `09-Quality/01-Testing/01-unit-testing.md` §2 for test framework mermaid; and `09-Quality/03-CI/01-ci-pipeline.md` for CI.**
+| Test | Fixture | Wiring | Assert | Time |
+|------|---------|--------|--------|------|
+| Game+Score | `Board [[2,2,4,0],...]` seed 42 | `GameEngine::execute_move(2)` → `ScoreTracker` | `score_delta==4 && board==[[4,4,0,0]...]` | <10ms |
+| Score+State+Action | full board history | `StateVector(27) → action 0..3 → board` | `action in 0..3 && would_change` checked | <10ms |
+| Data→TrainEngine | 100-row parquet (27+game_id+action) | `DataPreprocessor → TrainEngine::fit(MultiClassification)` | `model.predict` returns 0..3 | ~5s |
+| Train+Simulator | trained RF(10 trees) | `InferenceEngine::predict(state) → GameEngine::execute` | 100 games complete, `score` monotonic via tracker | ~30s |
+| Config→All | `TrainingConfig{MultiClassification, RandomForest, seed42}` | passed to `DataCollector`, `TrainEngine`, `BenchmarkRunner` | same seed & task everywhere | <1s |
+| Polars I/O | `ScoreMetrics` 10k rows | `benchmark_runner → parquet → ranking_analysis.py` | round-trip mean matches in-memory | ~2s |
+| GroupKFold wiring | 100 samples + `game_id` | `CrossValidator::GroupKFold` | no group split across train/test | <1s |
 
-## 3. Integration Levels
-
-> **Trimmed — see canonical `09-Quality/01-Testing/01-unit-testing.md` §3 for test structure mermaid.**
-
-## 4. Integration Test Matrix
-
-| Test | Components | Expected Result |
-|------|-----------|-----------------|
-| Game + Score | GameEngine + ScoreTracker | Score updates correctly |
-| Model + Game | Model + GameEngine | Valid moves predicted |
-| Data + Model | Data Collector + TrainEngine | Training data flows correctly |
-| Config + All | Config + All modules | All modules initialize |
-
-## 5. Integration Testing Pipeline
-
-> **Trimmed — see canonical `09-Quality/01-Testing/01-unit-testing.md` §7 and `09-Quality/03-CI/01-ci-pipeline.md` §5–6 for pipeline mermaid.**
-
-## 6. Component Interaction Map
-
-> **Trimmed duplicate — see canonical for component interaction; reference only.**
-
-## 7. Test Scenarios
-
-### 7.1 Game-to-Model Integration
-
-> **Trimmed — see canonical `09-Quality/01-Testing/01-unit-testing.md` and `09-Quality/03-CI/01-ci-pipeline.md` for scenario mermaid.**
-
-### 7.2 Training Pipeline Integration
-
-> **Trimmed — see canonical for training pipeline mermaid.**
-
-## 8. Integration Test Results
+## 4. Fixtures
 
 ```rust
-pub struct IntegrationTestResult {
-    pub test_name: String,
-    pub components: Vec<String>,
-    pub passed: bool,
-    pub execution_time: u64,
-    pub error_details: Option<String>,
-    pub timestamp: DateTime<Utc>,
-}
+fn fixture_board_double_merge() -> Board { /* 2,2,4 top row */ }
+fn fixture_27_row(game_id: i64) -> (Vec<f64>, i64) { /* 27 floats + id */ }
 ```
 
-## 9. Failure Analysis
+## 5. Run
 
-> **Trimmed — see canonical `09-Quality/01-Testing/01-unit-testing.md` §9 and `09-Quality/03-CI/01-ci-pipeline.md` for failure/quality-gate mermaid.**
+```bash
+cargo test --test integration -- --test-threads=4   # 50+ tests, ~2 min
+```
 
-## 10. Reporting
-
-Each integration test run produces:
-- Component interaction map
-- Pass/fail status per integration point
-- Performance timing data
-- Failure root cause analysis
+Fail → block merge (same as unit). Report: `IntegrationTestResult { test_name, components, passed, ms, error }` in `target/integration.json`.

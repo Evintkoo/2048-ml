@@ -42,7 +42,7 @@ flowchart TD
 | Confusion Matrix | 4×4 matrix (Up/Down/Left/Right) | Per-class error analysis |
 | Mean Game Score | Mean score over ≥10k benchmark games (separate pipeline) | Downstream benchmark — not regression |
 
-> **Note on targets**: Models are evaluated and ranked by mean game score across ≥10,000 benchmark games. The winner is the model with the highest mean score, determined by statistical significance testing (Mann-Whitney U, p < 0.05 after Bonferroni correction).
+> **Case-study note**: AutoML models are evaluated by classification quality and resource metrics in framework validation. In the 2048 case study, policies are compared by held-out game-score distributions, uncertainty, practical effect, and the declared statistical protocol. The case-study winner is not a claim of globally optimal play.
 
 > **Note on targets**: These targets are deliberately set as progressive milestones. A score of 45% move accuracy corresponds to significantly better than random (25% for 4 actions). Achieving >60% would be a stretch goal. The targets should be iteratively revised based on initial baseline results.
 
@@ -109,27 +109,9 @@ graph TD
     Check -->|Yes| Stop[Stop Training]
 ```
 
-## 8. Feature Importance Metrics
+## 8. Feature Importance — Post-Training Only
 
-```mermaid
-flowchart LR
-    A[Input Features] --> B[Feature Importance Scores]
-    B --> C[Rank Features]
-    C --> D[Analyze Correlations]
-    D --> E[Identify Redundant Features]
-    E --> F[Optimize Feature Set]
-```
-
-| Feature | Importance Score | Category |
-|---------|-----------------|----------|
-| Grid values | TBD | Raw board |
-| Empty count | TBD | Board state |
-| Max tile | TBD | Board state |
-| Monotonicity | TBD | Derived |
-| Smoothness | TBD | Derived |
-| Move count | TBD | Game state |
-
-> Feature importance values are TBD until model training completes.
+Post-training only — compute permutation/SHAP importance after model is trained, then rank the 27 features. No TBD table pre-training. `MoveCount` not in 27 — do not list.
 
 ## 9. Model Comparison Metrics
 

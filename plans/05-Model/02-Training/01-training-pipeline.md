@@ -19,14 +19,14 @@ flowchart TD
         Select[Model Selection]
         Export[Model Export]
     end
-    
+
     Data --> Preprocess
     Preprocess --> Feature
     Feature --> Train
     Train --> Evaluate
     Evaluate --> Select
     Select --> Export
-    
+
     Export --> Deploy[Deployed Classification Model]
 ```
 
@@ -46,17 +46,18 @@ flowchart LR
 
 ### 3.2 Preprocessing
 
+> **Encoder not needed:** The 27-dim feature vector for 2048 (`§2.2 Feature Input Layer` in `03-model-architecture.md`) is entirely numeric — 16 grid values + 11 derived (empty count, monotonicity, smoothness, max tile, etc.). There are **no categorical columns**, so `OneHotEncoder` is skipped. Trees (RandomForest, GradientBoosting, XGBoost) are also scale-invariant, so `StandardScaler` is optional — only SVM/KNN/LogisticRegression require scaling. Missing-value imputation is a passthrough (game states have no nulls).
+
 ```mermaid
 flowchart TD
-    Raw[Raw Features]
-    Raw --> Scaler[StandardScaler]
-    Raw --> Encoder[OneHotEncoder]
-    Raw --> Imputer[Mean Imputation]
+    Raw[Raw Features<br/>27 numeric dims]
+    Raw --> Scaler[StandardScaler<br/>only for SVM/KNN/LogReg<br/>skip for trees]
+    Raw --> Imputer[Mean Imputation<br/>passthrough — no nulls]
+    
     Scaler --> Processed
-    Encoder --> Processed
     Imputer --> Processed
     
-    Processed[Processed Features]
+    Processed[Processed Features<br/>27-dim numeric vector]
 ```
 
 ### 3.3 Training Execution
@@ -158,21 +159,7 @@ sequenceDiagram
     Export->>Deploy: Serialized classifier
 ```
 
-## 7. Pipeline Monitoring
-
-```mermaid
-flowchart TD
-    Monitor[Pipeline Monitor]
-    Monitor --> Metrics[Track Metrics]
-    Monitor --> Logs[Log Pipeline Events]
-    Monitor --> Alerts[Alert on Failures]
-    
-    Metrics --> Dashboard[Training Dashboard]
-    Logs --> Storage[Log Storage]
-    Alerts --> Notification[Notification System]
-```
-
-## 8. Pipeline Files Location
+## 7. Pipeline Files Location
 
 All pipeline files are organized under `05-Model/02-Training/`:
 
@@ -184,7 +171,7 @@ flowchart LR
     Dir --> N03[03-model-architecture.md]
 ```
 
-## 9. Next Steps
+## 8. Next Steps
 
 1. Configure training parameters for multi-class classification
 2. Execute training loop with supervised game data

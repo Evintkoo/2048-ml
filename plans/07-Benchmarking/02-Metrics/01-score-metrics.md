@@ -4,74 +4,16 @@
 
 Define the score metrics used to evaluate and compare 2048 ML model performance.
 
-## 2. Score Metrics Framework
-
-```mermaid
-flowchart TD
-    subgraph "Score Metrics"
-        subgraph "Central Tendency"
-            Mean[Mean Score]
-            Median[Median Score]
-            Mode[Mode Score]
-        end
-        
-        subgraph "Dispersion"
-            StdDev[Standard Deviation]
-            Variance[Variance]
-            Range[Score Range]
-        end
-        
-        subgraph "Percentiles"
-            P10[P10 Score]
-            P50[P50 Score]
-            P90[P90 Score]
-            P99[P99 Score]
-        end
-        
-        Mean -->|summary| Report[Score Report]
-        Median -->|summary| Report
-        StdDev -->|spread| Report
-        P10 -->|distribution| Report
-        P99 -->|distribution| Report
-    end
-```
-
-## 3. Primary Score Metrics
+## 2. Primary Score Metrics (Keep Full Distribution — Heavy-Tailed, No Truncation)
 
 | Metric | Formula | Purpose |
 |--------|---------|---------|
-| Mean Score | Σ score / N | Average performance |
-| Median Score | Middle value | Robust central tendency |
-| Std Dev | √(Σ(x-μ)²/N) | Performance consistency |
-| Max Score | max(scores) | Best capability |
-| Min Score | min(scores) | Worst case |
-
-## 4. Score Distribution Analysis
-
-```mermaid
-flowchart LR
-    A[Raw Scores] --> B[Bin into Histogram]
-    B --> C[Calculate Distribution Stats]
-    C --> D[Normal Distribution Check]
-    D --> E[Identify Outliers]
-    E --> F[Generate Distribution Chart]
-```
-
-## 5. Key Score Thresholds
-
-```mermaid
-graph TD
-    S0[Score = 0] -->|game over immediately| S100[Score < 100]
-    S100 --> S2048[Score 100-2048]
-    S2048 --> S4096[Score 2048-4096]
-    S4096 --> S8192[Score 4096-8192]
-    S8192 --> SHigh[Score > 8192]
-    
-    style S2048 fill:#9f9,stroke:#333
-    style S4096 fill:#9f9,stroke:#333
-    style S8192 fill:#f9f,stroke:#333
-    style SHigh fill:#f0f,stroke:#333
-```
+| Mean Score | Σ score / N | Primary ranking metric |
+| Median Score | Middle value | Robust tiebreaker |
+| Std Dev | √(Σ(x-μ)²/N) | Consistency (lower = tiebreak) |
+| Max / Min | max/min(scores) | Ceiling / floor |
+| p10/p25/p50/p75/p90/p95/p99 | percentiles | Tail reporting — keep all scores |
+| games_above_2048/4096/8192 | counts | Threshold hit rates |
 
 ## 6. Score Metrics Calculation
 
@@ -131,49 +73,16 @@ impl ScoreMetrics {
 }
 ```
 
-## 7. Score Progress Tracking
+## 7. Score Normalization for Comparison (Duplicate Note)
 
-```mermaid
-flowchart LR
-    A[Game Start] --> B[After Move 1]
-    B --> C[After Move 10]
-    C --> D[After Move 50]
-    D --> E[Game End]
-    
-    subgraph Score Progression
-        S0[Score: 0]
-        S1[Score: variable]
-        S2[Score: variable]
-        S3[Score: final]
-    end
-```
-
-## 8. Score Normalization for Comparison
+> `normalize_score = log10(score+1)` is the same transform as `score_normalized = log10(score+1)/6.0` in `06-Data/02-Format/01-data-schema.md` and `04-Preprocessing/03-data-normalization.md` — the `/6.0` divisor just maps to [0,1]. Keep consistent.
 
 ```rust
-fn normalize_score(score: u64) -> f64 {
-    (score as f64 + 1.0).log10()
-}
-
-fn denormalize_score(normalized: f64) -> u64 {
-    (10f64.powf(normalized) - 1.0) as u64
-}
+fn normalize_score(score: u64) -> f64 { (score as f64 + 1.0).log10() }
+fn score_normalized(score: u64) -> f64 { (score as f64 + 1.0).log10() / 6.0 } // canonical feature 21
+fn denormalize_score(normalized: f64) -> u64 { (10f64.powf(normalized) - 1.0) as u64 }
 ```
 
-## 9. Metric Visualization
+## 8. Reporting
 
-```mermaid
-graph TD
-    Histogram[Score Histogram] -->|visualize| Distribution
-    BoxPlot[Score Box Plot] -->|visualize| Distribution
-    LineChart[Score Over Time] -->|visualize| Distribution
-    BarChart[Score Comparison] -->|visualize| Distribution
-```
-
-## 10. Reporting
-
-Each score metrics report includes:
-- Summary statistics table
-- Score distribution analysis
-- Threshold achievement rates
-- Historical comparison
+Each report includes: summary table (mean/median/std/p99 etc.), threshold hit rates (`games_above_*`), full distribution percentiles — no truncation.

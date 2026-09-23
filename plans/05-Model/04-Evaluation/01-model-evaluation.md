@@ -63,20 +63,35 @@ flowchart LR
 
 > **Canonical metrics:** `TaskType::MultiClassification` (27-dim → 4 logits → `argmax` over actions 0–3). No R² / RMSE / MAE — the model does not predict scores.
 
-### 3.2 Qualitative Analysis
+### 3.2 Qualitative Analysis — Concrete (2048-specific)
+
+> **Not generic.** The model predicts actions 0–3 (up/down/left/right) from a 27-dim board state. Qualitative analysis must check whether predicted moves are **legal and strategically sensible**, not just statistically accurate.
+
+**Analyses to run (with concrete definitions):**
+
+1. **Invalid-move rate** — fraction of predictions where the predicted action does not change the board (no tiles move/merge). Compute on the test set by replaying each state through the 2048 engine: `invalid = predicted ∉ valid_actions(state)`. Target: **<5%** invalid; gates are still Valid-Action Accuracy ≥60% and F1 ≥0.55, but invalid-rate is a hard qualitative fail if >15%.
+
+2. **Corner-stuck analysis** — heuristic 2048 play keeps the max tile in a corner. Sample 500 mid-game states where `max_tile` is in a corner vs. 500 where it is not. Measure Valid-Action Accuracy separately. If corner-stuck accuracy is >10% lower, the model is not capturing monotonicity — revisit derived features (monotonicity, max-tile position, empty count) per `02-Training/03-model-architecture.md:2.1`.
+
+3. **Confusion matrix inspection (4×4)** — look for systematic confusions (e.g., `up↔down` or `left↔right` swaps) that correlate with vertical/horizontal board symmetry. A uniform error pattern suggests underfitting; a strong off-diagonal (e.g., 30% of `left` misclassified as `right`) suggests feature leakage or label noise from rollout sampling.
+
+4. **Score-binned breakdown** — stratify test games into Low (<256), Medium (256–512), High (>512) score bins. Report Valid-Action Accuracy and Mean Game Score per bin. High-score games should not have markedly lower accuracy; if they do, the model overfits early-game states (where most training data comes from).
 
 ```mermaid
 flowchart TD
-    Qual[Qualitative Analysis]
-    Qual --> MoveAnalysis[Move Pattern Analysis]
-    Qual --> ErrorAnalysis[Error Analysis]
-    Qual --> CaseStudy[Case Studies]
-    Qual --> Visualization[Visualization]
+    Qual[Qualitative Analysis<br/>2048-concrete]
+    Qual --> Invalid[Invalid-Move Rate<br/>predicted ∉ valid_actions<br/>target &lt;5%]
+    Qual --> Corner[Corner-Stuck Analysis<br/>max in corner vs not<br/>ΔAcc ≤10%]
+    Qual --> ConfMat[Confusion Matrix 4x4<br/>off-diagonal inspection]
+    Qual --> Binned[Score-Binned Breakdown<br/>Low/Med/High games]
     
-    MoveAnalysis --> Insights[Key Insights]
-    ErrorAnalysis --> Insights
-    CaseStudy --> Insights
-    Visualization --> Insights
+    Invalid --> Insights[Key Insights]
+    Corner --> Insights
+    ConfMat --> Insights
+    Binned --> Insights
+    Insights --> Action{Fail threshold?}
+    Action -->|invalid &gt;15% or corner Δ &gt;10%| Retrain[Retrain / revisit features]
+    Action -->|pass| Keep[Keep model]
 ```
 
 ## 4. Evaluation Metrics — Classification + Game-Score Benchmark Only

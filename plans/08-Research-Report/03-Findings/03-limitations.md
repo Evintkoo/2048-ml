@@ -140,20 +140,16 @@ These limitations are acknowledged and documented transparently:
 9. automl capabilities are not yet verified (capability gate pending)
 10. The PSPACE-hardness claim is conjectured, not proven
 
-## 9. Mitigation Strategies
+## 9. Mitigation Strategies (Trimmed — No Generic Filler)
 
-| Limitation | Mitigation | Status |
-|-----------|------------|--------|
-| Training time | Parallel execution | Planned |
-| Single seed | Multi-seed validation | Planned |
-| Limited variants | Expand to 8×8 | Future work |
-| automl constraints | Capability verification + fallback | Planned |
-| Multiple comparison | Bonferroni correction | Planned |
-| Effect size threshold | Report all effect sizes | Planned |
-| Sample size | Report percentiles | Planned |
-| Supervised learning | Future RL work | Future work |
-| Framework limitations | Capability verification gate | Planned |
-| PSPACE-hardness | Further theoretical work | Future work |
+| Limitation | Mitigation |
+|-----------|------------|
+| Single seed | Multi-seed 42/123/456/789/1011; report σ/mean |
+| Multiple comparison | Bonferroni k≈21 + report uncorrected p for transparency |
+| automl gaps | Verify `ModelType`/`TaskType::MultiClassification`/`CrossValidator`; fallback `smartcore` if missing |
+| 4×4 / supervised / 27-dim fixed | Acknowledged — future n×n/RL is Appendix only |
+
+> Generic rows (training time, PSPACE, 8×8 expansion) deleted — covered in Discussion §7 Future Work (2 lines each) and `07-computational-budget.md`.
 
 ## 10. Conclusion
 

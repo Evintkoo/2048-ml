@@ -1,12 +1,14 @@
-# Algorithm Research
+# Algorithm Research — Framework Capability and 2048 Case Study
+
+> This is a secondary model-capability and case-study plan. The primary contribution is the Rust-native AutoML architecture defined in `plans/01-Infrastructure/01-Project/04-framework-contribution.md`.
 
 ## 1. Purpose
 
-Identify and research machine learning algorithms suitable for the 2048 game. The goal is to find the best supervised learning algorithm that can approximate optimal play by treating board state → action selection as a classification problem.
+Document and evaluate the algorithms exposed by the Rust-native AutoML framework. Algorithm selection is a secondary evaluation dimension of the framework and its 2048 case study, not the primary thesis contribution.
 
 ## 2. Research Scope
 
-Investigate supervised learning algorithms available in automl's `ModelType` enum. The automl framework provides tree-based, linear, and kernel-based models — all supervised learners. These are used to classify which move (up, down, left, right) is optimal given a board state.
+Investigate supervised learning algorithms available in automl's `ModelType` enum. First verify each model's API, task compatibility, preprocessing requirements, serialization, and reproducibility on standard tabular tasks. Then use the verified subset to classify which move (up, down, left, right) is selected for a 2048 board state.
 
 ```mermaid
 flowchart TD
@@ -138,7 +140,7 @@ flowchart TD
 
 | Criterion | Weight / Role | Description | Gate? |
 |-----------|---------------|-------------|-------|
-| Mean Game Score | **Ranking — primary** | Average final game score across ≥10,000 test games — **rank by mean, highest wins** (must be ≥512 to beat heuristic) | **Gate + ranking** |
+| Mean Game Score | **2048 case-study ranking** | Average final game score across the declared held-out games — rank by mean, with uncertainty and practical effect | Case-study comparison |
 | Valid-Action Accuracy (valid actions) | Gate | Accuracy of move prediction on valid actions only (0–3) | **≥60% gate** |
 | F1 Macro | Gate | Macro-averaged F1 across 4 action classes | **≥0.55 gate** |
 | Inference Speed | Informative (≤1ms) | Time to predict a move (ms) | — |

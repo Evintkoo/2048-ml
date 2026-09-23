@@ -2,23 +2,25 @@
 
 > **Note:** This section defines hypotheses to be tested. No results are claimed. All answers are pending experimentation.
 
+The primary hypotheses concern the Rust-native AutoML framework. The 2048 hypotheses are application-case-study hypotheses. Architecture questions that cannot be reduced to a valid statistical test are evaluated through design evidence, correctness tests, benchmark comparisons, and documented trade-offs.
+
 ## 2. Hypothesis Framework
 
 ```mermaid
 flowchart TD
     subgraph "Hypothesis Structure"
         subgraph "Null Hypotheses H0"
-            H01[H01: automl model score ≤ heuristic baseline]
-            H02[H02: All algorithms produce equal mean scores]
-            H03[H03: Hyperparameter tuning has no effect]
-            H04[H04: Feature set F is not a Markov blanket]
+            H01[F1: framework does not meet capability/correctness criteria]
+            H02[F2: Rust framework is not reproducible or efficient enough]
+            H03[F3: AutoML search does not improve over fixed baseline]
+            H04[H1: policy does not beat heuristic baseline]
         end
         
         subgraph "Alternative Hypotheses H1"
-            HA1[HA1: automl model score > heuristic baseline]
-            HA2[HA2: At least one algorithm produces higher mean score]
-            HA3[HA3: Hyperparameter tuning significantly improves score]
-            HA4[HA4: Feature set F is a Markov blanket]
+            HA1[F1: framework meets capability/correctness criteria]
+            HA2[F2: Rust framework provides measured trade-off or advantage]
+            HA3[F3: AutoML search improves under fixed budget]
+            HA4[H1: policy beats heuristic baseline]
         end
         
         subgraph "Testing Process"
@@ -34,10 +36,12 @@ flowchart TD
 
 | Hypothesis | H0 | H1 | α | Test |
 |-----------|----|----|---|------|
+| F1 | Required framework capability or correctness criterion fails | All predeclared capability and correctness criteria pass | — | Acceptance tests and oracle comparisons |
+| F2 | Rust-native implementation does not meet the predeclared quality/efficiency target | It meets the target or demonstrates a documented trade-off | 0.05 where applicable | Matched benchmark and resource analysis |
+| F3 | AutoML search does not improve over fixed configuration at matched budget | Search improves the primary validation metric or resource efficiency | 0.05 | Paired repeated-run comparison |
 | H1 | μ_model ≤ μ_heuristic ≈ 512 | μ_model > μ_heuristic | 0.05 | Mann-Whitney U |
 | H2 | μ_all = μ_max | μ_max > μ_second | 0.05 | Kruskal-Wallis |
 | H3 | μ_tuned = μ_default | μ_tuned > μ_default | 0.05 | Wilcoxon Signed-Rank |
-| H4 | Score ⫫ f fails (conditional dependence remains) | Score ⫫ R \| f (Markov blanket) | 0.05 | Conditional Mutual Information / Conditional Independence Test (not raw MI — MI>0 trivial) |
 
 ## 4. Hypothesis Test Design
 
@@ -62,7 +66,7 @@ flowchart TD
 - **H1:** The mean score of the best automl model is greater than the heuristic baseline (μ_model > μ_baseline ≈ 512)
 - **Test:** Mann-Whitney U test (non-parametric, does not assume normality)
 - **Correction:** Bonferroni correction for multiple comparisons (number of models tested)
-- **Effect size:** Cohen's d ≥ 0.5 (medium effect) required for practical significance
+- **Effect size:** Cohen's d is reported to quantify practical magnitude; no universal 0.5 cutoff is used as an automatic exclusion rule.
 - **Status:** TBD (pending experimentation)
 
 ### H2: Algorithm Comparison
@@ -82,30 +86,26 @@ flowchart TD
 - **Correction:** Bonferroni correction across model types
 - **Status:** TBD (pending experimentation)
 
-### H4: Feature Space Markov Blanket
+### Exploratory Feature Analysis
 
-- **H0:** The 27-dimensional feature set F is not a Markov blanket for the score (Score ⫫ f | ∅ fails; i.e., dependence remains after conditioning)
-- **H1:** The 27-dimensional feature set F is a Markov blanket for the score (Score ⫫ R | f for all remaining variables R)
-- **Test:** **Conditional independence test** — mutual information `I(f; Score) > 0` is **trivial** (any dependence yields MI>0) and does not test Markov blanket property. Use **conditional mutual information** `I(f; Score | R)` / **conditional independence test** (e.g., conditional mutual information estimation, partial correlation, or kernel CI test such as KCI/PC algorithm) to test whether `Score` is independent of remaining state given `f`.
-- **Theoretical basis:** Proposition 2 in `00-theoretical-framework.md` (sufficiency conjectured, not proven)
-- **Status:** TBD (pending ablation study; will report conditional MI / partial correlation, not raw MI)
+Feature groups are evaluated through predeclared ablations, held-out performance, uncertainty intervals, and sensitivity analysis. This analysis does not claim that the 27-dimensional feature set is a Markov blanket or sufficient statistic.
 
 ## 6. Testing Procedure
 
 ```mermaid
 flowchart TD
-    A[H1 Training Performance] --> B[Mann-Whitney U Test]
-    C[H2 Algorithm Comparison] --> D[Kruskal-Wallis Test]
-    E[H3 Tuning Effect] --> F[Wilcoxon Signed-Rank Test]
-    G[H4 Feature Space] --> H[Mutual Information Test]
+    A[F1 Framework Correctness] --> B[Acceptance Tests]
+    C[F2 Framework Quality] --> D[Matched Benchmarks]
+    E[F3 Search Effect] --> F[Paired Repeated Runs]
+    G[H1-H3 Application] --> H[Pre-registered Statistical Tests]
     
-    B --> I[Compute p-value]
+    B --> I[Compute p-value + Bonferroni]
     D --> I
     F --> I
     H --> I
     
     I --> J{Significant?}
-    J -->|Yes| K[Reject H0]
+    J -->|Yes| K[Reject H0 — report CI and effect size]
     J -->|No| L[Fail to Reject H0]
 ```
 
@@ -117,18 +117,20 @@ flowchart TD
 
 | Hypothesis | Result | Decision |
 |-----------|--------|----------|
-| H1 | TBD (pending experimentation) | TBD |
-| H2 | TBD (pending experimentation) | TBD |
-| H3 | TBD (pending experimentation) | TBD |
-| H4 | TBD (pending ablation study) | TBD |
+| F1 | TBD (pending framework validation) | TBD |
+| F2 | TBD (pending framework validation) | TBD |
+| F3 | TBD (pending framework validation) | TBD |
+| H1 | TBD (pending application evaluation) | TBD |
+| H2 | TBD (pending application evaluation) | TBD |
+| H3 | TBD (pending application evaluation) | TBD |
 
 ## 9. Hypothesis Testing Conclusions
 
-All hypothesis test results will be reported after experimentation with proper statistical rigor:
-1. automl framework effectiveness will be validated through Mann-Whitney U test
-2. Algorithm differences will be validated through Kruskal-Wallis test
+All hypothesis and framework-validation results will be reported after experimentation with proper statistical rigor:
+1. framework capabilities will be reported through acceptance tests, matched benchmarks, resource measurements, and reproducibility results
+2. Algorithm differences will be validated through Kruskal-Wallis test + Dunn post-hoc
 3. Hyperparameter tuning effect will be validated through Wilcoxon Signed-Rank test
-4. Feature space sufficiency will be validated through mutual information test
+4. Feature groups will be evaluated through ablation and sensitivity analysis; no Markov-blanket claim is made by default
 
 ## 10. Reporting Standards
 
@@ -153,8 +155,8 @@ For example, if testing 7 models pairwise (21 comparisons), `α_corrected = 0.05
 
 ## 12. Assumptions and Limitations
 
-1. **Independence:** Game outcomes are assumed independent (different games, same seed)
-2. **Identical distribution:** All models are tested on the same game instances
-3. **Fixed seed:** Seed = 42 ensures reproducibility (multi-seed validation planned)
-4. **Sample size:** n ≥ 10,000 ensures sufficient power
+1. **Repeated conditions:** Game outcomes are analyzed with respect to shared seeds, paired instances, and trained-model repetitions; independence is not assumed automatically.
+2. **Identical distribution:** All models are tested on the same declared game-instance protocol.
+3. **Fixed seed:** Seed = 42 is a reproducibility condition, not evidence of generalization.
+4. **Sample size:** Sample size is justified using a predeclared minimum practical effect and the experimental unit, not only the number of games.
 5. **Non-parametric tests:** No normality assumption required

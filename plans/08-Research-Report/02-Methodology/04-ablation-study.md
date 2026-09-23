@@ -1,88 +1,42 @@
-# Ablation Study
+# Ablation Study — Exact Matrix (27 LOO + 8 Groups, GroupKFold, Cost-Capped)
 
-> **Note:** This section defines the ablation study protocol. All "expected" values are hypotheses, not results. No findings are claimed.
+> **No TBD.** Every row maps to a `TrainingConfig` + `ScoreMetrics` evaluation (10k games, pre-registered MWU/Holm protocol, bootstrap CI, and effect size). Leakage control: `CrossValidator::GroupKFold` split on `game_id` (games are i.i.d. given seed; TimeSeries is not canonical).
 
-## 2. Ablation Design
+## 1. Matrix
 
-Each ablation experiment removes one component from the full pipeline and measures the resulting mean score change. The baseline is the full pipeline with all 27 features and all hyperparameters optimized.
+### 1.1 Leave-One-Out (27 configs)
 
-### 2.1 Ablation Categories
+For each canonical feature in (`grid_0..15, empty_count, max_tile_log, monotonicity, smoothness, merges_available, score_normalized, adjacency_merge_score, corner_max, edge_tiles_occupied, col_worst, row_worst`): train `MultiClassification` (0-3) without that feature; evaluate 10k games seed 42; report `Δ = mean_full - mean_minus_i` with CI.
 
-| Category | Component | Variation |
-|----------|-----------|-----------|
-| Feature Ablation | Individual features | Remove one feature at a time |
-| Feature Group Ablation | Feature groups | Remove all features from one category |
-| Model Ablation | Model types | Remove one model type |
-| Hyperparameter Ablation | Hyperparameters | Fix to default values |
-| Data Ablation | Training data | Reduce training samples |
-| Evaluation Ablation | Evaluation metrics | Use different ranking criteria |
+### 1.2 Group Removal (8 configs)
 
-### 2.2 Feature Groups
+| Group | Features Removed | Rationale |
+|-------|------------------|-----------|
+| grid | `grid_0..15` | Raw board |
+| empty | `empty_count` | Flexibility |
+| max | `max_tile_log` | Progress |
+| monotonicity | `monotonicity` | Board shape |
+| smoothness | `smoothness` | Board shape |
+| merges | `merges_available, adjacency_merge_score` | Immediate merge opportunity |
+| corner/edge | `corner_max, edge_tiles_occupied, col_worst, row_worst` | Placement and balance |
+| score | `score_normalized` | Progress context |
 
-| Feature Group | Features | Expected Importance | Rationale |
-|---------------|----------|-------------------|-----------|
-| Grid Values | `grid_0` through `grid_15` | To be determined | Directly encodes board state |
-| Empty Count | `empty_count` | To be determined | Board flexibility indicator |
-| Max Tile | `max_tile`, `max_tile_log` | To be determined | Progress indicator |
-| Monotonicity | `mono_col_score`, `mono_row_score` | To be determined | Corner strategy alignment |
-| Smoothness | `smooth_col_score`, `smooth_row_score` | To be determined | Tile gradient indicator |
-| Merge Potential | `merge_count`, `merge_score`, `adjacency_merge_score` | To be determined | Immediate scoring opportunity |
-| Column/Row Analysis | `col_worst`, `row_worst`, `col_worst_index`, `row_worst_index` | To be determined | Constraint identification |
-| Movement Analysis | `up_score`, `down_score`, `left_score`, `right_score` | To be determined | Action selection signal |
+> The 8 groups cover all 27 canonical features without inventing derived columns; the 16 raw grid columns remain one group.
 
-**Note:** Expected importance values are hypotheses based on domain knowledge (Björk, 2014; Kishore et al., 2014). These will be validated empirically.
+### 1.3 Controls
 
-### 2.3 Feature Group Removal
+- **Baseline full-27** trained once per `ModelType` (winner ModelType defines primary ablation; cheapest run precedes others if budget tight).
+- **Cross-validation:** `TrainingConfig { cv_folds:5 }` with `CVStrategy::GroupKFold{ n_splits:5 }` using `game_id` column; no leakage across games.
+- **Labels:** rollout 100 sims/action; same label pipeline for all configs.
 
-Remove entire feature categories and measure the impact. Expected score drops are hypotheses, not results.
+## 2. Cost Cap
 
-### 2.4 Model Ablation
+`35 configs (27+8) × 10k = 350k games`. Cap at **270k** by priority: run 8 groups first, then top-12 LOO by expected impact (empty, max, mono, merge groups); expand to full 27 only if `Δ` CI excludes 0 for any group. Evaluation is `~2h/10k` → 54h full, 40h capped (see `07-computational-budget.md`).
 
-Each candidate model is individually removed from the ensemble, and the resulting mean score is measured. Expected impacts are hypotheses.
+## 3. Statistical Gate per Ablation
 
-### 2.5 Hyperparameter Ablation
+Each removal vs full: report Mann-Whitney U p-values with Holm correction over the planned comparisons, bootstrap CI on Δ, and effect size. A feature is not declared necessary from a single threshold; conclusions distinguish statistical evidence from practical magnitude.
 
-Compare performance using default hyperparameters vs. HyperOptX-optimized hyperparameters for each model type.
+## 4. Output
 
-### 2.6 Data Ablation
-
-Vary the number of training samples and measure the effect on test performance. Expected patterns are hypotheses based on standard ML theory.
-
-### 2.7 Evaluation Ablation
-
-Compare different ranking criteria and statistical tests to determine which is most appropriate.
-
-## 3. Expected Results Template
-
-All expected results are hypotheses to be validated. No conclusions are drawn from these expectations.
-
-### 3.1 Feature Importance Ranking
-
-| Rank | Feature | Δ Score (baseline - ablation) | Importance |
-|------|---------|-------------------------------|------------|
-| 1 | TBD | TBD | To be determined |
-| ... | ... | TBD | ... |
-| 27 | TBD | TBD | To be determined |
-
-### 3.2 Model Comparison
-
-| Model | Mean Score | Median Score | Std Dev | Rank |
-|-------|------------|--------------|---------|------|
-| Random Forest | TBD | TBD | TBD | TBD |
-| Gradient Boosting | TBD | TBD | TBD | TBD |
-| XGBoost | TBD | TBD | TBD | TBD |
-| LightGBM | TBD | TBD | TBD | TBD |
-| ExtraTrees | TBD | TBD | TBD | TBD |
-| SVM | TBD | TBD | TBD | TBD |
-| KNN | TBD | TBD | TBD | TBD |
-
-## 4. Statistical Rigor
-
-All ablation experiments will use:
-- **10,000 games per configuration** (minimum)
-- **Fixed random seed** for reproducibility
-- **Bonferroni correction** for multiple comparisons
-- **Bootstrap 95% confidence intervals** on all reported metrics
-- **Mann-Whitney U test** with p < 0.05 for significance
-
-The ablation study will provide a systematic analysis of each component's contribution to model performance based on actual experimental data.
+`data/evaluation_data/ablation.parquet` with `config_id, removed_feature/group, mean, bootstrap_lo/hi, U, p_holm, d, significant`. Visualization: ranked Δ bar with CI — no "TBD" placeholder; TBD only until pipeline runs.

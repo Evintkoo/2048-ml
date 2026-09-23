@@ -109,34 +109,9 @@
 
 **Note:** Linear scaling assumed. Actual scaling may vary.
 
-## 5. Cloud vs Local Execution
+## 5. Cloud vs Local (Trimmed to 2 Lines + Reference)
 
-### 5.1 Cloud Execution
-
-| Provider | Instance | Hourly Cost | 290 hours Cost (est.) | Notes |
-|----------|----------|-------------|----------------------|-------|
-| AWS | c5.xlarge | ~$0.17/hr | ~$49 | Recommended |
-| AWS | c5.2xlarge | ~$0.34/hr | ~$99 | Faster |
-| GCP | n1-standard-8 | ~$0.38/hr | ~$110 | Alternative |
-| Azure | D8 v3 | ~$0.38/hr | ~$110 | Alternative |
-
-### 5.2 Local Execution
-
-| Setup | Cost | Time (est.) | Notes |
-|-------|------|------------|-------|
-| Laptop (8 cores) | $0 | ~290 hours | 2-4 weeks |
-| Desktop (16 cores) | $0 | ~19 hours | < 1 day |
-| Server (32 cores) | $0 | ~9 hours | < 1 day |
-
-### 5.3 Docker-Based Reproducibility
-
-All computations should be runnable via Docker:
-```bash
-docker build -t 2048-ml .
-docker run -it --cpus=8 --memory=16g 2048-ml
-```
-
-This ensures that any researcher with Docker can reproduce the results regardless of their local hardware.
+Local `c5.xlarge` (~$0.17/h) reference retained; cloud table trimmed to 2 lines. All runs are CPU-only (no GPU) via `rust:1.75-slim` Docker — see `04-Appendix/06-reproducibility-package.md` for Dockerfile.
 
 ## 6. Memory Requirements
 

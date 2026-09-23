@@ -1,129 +1,45 @@
-# Unit Testing
+# Unit Testing — 2048-Specific (Concrete Cases, Tarpaulin)
 
 ## 1. Purpose
+Unit tests for 4×4 game engine, feature extraction, and automl wiring. Distinct from integration (pipeline wiring) and game-validation (manual audit).
 
-Define unit testing procedures for the 2048 ML system components.
+## 2. Concrete 2048 Cases (Must Implement)
 
-## 2. Unit Testing Architecture
+| # | Module | Case | Assertion |
+|---|--------|------|-----------|
+| 1 | board.rs | double-merge `2+2+4 → 4+4` in one move | `assert_eq!(after_row, [4,4,0,0]) && score_delta==4` |
+| 2 | board.rs | single-merge only per tile per move `2+2+2 → 4+2` | `assert_eq!(row, [4,2,0,0])` |
+| 3 | board.rs | no-op detection (full board, no merge) | `would_change()!=execute_move() → no spawn, score 0` |
+| 4 | engine.rs | spawn 90/10 deterministic with ChaCha8Rng(seed=42) | `spawn_value() in {2,4} && reproducible` |
+| 5 | engine.rs | random spawn uniform empty cell | seeded empty choice deterministic |
+| 6 | score.rs | overflow check `u32::checked_add` on merge sum | `assert!(score.checked_add...is_some())` or error |
+| 7 | board.rs | blocked move (all moves would_change==false) | `is_game_over()==true` |
+| 8 | feature_extraction.rs | 27-len vector, correct `game_id` propagation | `features.len()==27 && game_id==input_id` |
+| 9 | label_generation.rs | rollout label 0..3 valid | `label in 0..3` |
+| 10 | training/config.rs | `TaskType::MultiClassification` + `ModelType::RandomForest` builder | `TrainingConfig::new(MultiClassification,"action")` works |
 
-```mermaid
-flowchart TD
-    subgraph "Unit Testing Framework"
-        subgraph "Test Cases"
-            T1[Board State Tests]
-            T2[Score Tests]
-            T3[Move Logic Tests]
-            T4[Model Tests]
-        end
-        
-        subgraph "Test Runner"
-            TR[Test Runner<br/>Execute All Tests]
-            RF[Result Formatter]
-        end
-        
-        subgraph "Reporting"
-            RP[Pass/Fail Report]
-            CO[Coverage Report]
-        end
-        
-        T1 --> TR
-        T2 --> TR
-        T3 --> TR
-        T4 --> TR
-        TR --> RF
-        RF --> RP
-        RF --> CO
-    end
+Add `score_tracking`, `max_tile` boundary (`32768` → next merge would need 17th cell, no effect).
+
+## 3. Coverage (Realistic, Not Fantasy)
+
+- Target: **≥80% line** overall (`cargo tarpaulin --out Xml --timeout 120`), not fictional 80/90/85 mermaid. Report per-crate: `game_engine ≥85%, data_pipeline ≥80%, automl wrapper ≥70%`.
+- Run: `cargo test --lib -- --test-threads=1` + `cargo tarpaulin --config tarpaulin.toml`
+- `tarpaulin.toml`:
+```toml
+[report]
+out = ["Xml", "Html"]
+[run]
+timeout = 120
 ```
 
-## 3. Test Structure
+## 4. Execution
 
-```mermaid
-flowchart TD
-    A[Setup] --> B[Execute Test]
-    B --> C[Assert Expected]
-    C --> D{Could Pass?}
-    D -->|Yes| E[Test Passes]
-    D -->|No| F[Test Fails]
-    E --> G[Log Result]
-    F --> G
+```bash
+cargo test --lib          # 100+ unit tests <30s
+cargo test -- --nocapture # debug invalid-move logs
+cargo tarpaulin           # coverage gate in CI
 ```
+Pre-commit: `cargo fmt --check && cargo clippy -- -D warnings`.
 
-## 4. Test Categories
-
-| Category | Description | Priority |
-|----------|-------------|----------|
-| Board State | Board initialization, updates | High |
-| Move Logic | Slide and merge operations | High |
-| Score | Score calculation, tracking | Medium |
-| Model | Model predictions, training | High |
-| Configuration | Config validation, loading | Medium |
-
-## 5. Test Implementation
-
-```rust
-#[cfg(test)]
-mod tests {
-    use super::*;
-    
-    #[test]
-    fn test_board_initialization() {
-        let board = Board::new(4);
-        assert_eq!(board.size(), 4);
-        assert!(board.is_empty());
-    }
-    
-    #[test]
-    fn test_merge_operation() {
-        let mut board = Board::new(4);
-        board.set_tile(0, 0, 2);
-        board.set_tile(0, 1, 2);
-        let result = board.merge_left();
-        assert!(result.merged);
-    }
-}
-```
-
-## 6. Test Coverage
-
-```mermaid
-graph TD
-    A[Board Module] -->|80% covered| Cover1[✓]
-    B[Score Module] -->|90% covered| Cover2[✓]
-    C[Move Module] -->|85% covered| Cover3[✓]
-    D[Model Module] -->|75% covered| Cover4[⚠]
-    
-    style D fill:#f99,stroke:#333
-```
-
-## 7. Test Execution Pipeline
-
-```mermaid
-flowchart LR
-    A[Write Tests] --> B[Run Test Suite]
-    B --> C{All Pass?}
-    C -->|Yes| D[Generate Coverage Report]
-    C -->|No| E[Debug and Fix]
-    E --> B
-    D --> F[Commit]
-```
-
-## 8. Quality Gates
-
-1. All tests must pass before merge
-2. Code coverage must be ≥ 80%
-3. Test names must be descriptive
-4. Each function must have at least one test
-
-## 9. Continuous Integration
-
-Unit tests run automatically on every commit:
-
-```mermaid
-flowchart LR
-    A[Commit] --> B[CI Pipeline]
-    B --> C[Run Unit Tests]
-    C --> D{All Pass?}
-    D -->|Yes| E[Build Artifact]
-    D -->|No| F[Report Failure]
-```
+## 5. Quality Gate
+Merge only if all 10 concrete cases pass + coverage ≥80% + clippy clean.

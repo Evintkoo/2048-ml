@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-Document the final selection of the best machine learning algorithm for the 2048 game based on comparative analysis results.
+Document the model-selection result for the 2048 case study and explain its relationship to the Rust-native AutoML framework. “Best” means best under the declared case-study protocol, not globally best.
 
 ## 2. Selection Process
 
@@ -58,13 +58,13 @@ flowchart TD
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Mean Game Score (benchmark) | — | ≥ 512 (beats heuristic) | Pending |
-| Valid-Action Accuracy | — | ≥ 60% | Pending |
-| F1 Macro (weighted, valid actions) | — | ≥ 0.55 | Pending |
-| Inference Time | — | ≤ 1 ms | Pending |
-| Training Time | — | ≤ 10 min | Pending |
+| Mean Game Score (benchmark) | TBD — run after training | Predeclared practical comparison | Pending — case-study ranking |
+| Valid-Action Accuracy | TBD — run after training | Report with uncertainty | Pending — diagnostic |
+| F1 Macro (weighted, valid actions) | TBD — run after training | Report with uncertainty | Pending — diagnostic |
+| Inference Time | TBD — run after training | Report hardware and distribution | Pending — framework/application efficiency |
+| Training Time | TBD — run after training | Report configuration and budget | Pending — framework efficiency |
 
-> **No R² / RMSE** — task is `TaskType::MultiClassification` (27-dim → 4 logits → `argmax` 0–3). Game score is a downstream benchmark, not a regression target.
+> **No R² / RMSE** — task is `TaskType::MultiClassification` (27-dim → 4 logits → `argmax` 0–3). Game score is a downstream benchmark, not a regression target. Values marked TBD will be filled after running the benchmark loop in `02-model-comparison.md:4.1`.
 
 ### 5.1 Automl-Compatible Model Candidates
 
@@ -92,46 +92,71 @@ The 2048 game data is **tabular** in nature — each sample consists of a fixed-
 4. **Robustness to scaling**: Unlike SVM or KNN, tree-based models do not require feature scaling
 5. **Gradient boosting dominance**: Empirically, gradient boosting variants consistently rank among the top performers on tabular benchmark datasets
 
-### 5.3 Evaluation Criteria — Classification-Focused (Weights Sum to 100%)
+### 5.3 Evaluation Criteria — Canonical: Rank by Mean Game Score + Gates
 
-Models are evaluated on the following criteria:
+> **DELETED weighted composite (30/20/15...).** The old multi-criteria weighted score conflicted with the canonical rule in `01-algorithm-research.md:147`: **Rank by Mean Game Score (research.md:147), gates Acc≥60% F1≥0.55.** This section now aligns exactly with that rule.
 
-| Criterion | Weight | Description |
-|-----------|--------|-------------|
-| Predictive Accuracy (classification) | 30% | Valid-action accuracy + F1 macro on held-out test set (actions 0–3) |
-| Mean Game Score (benchmark) | 20% | Mean score when running the policy in the simulator (downstream, not regression) |
-| Training Speed | 15% | Time to convergence and fit |
-| Inference Speed | 15% | Prediction latency per sample |
-| Model Size | 10% | Disk and memory footprint |
-| Interpretability | 5% | Feature importance clarity |
-| Robustness | 5% | Performance stability across game types |
+**Ranking rule (primary):**
+
+1. Run each candidate's policy in the simulator for ≥10,000 games and compute `mean_score`.
+2. **Rank by mean_score descending — highest wins.** The winner must have `mean_score ≥ 512` (beats heuristic). No weighted sum.
+3. If two models tie within statistical noise (± 1 std), prefer higher Valid-Action Accuracy, then lower inference time.
+
+**Gates (all must pass; otherwise the model is rejected regardless of rank):**
+
+| Gate | Threshold | Measured on | Fail action |
+|------|-----------|-------------|-------------|
+| Mean Game Score | ≥ 512 | Simulator benchmark (≥10k games) | Reject |
+| Valid-Action Accuracy | ≥ 60% | Held-out classification test set (valid actions only, 0–3) | Reject |
+| F1 Macro | ≥ 0.55 | Same test set, macro-averaged across 4 action classes | Reject |
+| Inference Time | ≤ 1ms | Mean per-prediction latency (informative, not rejecting unless >5ms) | Warn |
+
+**What is NOT a gate:**
+
+- `model_mean / heuristic_mean (≈512)` proximity ratio — optional single informative ratio only (e.g., 768/512 = 1.5×), never a gate.
+- No `max_score / theoretical_limit (2^15=32768)` ratio — theoretical limit is open/unproven (see `02-Training/01-training-pipeline.md:5`).
+- No regression metrics (R²/RMSE) — task is `TaskType::MultiClassification`.
+
+**Actionable selection snippet (same APIs as `02-model-comparison.md:4.1`):**
+
+```rust
+use automl::{TrainingConfig, TaskType, ModelType, CVStrategy, cross_val_score};
+use automl::training::{TrainEngine, CrossValidator};
+use polars::prelude::*;
+use ndarray::{Array1, Array2};
+
+// 1) Cross-validated ranking (classification)
+let candidates = vec![ModelType::GradientBoosting, ModelType::XGBoost, ModelType::RandomForest, ModelType::LightGBM];
+let mut cv_scores: Vec<(ModelType, f64)> = Vec::new();
+for m in &candidates {
+    let cfg = TrainingConfig::new(TaskType::MultiClassification, "action")
+        .with_model(m.clone()).with_cv(5).with_random_state(42);
+    let splits = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
+        .with_random_state(42)
+        .split(x.nrows(), Some(&y), Some(&groups))?;
+    cv_scores.push((m.clone(), score_splits(&cfg, &x, &y, &splits)?));
+}
+cv_scores.sort_by(|a,b| b.1.partial_cmp(&a.1).unwrap());
+
+// 2) Downstream game-score benchmark for top-3 only
+for (model_type, _) in cv_scores.iter().take(3) {
+    let cfg = TrainingConfig::new(TaskType::MultiClassification, "action")
+        .with_model(model_type.clone()).with_random_state(42);
+    let mut engine = TrainEngine::new(cfg);
+    engine.fit(&df)?; // DataFrame → TrainingConfig → TrainEngine::fit(&df) (no epochs/gradients)
+    let preds = engine.predict(&test_df)?; // → InferenceEngine::predict under the hood
+    // Run policy in simulator ≥10k games → mean_game_score
+    // Check gates: mean ≥512, accuracy ≥60%, F1 ≥0.55
+}
+```
 
 ## 6. Algorithm Rationale
 
-```mermaid
-flowchart LR
-    Why[Why This Algorithm?]
-    Why --> R1[Reason 1: Performance]
-    Why --> R2[Reason 2: Speed]
-    Why --> R3[Reason 3: Compatibility]
-    Why --> R4[Reason 4: Scalability]
-```
+Selection is justified by **(1) highest mean game score ≥512** plus **passing both gates (Acc≥60%, F1≥0.55)**. No weighted composite. Secondary factors (inference ≤1ms, training time, feature importance) are tie-breakers only and are documented alongside the primary ranking.
 
-## 7. Integration Plan
+> **Scope aligned:** This file's job is **benchmark comparison + best algorithm selection**. Deployment/monitoring is out of scope (see `06-Data/` and `07-Benchmarking/` if needed).
 
-```mermaid
-flowchart TD
-    Selected[Selected Algorithm]
-    Selected --> Integration[Integrate with Training Pipeline]
-    Integration --> Evaluation[Evaluate in Full Pipeline]
-    Evaluation --> Deployment[Deploy for Inference]
-    Deployment --> Monitoring[Monitor Performance]
-    
-    Monitoring --> |Performance Drop| Retrain[Retrain Model]
-    Retrain --> Integration
-```
-
-## 8. Findings Summary
+## 7. Findings Summary
 
 All findings are documented in the `05-Model/` directory:
 
@@ -148,7 +173,7 @@ flowchart LR
     Algo --> N03[03-best-algorithm-finding.md]
 ```
 
-## 9. Next Steps
+## 8. Next Steps
 
 1. Integrate selected algorithm into training pipeline
 2. Configure hyperparameters using `05-Model/03-Hyperparameter-Optimization/`
