@@ -1,0 +1,40 @@
+# Rust
+/target/
+**/*.rs.bk
+
+# Node.js / Playwright
+node_modules/
+**/node_modules/
+playwright-report/
+test-results/
+blob-report/
+
+# Python tools used for analysis or baselines
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated datasets, models, and experiment outputs
+/data/generated/
+/datasets/generated/
+/models/
+/artifacts/
+/runs/
+/results/
+*.model
+*.weights
+*.parquet
+
+# Environment and local configuration
+.env
+.env.*
+!.env.example
+!.env.template
+.DS_Store
+Thumbs.db
+*.log

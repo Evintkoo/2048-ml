@@ -2,7 +2,7 @@
 
 ## 1. Concept
 
-Score provides game-progression context as **one** feature (idx 21) of the 27-dim state. Scope is board+score only per `initial-plan.md`.
+Score provides game-progression context as one feature of the canonical training state. The canonical scope is board plus score; see `plans/00-scope-and-traceability.md`.
 
 ## 2. Score Features — What Is in the 27
 

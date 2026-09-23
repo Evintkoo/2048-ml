@@ -9,6 +9,10 @@ This file is the scope authority for every document under `plans/`.
 3. **Principal case study:** supervised four-action policy learning for the 4×4 2048 game.
 4. **Secondary analyses:** model comparison, feature ablation, label sensitivity, resource measurements, and robustness.
 
+## 2048 State Scope
+
+The canonical training state uses the 16 board cells plus the current score (17 values). It excludes move count and game history; history may be retained for data collection and analysis, but not as training features unless a separately documented study changes this scope. State feature ordering and encoding are specified in the state plans.
+
 ## Interpretation Rules
 
 - Framework claims require framework-validation evidence on standard tabular tasks.

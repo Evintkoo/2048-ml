@@ -1,6 +1,6 @@
 # Board State Definition
 
-> **Scope:** `initial-plan.md` §3 — state is **board + score only** (27-dim canonical). No history, no move_count in training features. History lives in `03-History/` for collection only.
+> **Scope:** The canonical training state is the 16 board cells plus score. No history or move count is included in training features. History may be retained for collection only; see `plans/00-scope-and-traceability.md`.
 > **Canonical dims:** **27** = 16 grid + 11 derived. See `04-Encoding/01-state-vector.md:31` `create_state_vector`.
 
 ## 1. State Representation
@@ -10,7 +10,7 @@ The board state is the primary input to the ML model. Must capture all informati
 ## 2. Raw Board State
 
 ```rust
-/// 4×4 grid as flat array, 0 = empty — board + score only (per initial-plan.md)
+/// 4×4 grid as flat array, 0 = empty — board cells plus score
 pub struct RawBoardState {
     pub grid: [u32; 16],          // Tile values (powers of 2, up to 131072 = 2^17)
     pub score: u64,               // Cumulative score — idx 21 after normalization
