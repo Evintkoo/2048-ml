@@ -1,0 +1,83 @@
+{
+  "action_frequency": [
+    {
+      "action": 0,
+      "count": 295177,
+      "direction": "up",
+      "game_cluster_bootstrap_95_ci": [
+        0.24884695538969076,
+        0.2502134798649102
+      ],
+      "proportion": 0.24952745015824926,
+      "total_moves": 1182944
+    },
+    {
+      "action": 1,
+      "count": 296302,
+      "direction": "down",
+      "game_cluster_bootstrap_95_ci": [
+        0.24975728543036532,
+        0.2511808970371733
+      ],
+      "proportion": 0.25047846728162954,
+      "total_moves": 1182944
+    },
+    {
+      "action": 2,
+      "count": 295638,
+      "direction": "left",
+      "game_cluster_bootstrap_95_ci": [
+        0.24926497819463755,
+        0.25062310009682354
+      ],
+      "proportion": 0.24991715584169666,
+      "total_moves": 1182944
+    },
+    {
+      "action": 3,
+      "count": 295827,
+      "direction": "right",
+      "game_cluster_bootstrap_95_ci": [
+        0.24935568994673565,
+        0.25077897998787246
+      ],
+      "proportion": 0.2500769267184245,
+      "total_moves": 1182944
+    }
+  ],
+  "action_frequency_bootstrap_seed": 84026,
+  "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
+  "action_frequency_unit": "selected moves across all games",
+  "action_total": 1182944,
+  "agent": "random",
+  "benchmark": "baseline",
+  "created_utc": "2026-09-24T16:46:26.885423+00:00",
+  "elapsed_seconds": 27.887897666,
+  "first_game_seed": 84024,
+  "games": 10000,
+  "global_seed": 84024,
+  "last_game_seed": 94023,
+  "max_moves": 1000,
+  "project_version": "0.1.0",
+  "results_csv": "reports/action-frequency/random_10000.csv",
+  "seed_derivation": "global_seed.wrapping_add(game_id)",
+  "sha256": "319ab07e65fdbb978dd2713cb88fa8b077d6c5308070b82e30b7a39d346d867c",
+  "source_revision": "ca15cebcdf4d307126a63d4ab19e416606f50564",
+  "spawn_probability_for_four": 0.1,
+  "summary": {
+    "games_above_2048": 748,
+    "games_above_4096": 5,
+    "games_above_8192": 0,
+    "max": 4892,
+    "mean": 1094.124,
+    "mean_ci_95": [
+      1082.8619700000002,
+      1104.43267
+    ],
+    "median": 1050.0,
+    "min": 80,
+    "p90": 1688.4000000000015,
+    "p99": 2808.040000000001,
+    "sample_std_dev": 541.1684667041635
+  }
+}

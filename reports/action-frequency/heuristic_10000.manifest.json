@@ -1,0 +1,83 @@
+{
+  "action_frequency": [
+    {
+      "action": 0,
+      "count": 1368862,
+      "direction": "up",
+      "game_cluster_bootstrap_95_ci": [
+        0.2620114226971027,
+        0.26295634358193193
+      ],
+      "proportion": 0.2624757080032482,
+      "total_moves": 5215195
+    },
+    {
+      "action": 1,
+      "count": 1258870,
+      "direction": "down",
+      "game_cluster_bootstrap_95_ci": [
+        0.24092764901035943,
+        0.2418477096569165
+      ],
+      "proportion": 0.24138502970646353,
+      "total_moves": 5215195
+    },
+    {
+      "action": 2,
+      "count": 1345191,
+      "direction": "left",
+      "game_cluster_bootstrap_95_ci": [
+        0.2574687168076913,
+        0.2584131854340467
+      ],
+      "proportion": 0.2579368556688676,
+      "total_moves": 5215195
+    },
+    {
+      "action": 3,
+      "count": 1242272,
+      "direction": "right",
+      "game_cluster_bootstrap_95_ci": [
+        0.2377468903430229,
+        0.2386618947068268
+      ],
+      "proportion": 0.23820240662142067,
+      "total_moves": 5215195
+    }
+  ],
+  "action_frequency_bootstrap_seed": 84026,
+  "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
+  "action_frequency_unit": "selected moves across all games",
+  "action_total": 5215195,
+  "agent": "heuristic",
+  "benchmark": "baseline",
+  "created_utc": "2026-09-24T16:50:07.220175+00:00",
+  "elapsed_seconds": 201.992154041,
+  "first_game_seed": 84024,
+  "games": 10000,
+  "global_seed": 84024,
+  "last_game_seed": 94023,
+  "max_moves": 1000,
+  "project_version": "0.1.0",
+  "results_csv": "reports/action-frequency/heuristic_10000.csv",
+  "seed_derivation": "global_seed.wrapping_add(game_id)",
+  "sha256": "02a8055ddaafb225c6c2c7ff0ae7ee37fcbbb6190734de0e9d6ce0819f48ba61",
+  "source_revision": "ca15cebcdf4d307126a63d4ab19e416606f50564",
+  "spawn_probability_for_four": 0.1,
+  "summary": {
+    "games_above_2048": 9923,
+    "games_above_4096": 8586,
+    "games_above_8192": 3063,
+    "max": 20940,
+    "mean": 8056.2324,
+    "mean_ci_95": [
+      7986.22383,
+      8124.0184500000005
+    ],
+    "median": 7136.0,
+    "min": 784,
+    "p90": 12844.400000000001,
+    "p99": 16052.0,
+    "sample_std_dev": 3484.197927430361
+  }
+}

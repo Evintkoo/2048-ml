@@ -1,6 +1,6 @@
 # Plan 01 — Visualization (Debug/Inspection Only): the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Result serialization and collection manifests exist; terminal charts and SVG exports are not implemented.
+> **Status: PARTIAL (2026-09-25).** JSON/CSV outputs and manifests support offline inspection; optional terminal charts and SVG exports are not implemented. Interactive visualization remains out of scope.
 
 **Goal:** State the current implementation and evidence boundary for visualization (debug/inspection only).
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Result serialization and collection manifests exist; terminal charts and SVG exports are not implemented.
+**This plan treats its subject as partial inspection tooling, not as a research finding.** JSON/CSV results and manifests are usable for offline inspection. The optional board renderer, terminal charts, and SVG exports are absent; the headless game UI plan does not make them an MVP prerequisite.
 
 ## 1. Scope
 
@@ -118,8 +118,8 @@ All visualization outputs are static files (SVG, CSV, JSON) for external analysi
 ## Implementation Record
 
 - `GameResult` serializes to JSON and collection/evaluation commands write CSV plus JSON manifests for offline inspection.
-- Terminal board rendering, ASCII score charts, move timelines, SVG board export, and training-progress charts are not implemented. They are optional inspection outputs and are not used by the headless simulation pipeline. The game UI plan explicitly keeps rendering out of the MVP.
-- Status: partial; no web or interactive visualization is part of the project.
+- Terminal board rendering, ASCII score charts, move timelines, SVG board export, and training-progress charts are not implemented. They are optional inspection outputs and are not used by the headless simulation or training pipeline. The game UI plan explicitly keeps rendering out of the MVP.
+- Status: partial by scope; no web or interactive visualization is part of the project. Add static outputs only when a concrete debugging or reporting need justifies them.
 
 ---
 
@@ -136,7 +136,7 @@ All visualization outputs are static files (SVG, CSV, JSON) for external analysi
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Result serialization and collection manifests exist; terminal charts and SVG exports are not implemented. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Static inspection output is optional and currently absent.** Add a specific renderer only when it supports a concrete debugging or reporting task; keep interactive UI out of scope.
 
 ## Later
 

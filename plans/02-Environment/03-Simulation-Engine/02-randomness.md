@@ -1,6 +1,6 @@
 # Plan 02 — Randomness and Determinism: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Per-game ChaCha8 and spawn tests pass; cross-component SeedManager linkage is not implemented.
+> **Status: PARTIAL.** `SeedManager` now derives CLI game, training, HyperOptX, data-sampling, CV, and analysis seeds; config-file loading and broader process-level reproducibility checks remain pending.
 
 **Goal:** State the current implementation and evidence boundary for randomness and determinism.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Per-game ChaCha8 and spawn tests pass; cross-component SeedManager linkage is not implemented.
+**This plan treats seed derivation as implemented in root workflows with bounded evidence.** `src/seeds.rs` provides one `SeedManager` constructed from the CLI's global seed. Game IDs use `global + game_id`; final AutoML fit deliberately uses the global seed, matching the training-config ticket; tuning, data relabeling, CV, and report bootstraps use documented offsets. Config files are not consumed by the CLI, and framework internals may retain nondeterminism.
 
 > **Canonical RNG:** `ChaCha8Rng::seed_from_u64(seed)` per game; global seed linked to **Evintkoo/automl `TrainingConfig::with_random_state(42)`** (see `01-Infrastructure/02-Configuration/02-training-config.md` §6). Spawn 90/10 via `spawn_prob_4:0.1`. Headless only.
 
@@ -33,24 +33,13 @@ pub fn create_rng(seed: u64) -> ChaCha8Rng {
 ## 3. Seed Strategy — Linked to TrainingConfig
 
 ```rust
-pub struct SeedManager {
-    pub global_seed: u64,        // 42 — canonical; == TrainingConfig::with_random_state(42)
-    pub game_seed: u64,          // per-game
-    pub training_seed: u64,      // == global_seed
-    pub evaluation_seed: u64,    // e.g., 9999 for benchmark — see config yaml below
-}
-impl SeedManager {
-    /// Derive per-game seed — use wrapping_add, NOT wrapping_mul with prime trick
-    pub fn game_seed(&self, game_id: usize) -> u64 {
-        self.global_seed.wrapping_add(game_id as u64)
-        // NOT: wrapping_mul(1_000_000_007 + game_id) — that prime-mul trick risks collisions
-        // and is not needed; wrapping_add is collision-free for sequential game_ids and
-        // matches canonical seed propagation (see §6)
-    }
-}
+let seeds = SeedManager::new(cli_seed);
+let game_seed = seeds.game_seed(game_id as u64);
+let training_seed = seeds.training_seed(); // == cli_seed
+let cv_seed = seeds.cross_validation_seed();
 ```
 
-> **Global linkage:** `SeedManager.global_seed` **must** equal `TrainingConfig::with_random_state(42)` global seed so that simulation and automl share reproducibility. Change in one must change the other — document in `config.toml`.
+> **Global linkage:** `SeedManager::training_seed()` returns the user-provided global seed used by `TrainingConfig::with_random_state`. Changing the CLI `--seed` changes game and training seeds together.
 
 ## 4. Tile Spawn (90/10) — Uses Same RNG
 
@@ -76,7 +65,7 @@ impl Board {
 | Cross-platform | same `ChaCha8Rng` output if same Rust/rand_chacha version |
 | Cross-version | may vary if `rand_chacha` changes — pin deps |
 
-## 6. Seed Propagation — `wrapping_add` (Not `wrapping_mul`)
+## 6. Seed Propagation — `wrapping_add` offsets
 
 ```rust
 pub struct ComponentSeeds {
@@ -88,39 +77,42 @@ pub struct ComponentSeeds {
 }
 pub fn propagate_seed(seed: u64) -> ComponentSeeds {
     ComponentSeeds {
-        game_rng:            seed.wrapping_add(0), // == global
-        training_rng:        seed.wrapping_add(1),
+        game_rng:             seed, // per-game derivation adds game ID
+        training_rng:         seed, // final-fit seed matches the training-config contract
         hyperopt_rng:        seed.wrapping_add(2),
         data_sampling_rng:   seed.wrapping_add(3),
         cross_validation_rng:seed.wrapping_add(4),
     }
 }
-/// Why wrapping_add not wrapping_mul: prime-mul trick (e.g., wrapping_mul(1_000_000_007)) creates
-/// non-sequential, harder-to-debug streams and potential collisions on overflow; wrapping_add gives
-/// trivially distinct, sequential streams per component and stable per-game derivation via game_seed() above.
-/// Used in SimulationConfig.threads / CrossValidator with_random_state — see 05-Model/04-Evaluation/02-cross-validation.md
+/// Score-summary analysis uses global+1; action-frequency bootstrap uses global+2.
+/// Pairwise comparison bootstraps use global+6+pair_index. RolloutLabeler further
+/// derives deterministic seeds from game/move/action/rollout IDs.
 ```
+
+The implementation is in `src/seeds.rs`; `src/main.rs` uses it for CLI workflows and `src/game_engine/mod.rs` uses it for batch game derivation. `TrainingConfig::with_random_state(seeds.training_seed())` receives the same global seed exposed by `--seed`.
 
 ## 7. Seed Configuration
 
 ```yaml
-# config.yaml — global seed canonical 42 (links SeedManager + TrainingConfig::with_random_state(42))
+# Illustrative values only; root CLI currently accepts seeds through --seed.
 seeds:
   global: 42
   evaluation:
     test_set: 9999
     benchmark: 8888
   components: # derived via wrapping_add
-    training: 43        # global+1
+    training: 42        # global seed, matching the training-config contract
     hyperopt: 44        # global+2
-    cv: 46              # global+4 → CrossValidator::with_random_state(46) or 42 — document consistently
+    cv: 46              # global+4, used by CrossValidator
 ```
 
 ```rust
 // Link to automl training — canonical
-let config = TrainingConfig::default().with_random_state(42); // == SeedManager.global_seed
+let seeds = SeedManager::new(42);
+let config = TrainingConfig::default().with_random_state(seeds.training_seed());
 // For CV reproducibility:
-let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 }).with_random_state(42);
+let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
+    .with_random_state(seeds.cross_validation_seed());
 ```
 
 ## 8. Rayon Thread Count — Determinism Note
@@ -131,13 +123,13 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 }).with_random
 
 ## 9. Checklist
 
-- [ ] No `thread_rng()` — only `ChaCha8Rng::seed_from_u64`
-- [ ] `spawn_prob_4: f64 = 0.1` exact 90/10
-- [ ] `SeedManager.global_seed == TrainingConfig::with_random_state(42)` (42 canonical)
-- [ ] Per-game `game_seed = global.wrapping_add(game_id)` — not `wrapping_mul` prime trick
-- [ ] Component seeds via `wrapping_add` (§6)
-- [ ] Rayon thread count fixed/logged
-- [ ] CV folds deterministic via `with_random_state` + `GroupKFold` with `groups=game_id` (vs `TimeSeriesSplit` for temporal)
+- [x] Root game randomness uses seeded `ChaCha8Rng`; no `thread_rng()` call exists in root implementation.
+- [x] `spawn_prob_4` defaults to 0.1 and is validated.
+- [x] `SeedManager::training_seed() == TrainingConfig::with_random_state(global_seed)`.
+- [x] Per-game seed is `global.wrapping_add(game_id)`.
+- [x] Root component seeds use the documented `wrapping_add` offsets (§6).
+- [x] Collector thread count is fixed per run and recorded in its manifest.
+- [x] Grouped CV receives the derived seed; temporal splitting remains a separate strategy.
 
 ## 10. Cross-References
 
@@ -149,7 +141,8 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 }).with_random
 ## Implementation Record
 
 - Games use `ChaCha8Rng::seed_from_u64`; initial tiles, random actions, and spawned tiles share the per-game RNG. Four-tile spawn probability is configurable and defaults to 0.1.
-- Batch game seeds are `global_seed.wrapping_add(game_id)` and do not depend on Rayon scheduling. Collector manifests record seed range and thread count. AutoML/CV seeds are configured separately at their call sites, not automatically synchronized by a shared `SeedManager`.
+- `SeedManager` centralizes root CLI seed derivation; final-fit uses the global seed, while HyperOptX, data sampling, CV, and analysis use documented offsets. Game batches use the same manager and do not depend on Rayon scheduling. Collector manifests record seed range and thread count.
+- On 2026-09-24, `cargo check`, `cargo clippy -- -D warnings`, formatting validation, and a temporary synthetic-data `train --tune-trials 2` wiring run passed. The emitted run manifest recorded global seed 42 and derived training/HyperOptX/data/CV seeds 42/44/45/46. Synthetic metrics are not research evidence.
 - Validation: deterministic same-seed checks and a 10,000-spawn frequency check pass in the root test suite. Cross-platform/version identity is not claimed beyond the pinned dependency versions.
 
 ---
@@ -167,8 +160,8 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 }).with_random
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Per-game ChaCha8 and spawn tests pass; cross-component SeedManager linkage is not implemented. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** Root CLI seed derivation is centralized, but config-file loading is absent and AutoML model fitting may remain nondeterministic despite fixed seeds (see [framework architecture audit](../../01-Infrastructure/01-Project/04-framework-architecture.md)).
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **Resolve framework-level nondeterminism and add config-file seed loading before claiming end-to-end seed reproducibility.** Retain repeated-run artifacts and exact dependency versions.

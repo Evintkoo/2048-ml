@@ -35,6 +35,21 @@ pub fn grouped_cross_validate(
     seed: u64,
     n_splits: usize,
 ) -> Result<GroupedCvResult, TrainingError> {
+    grouped_cross_validate_configured(data, groups, model, seed, n_splits, 100, 6)
+}
+
+/// Runs grouped CV with the model parameters used by a training trial. This
+/// keeps each HyperOptX objective on the same game-group folds while applying
+/// only parameters that are supported by the selected framework model adapter.
+pub fn grouped_cross_validate_configured(
+    data: &DataFrame,
+    groups: &[i64],
+    model: ModelType,
+    seed: u64,
+    n_splits: usize,
+    n_estimators: usize,
+    max_depth: usize,
+) -> Result<GroupedCvResult, TrainingError> {
     if groups.len() != data.height() {
         return Err(TrainingError::GroupLength {
             groups: groups.len(),
@@ -68,6 +83,8 @@ pub fn grouped_cross_validate(
         let test = data.take(&test_indices)?;
         let config = TrainingConfig::new(TaskType::MultiClassification, "action")
             .with_model(model.clone())
+            .with_n_estimators(n_estimators)
+            .with_max_depth(max_depth)
             .with_random_state(seed)
             .with_cv(0);
         let mut engine = TrainEngine::new(config);

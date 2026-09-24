@@ -6,6 +6,7 @@ pub mod evaluation;
 mod framework_validation;
 pub mod game_engine;
 pub mod policy;
+pub mod seeds;
 pub mod state;
 pub mod training;
 
@@ -43,6 +44,9 @@ enum Commands {
         data: std::path::PathBuf,
         #[arg(long, default_value_t = 5)]
         cv_folds: usize,
+        /// Run HyperOptX trials over RandomForest n_estimators/max_depth before final fitting.
+        #[arg(long)]
+        tune_trials: Option<usize>,
         /// Fraction of games before the held-out test tail used for model development (train + validation).
         #[arg(long, default_value_t = 0.85)]
         development_fraction: f64,
@@ -257,8 +261,9 @@ fn main() {
                 eprintln!("--n-games must be greater than zero");
                 std::process::exit(2);
             }
+            let seeds = seeds::SeedManager::new(seed);
             for game_id in 0..n_games {
-                let game_seed = seed.wrapping_add(game_id as u64);
+                let game_seed = seeds.game_seed(game_id as u64);
                 let result = game_engine::simulate_random_game(game_seed, 0.1, 1000);
                 println!(
                     "{game_id},{game_seed},{},{},{}",
@@ -284,6 +289,7 @@ fn main() {
                 n_rollouts: rollouts,
                 ..Default::default()
             };
+            let seeds = seeds::SeedManager::new(seed);
             use rayon::prelude::*;
             let pool = rayon::ThreadPoolBuilder::new()
                 .num_threads(threads)
@@ -294,9 +300,9 @@ fn main() {
                 (0..n_games)
                     .into_par_iter()
                     .map(|game_id| {
-                        let game_seed = seed.wrapping_add(game_id as u64);
+                        let game_seed = seeds.game_seed(game_id as u64);
                         let mut game = game_engine::collect_random_game(game_id as u64, game_seed, 0.1, 1000);
-                        game_engine::relabel_game(&mut game, &labeler, seed)?;
+                        game_engine::relabel_game(&mut game, &labeler, seeds.data_sampling_seed())?;
                         Ok::<_, game_engine::GameError>(game)
                     })
                     .collect::<Result<Vec<_>, _>>()
@@ -323,7 +329,8 @@ fn main() {
                 "automl_commit": "64f5edad29c9e58ee7d33abf380418d5cfbbb561",
                 "source_revision": std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|result| result.status.success()).map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned()),
                 "global_seed": seed,
-                "game_seeds": {"derivation": "global_seed.wrapping_add(game_id)", "first": seed, "last": seed.wrapping_add((n_games - 1) as u64)},
+                "game_seeds": {"derivation": "SeedManager::game_seed(game_id) = global_seed.wrapping_add(game_id)", "first": seeds.game_seed(0), "last": seeds.game_seed((n_games - 1) as u64)},
+                "data_sampling_seed": seeds.data_sampling_seed(),
                 "games": n_games,
                 "rollouts_per_valid_action": rollouts,
                 "threads": threads,
@@ -377,7 +384,8 @@ fn main() {
                 println!("{split}: {rows} rows");
             }
         }
-        Some(Commands::Train { data, metadata, cv_folds, development_fraction, model, seed, output }) => {
+        Some(Commands::Train { data, metadata, cv_folds, tune_trials, development_fraction, model, seed, output }) => {
+            let seeds = seeds::SeedManager::new(seed);
             if data_pipeline::validate_csv(&data).is_err() {
                 eprintln!("training input must satisfy the canonical 28-column schema");
                 std::process::exit(2);
@@ -422,12 +430,79 @@ fn main() {
                 eprintln!("--metadata is required: game IDs are needed to keep the final chronological holdout out of training");
                 std::process::exit(2);
             };
-            let cv = training::grouped_cross_validate(&data_frame, &group_ids, model_type.clone(), seed.wrapping_add(4), cv_folds)
-                .expect("grouped cross-validation failed");
+            let mut selected_n_estimators = 100;
+            let mut selected_max_depth = 6;
+            if let Some(n_trials) = tune_trials {
+                if n_trials == 0 {
+                    eprintln!("--tune-trials must be greater than zero");
+                    std::process::exit(2);
+                }
+                if !matches!(&model_type, automl::training::ModelType::RandomForest | automl::training::ModelType::ExtraTrees) {
+                    eprintln!("--tune-trials currently supports random_forest and extra_trees only; their adapters both apply n_estimators and max_depth");
+                    std::process::exit(2);
+                }
+                let search_space = automl::optimizer::SearchSpace::new()
+                    .int("n_estimators", 20, 200)
+                    .int("max_depth", 2, 10);
+                let mut optimization_config = automl::optimizer::OptimizationConfig::default()
+                    .with_n_trials(n_trials)
+                    .with_direction(automl::optimizer::OptimizeDirection::Maximize)
+                    .with_metric("grouped_cv_accuracy");
+                optimization_config.random_state = Some(seeds.hyperopt_seed());
+                // HyperOptX's current optimize loop runs objective calls serially. Do not
+                // advertise its n_jobs option as effective parallel search here.
+                optimization_config.n_jobs = 1;
+                optimization_config.cv_folds = cv_folds;
+                let mut optimizer = automl::optimizer::HyperOptX::new(optimization_config, search_space);
+                let study = optimizer.optimize(|params| {
+                    let n_estimators = params.get("n_estimators")
+                        .and_then(automl::optimizer::ParameterValue::as_int)
+                        .ok_or_else(|| automl::AutoMLError::InvalidInput("missing n_estimators trial parameter".to_string()))? as usize;
+                    let max_depth = params.get("max_depth")
+                        .and_then(automl::optimizer::ParameterValue::as_int)
+                        .ok_or_else(|| automl::AutoMLError::InvalidInput("missing max_depth trial parameter".to_string()))? as usize;
+                    let cv = training::grouped_cross_validate_configured(
+                        &data_frame,
+                        &group_ids,
+                        model_type.clone(),
+                        seeds.cross_validation_seed(),
+                        cv_folds,
+                        n_estimators,
+                        max_depth,
+                    ).map_err(|error| automl::AutoMLError::ValidationError(error.to_string()))?;
+                    Ok(cv.mean_accuracy)
+                }).expect("HyperOptX optimization failed").clone();
+                let best = study.best_params().expect("HyperOptX produced no successful trial");
+                selected_n_estimators = best.get("n_estimators")
+                    .and_then(automl::optimizer::ParameterValue::as_int)
+                    .expect("best trial is missing n_estimators") as usize;
+                selected_max_depth = best.get("max_depth")
+                    .and_then(automl::optimizer::ParameterValue::as_int)
+                    .expect("best trial is missing max_depth") as usize;
+                if let Some(parent) = output.parent() {
+                    std::fs::create_dir_all(parent).expect("failed to create study output directory");
+                }
+                let study_path = output.with_extension("study.json");
+                optimizer.save_study(study_path.to_str().expect("study path is not valid UTF-8"))
+                    .expect("failed to save HyperOptX study");
+                println!("hyperopt_best_grouped_cv_accuracy={:.4} trials={} n_estimators={} max_depth={} study={}",
+                    study.best_value().unwrap_or_default(), study.trials.len(), selected_n_estimators, selected_max_depth, study_path.display());
+            }
+            let cv = training::grouped_cross_validate_configured(
+                &data_frame,
+                &group_ids,
+                model_type.clone(),
+                seeds.cross_validation_seed(),
+                cv_folds,
+                selected_n_estimators,
+                selected_max_depth,
+            ).expect("grouped cross-validation failed");
             println!("grouped_cv_accuracy={:.4} ± {:.4} folds={}", cv.mean_accuracy, cv.std_accuracy, cv.fold_accuracy.len());
             let config = automl::training::TrainingConfig::new(automl::training::TaskType::MultiClassification, "action")
                 .with_model(model_type)
-                .with_random_state(seed);
+                .with_n_estimators(selected_n_estimators)
+                .with_max_depth(selected_max_depth)
+                .with_random_state(seeds.training_seed());
             let mut engine = automl::training::TrainEngine::new(config);
             engine.fit(&data_frame).expect("AutoML training failed");
             let probability_check = engine.predict_proba(&data_frame.slice(0, 1))
@@ -441,8 +516,36 @@ fn main() {
             }
             engine.save(output.to_str().expect("model output path is not valid UTF-8"))
                 .expect("failed to save model artifact");
+            let study_path = tune_trials.map(|_| output.with_extension("study.json"));
+            write_json_manifest(&output, &serde_json::json!({
+                "created_utc": chrono::Utc::now().to_rfc3339(),
+                "project_version": env!("CARGO_PKG_VERSION"),
+                "automl_commit": "64f5edad29c9e58ee7d33abf380418d5cfbbb561",
+                "source_revision": std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|result| result.status.success()).map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned()),
+                "model_artifact": output,
+                "model_artifact_sha256": sha256_file(&output).ok(),
+                "training_data": data,
+                "training_data_sha256": sha256_file(&data).ok(),
+                "metadata": metadata,
+                "metadata_sha256": metadata.as_ref().and_then(|path| sha256_file(path).ok()),
+                "model": model,
+                "global_seed": seeds.global_seed(),
+                "component_seeds": {
+                    "game_base": seeds.game_seed(0),
+                    "training": seeds.training_seed(),
+                    "hyperopt": seeds.hyperopt_seed(),
+                    "data_sampling": seeds.data_sampling_seed(),
+                    "cross_validation": seeds.cross_validation_seed()
+                },
+                "cv_folds": cv_folds,
+                "development_fraction": development_fraction,
+                "tune_trials": tune_trials,
+                "selected_n_estimators": selected_n_estimators,
+                "selected_max_depth": selected_max_depth,
+                "study_artifact": study_path
+            })).expect("failed to write training manifest");
             if let Some(metrics) = engine.metrics() {
-                println!("saved {}; samples={} features={} validation_accuracy={:?} training_secs={:.3}", output.display(), metrics.n_samples, metrics.n_features, metrics.accuracy, metrics.training_time_secs);
+                println!("saved {}; samples={} features={} validation_accuracy={:?} training_secs={:.3} manifest={}", output.display(), metrics.n_samples, metrics.n_features, metrics.accuracy, metrics.training_time_secs, output.with_extension("manifest.json").display());
             }
         }
         Some(Commands::Benchmark { command: BenchmarkCommand::Run { model, n_games, seed, output } }) => {
@@ -450,6 +553,7 @@ fn main() {
                 eprintln!("--n-games must be greater than zero");
                 std::process::exit(2);
             }
+            let seeds = seeds::SeedManager::new(seed);
             let model_path = model.to_str().expect("model path is not valid UTF-8");
             let policy = policy::ModelPolicy::load(model_path).expect("failed to load four-class model");
             if let Some(parent) = output.parent() {
@@ -461,7 +565,7 @@ fn main() {
             let start = std::time::Instant::now();
             let mut scores = Vec::with_capacity(n_games);
             for game_id in 0..n_games {
-                let game_seed = seed.wrapping_add(game_id as u64);
+                let game_seed = seeds.game_seed(game_id as u64);
                 let result = policy::simulate_model_game(game_seed, &policy, 1000)
                     .unwrap_or_else(|error| panic!("game {game_id} failed: {error}"));
                 scores.push(result.final_score);
@@ -469,7 +573,7 @@ fn main() {
                     .expect("failed to write benchmark result row");
             }
             file.flush().expect("failed to flush benchmark results");
-            let summary = evaluation::summarize_scores(&scores, seed.wrapping_add(1), 2_000)
+            let summary = evaluation::summarize_scores(&scores, seeds.score_summary_seed(), 2_000)
                 .expect("benchmark produced at least one game score");
             let elapsed = start.elapsed().as_secs_f64();
             write_json_manifest(&output, &serde_json::json!({
@@ -484,7 +588,8 @@ fn main() {
                 "global_seed": seed,
                 "seed_derivation": "global_seed.wrapping_add(game_id)",
                 "first_game_seed": seed,
-                "last_game_seed": seed.wrapping_add((n_games - 1) as u64),
+                "last_game_seed": seeds.game_seed((n_games - 1) as u64),
+                "score_summary_seed": seeds.score_summary_seed(),
                 "spawn_probability_for_four": 0.1,
                 "max_moves": 1000,
                 "elapsed_seconds": elapsed,
@@ -498,6 +603,7 @@ fn main() {
                 eprintln!("--n-games must be greater than zero");
                 std::process::exit(2);
             }
+            let seeds = seeds::SeedManager::new(seed);
             if agent != "random" && agent != "heuristic" {
                 eprintln!("baseline --agent must be random or heuristic");
                 std::process::exit(2);
@@ -510,8 +616,9 @@ fn main() {
             writeln!(file, "game_id,seed,score,max_tile,move_count,game_over,agent").expect("failed to write results header");
             let start = std::time::Instant::now();
             let mut scores = Vec::with_capacity(n_games);
+            let mut per_game_action_counts = Vec::with_capacity(n_games);
             for game_id in 0..n_games {
-                let game_seed = seed.wrapping_add(game_id as u64);
+                let game_seed = seeds.game_seed(game_id as u64);
                 let result = match agent.as_str() {
                     "random" => game_engine::simulate_random_game(game_seed, 0.1, 1000),
                     "heuristic" => policy::simulate_heuristic_game(game_seed, 1000)
@@ -519,12 +626,34 @@ fn main() {
                     _ => unreachable!(),
                 };
                 scores.push(result.final_score);
+                let mut game_action_counts = [0_u64; 4];
+                for movement in &result.move_history {
+                    game_action_counts[movement.action as usize] += 1;
+                }
+                per_game_action_counts.push(game_action_counts);
                 writeln!(file, "{game_id},{game_seed},{},{},{},{},{}", result.final_score, result.max_tile, result.move_count, result.board.game_over, agent)
                     .expect("failed to write baseline result row");
             }
             file.flush().expect("failed to flush baseline results");
-            let summary = evaluation::summarize_scores(&scores, seed.wrapping_add(1), 2_000).unwrap();
+            let summary = evaluation::summarize_scores(&scores, seeds.score_summary_seed(), 2_000).unwrap();
             let elapsed = start.elapsed().as_secs_f64();
+            let action_frequency_summary = evaluation::summarize_action_frequencies(
+                &per_game_action_counts,
+                seeds.action_frequency_seed(),
+                2_000,
+            ).expect("baseline games must contain recorded moves");
+            let action_total: u64 = per_game_action_counts.iter().flatten().sum();
+            let action_frequency: Vec<_> = action_frequency_summary.iter().enumerate().map(|(action, summary)| {
+                let direction = ["up", "down", "left", "right"][action];
+                serde_json::json!({
+                    "action": action,
+                    "direction": direction,
+                    "count": summary.count,
+                    "total_moves": action_total,
+                    "proportion": summary.proportion,
+                    "game_cluster_bootstrap_95_ci": summary.ci_95
+                })
+            }).collect();
             write_json_manifest(&output, &serde_json::json!({
                 "created_utc": chrono::Utc::now().to_rfc3339(),
                 "project_version": env!("CARGO_PKG_VERSION"),
@@ -536,11 +665,17 @@ fn main() {
                 "global_seed": seed,
                 "seed_derivation": "global_seed.wrapping_add(game_id)",
                 "first_game_seed": seed,
-                "last_game_seed": seed.wrapping_add((n_games - 1) as u64),
+                "last_game_seed": seeds.game_seed((n_games - 1) as u64),
                 "spawn_probability_for_four": 0.1,
                 "max_moves": 1000,
                 "elapsed_seconds": elapsed,
                 "results_csv": output,
+                "action_frequency_unit": "selected moves across all games",
+                "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
+                "score_summary_seed": seeds.score_summary_seed(),
+                "action_frequency_bootstrap_seed": seeds.action_frequency_seed(),
+                "action_total": action_total,
+                "action_frequency": action_frequency,
                 "summary": {"mean": summary.mean, "sample_std_dev": summary.sample_std_dev, "median": summary.median, "p90": summary.percentile_90, "p99": summary.percentile_99, "min": summary.min, "max": summary.max, "games_above_2048": summary.games_above_2048, "games_above_4096": summary.games_above_4096, "games_above_8192": summary.games_above_8192, "mean_ci_95": summary.mean_ci_95}
             })).expect("failed to write baseline manifest");
             println!("agent={agent} games={} mean_score={:.2} sd={:.2} median={:.0} p90={:.0} p99={:.0} min={} max={} >=2048:{} >=4096:{} >=8192:{} mean_ci95=[{:.2},{:.2}] elapsed_secs={elapsed:.2} results={}", summary.n, summary.mean, summary.sample_std_dev, summary.median, summary.percentile_90, summary.percentile_99, summary.min, summary.max, summary.games_above_2048, summary.games_above_4096, summary.games_above_8192, summary.mean_ci_95.0, summary.mean_ci_95.1, output.display());
@@ -584,7 +719,7 @@ fn main() {
                         (evaluation::mann_whitney_u_pvalue(&first.scores, &second.scores), "mann_whitney_u_independent".to_string())
                     };
                     comparisons.push((first.name.clone(), second.name.clone(), p_value.unwrap_or(1.0), test,
-                        evaluation::bootstrap_mean_difference_ci(&first_scores, &second_scores, seed.wrapping_add(comparisons.len() as u64), 5_000),
+                        evaluation::bootstrap_mean_difference_ci(&first_scores, &second_scores, seeds::SeedManager::new(seed).comparison_seed(comparisons.len()), 5_000),
                         evaluation::cohens_d(&first_scores, &second_scores)));
                 }
             }
@@ -616,7 +751,7 @@ fn main() {
             let mut file = std::fs::File::create(&output).expect("failed to create report CSV");
             writeln!(file, "name,n,mean,sample_std_dev,median,p90,p99,min,max,games_above_2048,games_above_4096,games_above_8192,mean_ci95_low,mean_ci95_high,input").unwrap();
             for (index, data) in datasets.iter().enumerate() {
-                let summary = evaluation::summarize_scores(&data.scores, 71_u64.wrapping_add(index as u64), 5_000).unwrap();
+                let summary = evaluation::summarize_scores(&data.scores, seeds::SeedManager::new(71).game_seed(index as u64), 5_000).unwrap();
                 writeln!(file, "{},{},{:.6},{:.6},{:.6},{:.6},{:.6},{},{},{},{},{},{:.6},{:.6},{}", data.name, summary.n, summary.mean, summary.sample_std_dev, summary.median, summary.percentile_90, summary.percentile_99, summary.min, summary.max, summary.games_above_2048, summary.games_above_4096, summary.games_above_8192, summary.mean_ci_95.0, summary.mean_ci_95.1, data.input.display()).unwrap();
             }
             file.flush().unwrap();

@@ -1,6 +1,6 @@
 # Plan 01 — Simulation Engine: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Reusable policy/random simulation and batch seeds implemented; plan-scale rollout-labeled baseline not run (current 20k projection ~103 hours).
+> **Status: PARTIAL.** Reusable simulation and 10k random/heuristic score baselines are complete; the rollout-labeled training corpus remains uncollected at plan scale.
 
 **Goal:** State the current implementation and evidence boundary for simulation engine.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Reusable policy/random simulation and batch seeds implemented; plan-scale rollout-labeled baseline not run (current 20k projection ~103 hours).
+**This plan treats the simulator and baseline protocol as implemented, with large rollout-labeled data collection pending.** The seeded 10,000-game random and heuristic score/frequency baselines are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Those runs evaluate baseline agents; they do not fulfill the separate rollout-labeled supervised corpus requirement. A prior small collection throughput estimate still projects multi-day collection for 20,000 labeled games and must be piloted before scheduling that job.
 
 > **MVP: `Random` / `Model` agents only.** Generates `TrainingSample { [f64;27], action:u8, score:u64 metadata }` for `TaskType::MultiClassification`. Headless only, no UI.
 
@@ -168,7 +168,7 @@ pub struct TrainingSample {
 
 - Implemented reusable seeded `GameSimulator` for random and caller-provided policies, with configuration validation, checked rejection of invalid policy actions, per-game histories, scores, and terminal results.
 - Added `simulate_random_batch` with deterministic global-seed plus game-ID derivation. Existing data collection additionally records feature/action rows and rollout labels.
-- Validation: root unit suite passed. The full 10k-game rollout-labeled baseline remains unrun; current measured collection throughput projects a substantial multi-hour run and is recorded in the project ledger.
+- Validation: root unit suite passed. The 10k random/heuristic baseline runs completed with per-game outputs and manifests, and their score summaries and action-frequency analysis are retained. The full 10k-game rollout-labeled corpus remains unrun; current measured collection throughput projects a substantial multi-hour run and is recorded in the project ledger.
 
 ---
 
@@ -185,8 +185,8 @@ pub struct TrainingSample {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Reusable policy/random simulation and batch seeds implemented; plan-scale rollout-labeled baseline not run (current 20k projection ~103 hours). Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** Game-score baselines now have 10,000 games per random/heuristic agent. Rollout-labeled data collection at the plan's sample size is still pending because the prior smoke throughput estimate projects about 103 hours for 20,000 games; do not schedule that corpus without an explicit compute budget and pilot.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **Pilot and collect the rollout-labeled corpus after a compute budget is approved internally.** The baseline game runs do not substitute for this data-generation deliverable.

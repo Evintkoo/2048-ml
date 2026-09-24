@@ -11,6 +11,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | [03-tooling](03-tooling.md) | Tooling Configuration | DONE (2026-09-24) |
 | [04-framework-contribution](04-framework-contribution.md) | Rust-Native AutoML Framework Contribution | PARTIAL |
 
+Supporting evidence: [04-framework-architecture](04-framework-architecture.md) records the source-backed architecture and API contract audit for ticket 04. It is not a separate ticket.
+
 ## Reading paths
 
 1. Read the plan ticket in sequence by its numeric filename.

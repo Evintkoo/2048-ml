@@ -1,6 +1,6 @@
 # Plan 03 — Valid Moves: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** `would_change`, valid list/mask and policy validation are implemented; empirical 10k action-frequency study remains unmeasured.
+> **Status: PARTIAL (2026-09-24).** Move validity is implemented; seeded 10k random/heuristic frequencies are measured, with model-policy frequency pending a trained model.
 
 **Goal:** State the current implementation and evidence boundary for valid moves.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: `would_change`, valid list/mask and policy validation are implemented; empirical 10k action-frequency study remains unmeasured.
+**This plan treats move validity as implemented and its frequency analysis as partial.** Seeded 10k-game random and heuristic baselines were measured; results and raw artifacts are recorded in [the action-frequency report](../../../reports/action-frequency/README.md). Their intervals resample whole games to account for within-game move dependence. A trained model was not available, so model-policy frequencies remain pending.
 
 > **Canonical validity:** `board.would_change(dir)` — single source. Do not duplicate `get_valid_moves` logic elsewhere.
 
@@ -129,7 +129,7 @@ pub enum HeuristicStrategy { Monotonicity, Corner, Empty }
 
 - `RawBoardState::would_change`, `get_valid_moves`, and `valid_mask` provide the canonical validity APIs; policy simulation rejects a selected move that would not change the board.
 - Added coverage comparing validity to actual execution across a deterministic family of boards and checking terminal boards have no valid direction.
-- Validation: root unit suite passed. The proposed ≥10k-game move-frequency analysis and confidence intervals remain unmeasured.
+- Validation: root unit suite passed. The random and heuristic action-frequency protocol is now measured with 10,000 games per agent and game-cluster bootstrap 95% intervals. The model-policy frequency analysis remains unmeasured until a trained policy artifact exists.
 
 ---
 
@@ -146,8 +146,8 @@ pub enum HeuristicStrategy { Monotonicity, Corner, Empty }
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** `would_change`, valid list/mask and policy validation are implemented; empirical 10k action-frequency study remains unmeasured. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** Random and heuristic action distributions are measured; model-policy frequency is pending a trained policy artifact. Do not generalize the baseline distributions to trained policies.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **Repeat the action-frequency analysis for the held-out trained model after its training/evaluation prerequisite is complete.** Keep the same seed protocol and resample complete games for uncertainty.

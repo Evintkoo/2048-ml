@@ -452,7 +452,7 @@ pub fn simulate_random_batch(
     (0..n_games)
         .map(|offset| {
             let game_id = first_game_id.wrapping_add(offset as u64);
-            let seed = global_seed.wrapping_add(game_id);
+            let seed = crate::seeds::SeedManager::new(global_seed).game_seed(game_id);
             let mut simulator = GameSimulator::new(SimulatorConfig {
                 seed,
                 spawn_prob_4,

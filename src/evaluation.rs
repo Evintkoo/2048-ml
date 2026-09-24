@@ -19,6 +19,66 @@ pub struct ScoreSummary {
     pub mean_ci_95: (f64, f64),
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub struct ActionFrequencySummary {
+    pub count: u64,
+    pub proportion: f64,
+    pub ci_95: (f64, f64),
+}
+
+/// Summarize pooled action proportions and uncertainty by resampling complete
+/// games. This preserves within-game dependence between consecutive moves.
+pub fn summarize_action_frequencies(
+    per_game_counts: &[[u64; 4]],
+    seed: u64,
+    bootstrap_replicates: usize,
+) -> Option<[ActionFrequencySummary; 4]> {
+    if per_game_counts.is_empty() || bootstrap_replicates == 0 {
+        return None;
+    }
+    let counts = std::array::from_fn::<_, 4, _>(|action| {
+        per_game_counts.iter().map(|game| game[action]).sum::<u64>()
+    });
+    let total_moves = counts.iter().sum::<u64>();
+    if total_moves == 0 {
+        return None;
+    }
+
+    let mut rng = ChaCha8Rng::seed_from_u64(seed);
+    let mut bootstrap_proportions: [Vec<f64>; 4] =
+        std::array::from_fn(|_| Vec::with_capacity(bootstrap_replicates));
+    for _ in 0..bootstrap_replicates {
+        let mut sampled_counts = [0_u64; 4];
+        for _ in 0..per_game_counts.len() {
+            let game = per_game_counts[rng.gen_range(0..per_game_counts.len())];
+            for action in 0..4 {
+                sampled_counts[action] += game[action];
+            }
+        }
+        let sampled_total = sampled_counts.iter().sum::<u64>();
+        if sampled_total > 0 {
+            for action in 0..4 {
+                bootstrap_proportions[action]
+                    .push(sampled_counts[action] as f64 / sampled_total as f64);
+            }
+        }
+    }
+
+    Some(std::array::from_fn(|action| {
+        let proportion = counts[action] as f64 / total_moves as f64;
+        let mut values = std::mem::take(&mut bootstrap_proportions[action]);
+        values.sort_by(f64::total_cmp);
+        ActionFrequencySummary {
+            count: counts[action],
+            proportion,
+            ci_95: (
+                quantile_sorted(&values, 0.025),
+                quantile_sorted(&values, 0.975),
+            ),
+        }
+    }))
+}
+
 pub fn summarize_scores(
     scores: &[u64],
     seed: u64,

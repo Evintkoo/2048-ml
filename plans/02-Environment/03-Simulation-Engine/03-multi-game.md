@@ -1,6 +1,6 @@
 # Plan 03 — Multi-Game Simulation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Fixed-thread collection, metadata, and manifests exist; checkpoint/resume, progress reporting, 10k baseline, and frequency CIs remain incomplete.
+> **Status: PARTIAL (2026-09-25).** Fixed-thread collection, metadata, and manifests exist. The 10k random and heuristic baselines and game-cluster frequency intervals are recorded; checkpoint/resume and live progress reporting remain incomplete.
 
 **Goal:** State the current implementation and evidence boundary for multi-game simulation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Fixed-thread collection, metadata, and manifests exist; checkpoint/resume, progress reporting, 10k baseline, and frequency CIs remain incomplete.
+**This plan treats its subject as partial or pending work, not as a research finding.** The 10k random and heuristic baselines and whole-game bootstrap frequency intervals are complete for the measured configuration. The rollout-labeled corpus still lacks checkpoint/resume and live progress reporting, so collection is not complete.
 
 > **Sample size canonical: 10k games minimum** for benchmarking (per `01-Infrastructure/01-Project/01-project-overview.md` §8 Tiers + `01-simulation-engine.md` §7 `SimulationConfig.n_games:10000`). Supervised only: `GameDataset { states:[f64;27], actions:u8, scores:u64 }` — **no `rewards`**.
 
@@ -142,8 +142,9 @@ fn checkpoint(results: &[GameResult], game_count: usize) {
 ## Implementation Record
 
 - Implemented fixed-thread Rayon collection, per-game `global_seed.wrapping_add(game_id)`, game-group metadata, rollout relabeling, CSV schema validation, and a JSON manifest with seeds, thread count, timing, row counts, and file hashes.
-- A reusable random-game batch API now supports deterministic game-ID ranges. The collector still materializes a whole requested batch before writing; it does not yet checkpoint/resume every 1,000 games or report live progress. The plan's 10k-game minimum and action-frequency confidence intervals are not complete until a full run and analysis are recorded.
-- Validation: deterministic batch coverage and root suite pass. Prior throughput measurement in the ledger projects approximately 103 hours for the current 20k rollout-labeled collection configuration; do not treat smoke runs as the required baseline.
+- A reusable random-game batch API supports deterministic game-ID ranges. The rollout collector still materializes a whole requested batch before writing; it does not checkpoint/resume every 1,000 games or report live progress.
+- Baseline evidence: [`reports/action-frequency/README.md`](../../../reports/action-frequency/README.md) records 10,000 random and 10,000 heuristic games, raw score/frequency CSVs, manifests, and 2,000-replicate whole-game bootstrap 95% intervals. These runs establish case-study baselines only; they do not establish framework superiority.
+- Validation: deterministic batch coverage and root suite pass. Prior throughput measurement projects approximately 103 hours for the current 20k rollout-labeled collection configuration. Checkpoint/resume and progress reporting remain pending before the larger rollout collection; this compute estimate is a prerequisite to budget, not a reason to omit those implementation requirements.
 
 ---
 
@@ -160,7 +161,7 @@ fn checkpoint(results: &[GameResult], game_count: usize) {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Fixed-thread collection, metadata, and manifests exist; checkpoint/resume, progress reporting, 10k baseline, and frequency CIs remain incomplete. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Checkpoint/resume and progress requirements are still open.** Specify compatible checkpoint state and interruption behavior before the 20k rollout-labeled collection. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 

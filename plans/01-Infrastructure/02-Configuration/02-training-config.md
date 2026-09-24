@@ -1,6 +1,6 @@
 # Plan 02 — Training Pipeline Configuration: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Corrected preprocessing API and removed invalid selector builder; root does not yet use fitted preprocessing or consume YAML configs.
+> **Status: PARTIAL.** Preprocessing guidance matches the real API; root records training inputs/seeds in model manifests, while YAML config loading remains unimplemented.
 
 **Goal:** State the current implementation and evidence boundary for training pipeline configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Corrected preprocessing API and removed invalid selector builder; root does not yet use fitted preprocessing or consume YAML configs.
+**This plan treats its subject as partial or pending work, not as a research finding.** Preprocessing examples now use the pinned API. The root encoder produces deterministic, documented numeric features, so it does not fit imputation/scaling state; adding fitted preprocessing would change the feature protocol and must be separately justified. The illustrative YAML remains unconsumed by the CLI. The root exposes optional grouped-CV HyperOptX tuning for RandomForest/ExtraTrees and writes a sibling training manifest with data digests and derived seeds. CLI arguments remain the active configuration source.
 
 ## 1. Pipeline Stages
 
@@ -31,11 +31,11 @@ let preprocess_config = PreprocessingConfig::default()
     .with_encoder(EncoderType::OneHot)  // real type: EncoderType, not EncodingType
     .with_numeric_impute(ImputeStrategy::Mean); // real type: ImputeStrategy, not ImputationStrategy
 
-let mut preprocessor = DataPreprocessor::new(preprocess_config);
+let mut preprocessor = DataPreprocessor::with_config(preprocess_config);
 let transformed = preprocessor.fit_transform(df)?; // returns a DataFrame
 ```
 
-The root pipeline currently does not call `DataPreprocessor`; its feature values are generated deterministically. If preprocessing is enabled later, fit it on each training fold only, exclude the target from transformation, and apply the fitted transform to validation/test data.
+The root pipeline currently does not call `DataPreprocessor`; its feature values are generated deterministically by the 2048 state encoder. This avoids learning scaling or imputation statistics from data. If a separately scoped experiment enables preprocessing later, fit it on each training fold only, exclude the target from transformation, and apply the fitted transform to validation/test data.
 
 ### 2.2 Feature Engineering — 27-dim canonical (cross-reference `03-State/01-Board/02-feature-extraction.md` + `06-Data/02-Format/01-data-schema.md`)
 
@@ -84,7 +84,7 @@ experiment:
   
 training:
   task_type: multiclassification
-  model_type: RandomForest  # current verified 4-class candidate; root CLI does not parse YAML
+  model_type: RandomForest  # current verified four-class output shape; root CLI does not parse YAML
   n_estimators: 200
   max_depth: 6
   learning_rate: 0.1
@@ -100,7 +100,7 @@ validation:
   early_stopping: true
   early_stopping_rounds: 50
   
-optimizer:
+  optimizer:
   enabled: false # root CLI does not apply HyperOptX trials yet
   algorithm: tpe
   n_trials: 100
@@ -112,8 +112,9 @@ seed: 42
 ## 6. Reproducibility Configuration
 
 ```rust
-let mut config = TrainingConfig::default();
-config.random_seed = Some(42);  // struct field (builder is with_random_state(42))
+let seeds = game2048_ml::seeds::SeedManager::new(42);
+let mut config = TrainingConfig::default()
+    .with_random_state(seeds.training_seed()); // final-fit seed equals the global seed
 config.n_jobs = Some(1);        // struct field (no builder for Option variant)
 ```
 
