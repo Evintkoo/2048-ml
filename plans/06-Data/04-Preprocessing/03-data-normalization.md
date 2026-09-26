@@ -1,6 +1,6 @@
 # Plan 03 — Data Normalization: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Fixed divisors are applied during feature encoding; fitted scaler integration is absent; values above one are allowed.
+> **Status: COMPLETE (2026-09-27).** The canonical fixed divisors are applied during feature encoding and validated; fitted model-specific scaling is outside the current training protocol.
 
 **Goal:** State the current implementation and evidence boundary for data normalization.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats deterministic feature scaling as implemented and fitted preprocessing as absent.** `BoardStateMl::from_board` applies fixed divisors before storage. The root trainer consumes these values directly and does not fit or persist a `DataPreprocessor`. Values above one are valid; score is normalized at index 16.
+**The canonical normalization contract is complete.** `BoardStateMl::from_board` applies fixed divisors before storage. The root trainer consumes these values directly and does not fit or persist a `DataPreprocessor`; adding one would be a separately scoped model-specific protocol. Values above one are valid; score is normalized at index 16.
 
 ## 1. Purpose
 
@@ -197,9 +197,10 @@ flowchart LR
 
 ## 10. Next Steps
 
-1. Configure normalizer for each feature type
-2. Execute normalization pipeline
-3. Verify normalized data quality
+The canonical deterministic transforms and validation are implemented. Any
+future fitted scaler requires a separately declared model protocol, fold-local
+fitting, and persistence of the fitted state; it is not a pending requirement
+for the current fixed feature contract.
 
 ## Implementation Record
 

@@ -25,18 +25,18 @@ Same loop as `02-self-play-data.md §3` — record `(state, random_action)` then
 
 ## 4. Volume — Canonical (Configurable)
 
-The CLI game count is configurable; no 5,000-game target is approved or canonical. The proposed 20k rollout-labeled corpus is unrun; the retained two-game pilot projects about 228 hours by linear extrapolation, with high uncertainty. A larger pilot and declared compute budget are prerequisites. Any split must keep games intact and follow the selected protocol.
+The CLI game count is configurable; no 5,000-game target is approved or canonical. The proposed 20k rollout-labeled corpus is unrun; the retained 20-game pilot (2,447 rows, 857,100 rollout evaluations, 857.36 seconds) projects about 238.16 hours by linear extrapolation, with high uncertainty. This is a planning estimate, not a runtime guarantee. A declared compute budget is required. Any split must keep games intact and follow the selected protocol.
 
 ## 5. Storage & Validation
 
-CSV `06-Data/03-Storage/random_play.csv` — 18 cols `grid_0..score_normalized,action`; no `done`/`reward`/`next_state`; `score: u64` is optional metadata. Validate `NF==18`, `action 0..3`.
+CSV `06-Data/03-Storage/random_play.csv` — 18 cols `grid_0..score_normalized,action`; no `done`/`reward`/`next_state`; raw `score: u64` is stored in the aligned metadata sidecar. Validate `NF==18`, `action 0..3`.
 
 ## 6. Cross-References
 
 ## Implementation Record
 
 - The CLI implements uniform valid-action random play and rollout relabeling, with deterministic per-game seeds, checkpoint/resume, group metadata, and manifest output. Game count and output path are configurable.
-- No canonical 5k-game corpus has been approved or created; the two-game pilot projects about 228 hours for 20k games by linear extrapolation, with high uncertainty; a larger pilot and declared budget are needed.
+- No canonical 5k-game corpus has been approved or created. The retained 20-game pilot projects about 238.16 hours for 20k games by linear extrapolation, with high uncertainty; a declared budget is needed. See `reports/collection_pilots/2026-09-27-20-game/README.md`.
 
 - Volumes: `01-data-collection-strategy.md §4`
 - Labeling: `01-data-collection-strategy.md §8.3`

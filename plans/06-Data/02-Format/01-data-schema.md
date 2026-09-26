@@ -198,9 +198,11 @@ Game 2:
 
 ## 9. Next Steps
 
-1. Implement schema validation
-2. Apply schema to all data pipelines
-3. Generate training CSV from game replay data
+The canonical CSV schema and its validator are implemented and used by the root
+collector/trainer. Parquet is not a required format in the current pipeline.
+Only add a board-bearing audit format if action-legality revalidation becomes a
+specific requirement; the compact training schema intentionally omits boards
+and retains row-aligned provenance separately.
 
 ## Implementation Record
 

@@ -219,7 +219,7 @@ Files in `06-Data/01-Collection/`: `01-data-collection-strategy.md` (this hub), 
 
 ## Open questions
 
-- The 20k rollout-labeled corpus is unrun. The retained two-game pilot projects roughly 228 hours by linear extrapolation, with high uncertainty; a larger pilot and declared budget are required. Checkpoint/resume support exists. Resolve whether labeling must follow the train/test split before describing a canonical run.
+- The proposed 20,000-game rollout-labeled corpus is unrun. The retained 20-game pilot (2,447 rows, 857,100 rollout evaluations, 857.36 seconds) projects about 238.16 hours by linear extrapolation; this estimate is highly uncertain, and a declared compute budget is required. Checkpoint/resume support exists. Resolve whether labeling must follow the train/test split before describing a canonical run. See `reports/collection_pilots/2026-09-27-20-game/README.md`.
 
 ## Later
 

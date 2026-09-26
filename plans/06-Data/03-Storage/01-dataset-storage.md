@@ -73,7 +73,7 @@ flowchart TD
 flowchart TB
     Locations[Storage Locations — MVP]
     Locations --> Local[Local Storage<br/>data/]
-    Locations --> Parquet[Parquet Files]
+    Locations --> Parquet[Future Parquet<br/>not implemented]
     Locations --> CSV[CSV Files]
     Local --> Format[Formatted Data]
     Parquet --> Format
@@ -112,7 +112,7 @@ flowchart TD
     Format --> JSON[JSON - Manifest/checkpoint]
     Format --> Metadata[Metadata JSON]
     
-    Parquet --> |Large datasets| Efficient[Efficient Storage]
+    Parquet -.-> |If future scale needs justify it| Efficient[Separate format work]
     CSV --> |Small datasets| Accessible[Human Readable]
     Metadata --> |Tracking| Track[Version Tracking]
     
