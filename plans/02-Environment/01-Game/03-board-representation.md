@@ -1,6 +1,6 @@
 # Plan 03 — Board Representation: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-26).** `[u32;16]` representation and directional transforms audited; merge-position coverage added.
+> **Status: DONE (2026-09-27).** `[u32;16]` representation and directional transforms audited; merge-position coverage added.
 
 **Goal:** State the current implementation and evidence boundary for board representation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
