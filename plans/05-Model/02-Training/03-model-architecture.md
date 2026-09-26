@@ -13,7 +13,7 @@
 
 ## 1. Purpose
 
-Define the architecture of the machine learning model used to predict optimal moves in the 2048 game.
+Define the AutoML classifier architectures available for predicting the rollout-derived action labels in the 2048 case study. These labels are not established as globally optimal moves.
 
 ## 2. Architecture Overview
 

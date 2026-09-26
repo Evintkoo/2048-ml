@@ -1,6 +1,6 @@
 # Plan 03 — Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Score and generic classifier-summary helpers exist; 2048 held-out classification diagnostics and trained-policy results remain pending.
+> **Status: PARTIAL (2026-09-27).** Score and generic classifier-summary helpers exist, and a 391-row pilot holdout diagnostic is retained; adequate-sample diagnostics and trained-policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Score summaries and generic classification helpers are implemented; 2048 training integration and outcomes remain pending.** `src/evaluation.rs` summarizes score distributions, bootstrap intervals, action frequencies, and paired/unpaired score comparisons. It also computes accuracy, macro precision/recall/F1, and a confusion matrix. The root `train` command does not yet write these classification diagnostics for a 2048 model; the standard-dataset runner uses them on its separate framework-validation track.
+**Score summaries and generic classification helpers are implemented; the 2048 integration is a bounded pilot diagnostic.** `src/evaluation.rs` summarizes score distributions, bootstrap intervals, action frequencies, and paired/unpaired score comparisons. It also computes accuracy, macro precision/recall/F1, and a confusion matrix. The root `train` command now writes these diagnostics and row-level predictions for 391 chronological pilot holdout rows. This diagnostic is not an adequate-sample or confirmatory policy-quality estimate; valid-action analysis and trained-policy game outcomes remain pending. The standard-dataset runner uses the same helpers on its separate framework-validation track.
 
 ## 1. Purpose
 
@@ -140,8 +140,8 @@ No acceptance thresholds or composite ranking rule are defined by the canonical 
 | Metric | Target | Category | Gate? |
 |--------|--------|----------|-------|
 | **Mean Game Score** | Report distribution and uncertainty | 2048 case-study outcome | Protocol-defined |
-| Action-Label Accuracy | Generic helper implemented; not wired to 2048 training CLI | Classification diagnostic | Pending 2048 integration/results |
-| F1 Macro | Generic helper implemented; not wired to 2048 training CLI | Classification diagnostic | Pending 2048 integration/results |
+| Action-Label Accuracy | Generic helper and 391-row pilot holdout report implemented | Classification diagnostic | Adequate-sample evaluation pending |
+| F1 Macro | Generic helper and 391-row pilot holdout report implemented | Classification diagnostic | Adequate-sample evaluation pending |
 | Inference Speed | Measure on declared hardware | Resource metric | Informative |
 
 > If a model/heuristic ratio is reported, define both evaluation populations and uncertainty; it is descriptive, not a default acceptance threshold.
@@ -187,7 +187,7 @@ flowchart LR
 ## Implementation Record
 
 - `src/evaluation.rs` implements descriptive score summaries, bootstrap intervals, action-frequency summaries, paired sign tests, Mann–Whitney U, Holm adjustment, effect-size helpers, and generic classification summaries (accuracy, macro precision/recall/F1, confusion matrix).
-- Generic classification summaries are used by the standard-dataset diagnostic but are not wired to the 2048 `train`/evaluation path. No held-out trained-policy metrics or scope-defined performance gates exist.
+- Generic classification summaries are used by the standard-dataset diagnostic and the 2048 training command's 391-row chronological pilot holdout report. The latter includes accuracy, macro precision/recall/F1, a confusion matrix, and row-level predictions. It is a bounded classifier diagnostic, not an adequate-sample policy estimate; valid-action analysis, trained-policy results, and scope-defined performance gates remain absent.
 
 ---
 
@@ -204,7 +204,7 @@ flowchart LR
 
 ## Open questions
 
-- Implement classification metrics with explicit class and valid-action handling; verify them on fixed examples before reporting results. Retain metric artifacts and predeclared evaluation protocol.
+- Expand classifier diagnostics to an adequate game-disjoint corpus; add explicit valid-action behavior analysis and independently verify the metrics. Retain artifacts and predeclare any policy evaluation protocol.
 
 ## Later
 

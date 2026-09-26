@@ -1,6 +1,6 @@
 # Plan 02 — Training Loop: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Classical fit/save/load and grouped CV are implemented; broader diagnostics and final test workflow remain pending.
+> **Status: PARTIAL (2026-09-27).** Classical fit/save/load, grouped CV, and a small chronological holdout classifier diagnostic are implemented; adequate-corpus diagnostics and the final refit/test workflow remain pending.
 
 **Goal:** State the current implementation and evidence boundary for training loop.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -195,7 +195,7 @@ flowchart LR
 ## Implementation Record
 
 - Training uses one classical `TrainEngine::fit` call and exports a serialized model. The root `GroupKFold` wrapper keeps games separate in explicit CV folds; AutoML fit then makes a seeded row-level validation split.
-- No iterative epoch/checkpoint loop is used. The wrapper currently reports fold accuracy only; full four-class diagnostics and untouched test scoring remain pending.
+- No iterative epoch/checkpoint loop is used. The grouped-CV wrapper reports fold accuracy only. Separately, the training CLI writes accuracy, macro precision/recall/F1, a confusion matrix, and row-level predictions for its small chronological holdout; adequate-corpus diagnostics and confirmatory untouched-test scoring remain pending.
 
 ---
 
@@ -212,7 +212,7 @@ flowchart LR
 
 ## Open questions
 
-- The model comparison depends on retained fold predictions/metrics and an untouched game-group test set, neither of which the current training command reports completely.
+- The model comparison still needs retained fold predictions/metrics and adequate untouched game-group test evaluation; the existing pilot diagnostic is too small and provisional for model selection.
 
 ## Later
 
