@@ -1,6 +1,6 @@
 # Plan 03 — Data Normalization: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Fixed divisors are applied during feature encoding; fitted scaler integration is absent and tile-range bounds remain unresolved.
+> **Status: PARTIAL (2026-09-27).** Fixed divisors are applied during feature encoding; fitted scaler integration is absent; values above one are allowed.
 
 **Goal:** State the current implementation and evidence boundary for data normalization.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats deterministic feature scaling as implemented and fitted preprocessing as absent.** `BoardStateMl::from_board` applies fixed divisors before storage. The root trainer consumes these values directly and does not fit or persist a `DataPreprocessor`. Tile values above 32768 can exceed the declared range for several features; score index 21 is intentionally uncapped.
+**This plan treats deterministic feature scaling as implemented and fitted preprocessing as absent.** `BoardStateMl::from_board` applies fixed divisors before storage. The root trainer consumes these values directly and does not fit or persist a `DataPreprocessor`. Values above one are valid; score is normalized at index 16.
 
 ## 1. Purpose
 
@@ -28,7 +28,7 @@ flowchart TD
         Select --> Fit[Fit Normalizer]
         Fit --> Transform[Transform Features]
         Transform --> Validate[Validate Normalized]
-        Validate --> Output[Normalized Features<br/>[0, 1] Range]
+        Validate --> Output[Deterministic Features<br/>finite and nonnegative]
         
         style Raw fill:#ffcdd2
         style Output fill:#c8e6c9
@@ -108,25 +108,21 @@ flowchart TB
 
 ## 5. Per-Feature Normalization — Deterministic Divisors (Primary) + Optional Fitted Scaler
 
-**Primary (deterministic, no fit):** Every feature uses a fixed divisor — no data-dependent fit, no leakage.
+**Primary (deterministic, no fit):** The canonical vector consists of 16 grid
+values divided by 32768 and normalized current score at index 16. Values above
+one are valid for tiles above 32768 or scores above 1,000,000.
 
-| Feature | Divisor / Formula | Range |
-|---------|-------------------|-------|
-| `grid_0..15` | `/ 32768.0` | [0,1] |
-| `empty_count` | `/ 16.0` | [0,1] |
-| `max_tile_log` | `log2(max)/15.0` | [0,1] |
-| `monotonicity` | fraction of adjacent pairs equal or containing an empty tile | [0,1] |
-| `smoothness` | `1 / (1 + adjacent_abs_diff_sum/100)` | [0,1] |
-| `merges_available` | `/ 16.0` | [0,1] |
-| `score_normalized` | `log10(score+1)/6.0` | [0,~1.02] |
-| `adjacency_merge_score` | equal-adjacent tile sum `/ (16*32768)` | [0,1] through documented tile scale |
-| `corner_max` | maximum corner tile `/32768.0` | [0,1] through documented tile scale |
-| `edge_tiles_occupied` | `/ 12.0` | [0,1] |
-| `col_worst` / `row_worst` | minimum axis sum `/8192.0` | [0,1] through documented tile scale |
+| Feature | Formula | Range |
+|---------|---------|-------|
+| `grid_0..15` | `tile as f64 / 32768.0` | finite, nonnegative; may exceed 1 |
+| `score_normalized` at index 16 | `log10(score+1)/6.0` | finite, nonnegative; may exceed 1 |
 
-Fitted preprocessing is not in the current root training path. If added later, fit it on training partitions only and apply the same fitted instance to validation/test. `Available Moves` / `MoveCount` is not a feature — deleted (not in 27). `Moves` in old diagram = `merges_available`.
+Fitted preprocessing is not in the current root training path. If added later,
+fit it on training partitions only and apply that fitted instance to validation
+and test. `Available Moves` and move count are not model features.
 
-> The fitted scaler examples below are future integration guidance. The live path uses deterministic features only.
+> The fitted scaler examples below are future integration guidance. The live
+> path uses deterministic features only.
 
 ## 6. Normalization Pipeline
 
@@ -208,7 +204,7 @@ flowchart LR
 ## Implementation Record
 
 - Fixed canonical divisors are applied by `BoardStateMl::from_board` before data writing. The current data/training commands have no fitted scaler stage.
-- Values above tile 32768 may violate current upper bounds for non-score features; resolve this contract before claiming all encoded data is valid.
+- Validators accept finite, nonnegative values without an upper bound of one. The root trainer does not apply or persist a fitted scaler.
 
 ---
 
@@ -225,7 +221,7 @@ flowchart LR
 
 ## Open questions
 
-- Resolve the tile-range contract with the canonical state plans. If learned scaling is later added, implement fold-local fit/transform and persist the fitted parameters.
+- If learned scaling is added, implement fold-local fit/transform and persist the fitted parameters.
 
 ## Later
 

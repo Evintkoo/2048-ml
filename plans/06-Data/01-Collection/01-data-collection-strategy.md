@@ -1,6 +1,6 @@
 # Plan 01 — Data Collection Strategy: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Checkpointed random-play collection and rollout relabeling exist; self-play, canonical corpus, post-split relabeling, and cache remain pending.
+> **Status: PARTIAL (2026-09-27).** Checkpointed random-play collection and rollout relabeling exist; self-play, canonical corpus, post-split relabeling, and cache remain pending.
 
 **Goal:** State the current implementation and evidence boundary for data collection strategy.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -25,7 +25,7 @@ Two supervised sources (no HumanPlay — out of scope) feed the single canonical
 | Random play | `03-random-play-data.md` | 5,000 | Wide state coverage |
 | Heuristic play | Benchmark-only | 0 training games | Separate rule-based baseline |
 
-The implemented random source produces `(state_features[27], action: u8)` rows after `RolloutLabeler` relabeling (default 100 simulations per valid action). Self-play generation is not implemented. Tile spawn is stochastic 90% `2` / 10% `4` per move.
+The implemented random source produces `(state_features[17], action: u8)` rows after `RolloutLabeler` relabeling (default 100 simulations per valid action). Self-play generation is not implemented. Tile spawn is stochastic 90% `2` / 10% `4` per move.
 
 ## 3. Collection Pipeline
 
@@ -39,7 +39,7 @@ flowchart TB
     Volume --> V1[Self-Play: 15,000 games]
     Volume --> V2[Random Play: 5,000 games]
     Volume --> V3[Heuristic: benchmark only — excluded from training]
-    Volume --> V4[Total: 20,000 games<br/>14k train / 3k val / 3k test<br/>70% / 15% / 15% chronological GroupKFold shuffle=false]
+    Volume --> V4[Total: 20,000 games<br/>14k train / 3k val / 3k test<br/>70% / 15% / 15% chronological game-ID split; GroupKFold is a separate CV procedure]
     V1 --> Storage[Store: 06-Data/03-Storage/ — canonical]
     V2 --> Storage
     V3 -.-> Storage
@@ -57,13 +57,13 @@ To establish the performance ceiling for each model:
 - Track running maximum to identify convergence
 - Compute mean score across all games for each model
 - Use confidence intervals to quantify score estimates
-- **Models are ranked by mean score** (heuristic baseline ~512 serves as practical reference)
+- **Models are ranked by mean score** (heuristic baseline is a comparator whose value must be measured under the same protocol)
 
 ## 6. Data Quality Checks
 
-- Completeness: all 27+action columns present, `NF==28`, no NaN/Inf.
+- Completeness: all 17+action columns present, `NF==18`, no NaN/Inf.
 - Consistency: `game_id` groups intact for `GroupKFold`.
-- Validity: `action` ∈ {0,1,2,3} and in `valid_moves`; header regex `grid_0..row_worst,action`.
+- Validity: `action` ∈ {0,1,2,3} and in `valid_moves`; header regex `grid_0..score_normalized,action`.
 - Class distribution: retain observed frequencies and report them; do not rebalance without a separate protocol.
 
 ## 7. Data Pipeline Definition
@@ -75,39 +75,23 @@ This section defines exactly how a game play is converted to CSV rows for traini
 A game with **N moves** produces **N training samples**. Each sample is a supervised row:
 
 ```
-(state_features[27], action: u8, score: u64 /* metadata only */)
+(state_features[17], action: u8, score: u64 /* metadata only */)
 ```
 
 | Component | Type | Size | Role | Description |
 |-----------|------|------|------|-------------|
-| `state_features` | array | 27 | `X` | Board state feature vector at turn t (27-dim) |
+| `state_features` | array | 17 | `X` | Board state feature vector at turn t (17-dim) |
 | `action` | u8 | 1 | `y` (ONLY label) | Direction taken at turn t (0=Up, 1=Down, 2=Left, 3=Right) — `TaskType::MultiClassification` |
 | `score` | u64 | 1 | metadata only | Game score at this state — for analysis/benchmarking, never as `y` |
 
-> **No `reward` column.** `reward` / `next_state` / `done` are RL constructs and are not used. DataFrame row is `state_features: [f64;27], action: u8, score: u64 (metadata)`.
+> **No `reward` column.** `reward` / `next_state` / `done` are RL constructs and are not used. DataFrame row is `state_features: [f64;17], action: u8, score: u64 (metadata)`.
 
 ### 8.2 State-to-Feature Mapping
 
-The board state at turn t is encoded into a 27-dimensional feature vector (16 grid + 11 derived in canonical order):
-
-```
-Feature Vector = [
-    grid_0, grid_1, ..., grid_15,            // 16 dimensions: tile values on the 4x4 grid (normalized)
-    empty_count,                              // 1: empty cells / 16
-    max_tile_log,                             // 1: log2(max_tile)/15
-    monotonicity,                             // 1: monotonicity score (0-1)
-    smoothness,                               // 1: smoothness score (0-1)
-    merges_available,                         // 1: possible merges / 16
-    score_normalized,                         // 1: log10(score+1)/6.0
-    adjacency_merge_score,                    // 1: equal-adjacent tile sum / (16 * 32768)
-    corner_max,                               // 1: max tile in corner / 32768
-    edge_tiles_occupied,                      // 1: edge tiles occupied / 12
-    col_worst,                                // 1: minimum column sum normalized
-    row_worst                                 // 1: minimum row sum normalized
-]
-```
-
-Each grid cell value is normalized by dividing by 32768. Derived features are computed from the grid layout using standard 2048 heuristic formulas; score uses canonical `log10(score+1)/6.0`.
+The board state at turn t is encoded into 17 values: row-major cells 0–15,
+each divided by 32768, followed by `log10(score+1)/6` at index 16. Values are
+finite and nonnegative; values above one are accepted. Derived heuristic
+measurements are not appended to the canonical model input.
 
 ### 8.3 Action Label Generation (Rollout-Based)
 
@@ -169,30 +153,28 @@ Self-play data (02-self-play-data.md) generates `(state, action)` pairs where th
 
 > **No `reward` / RL signal.** The supervised label is `action`. Score is stored only as metadata for analysis.
 
-- **Score metadata**: `score: u64` — current cumulative game score at this state; `score_normalized = log10(score+1)/6.0` is feature index 21
+- **Score metadata**: `score: u64` — current cumulative game score at this state; `score_normalized = log10(score+1)/6.0` is feature index 16
 - **Not a target**: Do not train to predict `score`; do not use `score delta`, `final score`, or `reward` as `y`
 - **Invalid move handling**: Invalid moves (no board change) are **masked out** before `argmax`; they are never valid labels and never produce a sample — no `-10.0` penalty column
 
 ### 8.7 Concrete Example — Supervised Row
 
-A game with **100 moves** produces **100 training samples** (classification rows). CSV is **27 feature columns + 1 action label = 28 columns total** (`grid_0..row_worst,action`); `score` is optional metadata, not a training column:
+A game with **100 moves** produces **100 training samples** (classification rows). CSV is **17 feature columns + 1 action label = 18 columns total** (`grid_0..score_normalized,action`); `score` is optional metadata, not a training column:
 
 ```csv
-grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,grid_11,grid_12,grid_13,grid_14,grid_15,empty_count,max_tile_log,monotonicity,smoothness,merges_available,score_normalized,adjacency_merge_score,corner_max,edge_tiles_occupied,col_worst,row_worst,action
-0.0,0.0,0.00006,0.00012,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.875,0.2,0.85,0.72,0.125,0.15,0.03,0.06,0.5,0.02,0.03,2
-0.0,0.00006,0.00012,0.00024,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.8125,0.2667,0.80,0.70,0.1875,0.20,0.04,0.07,0.45,0.03,0.04,0
-0.00006,0.00012,0.0,0.00006,0.00012,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.75,0.3333,0.78,0.68,0.25,0.25,0.05,0.08,0.42,0.04,0.05,3
-0.00006,0.00006,0.00012,0.00024,0.00006,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.6875,0.4,0.75,0.65,0.3125,0.30,0.06,0.09,0.40,0.05,0.06,1
+grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,grid_11,grid_12,grid_13,grid_14,grid_15,score_normalized,action
+0.0,0.000061,0.000122,0.000244,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.050172,2
+0.0,0.000061,0.000122,0.000244,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.050172,0
 ```
 
 > `score` (u64) is optional metadata for analysis only — not in training CSV. If stored, add as trailing `,score` column (e.g. `,124`) but never as `y`. No `reward` column.
 
 Example row breakdown:
-- `grid_0..row_worst` (27 dims): The feature vector at turn t — indices 0-15 `grid_0..grid_15`, 16 `empty_count`, 17 `max_tile_log`, 18 `monotonicity`, 19 `smoothness`, 20 `merges_available`, 21 `score_normalized`, 22 `adjacency_merge_score`, 23 `corner_max`, 24 `edge_tiles_occupied`, 25 `col_worst`, 26 `row_worst` (parseable: exactly 28 comma-separated values per row: 27 floats + 1 u8 action)
+- `grid_0..score_normalized` (17 dims): The feature vector at turn t — indices 0–15 `grid_0..grid_15`, 16 `score_normalized` (parseable: exactly 18 comma-separated values per row: 17 floats + 1 u8 action)
 - `action: 2`: The action with the highest rollout score (NOT necessarily the original agent action) — the ONLY label (`u8` 0–3)
 - `score: 124` (if present as trailing metadata): Cumulative game score **metadata** for analysis only (never as `y`)
 
-Verification: `head -1 file.csv | tr ',' '\n' | wc -l` → 28; `awk -F, 'NR>1{print NF}' file.csv | sort -u` → 28.
+Verification: `validate_csv` checks the exact 18-column v2 header and every row.
 
 ### 8.8 Train/Validation/Test Split by Chronological Game ID (No Shuffle)
 
@@ -212,15 +194,15 @@ Rules:
 - No game appears in more than one split.
 - Within the training partition, `GroupKFold` may be used for model selection because game trajectories are the grouping unit; its folds are group-disjoint but not time-ordered.
 - The split ensures the model is evaluated on game trajectories it has never seen during training and that are strictly future relative to train.
-- **Volumes are configurable** — 20,000 (14k/3k/3k) is the canonical default; adjust via config but preserve the chronological 70/15/15 game-level holdout.
+- **Volumes are configurable** — 20,000 (14k/3k/3k) is a proposed target, not an approved or generated corpus; adjust via config but preserve the chronological 70/15/15 game-level holdout.
 
 ### 8.9 CSV File Format — Classification Only
 
-All training data is stored as CSV files with the following schema (**27 feature columns + `action` label = 28 columns total**, `grid_0..row_worst,action`; `score` is optional metadata):
+All training data is stored as CSV files with the following schema (**17 feature columns + `action` label = 18 columns total**, `grid_0..score_normalized,action`; `score` is optional metadata):
 
 ```
-columns: grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,grid_11,grid_12,grid_13,grid_14,grid_15,empty_count,max_tile_log,monotonicity,smoothness,merges_available,score_normalized,adjacency_merge_score,corner_max,edge_tiles_occupied,col_worst,row_worst,action:u8[,score:u64]
-# canonical header (27+1): grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,grid_11,grid_12,grid_13,grid_14,grid_15,empty_count,max_tile_log,monotonicity,smoothness,merges_available,score_normalized,adjacency_merge_score,corner_max,edge_tiles_occupied,col_worst,row_worst,action
+columns: grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,grid_11,grid_12,grid_13,grid_14,grid_15,score_normalized,action:u8
+# canonical header (17+1): grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,grid_11,grid_12,grid_13,grid_14,grid_15,score_normalized,action
 # optional metadata column: score (u64) — for analysis only, never as `y`; no `reward` column
 encoding: UTF-8
 delimiter: comma

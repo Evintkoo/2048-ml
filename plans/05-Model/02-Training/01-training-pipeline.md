@@ -1,6 +1,6 @@
 # Plan 01 — Training Pipeline: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** CLI CSV/metadata loading, chronological holdout, grouped CV, fitting, and model export exist; the complete final evaluation/refit workflow remains pending.
+> **Status: PARTIAL (2026-09-27).** CLI CSV/metadata loading, chronological holdout, grouped CV, fitting, and model export exist; the complete final evaluation/refit workflow remains pending.
 
 **Goal:** State the current implementation and evidence boundary for training pipeline.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -57,18 +57,18 @@ flowchart LR
 
 ### 3.2 Preprocessing
 
-> The canonical feature values are deterministic numeric values. The root training path does not fit an AutoML `DataPreprocessor`; stored CSV features are consumed directly. The 27-value schema and tile-range issue are documented in the state tickets.
+> The canonical feature values are deterministic numeric values. The root training path does not fit an AutoML `DataPreprocessor`; stored CSV features are consumed directly. The 17-value schema and tile-range issue are documented in the state tickets.
 
 ```mermaid
 flowchart TD
-    Raw[Raw Features<br/>27 numeric dims]
+    Raw[Raw Features<br/>17 numeric dims]
     Raw --> Scaler[StandardScaler<br/>only for SVM/KNN/LogReg<br/>skip for trees]
     Raw --> Imputer[Mean Imputation<br/>passthrough — no nulls]
     
     Scaler --> Processed
     Imputer --> Processed
     
-    Processed[Processed Features<br/>27-dim numeric vector]
+    Processed[Processed Features<br/>17-dim numeric vector]
 ```
 
 ### 3.3 Training Execution
@@ -118,21 +118,12 @@ The integration supports four-probability output from RandomForest, ExtraTrees, 
 
 ## 5. Theoretical Limit Justification
 
-The theoretical maximum score is **not a fixed constant** — it is bounded by 2048 game mechanics and depends on optimal play. This section justifies the ranking approach:
-
-**Upper bound derivation**:
-- A 4×4 board has at most 16 cells
-- Maximum tile value is 2^15 = 32768 (reaching 2^16 would require 17 cells, exceeding board size)
-- The maximum achievable score is the sum of all merges during a perfect game
-- A perfect game would merge tiles from 2 → 4 → 8 → ... → 32768, with each merge contributing its value to the score
-- The exact maximum score is an open problem (no proven optimal strategy exists)
-
-**Evidence boundary**: no theoretical maximum score or winning model is asserted here. Any model comparison must declare its case-study protocol, baseline, game count, and uncertainty analysis before evaluation.
+The project has not established a theoretical maximum game score. Tile value 32768 is a normalization divisor in the state encoder, not a game cap or score bound. Any model comparison must declare its case-study protocol, baseline, game count, and uncertainty analysis before evaluation.
 
 ```rust
 pub struct ProximityConfig {
     pub baseline_agent: AgentType,  // Heuristic agent as reference
-    pub baseline_mean_score: f64,   // ~512 from benchmark data
+    pub baseline_mean_score: f64,   // measured baseline for the declared protocol
 }
 
 impl ProximityConfig {
@@ -152,7 +143,7 @@ impl ProximityConfig {
 }
 ```
 
-**Why not use 32768 as the theoretical limit?** Because no agent has ever been proven to achieve this score, and it's unclear whether it's even achievable on a 4×4 board. Instead, models are ranked by mean game score across ≥10,000 benchmark games, and the winner is the model with the highest mean score confirmed by statistical significance testing.
+A normalization divisor is not a performance threshold. Compare models under a predeclared game protocol with uncertainty analysis; no fixed sample count or significance rule is currently approved.
 
 ## 6. Pipeline Execution Flow
 

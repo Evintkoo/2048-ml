@@ -1,6 +1,6 @@
 # Plan 02 — Feature Engineering: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** The canonical 27-value encoder is implemented; this appendix is being aligned to its formulas and tile-range limits.
+> **Status: PARTIAL (2026-09-27).** The canonical 17-value encoder is implemented; derived metrics are excluded from model input.
 
 **Goal:** State the current implementation and evidence boundary for feature engineering.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,29 +9,27 @@
 
 ## Decision and evidence
 
-**This plan treats feature computation as implemented in `src/state.rs`.** This appendix is descriptive; its previous formulas conflicted with the canonical encoder and have been replaced. The encoder uses deterministic divisors and no configurable feature-engineering pipeline. Tiles above 32768 can exceed declared feature bounds.
+**Plan 00 sets the model input to 17 values.** The current encoder adds no derived metrics beyond the 16 grid cells and normalized score. `HeuristicFeatures` separately computes five measurements for the heuristic policy. No configurable feature-engineering pipeline exists.
 
 ## 1. Purpose
 
-Enumerate the fixed 11 derived features (indices 16–26) appended after `grid_0..15`. No pipeline platitudes.
+Record heuristic measurements separately from canonical training inputs. Metrics are not appended to the 17-value model vector.
 
-## 2. Derived Features — One Formula Each
+## 2. Heuristic Measurements (Not Model Features)
 
-| # | Name | Formula (normalized to [0,1] unless noted) |
-|---|------|---------------------------------------------|
-| 16 | `empty_count` | `empty_cells as f64 / 16.0` |
-| 17 | `max_tile_log` | `0 if max==0 else log2(max_tile) / 15.0` |
-| 18 | `monotonicity` | fraction of the 24 adjacent pairs that are equal or include an empty tile |
-| 19 | `smoothness` | `1.0 / (1.0 + sum(abs_diff(adjacent tiles)) / 100.0)` |
-| 20 | `merges_available` | unique cells participating in equal adjacent pairs `/ 16.0` |
-| 21 | `score_normalized` | `log10(score as f64 + 1.0) / 6.0` |
-| 22 | `adjacency_merge_score` | sum of equal adjacent tile values `/ (16.0 * 32768.0)` |
-| 23 | `corner_max` | maximum corner tile `/ 32768.0` |
-| 24 | `edge_tiles_occupied` | `edge_non_empty as f64 / 12.0` |
-| 25 | `col_worst` | minimum column sum `/ 8192.0` |
-| 26 | `row_worst` | minimum row sum `/ 8192.0` |
+The baseline `HeuristicFeatures` in `src/state.rs` contains these measurements:
 
-Grid 0–15: `tile_value as f64 / 32768.0` (0 for empty). Values above the documented 32768 tile scale can cause normalized features to exceed one.
+| Name | Formula |
+|------|---------|
+| `empty_fraction` | empty cells / 16 |
+| `monotonicity` | fraction of adjacent pairs equal or containing an empty tile |
+| `smoothness` | `1 / (1 + adjacent_abs_diff_sum / 100)` |
+| `merges_fraction` | unique cells in equal adjacent pairs / 16 |
+| `corner_max` | largest corner tile / 32768 |
+
+These measurements guide the hand-authored baseline and are not used by
+`ModelPolicy` as input. Other former derived-feature proposals are not
+implemented.
 
 ## 3. Config — Concrete
 
@@ -41,12 +39,12 @@ Grid 0–15: `tile_value as f64 / 32768.0` (0 for empty). Values above the docum
 // SHAP / permutation importance: Future — post-training only, not MVP
 ```
 
-Order is frozen per `02-Format/03-data-standard.md`. `DataPreprocessor` handles optional `StandardScaler` on train only (see `03-data-normalization.md`).
+Canonical model order is 16 row-major cells and normalized score at index 16. Fitted preprocessing is not integrated in root training.
 
 ## Implementation Record
 
-- The formula table now matches `BoardStateMl::from_board` in `src/state.rs`; collection calls the same encoder.
-- No standalone configurable feature-engineering stage or fitted transformer exists. SHAP/permutation importance is not implemented; tile-range contract remains open under the state plans.
+- The five heuristic measurements listed here match `HeuristicFeatures` in `src/state.rs`; they are separate from `BoardStateMl`.
+- No configurable feature-engineering stage, fitted transformer, feature importance, or ablation study exists.
 
 ---
 
@@ -63,7 +61,7 @@ Order is frozen per `02-Format/03-data-standard.md`. `DataPreprocessor` handles 
 
 ## Open questions
 
-- Resolve the accepted tile-range contract before treating all normalized features as bounded. Feature importance remains post-training research.
+- A separate study of additional metrics requires an approved feature/analysis protocol. Feature importance remains post-training research.
 
 ## Later
 

@@ -16,7 +16,7 @@
 ## 1. Authority
 
 - **Canonical Board:** `03-State/01-Board/01-board-state.md` — `RawBoardState { grid:[u32;16], score:u64, move_count:u64, game_over:bool }` in `src/game_engine/mod.rs`; flat array, `0` = empty
-- **Canonical Features (27-dim):** `03-State/01-Board/02-feature-extraction.md` + `03-State/01-Board/01-board-state.md` §3–4 (16 raw + 11 derived; score at index 21 `/6.0`)
+- **Canonical training input:** Plan 00 requires 16 board cells plus current score (17 values), implemented by ticket #034. The former 27-column strategic-feature vector is not part of canonical training.
 - **This file:** transforms and memory layout only. **Do not duplicate** `BoardFeatures` 8 derived features — cross-ref above.
 
 ## 2. Board Layout
@@ -37,7 +37,7 @@ Direction mapping (canonical):
 ```rust
 /// Minimal Board — see canonical for authoritative definition
 pub struct Board {
-    pub grid: [u32; 16],    // 0 = empty, else power of 2 (max 32768; storage up to 131072)
+    pub grid: [u32; 16],    // 0 = empty, otherwise a validated power-of-two tile
     pub score: u64,
     pub move_count: u64,
     pub game_over: bool,
@@ -128,7 +128,7 @@ impl Board {
 
 ## 4. Raw Grid Normalization — For Feature Input
 
-> Derived features (`empty_count`, `max_tile_log`, `monotonicity`, etc.) are **NOT** defined here. See `03-State/01-Board/02-feature-extraction.md` — 27-dim includes score at index 21 `log10(score+1)/6.0`. Canonical grid normalization is `/32768`.
+> This section records the canonical grid encoding `/32768`; the complete state also includes current score as the seventeenth value. Grid values above 32768 may therefore exceed one and are accepted by validators.
 
 ```rust
 /// Raw 16-dim — grid values normalized by 32768 (canonical)
@@ -139,8 +139,8 @@ pub fn raw_features(board: &Board) -> [f64; 16] {
     f
 }
 
-/// Full 27-dim is raw_features + 11 derived — see BoardStateML::to_array() in 03-State/01-Board/01-board-state.md §4.1
-/// Do not re-define BoardFeatures here.
+/// Current implementation appends 11 derived values; this is not the canonical
+/// model input. See the state/data tickets for the reconciliation protocol.
 ```
 
 ## 5. Performance Note

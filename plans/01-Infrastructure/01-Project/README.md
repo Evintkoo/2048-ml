@@ -13,6 +13,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 Supporting evidence: [04-framework-architecture](04-framework-architecture.md) records the source-backed architecture and API contract audit for ticket 04; its standalone ledger disposition records that evidence audit as complete.
 
+Scope note: Plan 00 defines 17 training values (16 board cells plus score). Ticket #034 aligned the root encoder and CLI schema with that contract; the former 27-value derived-feature vector is excluded from canonical training.
+
 ## Reading paths
 
 1. Read the plan ticket in sequence by its numeric filename.

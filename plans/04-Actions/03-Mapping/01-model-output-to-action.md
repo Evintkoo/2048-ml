@@ -1,6 +1,6 @@
 # Plan 01 — Model Output to Action Mapping: the repository status is explicit and evidence based
 
-> **Status: COMPLETE (2026-09-26).** AutoML probabilities are masked to valid moves and decoded to the action enum.
+> **Status: COMPLETE (2026-09-27).** AutoML probabilities are masked to valid moves and decoded to the action enum.
 
 **Goal:** State the current implementation and evidence boundary for model output to action mapping.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats model-output mapping as implemented.** `ModelPolicy` builds the canonical 27-value input, obtains four class probabilities through AutoML inference, masks invalid actions with `masked_argmax`, and converts the chosen ID to `Direction`. The selector returns errors for terminal boards, invalid IDs, and non-finite scores.
+**This plan treats model-output mapping as implemented.** `ModelPolicy` builds the canonical 17-value input, obtains four class probabilities through AutoML inference, masks invalid actions with `masked_argmax`, and converts the chosen ID to `Direction`. The selector returns errors for terminal boards, invalid IDs, and non-finite scores.
 
 ## 1. Overview
 
@@ -92,7 +92,7 @@ graph TD
     OL3 -->|Mask invalid| Best["Best Valid Direction"]
 ```
 
-> **No regression head.** Task is `TaskType::MultiClassification` — 27 features produce four class probabilities, then validity-masked selection chooses an action.
+> **No regression head.** Task is `TaskType::MultiClassification` — 17 features produce four class probabilities, then validity-masked selection chooses an action.
 
 ## 7. Integration Path
 
@@ -102,7 +102,7 @@ graph TD
 
 ## Implementation Record
 
-- `masked_argmax` rejects empty valid sets, invalid IDs, and non-finite scores; ties use stable action order. `ModelPolicy` loads AutoML inference, encodes one 27-feature row, checks the four-class output, and masks invalid directions.
+- `masked_argmax` rejects empty valid sets, invalid IDs, and non-finite scores; ties use stable action order. `ModelPolicy` loads AutoML inference, encodes one 17-feature row, checks the four-class output, and masks invalid directions.
 - The inference path uses `predict_proba_array`, not raw logits; probabilities are compared directly for greedy selection.
 
 ---

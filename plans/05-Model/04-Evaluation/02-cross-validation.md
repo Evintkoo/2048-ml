@@ -1,6 +1,6 @@
 # Plan 02 — Cross-Validation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Root group-aware CV implementation is present; only fold accuracy is reported and adequate-corpus evaluation remains pending.
+> **Status: PARTIAL (2026-09-27).** Root group-aware CV implementation is present; only fold accuracy is reported and adequate-corpus evaluation remains pending.
 
 **Goal:** State the current implementation and evidence boundary for cross-validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

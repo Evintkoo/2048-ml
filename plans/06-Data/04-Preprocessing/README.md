@@ -7,12 +7,12 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-data-cleaning](01-data-cleaning.md) | Data Cleaning | PARTIAL — validation only; cleaning absent |
-| [02-feature-engineering](02-feature-engineering.md) | Feature Engineering | PARTIAL — encoder implemented; range contract pending |
-| [03-data-normalization](03-data-normalization.md) | Data Normalization | PARTIAL — deterministic only; tile range pending |
+| [02-feature-engineering](02-feature-engineering.md) | Feature Engineering | PARTIAL — heuristic measurements separate; no feature study |
+| [03-data-normalization](03-data-normalization.md) | Data Normalization | PARTIAL — deterministic 17-value scales; fitted preprocessing absent |
 
 ## Reading paths
 
-1. Read the plan ticket in sequence by its numeric filename.
+1. Read tickets in repository-relative lexicographic order.
 2. Check its status and evidence before implementing remaining work.
 3. Update the root `PLAN-TICKET-LEDGER.md` after each ticket changes.
 

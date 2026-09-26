@@ -1,6 +1,6 @@
 # Plan 02 — Statistical Analysis: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Descriptive summaries and limited pairwise inference are implemented; categorical metrics, several tests, and power planning are absent.
+> **Status: PARTIAL (2026-09-27).** Descriptive summaries, pairwise score tests, and reusable classification metrics exist; power planning and broader tests remain absent.
 
 **Goal:** State the current implementation and evidence boundary for statistical analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -87,9 +87,9 @@ Current score-summary intervals and pairwise mean-difference intervals use perce
 
 ## 7. Classification Analysis — No Regression (Actions 0–3 Only)
 
-> **No regression.** Task is `TaskType::MultiClassification` (27-dim → 4 logits → `argmax`). Score is a downstream game-score benchmark, not a regression target. Do not fit `score` as `y` or report R² / RMSE / MSE.
+> **No regression.** The 2048 task uses `TaskType::MultiClassification` with the canonical 17-value state and four action labels. Score is a downstream game-score benchmark, not a regression target. Do not fit `score` as `y` or report R² / RMSE / MSE.
 
-Action classification metrics such as confusion matrices, per-class precision/recall/F1, and valid-action accuracy are not currently emitted by the evaluation reports. Game score is a downstream outcome, not a regression target for the supervised action classifier.
+Generic classification helpers now compute confusion matrices, accuracy, per-class F1, and macro precision/recall/F1. A separate four-action helper reports prediction legality for 2048 policies. These helpers do not yet produce a fixed-split classification report from the application evaluation CLI. Game score is a downstream outcome, not a regression target for the supervised action classifier.
 
 ## 8. Multiple Comparison Correction
 
@@ -114,7 +114,7 @@ All results must report:
 
 ## Implementation Record
 
-- `src/evaluation.rs` and comparison/report paths provide mean, sample standard deviation, median, p90/p99, min/max, threshold counts, bootstrap mean intervals, Mann–Whitney U, paired exact sign test, Holm-adjusted p-values, bootstrap mean-difference intervals, and Cohen's d. Kruskal–Wallis, Wilcoxon, categorical/classification metrics, explicit assumption diagnostics, power analysis, and a populated report are absent.
+- `src/evaluation.rs` and comparison/report paths provide score summaries, bootstrap intervals, Mann–Whitney U, paired exact sign test, Holm-adjusted p-values, Cohen's d, and reusable classification summaries. The initial UCI results are descriptive single-split metrics; two-run repeatability is reported separately and is not an inferential comparison. Kruskal–Wallis, Wilcoxon, formal power analysis, explicit assumption diagnostics, and a populated 2048 case-study report remain absent.
 
 ## 10. Analysis Validation
 

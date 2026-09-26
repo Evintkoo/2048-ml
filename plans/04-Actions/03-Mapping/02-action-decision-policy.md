@@ -1,6 +1,6 @@
 # Plan 02 — Action Decision Policy: the repository status is explicit and evidence based
 
-> **Status: COMPLETE (2026-09-26).** Greedy validity-masked AutoML inference is implemented; the heuristic remains a separate baseline.
+> **Status: COMPLETE (2026-09-27).** Greedy validity-masked AutoML inference is implemented; the heuristic remains a separate baseline.
 
 **Goal:** State the current implementation and evidence boundary for action decision policy.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -11,14 +11,14 @@
 
 **This plan treats the supervised decision policy as implemented.** `ModelPolicy::select_move` takes the highest AutoML class probability among legal directions. `HeuristicPolicy` is an independently evaluated comparison baseline; neither policy blends outputs or uses exploration.
 
-> **Canonical inference:** 27 features → four class probabilities → `masked_argmax` over valid directions. No blending or exploration.
+> **Canonical inference:** 17 features → four class probabilities → `masked_argmax` over valid directions. No blending or exploration.
 > **Heuristic agent** is a **separate baseline** in `02-Environment/03-Simulation-Engine/` — not blended.
 
 ## 1. Architecture — Canonical
 
 ```mermaid
 flowchart TB
-    State["Board 27-dim"] --> Model["ML Model 4 logits"]
+    State["Board 17-dim"] --> Model["ML Model 4 logits"]
     Model --> Mask["Mask invalid"]
     Mask --> Argmax["masked_argmax"]
     Argmax --> Execute["Execute Action"]
@@ -29,12 +29,12 @@ flowchart TB
 ```rust
 pub struct GreedyPolicy { pub model: InferenceEngine }
 impl GreedyPolicy {
-    pub fn decide(&self, state: &[f64;27], valid: &[u8]) -> u8 {
+    pub fn decide(&self, state: &[f64;17], valid: &[u8]) -> u8 {
         let logits = self.model.predict(state); // [f64;4]
         masked_argmax(&logits, valid)           // canonical
     }
 }
-pub fn decide_action(state: &[f64;27], model: &InferenceEngine, valid: &[u8]) -> u8 {
+pub fn decide_action(state: &[f64;17], model: &InferenceEngine, valid: &[u8]) -> u8 {
     masked_argmax(&model.predict(state), valid)
 }
 ```

@@ -165,6 +165,7 @@ No winner determination is currently supported. A future protocol must specify g
 ## Implementation Record
 
 - Mann–Whitney U, paired exact sign test, bootstrap mean-difference CI, Holm adjustment, and Cohen's d helpers are implemented and used by the comparison command. No Kruskal–Wallis/Wilcoxon, permutation test, formal power analysis, clustered paired bootstrap, or predeclared winner study has been completed. Test choice and limitations are emitted in comparison reports.
+- The two seed-42 UCI runs are compared only for exact prediction repeatability; no significance test is applied to their one-split model accuracies. The Wine KNN mismatch is retained as a framework reproducibility/serialization finding, not as a model-quality comparison.
 
 ---
 

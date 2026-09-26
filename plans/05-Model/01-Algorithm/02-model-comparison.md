@@ -1,6 +1,6 @@
 # Plan 02 — Model Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Runnable candidates and comparison boundary are documented; matched model results remain pending.
+> **Status: PARTIAL (2026-09-27).** Runnable candidates and comparison boundary are documented; matched model results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -24,7 +24,7 @@ All models will be evaluated using the same dataset, features, and metrics to en
 ```mermaid
 flowchart TD
     subgraph "Comparison Framework — Classification Only"
-        Data[Unified Dataset<br/>state: [f64;27] → action: u8 (0-3)]
+        Data[Unified Dataset<br/>state: [f64;17] → action: u8 (0-3)]
 
         Data --> RF[Random Forest]
         Data --> GBM[Gradient Boosting]
@@ -78,7 +78,7 @@ flowchart LR
 
 ## 4. Comparison Metrics — Canonical
 
-| Model | Mean Game Score (rank) | Valid-Action Accuracy (≥60%) | F1 Macro (≥0.55) | Inference Time (≤1ms) | Notes |
+| Model | Mean Game Score (rank) | Valid-Action Accuracy | F1 Macro | Inference Time | Notes |
 |-------|------------------------|------------------------------|-----------------|----------------------|-------|
 | RandomForest | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
 | ExtraTrees | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
@@ -128,12 +128,12 @@ for model_type in &candidates {
     ranked.push((model_type.clone(), score_splits(&config, &x, &y, &splits)?));
 }
 ranked.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
-// Top-ranked model proceeds to downstream game-score benchmark (≥10k games):
+// Top-ranked model proceeds to downstream game-score benchmark after protocol declaration:
 // mean_game_score = simulator.run(&inference_engine, n_games: 10000).mean()
 // Report uncertainty and protocol; do not infer general framework quality from game score
 ```
 
-> **Scope:** This file benchmarks candidates; `03-best-algorithm-finding.md` selects the single winner by Mean Game Score.
+> **Scope:** This file benchmarks candidates; `03-best-algorithm-finding.md` records a case-study selection only after matched evaluation.
 
 ## 5. Cross-Validation Results
 

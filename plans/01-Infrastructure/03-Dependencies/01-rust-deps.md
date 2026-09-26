@@ -11,7 +11,7 @@
 
 **This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Added sha2 and clarified single-crate domain module layout; root manifest and lockfile present.
 
-> **Scope:** This file = `Cargo.toml` pins & workspace layout. For automl capability table (TrainingConfig, ModelType, CV) see `01-Project/02-dependencies.md`. 27-dim canonical lives in `03-State/01-Board/02-feature-extraction.md` + `06-Data/02-Format/01-data-schema.md`.
+> **Scope:** This file = `Cargo.toml` constraints & workspace layout. For AutoML capability table (TrainingConfig, ModelType, CV) see `01-Project/02-dependencies.md`. Plan 00 defines the canonical 17-value training input; ticket #034 aligns the root implementation with it.
 
 ## 1. Root Cargo.toml (Single Crate MVP)
 
@@ -21,7 +21,7 @@ No `automl/Cargo.toml` duplication — versions pinned to automl's manifest for 
 [dependencies]
 automl = { path = "automl" }                    # pinned hash 64f5eda (v1.0.0-138)
 ndarray = "0.16"                                # pinned to automl; board arrays
-polars = { version = "0.46", features = ["lazy", "csv", "json"] } # DataFrame 27+1
+polars = { version = "0.46", features = ["lazy", "csv", "json"] } # current DataFrame; canonical schema is 17+1
 rand = "0.8"                                    # automl-compatible RNG
 rand_chacha = "0.3"                             # deterministic seeding
 sha2 = "0.10"                                   # SHA-256 artifact and dataset manifests
@@ -55,7 +55,7 @@ sha2 = "0.10"                                   # SHA-256 artifact and dataset m
 | Rust 1.75+ | automl MSRV |
 | No `unsafe` | Memory safety |
 | `Send + Sync` | Thread-safe engine via rayon |
-| `#![deny(warnings)]` | Strict CI (`cargo clippy -- -D warnings`) |
+| `unsafe_code = "forbid"`; Clippy `all = "deny"` | Root manifest lint policy; `cargo clippy -- -D warnings` is a local check, not configured CI |
 
 ## 4. Workspace Layout
 
@@ -72,7 +72,7 @@ The MVP uses one root crate with cohesive Rust domain modules such as `src/game_
 
 ## 5. Audit & Lockfile
 
-- `cargo audit` — Optional, not MVP (weekly scheduled, not CI-blocking).
+- `cargo audit` — Optional, not MVP; manual invocation only, no schedule configured.
 - Commit `Cargo.lock` at root; `automl/Cargo.lock` stays in submodule (do not copy).
 - Update pins only during scheduled maintenance; bump must keep `rand`/`ndarray` aligned with `automl/Cargo.toml`.
 

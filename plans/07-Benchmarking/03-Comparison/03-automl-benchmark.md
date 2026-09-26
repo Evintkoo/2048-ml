@@ -1,6 +1,6 @@
 # Plan 03 — Rust-Native AutoML Benchmark: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Focused API/model smoke checks exist; named-dataset framework benchmarks, baselines, and resource comparisons remain pending.
+> **Status: PARTIAL (2026-09-27).** Focused API/model smoke checks exist and the three named UCI datasets are acquired; fixed-split benchmark runs, matched baselines, and resource comparisons remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl benchmark.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -162,7 +162,7 @@ Findings are filled post-training only.
 
 ## Implementation Record
 
-- Framework capability smoke validation and 2048 model benchmark path are separate. Named standard-dataset matrix, matched framework comparisons/resource profile, and independent search efficiency study remain pending; hypotheses are untested.
+- Framework capability smoke validation and 2048 model benchmark path are separate. The Iris, Wine, and Breast Cancer Wisconsin (Diagnostic) source archives are recorded in `data/framework_validation/README.md`; no named-dataset benchmark run, matched framework comparison/resource profile, or independent search-efficiency study has yet produced results. Hypotheses are untested.
 
 ## 12. Benchmark Reproducibility
 
@@ -194,7 +194,7 @@ flowchart LR
 
 ## Open questions
 
-- Execute the dataset/baseline matrix under #104 after naming dataset versions, splits, metrics, hardware, dependencies, and compute budget. Keep all raw outcomes and scripts.
+- Declare fixed splits, supported models, baseline capability, hardware/resource capture, and compute budget, then execute the acquired dataset matrix. Keep raw outcomes, predictions, seeds, manifests, and analysis scripts.
 
 ## Later
 

@@ -17,9 +17,9 @@ Visualization is limited to debugging and data inspection purposes. No web-based
 
 ## 2. Terminal Visualization
 
-### 2.1 Board Rendering — Canonical
+### 2.1 Proposed Board Rendering — Optional, Not Implemented
 
-> **Canonical `render_board` — single source.** `02-Environment/01-Game/04-game-ui.md` is duplicate, see here; identical for debug only.
+> **No renderer currently exists.** This example is a proposed debug helper only; the deprecated game UI plan is not an implementation.
 
 ```mermaid
 flowchart TD
@@ -40,15 +40,16 @@ flowchart TD
 ```
 
 ```rust
-fn render_board(board: &Board) -> String {
+fn render_board(board: &RawBoardState) -> String {
     let mut output = String::new();
     output.push_str("+------+------+------+------+\n");
-    for row in &board.grid {
+    for row in board.grid.chunks_exact(4) {
         output.push_str("|");
-        for cell in row {
-            match cell {
-                Some(val) => output.push_str(&format!("{:>5}|", val)),
-                None => output.push_str("     |"),
+        for &cell in row {
+            if cell == 0 {
+                output.push_str("     |");
+            } else {
+                output.push_str(&format!("{:>5}|", cell));
             }
         }
         output.push_str("\n+------+------+------+------+\n");
@@ -113,7 +114,7 @@ Per the project scope:
 - No browser-based UI
 - No mobile visualization app
 
-All visualization outputs are static files (SVG, CSV, JSON) for external analysis tools.
+The current offline inspection outputs are CSV data and JSON manifests/results. SVG, charts, and interactive outputs are not implemented.
 
 ## Implementation Record
 

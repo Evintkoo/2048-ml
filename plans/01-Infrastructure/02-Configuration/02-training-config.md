@@ -5,6 +5,8 @@
 **Goal:** State the current implementation and evidence boundary for training pipeline configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
 
+**Canonical input contract:** Plan 00 requires 17 training values: 16 board cells plus current score. Ticket #034 aligns the state encoder, policy, collector, and CSV schema with that contract.
+
 ---
 
 ## Decision and evidence
@@ -37,11 +39,11 @@ let transformed = preprocessor.fit_transform(df)?; // returns a DataFrame
 
 The root pipeline currently does not call `DataPreprocessor`; its feature values are generated deterministically by the 2048 state encoder. This avoids learning scaling or imputation statistics from data. If a separately scoped experiment enables preprocessing later, fit it on each training fold only, exclude the target from transformation, and apply the fitted transform to validation/test data.
 
-### 2.2 Feature Engineering — 27-dim canonical (cross-reference `03-State/01-Board/02-feature-extraction.md` + `06-Data/02-Format/01-data-schema.md`)
+### 2.2 Canonical State Input — 17 values
 
 > This file shows only the wiring shape; canonical definitions are not duplicated here.
 
-For 2048, 27 features in canonical order: `grid_0..15` (/32768) + `empty_count/16`, `max_tile_log/log2/15`, `monotonicity`, `smoothness`, `merges_available/16`, `score_normalized` log10/6 (idx 21), `adjacency_merge_score`, `corner_max` (=max_corner/32768), `edge_tiles/12`, `col_worst/8192`, `row_worst/8192`; target `action: u8` 0–3.
+The model input is `grid_0..15` (tile value /32768) plus `score_normalized` (`log10(score+1)/6`) at index 16; target `action: u8` 0–3. The 11 strategic metrics from the prior 27-column encoder are excluded from canonical training.
 
 ```rust
 // FeatureSelector is a separate ndarray helper, not a DataFrame builder.
@@ -54,7 +56,9 @@ For 2048, 27 features in canonical order: `grid_0..15` (/32768) + `empty_count/1
 ```rust
 use automl::{CrossValidator, CVStrategy};
 
-// Canonical for 2048: GroupKFold (groups=game_id, shuffle=false) to avoid leakage across moves of same game.
+// GroupKFold keeps game IDs disjoint across folds; the pinned splitter sorts groups
+// and assigns them round-robin, so it is not chronological. The root separately
+// reserves the final chronological game groups as a holdout.
 // StratifiedKFold is valid for class-balance checks; TimeSeriesSplit for temporal forward-chain experiments.
 let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
     .with_random_state(42);

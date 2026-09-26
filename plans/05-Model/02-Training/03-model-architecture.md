@@ -1,6 +1,6 @@
 # Plan 03 — Model Architecture: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** The integration uses AutoML classical classifiers; five four-class probability candidates are verified, but performance and final selection remain open.
+> **Status: PARTIAL (2026-09-27).** The integration uses AutoML classical classifiers; five four-class probability candidates are verified, but performance and final selection remain open.
 
 **Goal:** State the current implementation and evidence boundary for model architecture.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the model interface as implemented and architecture selection as pending evidence.** The root policy requires 27 numeric features and four class probabilities. RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes pass the integration smoke. No model family is established as best.
+**This plan treats the model interface as implemented and architecture selection as pending evidence.** The root policy requires 17 numeric features and four class probabilities. RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes pass the integration smoke. No model family is established as best.
 
 ## 1. Purpose
 
@@ -17,7 +17,7 @@ Define the architecture of the machine learning model used to predict optimal mo
 
 ## 2. Architecture Overview
 
-The classifier consumes the canonical 27-value vector and predicts one of four action labels. The verified candidates include both tree ensembles and non-tree models; no architecture winner has been selected.
+The classifier consumes the canonical 17-value vector and predicts one of four action labels. The verified candidates include both tree ensembles and non-tree models; no architecture winner has been selected.
 
 ### 2.1 Tree-Based Model Architecture
 
@@ -37,14 +37,14 @@ The root CLI currently exposes five candidates with four-class probability outpu
 flowchart LR
     Grid[Grid Features<br/>16 dimensions] --> Concat[Concatenate]
     Derived[Derived Features<br/>11 dimensions] --> Concat
-    Concat --> Input[Input Vector<br/>27 dimensions]
+    Concat --> Input[Input Vector<br/>17 dimensions]
 ```
 
 ### 2.3 Tree Ensemble Architecture
 
 ```mermaid
 flowchart TD
-    Input[Input Features<br/>27 Dimensions] --> TreeEnsemble[Tree Ensemble]
+    Input[Input Features<br/>17 Dimensions] --> TreeEnsemble[Tree Ensemble]
     TreeEnsemble --> Tree1[Decision Tree 1]
     TreeEnsemble --> Tree2[Decision Tree 2]
     TreeEnsemble --> TreeN[Decision Tree N]

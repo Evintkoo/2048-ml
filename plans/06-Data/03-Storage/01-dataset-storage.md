@@ -1,6 +1,6 @@
 # Plan 01 — Dataset Storage: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Local CSV, metadata, checkpoint, and manifest outputs exist; catalog/version management and Parquet are absent.
+> **Status: PARTIAL (2026-09-27).** Local CSV, metadata, checkpoint, and manifest outputs exist; catalog/version management and Parquet are absent.
 
 **Goal:** State the current implementation and evidence boundary for dataset storage.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -17,14 +17,14 @@ Define the storage strategy for 2048 game training datasets, ensuring efficient 
 
 ## 2. Storage Overview — MVP Local Only
 
-> **MVP: Simple local `data/raw, data/processed, data/results` — no tiered storage.** Hot/Warm/Cold (SSD/HDD/Cloud) is over-engineering for <5GB; future optional only.
+> **MVP: Simple local `data/raw, data/processed, data/results` — no tiered storage.** No multi-tier storage or size-based claim is made; revisit if measured data volume requires it.
 
 Datasets are stored locally for MVP:
 
 ```
 data/
 ├── raw/        # Raw game logs
-├── processed/  # Cleaned CSV/Parquet for training
+├── processed/  # CSV partitions for training
 └── results/    # Model outputs / benchmarks
 ```
 
@@ -82,12 +82,12 @@ flowchart TB
 
 ### 4.1 Local Storage Structure — MVP
 
-> **MVP: `data/raw, data/processed, data/results` local.** No archive/metadata tiering for <5GB.
+> **MVP: `data/raw, data/processed, data/results` local.** No archive/metadata tiering based on measured needs.
 
 ```
 data/
-├── raw/        # *.parquet / *.csv raw logs
-├── processed/  # *.parquet cleaned (MVP)
+├── raw/        # CSV collection output and checkpoints
+├── processed/  # *.csv splits (MVP)
 └── results/    # benchmarks / reports
 ```
 
@@ -108,8 +108,8 @@ flowchart TD
 ```mermaid
 flowchart TD
     Format[Storage Format]
-    Format --> Parquet[Parquet - Primary]
-    Format --> CSV[CSV - Secondary]
+    Format --> CSV[CSV - Training data]
+    Format --> JSON[JSON - Manifest/checkpoint]
     Format --> Metadata[Metadata JSON]
     
     Parquet --> |Large datasets| Efficient[Efficient Storage]
@@ -130,7 +130,7 @@ pub struct DatasetStorageConfig {
 }
 ```
 
-> Deleted `partition_by`/`cache_size`/`compression` — over-engineering for <5GB. MVP is `data/raw, data/processed, data/results` local only.
+> Deleted `partition_by`/`cache_size`/`compression` — over-engineering based on measured needs. MVP is `data/raw, data/processed, data/results` local only.
 
 ## 7. Data Access Pattern
 

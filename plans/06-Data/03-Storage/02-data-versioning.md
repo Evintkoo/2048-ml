@@ -1,6 +1,6 @@
 # Plan 02 — Data Versioning: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Collection manifests include seeds, revision, row count, and file hashes; automatic immutable dataset versioning is absent.
+> **Status: PARTIAL (2026-09-27).** Collection manifests include seeds, revision, row count, and file hashes; automatic immutable dataset versioning is absent.
 
 **Goal:** State the current implementation and evidence boundary for data versioning.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

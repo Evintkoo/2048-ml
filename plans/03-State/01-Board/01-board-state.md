@@ -1,6 +1,6 @@
 # Plan 01 — Board State Definition: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** The 16-cell board plus score contract is implemented; derived feature range behavior is being reconciled in ticket #034.
+> **Status: DONE (2026-09-26).** The canonical 17-value state is implemented; board tiles above the former 32768 normalization scale remain valid inputs.
 
 **Goal:** State the current implementation and evidence boundary for board state definition.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,10 +9,10 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with one dependent feature-range question pending.** `RawBoardState` stores the board cells and score; `BoardStateMl::from_board` emits 27 values without move count or history. The adjacent feature-extraction ticket must resolve the declared 32768 tile scale against larger valid `u32` powers that the board currently accepts.
+**This plan treats its subject as implemented.** `RawBoardState` stores the board cells and score; `BoardStateMl::from_board` emits 16 board cells followed by current score encoding. Move count and game history are excluded. Values above one are valid when tile values exceed 32768 or score exceeds one million; validation requires finite, nonnegative values.
 
 > **Scope:** The canonical training state is the 16 board cells plus score. No history or move count is included in training features. History may be retained for collection only; see `plans/00-scope-and-traceability.md`.
-> **Canonical dims:** **27** = 16 grid + 11 derived. See `04-Encoding/01-state-vector.md:31` `create_state_vector`.
+> **Canonical dims:** **17** = 16 row-major board cells plus `score_normalized` at index 16. The previous 27-column vector is not the canonical training state.
 
 ## 1. State Representation
 
@@ -23,92 +23,41 @@ The board state is the primary input to the ML model. Must capture all informati
 ```rust
 /// 4×4 grid as flat array, 0 = empty — board cells plus score
 pub struct RawBoardState {
-    pub grid: [u32; 16],          // Powers of two represented by u32; feature scale assumes max 32768
-    pub score: u64,               // Cumulative score — idx 21 after normalization
+    pub grid: [u32; 16],          // Powers of two represented by u32
+    pub score: u64,               // Cumulative score — encoded at state index 16
     pub move_count: u64,          // Metadata; excluded from the training vector
     pub game_over: bool,          // Metadata; excluded from the training vector
 }
 ```
 
-## 3. Extended Board State (for ML) — Canonical 27-dim
+## 3. Canonical Board State for ML — 17 Values
 
 ```rust
-/// Actual root representation; formulas and feature ordering are audited in #034.
-pub struct BoardStateMl(pub [f64; 27]);
+/// 16 row-major cells plus log-normalized current score.
+pub struct BoardStateMl(pub [f64; 17]);
 ```
 
-### 3.1 Derived Features Detail
+### 3.1 Separate Strategic Metrics
 
-See `02-feature-extraction.md §3` for formulas. Two additions over naive set:
-
-- **`merges_available`** counts unique non-empty cells with at least one equal horizontal or vertical neighbor, divided by 16; a cell with two matching neighbors is counted once.
-- **`adjacency_merge_score`**: Sum of values for each horizontally/vertically adjacent equal pair, divided by `(16 * 32768)` so the feature stays in `[0,1]` at the declared tile scale.
-- **`monotonicity` provisional operational definition:** fraction of the 24 adjacent horizontal/vertical comparisons that are equal or include an empty cell. Freeze this before training; do not silently change it between datasets.
-- **`col_worst` / `row_worst`**: `min(col_sum)` / `8192`, `min(row_sum)` / `8192` — captures imbalance.
-
-```rust
-pub fn adjacency_merge_score(board: &Board) -> f64 {
-    let mut score = 0.0;
-    for i in 0..4 {
-        for j in 0..4 {
-            let val = board.grid[i][j].unwrap_or(0);
-            if val == 0 { continue; }
-            if j < 3 && board.grid[i][j+1].unwrap_or(0) == val { score += val as f64; }
-            if i < 3 && board.grid[i+1][j].unwrap_or(0) == val { score += val as f64; }
-        }
-    }
-    score / (16.0 * 32768.0)
-}
-pub fn column_worst(board: &Board) -> f64 {
-    let mut min_sum = u64::MAX;
-    for j in 0..4 {
-        let sum: u64 = (0..4).map(|i| board.grid[i][j].unwrap_or(0) as u64).sum();
-        min_sum = min_sum.min(sum);
-    }
-    min_sum as f64 / 8192.0
-}
-```
+Strategic metrics formerly appended to the 27-value vector are not canonical
+training inputs. Any retained measurements are heuristic-only or exploratory;
+ticket #035 records their separate implementation status.
 
 ## 4. State Encoding — Canonical
 
-### 4.1 Vector Assembly (27-dim)
+### 4.1 Vector Assembly (17-dim)
 
-```rust
-impl BoardStateML {
-    pub fn to_array(&self) -> [f64; 27] {
-        let mut arr = [0.0f64; 27];
-        arr[0..16].copy_from_slice(&self.grid_values);
-        arr[16] = self.empty_count;
-        arr[17] = self.max_tile_log;
-        arr[18] = self.monotonicity;
-        arr[19] = self.smoothness;
-        arr[20] = self.merges_available;
-        arr[21] = self.score_normalized; // log10(score+1)/6
-        arr[22] = self.adjacency_merge_score;
-        arr[23] = self.corner_max;
-        arr[24] = self.edge_tiles_occupied;
-        arr[25] = self.col_worst;
-        arr[26] = self.row_worst;
-        arr
-    }
-}
-```
-Canonical impl: `04-Encoding/01-state-vector.md:31` `create_state_vector`.
+`BoardStateMl::from_board` returns `[f64;17]`: the 16 row-major tile values
+divided by 32768, followed by `(score + 1).log10() / 6` at index 16.
+The implementation is in `src/state.rs`; the later state-vector ticket must
+align its description with this canonical contract.
 
 ### 4.2 Normalization — Canonical Divisors
 
 | Feature | Formula | Divisor | Range |
 |---------|---------|---------|-------|
-| grid `0..15` | `v as f64 / 32768.0` | 32768 | [0,1] |
-| empty_count | `empty as f64 / 16.0` | 16 | [0,1] |
-| max_tile_log | `0 if max==0 else log2(max) / 15.0` | 15 (log2) | [0,1] through max tile 32768 |
-| merges_available | `mergeable_cells as f64 / 16.0` | 16 | [0,1] |
-| score_normalized | `(score as f64 + 1.0).log10() / 6.0` | 6 (log10) | [0,1] |
-| corner_max | `corner as f64 / 32768.0` | 32768 | [0,1] |
-| edge_tiles_occupied | `occupied as f64 / 12.0` | 12 | [0,1] |
-| col_worst / row_worst | `min_sum as f64 / 8192.0` | 8192 | [0,1] |
-| adjacency_merge_score | `sum_equal_adjacent / (16.0 * 32768.0)` | 16 × 32768 | [0,1] through max tile 32768 |
-| monotonicity/smoothness | already [0,1] | — | [0,1] |
+| Grid indices `0..15` | `tile as f64 / 32768.0` | 32768 | finite, nonnegative; may exceed 1 |
+| Score index `16` | `(score as f64 + 1.0).log10() / 6.0` | 6 (log10) | finite, nonnegative; may exceed 1 |
 
 Deterministic divisors (no fitted scaler). `automl` `ScalerType::Standard` is applied on top only if needed; for tree models `ScalerType::None` is acceptable — see `04-Encoding/02-normalization.md`.
 
@@ -116,31 +65,29 @@ Deterministic divisors (no fitted scaler). `automl` `ScalerType::Standard` is ap
 
 | Property | Type | Storage | Notes |
 |----------|------|---------|-------|
-| Grid values | [u32; 16] | feature 0..15 | tile values, /32768 |
-| Score | u64 | feature 21 `log10/6` | never a target, `action` is label |
-| Empty tiles | derived | feature 16 | /16 |
-| Max tile | derived | feature 17 | log2/15 |
-| Game over | bool | metadata | not in 27-dim |
+| Grid values | [u32; 16] | features 0..15 | tile values /32768; may exceed 1 |
+| Score | u64 | feature 16 `log10/6` plus raw metadata | never a target, `action` is label |
+| Move count | u64 | metadata | excluded from the 17-value input |
+| Game over | bool | metadata | excluded from the 17-value input |
 
-> **No `StateWithHistory`.** Sequence history is **not in the training state**. If needed for collection/debug, see `03-History/01-move-history.md` (grouped by `game_id` for `GroupKFold`) — history is never fed as features.
+> **No `StateWithHistory`.** Sequence history is **not in the training state**. If needed for collection/debug, see `03-History/01-move-history.md`; history is never fed as features.
 
 ## Implementation Record
 
-- `RawBoardState` stores the flat 16-cell grid, cumulative score, move count, and terminal flag. `BoardStateMl::from_board` creates a 27-value feature vector; move count, terminal state, and history are excluded, with score represented only at index 21.
-- Feature validation checks finiteness and ranges; randomized board and score-index tests exist. `RawBoardState::from_grid` currently accepts powers above 32768 even though other feature values are constrained to `[0,1]`; resolution is assigned to ticket #034 before this state contract is marked complete.
+- `RawBoardState` stores the flat 16-cell grid, cumulative score, move count, and terminal flag. `BoardStateMl::from_board` creates a 17-value vector: normalized cells at indices 0–15 and log-normalized current score at index 16. Move count, terminal state, and history are excluded.
+- Feature validation requires finite, nonnegative values and permits values above one for large legal tiles and scores. This matches `RawBoardState::from_grid`, which accepts powers of two beyond 32768.
 
 ## 6. State Validation
 
 ```rust
-impl BoardStateML {
+impl BoardStateMl {
     pub fn validate(&self) -> Result<(), String> {
-        let arr = self.to_array();
-        for (i, &v) in arr.iter().enumerate() {
+        for (i, &v) in self.0.iter().enumerate() {
             if !v.is_finite() {
                 return Err(format!("feature {} is not finite: {}", i, v));
             }
-            if v < 0.0 || (i != 21 && v > 1.0) {
-                return Err(format!("feature {} out of [0,1]: {}", i, v));
+            if v < 0.0 {
+                return Err(format!("feature {} is negative: {}", i, v));
             }
         }
         // Grid values must be 0 or power of 2 (checked on raw grid before normalization)
@@ -152,12 +99,15 @@ impl BoardStateML {
 ## 7. State Persistence
 
 ```rust
-fn save_state(state: &BoardStateML, path: &str) -> Result<()> {
+fn save_state(state: &BoardStateMl, path: &str) -> Result<()> {
     let json = serde_json::to_string(state)?;
     std::fs::write(path, json)?;
     Ok(())
 }
 ```
+
+This persistence example is illustrative; `BoardStateMl` does not currently
+implement serde serialization.
 
 ---
 
@@ -174,7 +124,7 @@ fn save_state(state: &BoardStateML, path: &str) -> Result<()> {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **State encoding is complete under the canonical scope.** The former 32768 scale is a divisor, not a game tile cap. The canonical model vector has 17 values; larger tile and score encodings remain finite and are accepted.
 
 ## Later
 

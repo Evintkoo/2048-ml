@@ -75,6 +75,8 @@ Comparisons must use documented datasets, splits, hardware, dependency versions,
 - Four-class action prediction.
 - Repeated simulation and policy evaluation.
 
+Ticket #034 aligned the root encoder, policy input, collector, and CSV schema with Plan 00's canonical 17 values. The former 27-value strategic-feature vector is excluded from core training; any use requires a separately scoped study.
+
 The case study provides application evidence and exposes framework limitations; it does not alone establish general AutoML superiority.
 
 ---

@@ -13,6 +13,6 @@ This stage groups its work into ordered ticket series.
 
 ## Reading paths
 
-1. Follow child series in numeric order.
+1. Follow child series in repository-relative lexicographic order.
 2. Follow ticket order within each series.
 3. Record status and evidence in the root ledger.

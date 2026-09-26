@@ -1,6 +1,6 @@
 # Plan 02 — Data Format: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** CSV is the implemented training format with a separate metadata sidecar; Parquet remains unsupported.
+> **Status: PARTIAL (2026-09-27).** CSV is the implemented training format with a separate metadata sidecar; Parquet remains unsupported.
 
 **Goal:** State the current implementation and evidence boundary for data format.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -15,15 +15,15 @@
 
 Define the single canonical storage format and one optional alternative.
 
-## 2. Canonical — CSV (28 cols)
+## 2. Canonical — CSV (18 cols)
 
-Training CSV is **exactly 28 columns**: 27 features + `action: u8` label. `score: u64` is optional trailing metadata, never `y`.
+Training CSV is **exactly 18 columns**: 17 features + `action: u8` label. Raw `score: u64` and provenance use the separate metadata sidecar.
 
 ```csv
-grid_0,...,row_worst,action
-0.0,0.00006,0.00012,0.00024,...,0.03,2
+grid_0,...,grid_15,score_normalized,action
+0.0,0.000061,...,0.050172,2
 ```
-Header regex: `^grid_0,grid_1,...,row_worst,action(\,score)?$` (see `03-data-standard.md`). No `done`/`reward`/`next_state`.
+Header is the ordered 16 grid columns, `score_normalized`, and `action` as emitted by `csv_header()` (see `03-data-standard.md`). No `done`/`reward`/`next_state`.
 
 ## 3. Parquet (Not Implemented)
 
@@ -31,8 +31,8 @@ The root does not currently write or read Parquet. The following old example is 
 
 ```rust
 use polars::prelude::*;
-fn write_parquet(states: &[[f64;27]], actions: &[u8], path: &str) -> PolarsResult<()> {
-    let cols: Vec<Column> = (0..27).map(|i| {
+fn write_parquet(states: &[[f64;17]], actions: &[u8], path: &str) -> PolarsResult<()> {
+    let cols: Vec<Column> = (0..17).map(|i| {
         let v: Vec<f64> = states.iter().map(|s| s[i]).collect();
         Column::new(format!("f{i}").into(), v)
     }).chain(std::iter::once(Column::new("action".into(), actions.to_vec()))).collect();

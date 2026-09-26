@@ -6,13 +6,13 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-hyperparameter-search](01-hyperparameter-search.md) | Hyperparameter Search | PARTIAL — pruning unavailable |
-| [02-search-space](02-search-space.md) | Search Space | PARTIAL — active space limited to two integers |
+| [01-hyperparameter-search](01-hyperparameter-search.md) | Hyperparameter Search | PARTIAL — two integer parameters searched for two model families; pruning unavailable |
+| [02-search-space](02-search-space.md) | Search Space | PARTIAL — active space limited to two integer parameters |
 | [03-pruning-strategy](03-pruning-strategy.md) | Pruning Strategy | PARTIAL — reporter integration pending |
 
 ## Reading paths
 
-1. Read the plan ticket in sequence by its numeric filename.
+1. Read tickets in repository-relative lexicographic order.
 2. Check its status and evidence before implementing remaining work.
 3. Update the root `PLAN-TICKET-LEDGER.md` after each ticket changes.
 

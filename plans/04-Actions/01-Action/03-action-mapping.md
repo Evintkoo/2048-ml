@@ -1,6 +1,6 @@
 # Plan 03 — Action Mapping: the repository status is explicit and evidence based
 
-> **Status: COMPLETE (2026-09-26).** Direction conversion and validity-masked model selection are implemented.
+> **Status: COMPLETE (2026-09-27).** Direction conversion and validity-masked model selection are implemented.
 
 **Goal:** State the current implementation and evidence boundary for action mapping.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats action mapping as implemented.** `Direction` discriminants provide the stable integer mapping and `try_from_action` is fallible. `ModelPolicy` converts a 27-feature row to four class probabilities, masks invalid moves with `masked_argmax`, then decodes the selected ID. The selector errors on terminal boards and rejects invalid IDs or non-finite scores.
+**This plan treats action mapping as implemented.** `Direction` discriminants provide the stable integer mapping and `try_from_action` is fallible. `ModelPolicy` converts a 17-feature row to four class probabilities, masks invalid moves with `masked_argmax`, then decodes the selected ID. The selector errors on terminal boards and rejects invalid IDs or non-finite scores.
 
 ## 1. Overview
 

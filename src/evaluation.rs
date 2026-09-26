@@ -26,6 +26,109 @@ pub struct ActionFrequencySummary {
     pub ci_95: (f64, f64),
 }
 
+/// Classification diagnostics for an explicitly ordered class label set.
+/// `confusion_matrix[actual][predicted]` counts each observation.
+#[derive(Clone, Debug, PartialEq)]
+pub struct ClassificationSummary {
+    pub n: usize,
+    pub accuracy: f64,
+    pub macro_precision: f64,
+    pub macro_recall: f64,
+    pub macro_f1: f64,
+    pub per_class_f1: Vec<f64>,
+    pub confusion_matrix: Vec<Vec<u64>>,
+}
+
+/// Summarize predictions using class IDs in `0..class_count`.
+/// Returns `None` for empty, mismatched, or out-of-range input.
+pub fn summarize_classification(
+    actual: &[usize],
+    predicted: &[usize],
+    class_count: usize,
+) -> Option<ClassificationSummary> {
+    if actual.is_empty()
+        || actual.len() != predicted.len()
+        || class_count == 0
+        || actual
+            .iter()
+            .chain(predicted)
+            .any(|&label| label >= class_count)
+    {
+        return None;
+    }
+
+    let mut confusion_matrix = vec![vec![0_u64; class_count]; class_count];
+    for (&truth, &guess) in actual.iter().zip(predicted) {
+        confusion_matrix[truth][guess] += 1;
+    }
+
+    let mut precision_sum = 0.0;
+    let mut recall_sum = 0.0;
+    let mut f1_sum = 0.0;
+    let mut per_class_f1 = Vec::with_capacity(class_count);
+    let mut correct = 0_u64;
+    for class_id in 0..class_count {
+        let true_positive = confusion_matrix[class_id][class_id];
+        let actual_count = confusion_matrix[class_id].iter().sum::<u64>();
+        let predicted_count = confusion_matrix
+            .iter()
+            .map(|row| row[class_id])
+            .sum::<u64>();
+        correct += true_positive;
+
+        // Undefined precision/recall for absent classes is set to zero so the
+        // macro averages always cover the caller-declared class set.
+        let precision = if predicted_count == 0 {
+            0.0
+        } else {
+            true_positive as f64 / predicted_count as f64
+        };
+        let recall = if actual_count == 0 {
+            0.0
+        } else {
+            true_positive as f64 / actual_count as f64
+        };
+        let f1 = if precision + recall == 0.0 {
+            0.0
+        } else {
+            2.0 * precision * recall / (precision + recall)
+        };
+        precision_sum += precision;
+        recall_sum += recall;
+        f1_sum += f1;
+        per_class_f1.push(f1);
+    }
+
+    Some(ClassificationSummary {
+        n: actual.len(),
+        accuracy: correct as f64 / actual.len() as f64,
+        macro_precision: precision_sum / class_count as f64,
+        macro_recall: recall_sum / class_count as f64,
+        macro_f1: f1_sum / class_count as f64,
+        per_class_f1,
+        confusion_matrix,
+    })
+}
+
+/// Fraction of policy predictions that choose a legal action for their board.
+pub fn valid_action_prediction_rate(
+    predicted_actions: &[usize],
+    legal_actions: &[[bool; 4]],
+) -> Option<f64> {
+    if predicted_actions.is_empty()
+        || predicted_actions.len() != legal_actions.len()
+        || predicted_actions.iter().any(|&action| action >= 4)
+    {
+        return None;
+    }
+    let legal_predictions = predicted_actions
+        .iter()
+        .zip(legal_actions)
+        .filter(|(action, legal)| legal[**action])
+        .count();
+    Some(legal_predictions as f64 / predicted_actions.len() as f64)
+}
+
 /// Summarize pooled action proportions and uncertainty by resampling complete
 /// games. This preserves within-game dependence between consecutive moves.
 pub fn summarize_action_frequencies(

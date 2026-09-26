@@ -1,6 +1,6 @@
 # Plan 01 — Experimental Design: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Two-track design is proposed; standard-dataset validation, power rationale, and plan-scale policy experiments remain pending.
+> **Status: PARTIAL (2026-09-27).** Two-track design remains proposed. A three-dataset diagnostic was run; matched baselines, resource profiling, power rationale, and plan-scale policy experiments remain pending.
 
 **Goal:** State the current implementation and evidence boundary for experimental design.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a proposed design, not a preregistered or executed experiment.** Framework validation is partial; plan-scale training/evaluation, sample-size rationale, and analysis assumptions remain open.
+**This is a proposed design, not a preregistered confirmatory experiment.** A seed-42 UCI diagnostic matrix (three datasets, five model variants) exists under `reports/framework_validation/`; repeated runs differed for Wine KNN and one run failed save/load prediction equivalence. Baselines, resource profiling, plan-scale training/evaluation, sample-size rationale, and analysis assumptions remain open.
 
 ## 1. Purpose
 
@@ -63,7 +63,7 @@ flowchart TD
 | Framework Model Architecture | Independent | Declared supported model types | Confirm current capabilities before selecting candidates |
 | Framework Configuration | Independent | Defaults or declared search configuration | Match budgets and record failures |
 | Application Model Architecture | Independent | Implemented four-class integration candidates | Integration whitelist is narrower than framework enum |
-| Feature Set | Independent | 27-dimensional feature vector | Fixed across all models |
+| Feature Set | Independent | Canonical 17-value state: 16 cells plus current score | Fixed across the initial policy models; any ablation must declare its removed feature groups |
 | Training Algorithm | Independent | Declared training configuration | Tuning comparison not yet run |
 | Hyperparameters | Independent | Search space defined in HyperOptX | TPE sampler |
 | Framework Quality | Dependent | Dataset-appropriate predictive metric | Primary framework metric |
@@ -79,7 +79,7 @@ flowchart TD
 
 ## 4. Experimental Procedure
 
-The framework-validation gate is partial. Complete its standard-dataset, baseline, resource, and repeatability work before making claims that depend on those capabilities. Small capability smokes may continue as engineering checks, clearly separated from confirmatory policy experiments.
+The framework-validation gate is partial. A standard-dataset diagnostic exists, but matched external baselines, resource measurements, and resolved repeatability are still required before claims that depend on those capabilities. Small capability smokes may continue as engineering checks, clearly separated from confirmatory policy experiments.
 
 ```mermaid
 flowchart TD
@@ -133,7 +133,7 @@ flowchart LR
 ## 7. Bias Controls
 
 - **Fixed game rules** across all experiments (standard 4×4 board, 0.9/0.1 spawn)
-- **Consistent data pipeline** for all models (same 27-dim extraction, rollout labels 100 sims/action, same `game_id` for GroupKFold)
+- **Consistent data pipeline** for all models (same canonical 17-value state, rollout labels 100 sims/action, and game-group boundaries for GroupKFold where applicable)
 - **Same evaluation criteria** for all models (same declared instances where pairing is intended; measure baselines under the same protocol)
 - **Same seed** for reproducibility (primary `42`; secondary `123,456,789,1011`)
 - **No blinded analysis** — game scores are objective numeric; blinding adds no value and is removed
@@ -160,7 +160,7 @@ All experiments use simulation only. No human subjects are involved. All data is
 - **Computational resource limitations** — training time may restrict experiments
 - **Supervised learning only** — no reward shaping or policy gradient methods
 - **Single-seed primary experiments** — multi-seed validation planned but may be resource-intensive
-- **Feature engineering fixed** — the 27-dimensional feature vector is predetermined
+- **Feature engineering fixed** — the canonical state is 17 values; no additional history features are included
 
 ## 11. Sample Size Justification
 
@@ -175,11 +175,11 @@ All experiments use simulation only. No human subjects are involved. All data is
 ## 12. Data Quality Controls
 
 Validation checklist — mark complete only after evidence is produced:
-- [ ] Framework reproducibility with declared seeds
+- [ ] Framework reproducibility with declared seeds (the initial repeated diagnostic exposed Wine KNN instability)
 - [ ] Statistical validity and test assumptions
 - [ ] Absence of systematic bias in framework and application comparisons
 - [ ] Proper data collection procedures
-- [ ] Correct feature extraction (27-dimensional vector)
+- [ ] Correct feature extraction (canonical 17-value state)
 - [ ] Valid label generation (rollout-based, 100 sims/action)
 
 ## 13. Pre-registration
@@ -192,7 +192,7 @@ This design has not been externally or timestampedly preregistered. Before confi
 
 ## Implementation Record
 
-- The two-track design is proposed, not pre-registered or executed. Current framework validation is partial; policy scale and sample size are undecided. Collector labels are generated before grouped CV, and grouped CV is not chronological. Resolve leakage boundaries, trained-model versus game-level experimental units, pairing, budget, and test choice before confirmatory evaluation.
+- The two-track design is proposed, not pre-registered. The initial standard-dataset diagnostic used a fixed seed-42 split and is retained, but its Wine KNN rerun disagreement and one save/load mismatch leave repeatability unresolved; it is not a matched-baseline or resource study. Policy scale and sample size are undecided. Collector labels are generated before grouped CV, and grouped CV is not chronological. Resolve leakage boundaries, trained-model versus game-level experimental units, pairing, budget, and test choice before confirmatory evaluation.
 
 ---
 

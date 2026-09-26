@@ -6,10 +6,10 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-experimental-design](01-experimental-design.md) | Experimental Design | PARTIAL — proposed protocol; major design gates open |
-| [02-research-questions](02-research-questions.md) | Research Questions | PARTIAL — unanswered |
-| [03-hypotheses](03-hypotheses.md) | Hypotheses | PARTIAL — provisional; tests and power pending |
-| [04-ablation-study](04-ablation-study.md) | Ablation Study | PARTIAL — proposed matrix; no runner or results |
+| [01-experimental-design](01-experimental-design.md) | Experimental Design | PARTIAL — diagnostic UCI matrix exists; protocol and confirmatory gates open |
+| [02-research-questions](02-research-questions.md) | Research Questions | PARTIAL — unanswered; RQ2 diagnostic only |
+| [03-hypotheses](03-hypotheses.md) | Hypotheses | PARTIAL — provisional and untested; tests and power pending |
+| [04-ablation-study](04-ablation-study.md) | Ablation Study | PARTIAL — proposed groups need mapping to canonical state; no runner or results |
 | [05-sota-comparison](05-sota-comparison.md) | State-of-the-Art Comparison | PARTIAL — local runners; policy comparison pending |
 | [06-published-baseline-comparison](06-published-baseline-comparison.md) | Published Baseline Comparison | NOT APPLICABLE — external reproduction is optional and out of core scope |
 

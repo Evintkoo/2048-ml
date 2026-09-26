@@ -135,7 +135,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 
 - **SimulatorConfig / GameSimulator:** `01-Game/01-game-engine.md` (§4.3 spawn, §6 config) & `03-Simulation-Engine/01-simulation-engine.md`
 - **Training seed:** `01-Infrastructure/02-Configuration/02-training-config.md` §6 (`with_random_state(42)`)
-- **Board layout / features:** `01-Game/03-board-representation.md` (`[u32;16]`), `03-State/01-Board/01-board-state.md` (`/32768`, index 21 `/6.0`)
+- **Board layout / input:** `01-Game/03-board-representation.md` (`[u32;16]`); Plan 00 defines 16 cells plus score (17 values), implemented by ticket #034. Grid uses `/32768`; normalized score is at index 16.
 - **CV:** `05-Model/04-Evaluation/02-cross-validation.md` (`GroupKFold` vs `TimeSeriesSplit`)
 
 ## Implementation Record

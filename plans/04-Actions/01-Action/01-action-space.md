@@ -1,6 +1,6 @@
 # Plan 01 — Action Space Definition: the repository status is explicit and evidence based
 
-> **Status: COMPLETE (2026-09-26).** Four direction codes and board-dependent validity are implemented and tested.
+> **Status: COMPLETE (2026-09-27).** Four direction codes and board-dependent validity are implemented and tested.
 
 **Goal:** State the current implementation and evidence boundary for action space definition.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

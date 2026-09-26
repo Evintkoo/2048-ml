@@ -49,11 +49,11 @@ pub struct ScoreMetrics {
 
 ## 5. Training Sample — Action Classification (Not Score Regression)
 
-Score is **never `y`**. Canonical: `27-dim → 4 logits → argmax`.
+Score is **never `y`**. Canonical: `17-dim → 4 logits → argmax`.
 
 ```rust
 pub struct TrainingSample {
-    pub state: [f64; 27],
+    pub state: [f64; 17],
     pub action: u8,          // 0..3 — ONLY label (TaskType::MultiClassification)
     // pub score: u64 — metadata only, sidecar for analysis
 }

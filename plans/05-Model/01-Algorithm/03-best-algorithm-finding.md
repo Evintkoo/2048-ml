@@ -1,6 +1,6 @@
 # Plan 03 — Best Algorithm Finding: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** No winner is selected; the comparison depends on a predeclared protocol and adequate evaluation data.
+> **Status: PARTIAL (2026-09-27).** No winner is selected; the comparison depends on a predeclared protocol and adequate evaluation data.
 
 **Goal:** State the current implementation and evidence boundary for best algorithm finding.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -55,8 +55,7 @@ flowchart TB
 
 ```mermaid
 flowchart TD
-    Input[Input Features<br/>27 Dimensions] --> Preprocess[Preprocessing<br/>StandardScaler]
-    Preprocess --> Model[Selected Model]
+    Input[Input Features<br/>17 Dimensions] --> Model[AutoML Classifier]
     Model --> Output[Output<br/>4 Actions]
     
     subgraph "Model Details"
@@ -81,89 +80,36 @@ flowchart TD
 
 Since the automl framework does not implement neural networks, the candidate models are restricted to the following automl-compatible algorithms:
 
-| Model | Category | Expected Performance |
+| Model | Category | Expectation (unverified) |
 |-------|----------|---------------------|
-| RandomForest | Tree-based | Good baseline, robust to overfitting |
-| GradientBoosting | Tree-based | Expected to perform best on tabular data |
-| XGBoost | Tree-based | Strong gradient boosting, competitive accuracy |
-| LightGBM | Tree-based | Fast training, high performance |
-| CatBoost | Tree-based | Handles categorical features well |
+| RandomForest | Tree-based | Unmeasured |
+| GradientBoosting | Tree-based | Unmeasured; no performance claim |
+| XGBoost | Tree-based | Unmeasured; compatibility not established for policy output |
+| LightGBM | Tree-based | Unmeasured; compatibility not established for policy output |
+| CatBoost | Tree-based | Unmeasured; compatibility not established for policy output |
 | ExtraTrees | Tree-based | Randomized tree ensemble, good diversity |
 | SVM | Linear/Kernel | Decent for smaller datasets |
 | KNN | Instance-based | Simple baseline, distance-based |
 | LogisticRegression | Linear | Baseline linear model |
 
-### 5.2 Why Tree-Based Models Are Expected to Perform Best
+### 5.2 Model-family claims
 
-The 2048 game data is **tabular** in nature — each sample consists of a fixed-length feature vector derived from the board state. Tree-based models (GradientBoosting, RandomForest, XGBoost) are expected to outperform other candidates for several reasons:
+No model-family performance claim is supported by current evidence. Tree-based
+methods are hypotheses for future comparison; their tabular reputation does not
+replace measurements on the declared dataset and task.
 
-1. **Tabular data affinity**: Tree-based algorithms inherently excel on structured, tabular data with mixed feature types
-2. **Non-linear relationships**: The relationship between board state features and optimal moves is highly non-linear; tree splits capture these interactions naturally
-3. **Feature importance**: Tree models provide interpretable feature importance, which aligns with known 2048 heuristics (monotonicity, empty count, max tile)
-4. **Robustness to scaling**: Unlike SVM or KNN, tree-based models do not require feature scaling
-5. **Gradient boosting dominance**: Empirically, gradient boosting variants consistently rank among the top performers on tabular benchmark datasets
+### 5.3 Evaluation protocol requirement
 
-### 5.3 Evaluation Criteria — Canonical: Rank by Mean Game Score + Gates
-
-> No weighted composite or acceptance thresholds are established by the canonical scope. Define the ranking rule, diagnostics, and uncertainty analysis before evaluating candidates.
-
-**Ranking rule (primary):**
-
-1. Run each candidate's policy in the simulator for ≥10,000 games and compute `mean_score`.
-2. Apply the predeclared ranking rule to held-out game results and report uncertainty. Do not use a threshold absent from the approved protocol.
-3. If two models tie within statistical noise (± 1 std), prefer higher Valid-Action Accuracy, then lower inference time.
-
-**Gates (all must pass; otherwise the model is rejected regardless of rank):**
-
-| Gate | Threshold | Measured on | Fail action |
-|------|-----------|-------------|-------------|
-| Mean Game Score | Predeclare | Held-out simulator games | Report with uncertainty |
-| Valid-Action Accuracy | Diagnostic | Held-out labeled rows, protocol-defined valid-action handling | Report |
-| F1 Macro | Diagnostic | Held-out labeled rows, four action classes | Report |
-| Inference Time | ≤ 1ms | Mean per-prediction latency (informative, not rejecting unless >5ms) | Warn |
-
-**What is NOT a gate:**
-
-- `model_mean / heuristic_mean (≈512)` proximity ratio — optional single informative ratio only (e.g., 768/512 = 1.5×), never a gate.
-- No `max_score / theoretical_limit (2^15=32768)` ratio — theoretical limit is open/unproven (see `02-Training/01-training-pipeline.md:5`).
-- No regression metrics (R²/RMSE) — task is `TaskType::MultiClassification`.
-
-**Actionable selection snippet (same APIs as `02-model-comparison.md:4.1`):**
-
-```rust
-use automl::{TrainingConfig, TaskType, ModelType, CVStrategy, cross_val_score};
-use automl::training::{TrainEngine, CrossValidator};
-use polars::prelude::*;
-use ndarray::{Array1, Array2};
-
-// 1) Cross-validated ranking (classification)
-let candidates = vec![ModelType::GradientBoosting, ModelType::XGBoost, ModelType::RandomForest, ModelType::LightGBM];
-let mut cv_scores: Vec<(ModelType, f64)> = Vec::new();
-for m in &candidates {
-    let cfg = TrainingConfig::new(TaskType::MultiClassification, "action")
-        .with_model(m.clone()).with_cv(5).with_random_state(42);
-    let splits = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
-        .with_random_state(42)
-        .split(x.nrows(), Some(&y), Some(&groups))?;
-    cv_scores.push((m.clone(), score_splits(&cfg, &x, &y, &splits)?));
-}
-cv_scores.sort_by(|a,b| b.1.partial_cmp(&a.1).unwrap());
-
-// 2) Downstream game-score benchmark for top-3 only
-for (model_type, _) in cv_scores.iter().take(3) {
-    let cfg = TrainingConfig::new(TaskType::MultiClassification, "action")
-        .with_model(model_type.clone()).with_random_state(42);
-    let mut engine = TrainEngine::new(cfg);
-    engine.fit(&df)?; // DataFrame → TrainingConfig → TrainEngine::fit(&df) (no epochs/gradients)
-    let preds = engine.predict(&test_df)?; // → InferenceEngine::predict under the hood
-    // Run policy in simulator ≥10k games → mean_game_score
-    // Check gates: mean ≥512, accuracy ≥60%, F1 ≥0.55
-}
-```
+Before selecting a model, specify the candidate set that satisfies the four-class
+probability contract, data and game-group splits, seeds, simulator settings,
+primary outcome, diagnostics, uncertainty method, and resource budget. The
+repository currently has no approved thresholds or fixed game count. Report
+2048 results as application evidence only; use the separate standard-dataset
+framework-validation track for framework claims.
 
 ## 6. Algorithm Rationale
 
-Selection is justified by **(1) highest mean game score ≥512** plus **passing both gates (Acc≥60%, F1≥0.55)**. No weighted composite. Secondary factors (inference ≤1ms, training time, feature importance) are tie-breakers only and are documented alongside the primary ranking.
+Selection must follow the predeclared case-study protocol and report uncertainty. No winner or threshold is currently supported.
 
 > **Scope aligned:** This file's job is **benchmark comparison + best algorithm selection**. Deployment/monitoring is out of scope (see `06-Data/` and `07-Benchmarking/` if needed).
 
@@ -193,7 +139,7 @@ flowchart LR
 
 ## Implementation Record
 
-- Selection protocol is documented, but the plan's comparison and ≥10k game-score evaluations have not been executed. The winner is intentionally left unselected and metric tables remain TBD.
+- Selection protocol remains incomplete; matched model and game-score evaluations have not been executed. The winner is intentionally left unselected and metric tables remain TBD.
 - Status: research execution pending; do not select a model from architecture expectations or smoke runs.
 
 ---

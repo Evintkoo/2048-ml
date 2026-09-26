@@ -1,6 +1,6 @@
 # Plan 02 — Feature Extraction: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** The 27-value encoder is implemented; validation policy for boards above the declared 32768 tile scale remains unresolved.
+> **Status: PARTIAL (2026-09-27).** The 17-value model state is implemented; derived heuristics remain separate and this ticket needs a scope-aligned disposition.
 
 **Goal:** State the current implementation and evidence boundary for feature extraction.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,14 +9,14 @@
 
 ## Decision and evidence
 
-**This plan treats feature computation as implemented, with one input-range contract gap pending.** `BoardStateMl::from_board` matches the documented order and formulas. `RawBoardState` accepts powers of two above 32768, which can produce feature values above one outside index 21 and then fail `BoardStateMl::validate` or dataset CSV validation. Whether to cap game tiles or expand the accepted normalized range is not specified by the canonical scope, so the protocol choice remains open.
+**Plan 00 fixes the training state at 17 values, so these 11 derived metrics are not appended to model input.** The current model state contains 16 row-major grid values and normalized score. Root code separately computes a smaller `HeuristicFeatures` set for the built-in heuristic policy; these measurements are not used by model inference or training. This ticket is partial because its original deliverable—an 11-feature extraction protocol—has no separate approved study specification, and several listed metrics are not implemented.
 
-> **Canonical encoding:** `../04-Encoding/01-state-vector.md` and `src/state.rs`. This file is the detailed appendix for the 11 derived features; it does not duplicate the implementation.
-> **Total dims:** 27 = 16 raw grid + 11 derived. Most features are in [0,1]; `score_normalized` is finite and non-negative but may exceed 1 for scores above 1,000,000.
+> **Canonical model input:** 17 values = 16 row-major grid cells followed by normalized current score. Values are finite and nonnegative; values above one are permitted.
+> **Status boundary:** the formulas below are historical candidates for heuristic or separately approved exploratory analysis, not canonical training features.
 
 ## 1. Purpose
 
-Derive 11 strategic features from the raw 4×4 board to augment the 16 grid values. See `01-board-state.md §3` for the struct; see `04-Encoding/01-state-vector.md` for the canonical assembly.
+Record candidate strategic measurements considered during planning. They do not augment the training vector. The implementation currently exposes only empty fraction, monotonicity, smoothness, merges fraction, and corner maximum through `HeuristicFeatures` in `src/state.rs`.
 
 ## 2. Raw Features (16 dims) — Reference Only
 
@@ -26,7 +26,7 @@ Flattened grid `0..15`, each `v as f64 / 32768.0`. Canonical impl handles this; 
 grid_0..grid_15 : u32 tile → f64 / 32768
 ```
 
-## 3. Derived Features (11 dims) — Canonical Order
+## 3. Historical Candidate Metrics (Not Model Inputs)
 
 | Idx | Name | Formula | Divisor |
 |-----|------|---------|---------|
@@ -119,14 +119,14 @@ fn col_worst(board: &Board) -> f64 { board.column_worst() } // min col sum / 819
 fn row_worst(board: &Board) -> f64 { board.row_worst() } // min row sum / 8192
 ```
 
-## 4. Complete Feature Vector (27 dims)
+## 4. Historical Proposed Combination (Not Implemented)
 
 ```
 [grid_0..grid_15, empty_count, max_tile_log, monotonicity, smoothness,
  merges_available, score_normalized, adjacency_merge_score, corner_max,
  edge_tiles_occupied, col_worst, row_worst]
-  0..15            16          17           18            19
-  20               21          22           23            24        25       26
+These indices described a superseded 27-value proposal and are not current
+model feature indices.
 ```
 
 ## 5. Feature Importance Analysis
@@ -140,7 +140,7 @@ Post-training only — see §8. Runtime model exposes impurity/permutation impor
 | Raw grid | 16 | board |
 | Statistical | 5 | empties, max, merges, score, adjacency |
 | Strategic | 6 | monotonicity, smoothness, corner, edge, col_worst, row_worst |
-| Combined | 27 | canonical |
+| Combined | — | excluded by the canonical 17-value scope |
 | Reduced | — | not MVP — no PCA |
 
 ## 7. Feature Normalization Pipeline
@@ -155,9 +155,9 @@ Validate post-hoc via permutation / impurity importance; replace any hypothesize
 
 ## Implementation Record
 
-- All 11 derived features are implemented in `src/state.rs` using the documented deterministic formulas. Root tests cover canonical order, score feature, randomized boards, and maximum merge density; the latest root suite passed 31/31 during #028.
-- Values above the declared 32768 scale are accepted by `RawBoardState` but rejected by the current feature/data validators for some indices. Resolve this input-range contract before declaring the feature protocol complete.
-- Post-training feature importance, SHAP, and ablation are not yet measured; these remain future research tasks.
+- `BoardStateMl` now implements the 17-value state. `HeuristicFeatures` implements five measurements used by the baseline heuristic; the other candidate formulas in this ticket are not implemented.
+- Root verification on 2026-09-27 passed 34/34 tests, `cargo fmt -- --check`, and `cargo clippy -- -D warnings`. These checks establish implementation behavior, not predictive usefulness.
+- No feature ablation, model importance, SHAP analysis, or separate exploratory protocol has been run. Such work needs explicit scope and retained artifacts.
 
 ---
 
@@ -174,7 +174,7 @@ Validate post-hoc via permutation / impurity importance; replace any hypothesize
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **No separate feature-study protocol is approved.** If metrics beyond the canonical inputs are studied, define their use, labels, splits, and analysis artifacts before training or evaluation.
 
 ## Later
 

@@ -1,6 +1,6 @@
 # Plan 01 — Results Analysis: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Score reports and comparison summaries are implemented; no plan-scale model result corpus or trend/anomaly analysis exists.
+> **Status: PARTIAL (2026-09-27).** Initial UCI framework results and repeated-run comparison are retained; 2048 model rankings and trend/anomaly analysis remain pending.
 
 **Goal:** State the current implementation and evidence boundary for results analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is partial.** Source inspection confirms score summaries and comparison CSV/manifest output. A populated trained-model result corpus is absent, so no ranking, trend, anomaly, or substantive conclusion is claimed.
+**This plan is partial.** Seed-42 UCI results and a two-run repeatability comparison are now retained in `reports/framework_validation/`. They are one-split framework diagnostics; they do not populate the 2048 application result corpus and do not support trend analysis or framework-superiority claims.
 
 ## 1. Purpose
 
@@ -61,6 +61,7 @@ All analysis results are compiled into:
 ## Implementation Record
 
 - `src/evaluation.rs` implements the score summary fields and bootstrap intervals; `src/main.rs` writes score reports and comparison CSV/JSON manifests. No populated plan-scale trained-model result corpus, trend analysis, anomaly investigation, plots, or defensible model conclusion exists.
+- `reports/framework_validation/README.md` summarizes the initial fixed-split UCI matrix and repeatability finding. No confirmatory 2048 model corpus or ranking is available; no trend, anomaly, or causal conclusion is claimed.
 
 ---
 

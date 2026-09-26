@@ -1,6 +1,6 @@
 # Plan 02 — Self-Play Data: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** The simulator can run a supplied single-agent policy, but the collector has no self-play mode or output corpus.
+> **Status: PARTIAL (2026-09-27).** The simulator can run a supplied single-agent policy, but the collector has no self-play mode or output corpus.
 
 **Goal:** State the current implementation and evidence boundary for self-play data.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -45,7 +45,7 @@ pub struct SelfPlayConfig {
 for game_id in 0..config.n_games {
     let mut board = Board::new_seeded(config.seed + game_id as u64);
     while !board.is_game_over() {
-        let state = board.to_features27();              // [f64;27] — see §8.2
+        let state = BoardStateMl::from_board(&board);              // [f64;17] — see §8.2
         let original_action = agent.select_move(&board); // discarded after relabel
         let score = board.score();
         raw_rows.push((state, original_action, score, game_id));
@@ -54,10 +54,10 @@ for game_id in 0..config.n_games {
 }
 // Mandatory relabel — replaces original_action:
 let labeler = RolloutLabeler { simulator: GameSimulator::new(), n_rollouts: 100 };
-let training_rows: Vec<([f64;27], u8)> = raw_rows.into_iter()
+let training_rows: Vec<([f64;17], u8)> = raw_rows.into_iter()
     .map(|(s, _, _, _)| { let (best, _) = labeler.label(&s); (s, best) })
     .collect();
-// Write CSV: 27 cols + action = 28 cols — score is metadata, never label; no done/reward/next_state
+// Write CSV: 17 cols + action = 18 cols — score is metadata, never label; no done/reward/next_state
 ```
 
 Stochastic spawn note: after each `apply`, engine spawns `2` (p=0.9) or `4` (p=0.1) in a uniformly random empty cell. Seed via `ChaCha8Rng`.
@@ -68,13 +68,13 @@ All self-play rows **MUST** be relabeled via `01-data-collection-strategy.md §8
 
 ## 5. Storage
 
-CSV `06-Data/03-Storage/self_play.csv` — header `grid_0..row_worst,action` (28 cols). See `02-Format/01-data-schema.md`; cross-ref `DataPreprocessor` for normalization fit on train only.
+CSV `06-Data/03-Storage/self_play.csv` — header `grid_0..score_normalized,action` (18 cols). See `02-Format/01-data-schema.md`; cross-ref `DataPreprocessor` for normalization fit on train only.
 
 ## 6. Next Steps
 
 1. Run `SingleAgentTrajectory` with `n_games=10000` seeded.
 2. Relabel with `RolloutLabeler { n_rollouts: 100 }`.
-3. Validate `NF==28`, `action ∈ 0..3`, no `done`/`reward` columns; write to `06-Data/03-Storage/`.
+3. Validate `NF==18`, `action ∈ 0..3`, no `done`/`reward` columns; write to `06-Data/03-Storage/`.
 
 The root collector currently supplies only random trajectories. Implement a configurable single-agent policy source and preserve rollout-based labels to fulfill this ticket.
 

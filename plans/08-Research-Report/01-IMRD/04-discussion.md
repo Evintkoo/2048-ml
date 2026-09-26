@@ -1,6 +1,6 @@
 # Plan 04 — Discussion: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Interpretation questions are outlined, but neither framework results nor held-out policy results support conclusions yet.
+> **Status: PARTIAL (2026-09-27).** Interpretation guidance is outlined; initial framework diagnostics include a Wine KNN repeatability failure, while matched comparisons and held-out policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for discussion.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is an interpretation guide, not a findings discussion.** Its outcome branches remain hypothetical. Several listed tests and score thresholds are not implemented or justified and cannot serve as decision gates.
+**This plan is an interpretation guide, not a findings discussion.** Its outcome branches remain hypothetical. The initial standard-dataset run is descriptive evidence, not a matched framework comparison; its Wine KNN same-seed mismatch is an observed reproducibility issue. Several listed tests and score thresholds are not implemented or justified and cannot serve as decision gates.
 
 > **Status: PENDING.** No conclusions drawn. This file defines how the primary Rust-native AutoML framework results and the downstream 2048 case-study results will be interpreted.
 
@@ -41,7 +41,7 @@ All framework gates come from the framework-validation protocol. Application gat
 - If the comparison is inconclusive, report its uncertainty; do not infer a general ceiling or superiority of alternative methods.
 - Tuning claims require a matched quality and resource study; configuration defaults alone establish no result.
 
-### 3.2 For 27-dim Feature Engineering
+### 3.2 For the 17-Value State and Ablation
 An ablation study could estimate contribution under its declared training and evaluation setup. It cannot establish feature necessity, sufficiency, or a causal mechanism without appropriate design and assumptions.
 
 ### 3.3 For Evaluation Methodology
@@ -53,13 +53,13 @@ Seed matrix remains to be selected and declared. If rankings vary across trainin
 
 ## 5. Limitations (In-Scope)
 
-- 4×4 only; 27-dim fixed; supervised only; rollout labels noisy (100 sims/action).
+- 4×4 only; canonical 17-value state; supervised only; rollout labels are stochastic proxies (100 sims/action by default).
 - `automl` model list limited to what `ModelType` actually exposes (verify via `automl/src/training/config.rs`).
 - Precision is unknown until observed variance, dependence, and sample size are measured. Prior numerical interval estimates and tail-rate statements are unsupported.
 
 ## 6. Unexpected Findings Protocol
 
-Document any: ranking shift across seeds, overfit (train acc >> test mean), feature Δ opposite expectation, invalid-move rate anomaly (see `02-insights.md`). Each gets a dedicated paragraph with exact numbers, not generic prose.
+Document any: ranking shift across seeds, overfit, feature changes opposite expectation, or invalid-move-rate anomaly (see [`02-insights.md`](../03-Findings/02-insights.md)). Each gets a dedicated paragraph with exact numbers, not generic prose.
 
 ## 7. Conclusions (TBD)
 
@@ -73,7 +73,7 @@ Will state framework-validation outcomes, application winner (or null), F1–F3 
 
 ## Implementation Record
 
-- Interpretation guidance is written, but no hypotheses have been evaluated. Decision thresholds and predicted outcomes remain unset pending a justified protocol and completed framework and case-study experiments.
+- Interpretation guidance is written, but no hypotheses have been evaluated. The initial framework diagnostics show 14/15 same-seed prediction sets match; Wine KNN differs across runs and failed save/load equivalence once. This is a recorded limitation, not a model-quality conclusion. Decision thresholds and predicted outcomes remain unset pending matched framework and case-study experiments.
 
 ---
 

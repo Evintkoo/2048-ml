@@ -1,6 +1,6 @@
 # Plan 03 — Hypotheses: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Hypotheses are provisional and untested; statistical tests, effect thresholds, and study power require a finalized protocol.
+> **Status: PARTIAL (2026-09-27).** Hypotheses remain provisional and untested. A seed-42 UCI diagnostic informs framework validation only; statistical tests, effect thresholds, and study power require a finalized protocol.
 
 **Goal:** State the current implementation and evidence boundary for hypotheses.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan records questions for future testing, not evidence.** The study protocol is not finalized; planned sample sizes do not establish power, and several named tests are not implemented.
+**This plan records questions for future testing, not hypothesis evidence.** The study protocol is not finalized; the initial UCI diagnostic is not a confirmatory matched benchmark. Planned sample sizes do not establish power, and several named tests are not implemented.
 
 > **Note:** This section defines hypotheses to be tested. No results are claimed. All answers are pending experimentation.
 
@@ -95,7 +95,7 @@ flowchart TD
 
 ### Exploratory Feature Analysis
 
-Feature groups are evaluated through predeclared ablations, held-out performance, uncertainty intervals, and sensitivity analysis. This analysis does not claim that the 27-dimensional feature set is a Markov blanket or sufficient statistic.
+Feature groups are evaluated through predeclared ablations, held-out performance, uncertainty intervals, and sensitivity analysis. The canonical state has 17 values (16 cells and current score); this analysis does not claim it is a Markov blanket or sufficient statistic.
 
 ## 5. Testing Procedure
 
@@ -164,7 +164,7 @@ Declare the comparison family and correction before analysis. The CLI currently 
 
 ## Implementation Record
 
-- Framework and application hypotheses remain provisional and untested. Standard-dataset validation, model comparison, tuning, and ablation have not been run; no power analysis or confirmatory test family is established.
+- Framework and application hypotheses remain provisional and untested. A three-dataset/five-model UCI diagnostic was run, with a Wine KNN rerun disagreement; no matched benchmark, model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
 
 ---
 

@@ -27,31 +27,28 @@ Verify pin: `git submodule status automl` must match above. See `03-Dependencies
 
 ## 2. automl Capabilities Used for 2048
 
-Canonical task: `TaskType::MultiClassification` on 27-dim state → `action: u8` (0=Up, 1=Down, 2=Left, 3=Right).
+Canonical task per [Plan 00](../../00-scope-and-traceability.md): `TaskType::MultiClassification` on 17 values (16 board cells plus current score) → `action: u8` (0=Up, 1=Down, 2=Left, 3=Right). Ticket #034 now aligns the root encoder, policy, and CSV schema with this contract.
 
 | Feature | Module (`automl/src/...`) | 2048 Wiring |
 |---------|---------------------------|-------------|
 | `TrainingConfig::new(TaskType::MultiClassification, "action")` | `training/config.rs` | Target `action` u8 0–3; `.with_cv(5)` sets a config field but `TrainEngine::fit` does not execute CV; the root wrapper runs grouped CV separately. `.with_random_state(42)` sets `random_seed`. |
 | `ModelType` variants (four-class probability smoke passed) | `training/config.rs` + `training/engine.rs` | Eligible initial candidates: `RandomForest`, `ExtraTrees`, `AdaBoost`, `KNN`, `NaiveBayes`. Other variants may fit but currently return only two probability columns and are excluded until fixed and verified. |
 | `CrossValidator` + `CVStrategy` | `training/cross_validation.rs` | Root wrapper uses `CVStrategy::GroupKFold { n_splits: 5 }` with `groups=game_id` to prevent trajectory leakage. The pinned splitter sorts groups and assigns them round-robin; it is group-disjoint but not chronological. Use a separate forward-chaining procedure when chronology is required. |
-| `TrainEngine` | `training/engine.rs` | `fit(&df)` / `predict(&df)` on polars DataFrame with 27 feature cols + `action` |
+| `TrainEngine` | `training/engine.rs` | `fit(&df)` / `predict(&df)` on Polars DataFrame with 17 numeric features + `action`. |
 | `HyperOptX` + `OptimizationConfig` + `MedianPruner` | `optimizer/` | `OptimizeDirection::Maximize` (accuracy/score); `MedianPruner::new(false)` — `false`=maximize |
 | `DataPreprocessor` | `preprocessing/` | Not currently used by the root collection/training path; feature encoding is deterministic and tree candidates are trained on the canonical numeric values. Any fitted transform must be fit on development training folds only. |
 | `InferenceEngine` | `inference/` | Root policy calls `predict_proba_array`, verifies four columns, then masks illegal moves before `argmax` |
 
 > **Not used for MultiClassification.** `KMeans`, `DBSCAN`, `SOM` require `TaskType::Clustering`; regression-only types (`LinearRegression`, `Ridge`, `Lasso`, `ElasticNet`, `PolynomialRegression`, `GaussianProcess`, `SGD` as regressor) are not candidates for 27-dim → `action` classification. Listed here for completeness only — do not benchmark them for 2048.
 
-## 3. DataFrame Schema (27-dim canonical)
+## 3. Current DataFrame Schema (17 canonical values)
 
-Cross-reference: canonical feature definition lives in `03-State/01-Board/02-feature-extraction.md` and `06-Data/02-Format/01-data-schema.md`. This file shows only the wiring shape.
+Cross-reference: Plan 00 fixes the canonical training state at 17 values. The previous 27-column strategic-feature vector is not used as canonical training input.
 
 ```
-The current root schema is 27 numeric feature columns (f64) + 1 target column (`action`, u8):
-  grid_0..grid_15     — tile values / 32768  (indices 0–15)
-  empty_count/16, max_tile_log/log2/15, monotonicity, smoothness,
-  merges_available/16, score_normalized log10(score+1)/6 (idx 21),
-  adjacency_merge_score, corner_max (=max_corner/32768),
-  edge_tiles/12, col_worst/8192, row_worst/8192  (indices 16–26)
+The root schema is 17 numeric state columns (f64) + 1 target column (`action`, u8):
+  grid_0..grid_15     — tile values / 32768 (indices 0–15)
+  score_normalized    — log10(score+1)/6 (index 16)
   action: u8 0..3    — target (MultiClassification)
 ```
 
@@ -60,7 +57,7 @@ use automl::{TrainingConfig, TaskType, ModelType};
 use automl::training::cross_validation::{CrossValidator, CVStrategy};
 use polars::prelude::*;
 
-// DataFrame has 27 feature columns + `action: u8`
+// DataFrame has 17 state columns + `action: u8`
 let config = TrainingConfig::new(TaskType::MultiClassification, "action")
     .with_model(ModelType::RandomForest)
     .with_cv(5)               // sets cv_folds = 5 (verified in training/config.rs:207)
@@ -83,7 +80,7 @@ Detailed pins and `Cargo.toml` live in `03-Dependencies/01-rust-deps.md`. No dup
 
 | Crate | Role for 2048 |
 |-------|---------------|
-| `polars` 0.46 | DataFrame for 27-dim + action |
+| `polars` 0.46 | DataFrame for 17 state values + action |
 | `ndarray` 0.16 | Fallback arrays for CV helpers |
 | `rand` / `rand_chacha` | Deterministic game RNG, CV shuffling |
 | `rayon` | Parallel batch simulation + `par_iter` CV |

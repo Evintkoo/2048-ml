@@ -1,6 +1,6 @@
 # Plan 01 — Hyperparameter Search: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Versioned HyperOptX search is wired for RandomForest/ExtraTrees over grouped-CV accuracy; pruning and broader candidates remain unsupported.
+> **Status: PARTIAL (2026-09-27).** Versioned HyperOptX search is wired for RandomForest/ExtraTrees over grouped-CV accuracy; pruning and broader candidates remain unsupported.
 
 **Goal:** State the current implementation and evidence boundary for hyperparameter search.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

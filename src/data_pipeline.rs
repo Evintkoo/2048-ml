@@ -1,4 +1,4 @@
-//! CSV storage and validation for the canonical supervised 27-feature schema.
+//! CSV storage and validation for the canonical 17-value supervised state.
 
 use crate::{game_engine::TrainingSample, state::STATE_FEATURES};
 use std::{
@@ -25,17 +25,7 @@ pub const FEATURE_NAMES: [&str; STATE_FEATURES] = [
     "grid_13",
     "grid_14",
     "grid_15",
-    "empty_count",
-    "max_tile_log",
-    "monotonicity",
-    "smoothness",
-    "merges_available",
     "score_normalized",
-    "adjacency_merge_score",
-    "corner_max",
-    "edge_tiles_occupied",
-    "col_worst",
-    "row_worst",
 ];
 
 #[derive(Debug, Error)]
@@ -71,8 +61,8 @@ pub fn write_samples_csv(
     Ok(())
 }
 
-/// Write row-aligned provenance metadata separately from the exact 28-column
-/// AutoML training CSV, preserving game groups without leaking IDs as features.
+/// Write row-aligned provenance metadata separately from the training CSV,
+/// preserving game groups without leaking IDs as features.
 pub fn write_sample_metadata_csv(
     path: impl AsRef<Path>,
     samples: &[TrainingSample],
@@ -114,7 +104,11 @@ pub fn validate_csv(path: impl AsRef<Path>) -> Result<usize, DataError> {
         if fields.len() != STATE_FEATURES + 1 {
             return Err(DataError::InvalidRow {
                 line: line_num,
-                message: format!("expected 28 training columns, got {}", fields.len()),
+                message: format!(
+                    "expected {} training columns, got {}",
+                    STATE_FEATURES + 1,
+                    fields.len()
+                ),
             });
         }
         for (index, field) in fields[..STATE_FEATURES].iter().enumerate() {
@@ -122,17 +116,19 @@ pub fn validate_csv(path: impl AsRef<Path>) -> Result<usize, DataError> {
                 line: line_num,
                 message: format!("feature {index} is not a number"),
             })?;
-            if !value.is_finite() || value < 0.0 || (index != 21 && value > 1.0) {
+            if !value.is_finite() || value < 0.0 {
                 return Err(DataError::InvalidRow {
                     line: line_num,
                     message: format!("feature {index} is out of range: {value}"),
                 });
             }
         }
-        let action: u8 = fields[27].parse().map_err(|_| DataError::InvalidRow {
-            line: line_num,
-            message: "action is not an integer".to_string(),
-        })?;
+        let action: u8 = fields[STATE_FEATURES]
+            .parse()
+            .map_err(|_| DataError::InvalidRow {
+                line: line_num,
+                message: "action is not an integer".to_string(),
+            })?;
         if action > 3 {
             return Err(DataError::InvalidRow {
                 line: line_num,
@@ -146,7 +142,7 @@ pub fn validate_csv(path: impl AsRef<Path>) -> Result<usize, DataError> {
 
 pub fn validate_sample(sample: &TrainingSample) -> Result<(), String> {
     for (index, value) in sample.state_features.iter().copied().enumerate() {
-        if !value.is_finite() || value < 0.0 || (index != 21 && value > 1.0) {
+        if !value.is_finite() || value < 0.0 {
             return Err(format!("feature {index} is out of range: {value}"));
         }
     }
@@ -364,7 +360,7 @@ pub fn split_csv_by_game(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::game_engine::collect_random_game;
+    use crate::game_engine::{collect_random_game, RawBoardState, TrainingSample};
 
     #[test]
     fn csv_roundtrip_validates_rows_and_header() {
@@ -376,6 +372,25 @@ mod tests {
         ));
         write_samples_csv(&path, &game.samples).unwrap();
         assert_eq!(validate_csv(&path).unwrap(), game.samples.len());
+        fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn canonical_csv_accepts_large_tile_and_score_encodings() {
+        let board =
+            RawBoardState::from_grid([65536, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]).unwrap();
+        let sample = TrainingSample {
+            state_features: crate::state::BoardStateMl::from_board(&board).0,
+            action: 0,
+            score: 2_000_000,
+            game_id: 1,
+            move_index: 0,
+        };
+        assert!(validate_sample(&sample).is_ok());
+        let path =
+            std::env::temp_dir().join(format!("2048-ml-large-state-{}.csv", std::process::id()));
+        write_samples_csv(&path, &[sample]).unwrap();
+        assert_eq!(validate_csv(&path).unwrap(), 1);
         fs::remove_file(path).unwrap();
     }
 

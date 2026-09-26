@@ -1,6 +1,6 @@
 # Plan 02 — Search Space: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** The active search space is `n_estimators` and `max_depth` for RandomForest/ExtraTrees; broader parameter mapping remains pending.
+> **Status: PARTIAL (2026-09-27).** The active search space is `n_estimators` and `max_depth` for RandomForest/ExtraTrees; broader parameter mapping remains pending.
 
 **Goal:** State the current implementation and evidence boundary for search space.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

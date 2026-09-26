@@ -20,7 +20,7 @@ This document records architecture observed in the pinned AutoML submodule and r
 
 ```mermaid
 flowchart LR
-    CSV[Canonical feature CSV<br/>27 features + action] --> LOAD[AutoML CLI CSV loader<br/>Polars DataFrame]
+    CSV[Canonical CSV<br/>17 state values + action] --> LOAD[AutoML CSV loader<br/>Polars DataFrame]
     META[Game metadata sidecar<br/>game_id, move_index, score] --> SPLIT[Root chronological holdout<br/>game groups]
     LOAD --> SPLIT
     SPLIT --> CV[Root grouped CV wrapper]
@@ -41,7 +41,7 @@ The root has two parallel layers: it owns the game, feature/data protocol, game-
 
 | Boundary | Observed contract | Source |
 |---|---|---|
-| Training table | Polars `DataFrame`; target column named `action`; root CSV schema has 27 `f64` features and one action column | `src/data_pipeline.rs`; `automl/src/training/engine.rs::prepare_data` |
+| Training table | Polars `DataFrame`; target column named `action`; root CSV has 17 `f64` state values and one action column per Plan 00. | `src/data_pipeline.rs`; `automl/src/training/engine.rs::prepare_data`; Plan 00 |
 | Framework model input | Numeric columns cast to `f64`, then copied into `ndarray::Array2<f64>`; target cast to `Array1<f64>`; null feature/target values are currently replaced with zero in conversion | `automl/src/training/engine.rs::columns_to_array2` |
 | Game provenance | Sidecar has row index, game ID, move index, and score; the row index aligns it to training CSV; IDs are not model features | `src/data_pipeline.rs` |
 | Group split | Root partitions game IDs chronologically for holdout; root CV wrapper uses AutoML `CrossValidator::split` with a group array, then materializes train/test DataFrames | `src/main.rs`; `src/training.rs` |
@@ -73,7 +73,7 @@ On 2026-09-24, the focused root RandomForest save/load smoke failed once in 20 r
 
 ## Evidence boundary
 
-This map is based on source inspection at the revisions above. It does not measure predictive quality, memory, training/inference time, search efficiency, reproducibility across processes, external-framework trade-offs, or standard-dataset portability. Those experiments remain required by the framework-contribution and framework-validation tickets.
+This map records the original source audit at the revisions above. Ticket #034 subsequently changed the root state and CSV integration to 17 values, as required by Plan 00. The audit does not measure predictive quality, memory, training/inference time, search efficiency, reproducibility across processes, external-framework trade-offs, or standard-dataset portability. Those experiments remain required by the framework-contribution and framework-validation tickets.
 
 ## Verification (definition of done)
 

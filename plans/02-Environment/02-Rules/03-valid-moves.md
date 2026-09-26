@@ -56,7 +56,7 @@ pub struct MoveAnalysis {
 
 ## 5. ML Encoding — Action u8 0–3
 
-The model returns four class probabilities. The root selects from legal action IDs with `actions::masked_argmax`, then converts the selected ID with `Direction::try_from_action`. The supervised row is `state_features:[f64;27] → action:u8`; score remains metadata.
+The model returns four class probabilities. The root selects from legal action IDs with `actions::masked_argmax`, then converts the selected ID with `Direction::try_from_action`. Plan 00 defines the canonical supervised row as 17 state values → `action:u8`; ticket #034 aligned the root policy input with that schema.
 
 ## 6. Constrained Action (Legal-Action Masking)
 
@@ -81,7 +81,7 @@ These are descriptive baseline frequencies, not a training prior or framework re
 
 ## 8. Deleted — No Sequence / LSTM Hint
 
-> **Deleted:** `MoveSequence { moves:Vec<Direction>, scores:Vec<u64>, board_states:Vec<Board> }` — no RL/LSTM in MVP. Training rows are **i.i.d.** for `GroupKFold` (`groups=game_id`; not temporal — see `05-Model/04-Evaluation/02-cross-validation.md`; use `TimeSeriesSplit` for temporal). No `rewards:Vec<f64>` anywhere (violates supervised-only canonical — `TrainingSample` is `{ states:Vec<[f64;27]>, actions:Vec<u8>, scores:Vec<u64> }`).
+> **Deleted:** `MoveSequence { moves:Vec<Direction>, scores:Vec<u64>, board_states:Vec<Board> }` — no RL/LSTM in MVP. Rows from the same game are grouped together in CV to prevent game leakage; GroupKFold itself is not temporal. No reward labels are used. Canonical state values are 17.
 
 ## 9. Heuristic Strategies (Reference Only, Baseline)
 

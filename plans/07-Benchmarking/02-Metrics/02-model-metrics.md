@@ -1,6 +1,6 @@
 # Plan 02 — Model Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Score outcomes are summarized; classification confusion/F1/valid-action accuracy and training curves are not implemented.
+> **Status: PARTIAL (2026-09-27).** Score summaries and reusable classification diagnostics exist; fixed-split reports, policy legal-action measurements, and training curves remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats game-score summaries as implemented and classifier diagnostics as pending.** The model predicts action labels, but the current root evaluation path does not calculate macro F1, confusion matrices, or valid-action accuracy. Classical `TrainEngine::fit` does not expose an epoch training curve in the root workflow.
+**This plan treats score summaries and reusable classification diagnostics as implemented, while evaluation runs remain pending.** `src/evaluation.rs` computes accuracy, per-class F1, macro precision/recall/F1, and a confusion matrix from fixed label arrays; it also computes the fraction of 2048 predictions that choose a legal action. The benchmark CLI does not yet load held-out labels or report these diagnostics. Classical `TrainEngine::fit` does not expose an epoch training curve in the root workflow.
 
 ## 1. Purpose
 
@@ -48,7 +48,8 @@ flowchart TD
 
 | Metric | Description | Purpose |
 |--------|-------------|----------|
-| Valid-Action Accuracy | % of correct action predictions on valid moves (0–3) | Primary classification metric |
+| Classification accuracy | Exact-match fraction over a declared class set | General classification diagnostic |
+| Legal-Action Prediction Rate | Fraction of predictions that are legal for their corresponding board | 2048 policy validity diagnostic; distinct from label accuracy |
 | F1 Macro | Macro-averaged F1 across 4 action classes | Class-balance aware metric |
 | Confusion Matrix | 4×4 matrix (Up/Down/Left/Right) | Per-class error analysis |
 | Mean Game Score | Mean score over ≥10k benchmark games (separate pipeline) | Downstream benchmark — not regression |
@@ -145,7 +146,7 @@ Report metrics that are implemented and retain per-game outcomes. Add classifica
 
 ## Implementation Record
 
-- Downstream game score and descriptive/statistical summaries are implemented. Classification confusion matrix, macro-F1, valid-action accuracy, training curves, and gate automation are not implemented. No gates are defined by canonical scope.
+- `src/evaluation.rs` provides generic confusion-matrix, accuracy, per-class F1, macro precision/recall/F1, and a separate 4-action legal-prediction-rate helper. The benchmark CLI does not yet generate fixed-split classifier reports; training curves and gate automation are not implemented. No gates are defined by canonical scope.
 
 ---
 
@@ -162,7 +163,7 @@ Report metrics that are implemented and retain per-game outcomes. Add classifica
 
 ## Open questions
 
-- Implement classification diagnostics and verify their definitions on fixed data before reporting any classifier quality. Keep game score as a distinct downstream case-study outcome.
+- Wire the diagnostics to a fixed held-out dataset and retain predictions, labels, class ordering, and report provenance before making classifier-quality claims. Keep game score as a distinct downstream case-study outcome.
 
 ## Later
 

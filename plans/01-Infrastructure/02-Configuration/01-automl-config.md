@@ -5,6 +5,8 @@
 **Goal:** State the current implementation and evidence boundary for automl configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
 
+**Canonical input contract:** Plan 00 requires 17 training values: 16 board cells plus current score. Ticket #034 aligned the encoder and CLI schema with that contract. Configuration examples below describe model/optimizer APIs; the former 27-column derived-feature vector is excluded from canonical training.
+
 ---
 
 ## Decision and evidence

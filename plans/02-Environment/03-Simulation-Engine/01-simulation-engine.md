@@ -11,7 +11,7 @@
 
 **This plan treats the simulator and baseline protocol as implemented, with large rollout-labeled data collection pending.** The seeded 10,000-game random and heuristic score/frequency baselines are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Those runs evaluate baseline agents; they do not fulfill the separate rollout-labeled supervised corpus requirement. A prior small-collection throughput estimate projects about 103 hours for the 20,000-game labeled configuration. That run remains unscheduled pending an explicit compute budget and the collection reliability work tracked by the multi-game ticket.
 
-> **Supervised row:** `TrainingSample { state_features:[f64;27], action:u8, score:u64 metadata }` for `TaskType::MultiClassification`. Headless only, no UI.
+> **Canonical supervised row:** 17 state values (16 board cells plus score) and `action:u8` for `TaskType::MultiClassification`. Ticket #034 aligns the encoder, collector, and policy with this schema. Headless only, no UI.
 
 ## 1. Purpose
 
@@ -57,14 +57,14 @@ impl Agent for RandomAgent {
 pub struct ModelAgent { model: InferenceEngine } // automl InferenceEngine
 impl Agent for ModelAgent {
     fn select_move(&self, board: &Board) -> Direction {
-        let feats = board_features(board); // [f64;27] — see 03-State/01-Board/01-board-state.md
+        let feats = board_features(board); // canonical [f64;17]
         let probabilities = self.model.predict_proba(&feats); // four class probabilities
         constrained_action(&probabilities, board) // via would_change — see 02-Rules/03-valid-moves.md
     }
 }
 ```
 
-> `board_features` → `[f64;27]` includes `score_normalized` at index 21 `log10(score+1)/6.0` — canonical grid `/32768`.
+> The previous 27-value vector placed `score_normalized` at index 21. The canonical 17-value vector places it at index 16.
 
 ## 4. Batch Simulation
 
@@ -139,12 +139,13 @@ pub struct SimulationConfig {
 
 ```rust
 pub struct TrainingSample {
-    pub state_features: [f64;27], // BoardStateML::to_array() — 16 grid/32768 + 11 derived, idx21 score/6.0
+    pub state_features: [f64;17], // canonical: 16 board cells plus current score; encoding is specified by state tickets
     pub action: u8,               // ONLY label: Direction 0–3 (Up=0,Down=1,Left=2,Right=3)
     pub score: u64,               // metadata for analysis/benchmarking ONLY, never y
 }
-// DataFrame: state_features:[f64;27], action:u8, score:u64, game_id:u64 (for GroupKFold groups)
-// See 06-Data/02-Format/01-data-schema.md and 03-multi-game.md GameDataset { states, actions, scores }
+// Canonical DataFrame: 17 input columns + action and provenance metadata.
+// Current collector writes 27 feature columns; this is not the canonical schema.
+// See 06-Data/02-Format/01-data-schema.md and 03-multi-game.md.
 ```
 
 > **No RL tuple.** Do not store `rewards:Vec<f64>` — violates supervised-only canonical (see `03-multi-game.md` critical fix). No `MoveSequence Vec<Board>` LSTM hint.
@@ -159,9 +160,9 @@ pub struct TrainingSample {
 ## 10. Cross-References
 
 - **Rules:** `02-Rules/01-scoring-rules.md` (score metadata), `02-win-lose-conditions.md` (would_change terminal), `03-valid-moves.md` (constrained_action)
-- **State:** `03-State/01-Board/01-board-state.md` (27-dim), `03-State/01-Board/02-feature-extraction.md`
+- **State:** Plan 00 defines the 17-value training input, implemented by ticket #034. The former 27-feature vector is documented separately in `03-State/01-Board/02-feature-extraction.md`.
 - **RNG / parallel:** `02-randomness.md` (`wrapping_add`, `TrainingConfig::with_random_state(42)`, rayon threads)
-- **Dataset:** `03-multi-game.md` (`GameDataset { states:Vec<[f64;27]>, actions:Vec<u8>, scores:Vec<u64> }`)
+- **Dataset:** `03-multi-game.md`; canonical state rows contain 17 values.
 - **Headless only:** No UI — `01-Game/04-game-ui.md` is debug stub; canonical viz `04-Visualization/01-visualization.md`
 
 ## Implementation Record

@@ -7,7 +7,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-cli-tools](01-cli-tools.md) | CLI Tools Specification | DONE (2026-09-24) |
-| [02-dev-environment](02-dev-environment.md) | Development Environment Setup | DONE (2026-09-24) |
+| [02-dev-environment](02-dev-environment.md) | Development Environment Setup | DONE (2026-09-26) |
 
 ## Reading paths
 

@@ -1,6 +1,6 @@
 # Plan 02 — Development Environment Setup: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** Rust 1.96.1 present; root formatting/tests/clippy and pinned AutoML library tests pass; submodule check no longer assumes .git directory.
+> **Status: DONE (2026-09-26).** Rust 1.96.1, 24 GiB RAM, and 34 GiB free disk verified; root format, 32 tests, Clippy, and current AutoML worktree's 710 library tests pass.
 
 **Goal:** State the current implementation and evidence boundary for development environment setup.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -39,7 +39,7 @@ cd automl && cargo test --lib # pinned framework library suite; run in the submo
 
 ```bash
 git -C automl rev-parse HEAD              # verify the submodule checkout is present and pinned
-cargo test -p automl --lib -- training::config
+cargo test --manifest-path automl/Cargo.toml --lib -- training::config
 ```
 
 If `cargo: command not found` → `source "$HOME/.cargo/env"`.

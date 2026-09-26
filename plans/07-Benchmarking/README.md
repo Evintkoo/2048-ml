@@ -9,7 +9,7 @@ This stage groups its work into ordered ticket series.
 | [01-Evaluation](01-Evaluation/README.md) | Child ticket series | See child index |
 | [02-Metrics](02-Metrics/README.md) | Child ticket series | See child index |
 | [03-Comparison](03-Comparison/README.md) | Child ticket series | See child index |
-| [04-Analysis](04-Analysis/README.md) | Child ticket series | See child index |
+| [04-Analysis](04-Analysis/README.md) | Child ticket series | Partial — initial standard-dataset results summarized; confirmatory 2048 analysis and inferential study pending |
 
 ## Reading paths
 

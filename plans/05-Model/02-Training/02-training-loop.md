@@ -1,6 +1,6 @@
 # Plan 02 — Training Loop: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Classical fit/save/load and grouped CV are implemented; broader diagnostics and final test workflow remain pending.
+> **Status: PARTIAL (2026-09-27).** Classical fit/save/load and grouped CV are implemented; broader diagnostics and final test workflow remain pending.
 
 **Goal:** State the current implementation and evidence boundary for training loop.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -22,7 +22,7 @@ Training is **not** iterative weight updates. It is: DataFrame → `TrainingConf
 ```mermaid
 flowchart TD
     subgraph "Classical Training Loop — No NN"
-        DF[DataFrame<br/>27 numeric features + action 0-3]
+        DF[DataFrame<br/>17 numeric features + action 0-3]
         DF --> Config[TrainingConfig<br/>TaskType::MultiClassification<br/>ModelType::RandomForest<br/>cv_folds=5, random_state=42]
         Config --> Engine[TrainEngine::new(config)]
         Engine --> Fit[engine.fit(&df)<br/>builds trees — no forward/backward]
@@ -73,7 +73,7 @@ flowchart LR
 ```mermaid
 flowchart TB
     Start[Start Training]
-    Start --> Prepare[Prepare DataFrame<br/>extract X 27 dims + y 0-3]
+    Start --> Prepare[Prepare DataFrame<br/>extract X 17 dims + y 0-3]
     Prepare --> Split[Internal stratified split<br/>validation_split=0.2]
     Split --> Build[Build trees<br/>n_estimators trees, max_depth per tree]
     Build --> Validate[Validate<br/>accuracy + F1 macro + loss if SGD]
@@ -95,7 +95,7 @@ use automl::training::TrainEngine;
 use automl::inference::{InferenceEngine, InferenceConfig};
 use polars::prelude::*;
 
-// 1) DataFrame with 27 numeric features + target column "action" (u8 0-3)
+// 1) DataFrame with 17 numeric features + target column "action" (u8 0-3)
 let df: DataFrame = load_state_action_pairs()?; // see 06-Data/
 
 // 2) Config — note: task is MultiClassification, not regression
@@ -192,7 +192,7 @@ flowchart LR
 
 1. Select model type in `03-model-architecture.md` via `TrainingConfig::new(MultiClassification, "action").with_model(...)`
 2. Run fit with group-aware CV (`GroupKFold {n_splits:5}.with_random_state(42).split(n, None, Some(&groups))`)
-3. Evaluate gates: Valid-Action Accuracy ≥60%, F1 ≥0.55, Mean Game Score ≥512 (see `04-Evaluation/`)
+3. Report protocol-defined diagnostics and game scores; no canonical thresholds are set (see `04-Evaluation/`)
 
 ## Implementation Record
 

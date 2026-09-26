@@ -1,6 +1,6 @@
 # Plan 02 — Methodology: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** This redirect points to an experimental design that remains proposed; no full study protocol has been executed.
+> **Status: PARTIAL (2026-09-27).** This redirect points to an experimental design that remains proposed; an initial UCI diagnostic exists, but no confirmatory protocol has been executed.
 
 **Goal:** State the current implementation and evidence boundary for methodology.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -13,7 +13,7 @@
 
 > **This file is a 25-line redirect. Do not duplicate flowcharts or expand scope here. All protocol, variables, and gates are defined in `02-Methodology/01-experimental-design.md`.**
 
-The planned case study uses a 27-feature vector and four action labels with the AutoML training integration. Evaluation size, training and evaluation seed design, and comparison protocol must be justified and recorded before a confirmatory run; the previously specified ≥10,000 games and seed 42 have not been executed.
+The planned case study uses the canonical 17-value state and four action labels with the AutoML training integration. Evaluation size, training and evaluation seed design, and comparison protocol must be justified and recorded before a confirmatory run; the previously specified ≥10,000-game case-study run has not been executed.
 
 **Canonical reference:** See `02-Methodology/01-experimental-design.md` for variables, trial structure, replication, bias controls, sample-size justification, and pre-registration. See `02-Methodology/03-hypotheses.md` for framework hypotheses F1–F3 and application hypotheses H1–H3, and `02-Methodology/04-ablation-study.md` for the ablation matrix.
 
@@ -24,7 +24,7 @@ The planned case study uses a 27-feature vector and four action labels with the 
 | automl | Local path dependency; submodule revision recorded in Git | Record exact revision and local modifications |
 | Rust | Manifest minimum `1.75`; current toolchain may differ | Record actual compiler and target |
 | Task | `TaskType::MultiClassification` | 4 actions 0–3 |
-| Features | 27-value model vector | Game ID is row provenance / group key |
+| Features | 17-value model vector | 16 board cells plus current score; game ID is provenance/group key |
 | polars | `0.46` dependency | Root output paths include CSV; Parquet is not established for this workflow |
 | Seeds | To be declared per study | Record training and evaluation seed roles separately |
 | Games | To be justified and declared | No winner ranking has been performed |
@@ -35,7 +35,7 @@ The planned case study uses a 27-feature vector and four action labels with the 
 
 ## Implementation Record
 
-- Redirect audited against the experimental design, manifests, and current dependency manifest. The 10k/game, seed matrix, and Parquet workflow are proposals rather than executed protocol; the exact submodule revision and actual Rust version must be recorded with each study.
+- Redirect audited against the experimental design, manifests, and dependency manifest. The 10k-game policy run, seed matrix, and Parquet workflow are proposals rather than executed protocol. The separate seed-42 standard-dataset diagnostic is recorded under `reports/framework_validation/`; it does not complete the framework gate or case-study protocol. Exact submodule revision and toolchain are retained in its run manifests.
 
 ---
 

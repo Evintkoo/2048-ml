@@ -1,6 +1,6 @@
 # Plan 03 — Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Game-score summaries and uncertainty helpers exist; the planned classification metric suite is not implemented.
+> **Status: PARTIAL (2026-09-27).** Game-score summaries and uncertainty helpers exist; the planned classification metric suite is not implemented.
 
 **Goal:** State the current implementation and evidence boundary for metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -57,7 +57,7 @@ pub fn masked_accuracy(
 
 ## 3. Regression Metrics — Not Used
 
-> The task is four-action classification from 27 features. Regression metrics are not applicable to the action target. Game score is a downstream 2048 outcome and is summarized separately.
+> The task is four-action classification from 17 features. Regression metrics are not applicable to the action target. Game score is a downstream 2048 outcome and is summarized separately.
 
 ```mermaid
 flowchart TB
@@ -122,9 +122,9 @@ flowchart TD
         ModelPerf[2048 Case-Study Ranking: Mean Game Score<br/>application metric — uncertainty reported]
     end
     
-    ModelPerf --> Rank[Rank by Mean Game Score<br/>≥512 to beat heuristic]
-    Rank --> Gate1[Gate: Valid-Action Accuracy ≥60%]
-    Gate1 --> Gate2[Gate: F1 Macro ≥0.55]
+    ModelPerf --> Rank[Rank by Mean Game Score<br/>protocol-defined; no default threshold]
+    Rank --> Gate1[Diagnostic: report valid-action accuracy]
+    Gate1 --> Gate2[Diagnostic: report F1 macro]
     Gate2 --> SpeedW[Informative: Inference Speed ≤1ms]
     
     style ModelPerf fill:#e3f2fd
@@ -179,7 +179,7 @@ flowchart LR
 
 1. Run cross-validation experiments
 2. Collect metric results
-3. Compare against targets
+3. Interpret against the predeclared protocol
 
 ## Implementation Record
 

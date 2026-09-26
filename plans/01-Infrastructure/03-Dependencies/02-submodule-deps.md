@@ -1,6 +1,6 @@
 # Plan 02 — Submodule Dependency Management: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** Submodule hash matches pin; full submodule library suite passed 709/709.
+> **Status: PARTIAL (2026-09-26).** Submodule hash matches pin and its current modified worktree passes 710 library tests; the plan's clean-worktree gate remains unmet.
 
 **Goal:** State the current implementation and evidence boundary for submodule dependency management.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Submodule hash matches pin; full submodule library suite passed 709/709.
+**This plan treats its subject as partial dependency management, not as a research finding.** The pinned commit hash matches, and the current local worktree library suite passes 710 tests. The health check also requires an empty worktree; local research edits remain uncommitted in `automl/Cargo.toml`, `automl/src/training/decision_tree.rs`, and `automl/src/training/engine.rs`.
 
 > Pinned commit: `64f5edad29c9e58ee7d33abf380418d5cfbbb561` — verify with `git submodule status automl`.
 
@@ -66,7 +66,7 @@ git -C automl status --short              # must be empty (no local edits)
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Submodule hash matches pin; full submodule library suite passed 709/709. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The clean pinned-checkout gate remains unmet.** Hash is pinned and 710 tests pass on the current local worktree; its three modified files mean this run is not evidence for the unmodified pinned source. Preserve or publish the research patch and re-run verification from a clean checkout before treating this gate as complete.
 
 ## Later
 

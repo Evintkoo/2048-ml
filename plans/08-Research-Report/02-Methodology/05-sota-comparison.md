@@ -1,6 +1,6 @@
 # Plan 05 — State-of-the-Art Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Random and heuristic baselines and model runners exist; no trained-policy comparison or verified external-agent reproduction is complete.
+> **Status: PARTIAL (2026-09-27).** Random and heuristic baselines and model runners exist; no trained-policy comparison or verified external-agent reproduction is complete.
 
 **Goal:** State the current implementation and evidence boundary for state-of-the-art comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -13,7 +13,7 @@
 
 ## 1. Purpose
 
-This section compares the proposed AutoML approach against state-of-the-art methods in game AI, heuristic search, and automated machine learning. A fair comparison requires protocol-matched outcomes and resource measurements. No broad superiority claim follows from a game-score comparison.
+This section frames possible context against methods in game AI, heuristic search, and automated machine learning. A fair empirical comparison requires protocol-matched outcomes and resource measurements. No broad superiority claim follows from a game-score comparison; external agents remain contextual unless reproduced under a controlled protocol.
 
 ## 2. Baseline Methods
 
@@ -134,7 +134,7 @@ This comparison sets the methodological standard for the entire research and pro
 
 ## Implementation Record
 
-- Random, heuristic, and model benchmark commands exist; no trained-policy model comparison has been completed. Quoted external score estimates and agent implementations are unverified and excluded from empirical claims.
+- Random, heuristic, and model benchmark commands exist; no trained-policy model comparison has been completed. Quoted external score estimates and agent implementations are unverified and excluded from empirical claims. The standard-dataset AutoML diagnostic is a separate framework track and provides no 2048 ranking evidence.
 
 ---
 

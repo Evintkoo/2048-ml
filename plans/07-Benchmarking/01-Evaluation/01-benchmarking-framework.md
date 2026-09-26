@@ -32,7 +32,7 @@ flowchart TD
         
         subgraph "Measurement"
             Collect[Data Collector<br/>Metrics]
-            Store[Storage<br/>Results DB]
+            Store[Storage<br/>Per-game CSV + JSON manifest]
         end
         
         Config --> Env
@@ -233,6 +233,7 @@ For the 2048 case study, the provisional winner is the model with the highest he
 
 - CLI supports seeded random, heuristic, and saved-model score runs; paired comparisons; score summaries; bootstrap intervals; exact sign tests; Mann–Whitney U; Holm adjustment; and effect sizes. Results include manifests and source/file hashes.
 - A model-versus-baseline ranking at the declared scale and efficiency-by-move profiling have not been completed. Random/heuristic values previously shown as expectations are unverified estimates, not results.
+- The architecture diagram names the implemented per-run CSV and JSON manifest artifacts; no results database is present.
 
 ---
 

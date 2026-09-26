@@ -13,7 +13,7 @@
 
 ## 1. Purpose
 
-Compare the real `automl` `ModelType` variants on the fixed 27→action `MultiClassification` task. No placeholder "Architecture A/B/C".
+Compare the real `automl` `ModelType` variants on the canonical 17-value state→action `MultiClassification` task. No placeholder "Architecture A/B/C".
 
 ## 2. Variants Under Test
 

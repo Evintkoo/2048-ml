@@ -1,6 +1,6 @@
 # Plan 03 — Results: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Result templates are documented, but neither the named-dataset framework study nor plan-scale policy results are populated.
+> **Status: PARTIAL (2026-09-27).** Initial UCI framework diagnostics and repeatability artifacts are populated; matched framework comparisons and plan-scale 2048 policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for results.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is an output specification, not a results report.** Framework validation is partial and no trained-model ranking is available. Example schemas and procedures below must not be mistaken for implemented output contracts.
+**This plan remains an output specification, not a completed results report.** Initial UCI fixed-split outcomes and a two-run repeatability analysis are retained in `reports/framework_validation/`; no matched external baseline comparison or 2048 trained-model ranking is available. The initial dataset matrix is diagnostic and does not establish framework superiority.
 
 > No empirical result or winner is claimed in this document.
 
@@ -26,13 +26,13 @@ Framework results must report, for each named dataset and configuration:
 - Model serialization and reload equivalence.
 - CLI/library/API output equivalence.
 
-Named-dataset results, matched external baselines, and resource measurements are pending.
+Initial named-dataset results are reported in `reports/framework_validation/README.md`. Matched external baselines, memory/resource profiles, CLI/API equivalence, and a broader repeated-run study remain pending.
 
 No 2048 game score can substitute for this table.
 
 ## Implementation Record
 
-- Results interface only; neither the required framework benchmark matrix nor plan-scale 2048 result tables are populated. Schema examples referring to non-existent modules/formats are specification sketches, not current output artifacts.
+- The initial three-dataset/five-model framework matrix is populated in `reports/framework_validation/`, with raw predictions, split manifests, serialized models, run manifests, and a repeatability comparison. It is one split with two processes and includes a Wine KNN reproducibility/serialization failure. The 2048 case-study result table remains unpopulated; schema examples remain illustrative unless tied to an actual output artifact.
 
 ## 2. 2048 Case-Study Winner Protocol (Canonical: `07-Benchmarking/01-Evaluation/01-benchmarking-framework.md`)
 
@@ -66,13 +66,13 @@ The helper inventory and its limitations are summarized in the benchmarking anal
 
 ## 4. Table Shells (Populated by Pipeline, Not Hand-Edited)
 
-### Ranking Table Shell (No Output Pipeline Exists)
+### Ranking Table Shell (No Case-Study Ranking Result)
 
 | Model | Mean | Median | SD | 95% CI (bootstrap) | Rank | Training time | MWU vs #2 |
 |-------|------|--------|----|---------------------|------|---------------|-----------|
 | TBD | TBD | TBD | TBD | [TBD, TBD] | TBD | TBD | p=TBD, d=TBD |
 
-Populate only with measured scores and manifests from a declared protocol.
+The CLI can summarize and compare game-score files, but no case-study model ranking has been run. Populate only with measured scores and manifests from a declared protocol.
 
 ### 3.2 Gate Table
 

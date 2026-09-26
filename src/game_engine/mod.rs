@@ -393,7 +393,7 @@ pub fn simulate_random_game(seed: u64, spawn_prob_4: f64, max_moves: u64) -> Gam
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TrainingSample {
-    pub state_features: [f64; 27],
+    pub state_features: [f64; crate::state::STATE_FEATURES],
     pub action: u8,
     pub score: u64,
     pub game_id: u64,

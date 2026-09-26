@@ -1,6 +1,6 @@
 # Plan 01 — Move History: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Group IDs, move indices, actions, and score deltas are retained; raw board-history export remains deferred and Parquet is unsupported.
+> **Status: PARTIAL (2026-09-27).** Per-game actions and score deltas plus row provenance are retained; raw board-history export remains deferred.
 
 **Goal:** State the current implementation and evidence boundary for move history.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -11,7 +11,7 @@
 
 **This plan treats grouped provenance as implemented and raw history export as pending.** Training rows retain `game_id` and `move_index` in a sidecar, which is enough for game-group splitting. Per-move pre-state snapshots are used in memory for rollout relabeling but are not persisted as a separate history dataset; history is not a training feature.
 
-> **Not for training.** History is never fed as features. Each row for training is ` (from_state: [f64;27], action: u8)` — see `02-state-transition.md`. This file = grouped raw log for `GroupKFold` leakage prevention.
+> **Not for training.** History is never fed as features. Each row for training is `(from_state: [f64;17], action: u8)` — see `02-state-transition.md`. This file = grouped raw log for `GroupKFold` leakage prevention.
 
 ## 1. Record — Minimal
 
@@ -49,12 +49,12 @@ pub fn validate_history(h: &MoveHistory) -> Result<()> {
 
 ## 5. Persistence
 
-Raw board-history export is not part of the current CSV training path. If a concrete audit use requires persisted pre-state snapshots, define its storage format in the later state-transition ticket; Parquet support does not exist in the root.
+Raw board-history export is not part of the current CSV training path. If persisted pre-state snapshots become necessary for an audit, define their format and provenance requirements in a separate ticket.
 
 ## Implementation Record
 
 - Each `GameResult` retains action and score-delta move history. Collected supervised rows retain `game_id` and `move_index` in a separate metadata CSV, preserving row grouping for game-level splits.
-- Raw pre-state snapshots are held only while rollout relabeling runs, then discarded. They are not model features and are not persisted; Parquet history persistence is unsupported. The transition plan later in this folder owns any separate audit-log decision.
+- Raw pre-state snapshots are held only while rollout relabeling runs, then discarded. They are not model features and are not persisted. A separate audit-log format has not been specified.
 
 ---
 

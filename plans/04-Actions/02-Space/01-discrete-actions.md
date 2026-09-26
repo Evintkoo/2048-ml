@@ -1,6 +1,6 @@
 # Plan 01 — Discrete Actions: the repository status is explicit and evidence based
 
-> **Status: COMPLETE (2026-09-26).** Verified against the canonical action interface.
+> **Status: COMPLETE (2026-09-27).** Verified against the canonical action interface.
 
 **Goal:** State the current implementation and evidence boundary for discrete actions.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

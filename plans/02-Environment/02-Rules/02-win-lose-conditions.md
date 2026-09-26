@@ -16,7 +16,7 @@
 ## 1. Win Condition (Non-Terminal)
 
 - Tile `2048` created = *win* but **game does not stop** — player may continue to higher tiles.
-- No upper bound asserted here. Canonical max tile is `32768` (`2^15`) per `03-State/01-Board/01-board-state.md` (`max_tile_log /15`, grid normalization `/32768`). **Delete 65536 speculation — out of scope.**
+- No game-level upper bound is asserted here. Tile normalization limits belong to the state/data protocol; the current engine accepts power-of-two values beyond 32768.
 - Higher tiles (4096, 8192, ...) are strictly *continued play*, not new win variants to enumerate in `WinCondition`. Keep only:
 
 ```rust
@@ -25,7 +25,7 @@ pub enum WinCondition {
     Won2048,
     Won4096,
     Won8192,
-    // Not needed: Won16384/Won32768/Won65536 — delete speculation; track max_tile: u32 instead
+    // Additional win categories are not needed; track max_tile: u32 as result metadata.
 }
 ```
 
@@ -72,7 +72,8 @@ pub struct GameResult {
     pub move_history: Vec<MoveRecord>, // Vec<(action:u8, score_delta:u64)>
     pub win_condition: WinCondition,
     pub duration_ms: u64,
-    // Training rows derived separately: Vec<TrainingSample { [f64;27], action:u8, score:u64 }>
+    // Canonical rows derived separately: Vec<TrainingSample { [f64;17], action:u8, score:u64 }>.
+    // Model rows use the canonical 17-value state.
 }
 ```
 
@@ -89,12 +90,12 @@ pub struct GameResult {
 ```rust
 pub struct EarlyStopCriteria {
     pub max_moves: u64,           // e.g., 1000
-    pub max_score: Option<u64>,   // configurable via config.toml — if using log-norm log10(score+1)/6.0, map: 20000 → ~0.72
+    pub max_score: Option<u64>,   // illustrative only; no max-score config is implemented
     pub stagnation_limit: u64,    // moves without score increase
 }
 ```
 
-> `max_score` is an example threshold only — configure per run. Not a theoretical max (open problem per project-overview). Raw threshold must map to normalized feature scale `log10(score+1)/6.0`.
+> This struct is illustrative only. The current simulator implements a `max_moves` safety cap; it does not implement max-score or stagnation stopping. Score normalization is an input encoding and does not bound the game.
 
 ## 7. Edge Cases
 
@@ -109,7 +110,7 @@ pub struct EarlyStopCriteria {
 
 - **Scoring (metadata only):** `01-scoring-rules.md`
 - **Valid moves:** `03-valid-moves.md` (`would_change`, `constrained_action`)
-- **Features / normalization:** `03-State/01-Board/01-board-state.md` (`/32768`, index 21 `/6.0`)
+- **Training input:** Plan 00 defines 17 values; ticket #034 implements the state and encoding.
 - **CV:** `05-Model/04-Evaluation/02-cross-validation.md` (`GroupKFold` vs `TimeSeriesSplit`)
 - **RNG:** `03-Simulation-Engine/02-randomness.md` (`ChaCha8Rng`, `spawn_prob_4:0.1`)
 

@@ -13,7 +13,7 @@
 
 ## 1. Purpose
 
-Define the headless 2048 simulation engine that generates supervised `([f64;27] → u8)` training data via Evintkoo/automl `TaskType::MultiClassification`. No UI/web — headless only.
+Define the headless 2048 simulation engine that generates game trajectories and action records for supervised policy learning. The canonical model input is 17 values under Plan 00, implemented by ticket #034. No UI/web — headless only.
 
 ## 2. Game Rules Summary (Thin)
 
@@ -128,7 +128,8 @@ impl GameSimulator {
     }
     pub fn simulate_random(&mut self) -> GameResult { todo!() }
     pub fn simulate_with_model(&mut self, model: &dyn Model) -> GameResult { todo!() }
-    // TrainingSample produced: ([f64;27], action: u8, score: u64 metadata) — see 03-Simulation-Engine/01-simulation-engine.md
+    // Canonical TrainingSample: ([f64;17], action: u8, score: u64 metadata).
+    // Root collection uses the canonical 17-value state.
 }
 ```
 
@@ -159,7 +160,7 @@ impl Default for SimulatorConfig {
 | Board state | `[u32;16]` flat, empty=0, zero-alloc moves | — |
 | Parallelism | `rayon` par_iter over games (see 03-Simulation-Engine/03-multi-game.md) — thread count fixed for determinism | — |
 | Precomputed move tables / bitboard / SIMD | **Optional, not MVP** — mark out-of-scope; profile after 10k baseline works | Precomputed tables, bitboard u64, SIMD batch — add only if >2× gain measured |
-| Serialization | `[f64;27]` + `u8` + `u64` score to Parquet/CSV — see 06-Data | — |
+| Serialization | Canonical `[f64;17]` + `u8` + `u64` score to CSV — see 06-Data | — |
 
 ## 8. Implementation Record
 
@@ -172,8 +173,8 @@ Merge events, per-turn score totals, and move action/score-delta records are inc
 - **RNG / seed hygiene (canonical):** `03-Simulation-Engine/02-randomness.md`
 - **Board transforms:** `01-Game/03-board-representation.md` (grid normalization `/32768`)
 - **Scoring / win-lose / valid-moves (canonical):** `02-Rules/01-scoring-rules.md`, `02-win-lose-conditions.md`, `03-valid-moves.md`
-- **Training row:** `03-Simulation-Engine/01-simulation-engine.md` — `TrainingSample { state_features:[f64;27], action:u8, score:u64 metadata }`, `TaskType::MultiClassification`
-- **Features (27-dim):** `03-State/01-Board/01-board-state.md` (16 raw + 11 derived, score at index 21 `/6.0`)
+- **Training row:** `03-Simulation-Engine/01-simulation-engine.md` — canonical `TrainingSample` uses 17 values plus action and score metadata.
+- **Current feature implementation:** `03-State/01-Board/01-board-state.md` describes the implemented 27 values. Plan 00 remains authoritative for the canonical 17-value model input.
 - **Out-of-scope UI:** Headless only — debug print only in `01-Game/04-game-ui.md` (deprecated stub), canonical viz JSON in `04-Visualization/01-visualization.md`
 
 ---

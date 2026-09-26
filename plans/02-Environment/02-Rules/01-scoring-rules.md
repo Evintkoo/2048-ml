@@ -47,7 +47,8 @@ pub struct MergeEvent {
 | Property | Value |
 |----------|-------|
 | **Training label (target)** | `action: u8` 0–3 (`Direction::Up=0, Down=1, Left=2, Right=3`) |
-| **Input features** | `state_features: [f64;27]` → 4 logits → `argmax` |
+| **Canonical input** | 16 board cells plus current score (17 values), per Plan 00 |
+| **Current implementation** | `state_features: [f64;17]` with `score_normalized` at index 16; score remains encoded input and raw metadata |
 | **TaskType** | `TaskType::MultiClassification` (Evintkoo/automl) — **not regression** |
 | **Score column role** | `score: u64` **metadata only** — post-hoc analysis & benchmarking (mean/median, distribution, `> heuristic ~512` rate). **Never `y`.** |
 
@@ -55,10 +56,10 @@ pub struct MergeEvent {
 
 ## 5. Score as Feature (Not Target)
 
-Score may inform the policy as a *feature*, not a label:
+The canonical input includes current score as its seventeenth value. The implementation encodes it as `score_normalized` at index 16; the raw score remains available in metadata.
 
 ```rust
-pub struct GameFeatures { // excerpt — full 27-dim in 03-State/01-Board/01-board-state.md
+pub struct GameFeatures { // excerpt from current implementation; not the canonical input schema
     pub score: f64,                // raw for display
     pub score_normalized: f64,     // canonical feature index 21 — see §6
     pub score_delta: f64,
@@ -66,17 +67,17 @@ pub struct GameFeatures { // excerpt — full 27-dim in 03-State/01-Board/01-boa
 }
 ```
 
-## 6. Normalization — Feature Index 21 (Canonical `/6.0`)
+## 6. Current Implementation — Normalized Score at Feature Index 21
 
-Normalization is for the **feature** `BoardStateML::to_array()[21]`, not a target:
+The 17-value implementation normalizes score at index 16, not as a target:
 
-Implemented in `src/state.rs` as `(board.score as f64 + 1.0).log10() / 6.0`, stored at feature index 21. No inverse transform is used in the training path.
+Implemented in `src/state.rs` as `(board.score as f64 + 1.0).log10() / 6.0`, stored at feature index 16. No inverse transform is used in the training path.
 
-> Tie-in: 27-dim vector is `[0..16) grid/32768, 16 empty_count, 17 max_tile_log, 18 monotonicity, 19 smoothness, 20 merges_available, **21 score_normalized**, 22 adjacency_merge_score, 23 corner_max, 24 edge_tiles_occupied, 25 col_worst, 26 row_worst]` — canonical in `03-State/01-Board/01-board-state.md`.
+> The canonical vector is `[grid_0..grid_15, score_normalized]`; the previous 27-column derived-feature vector is excluded from core training.
 
 ## 7. RewardSignal — NOT USED (RL Out of Scope) — STRONG WARNING
 
-> **⚠️ NOT USED — FOR ANALYSIS ONLY.** Project is **supervised classification only** (`TaskType::MultiClassification`). Do not use `reward`/`next_state`/`done` as training signals. Supervised row is `(state_features:[f64;27], action:u8)` with optional `score:u64` metadata. AutML has no RL loop.
+> **NOT USED — FOR ANALYSIS ONLY.** Project is **supervised classification only** (`TaskType::MultiClassification`). Do not use `reward`/`next_state`/`done` as training signals. The canonical row is `(state_values:[f64;17], action:u8)` with optional score metadata. AutoML has no RL loop.
 
 ```rust
 // ⚠️ NOT USED for training — retained for historical reference only — NOT for supervised automl
@@ -104,12 +105,12 @@ pub struct RewardSignal {
 
 ## 10. Implementation Record
 
-`RawBoardState::execute_move` returns score delta and per-merge events with resultant tile value, board position, and turn index. The reusable `ScoreTracker` accumulates total score, per-turn deltas, and merge history in `GameResult` metadata. This metadata is not added to the 27-feature vector or action target. Tests verify score and merge positions for all four directions.
+`RawBoardState::execute_move` returns score delta and per-merge events with resultant tile value, board position, and turn index. The reusable `ScoreTracker` accumulates total score, per-turn deltas, and merge history in `GameResult` metadata. Score is not an action target. Tests verify score and merge positions for all four directions.
 
-- **Board + 27-dim:** `03-State/01-Board/01-board-state.md`
+- **Board and canonical input:** Plan 00 fixes the input at 17 values; ticket #034 implements it.
 - **Win/lose & valid moves:** `02-win-lose-conditions.md` (`would_change`), `03-valid-moves.md`
 - **RNG/seed hygiene:** `03-Simulation-Engine/02-randomness.md` (`ChaCha8Rng`, `spawn_prob_4:0.1`, `with_random_state(42)`)
-- **Training row:** `03-Simulation-Engine/01-simulation-engine.md` — `TrainingSample { [f64;27], u8, u64 }`
+- **Training row:** `03-Simulation-Engine/01-simulation-engine.md` — canonical `TrainingSample { [f64;17], u8, u64 }`.
 - **Project tiers / heuristic ~512:** `01-Infrastructure/01-Project/01-project-overview.md`
 
 ---

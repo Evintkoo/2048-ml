@@ -21,14 +21,10 @@ These commands refer to the `automl` framework's own binary, built from `automl/
 
 ```bash
 # Train a model — canonical target is `action` (u8 0–3), TaskType::MultiClassification
-automl train --data data.csv --target action --model gradient_boosting
-
-# Train with configuration file (config must set target: action, task: MultiClassification)
-automl train --config config/training/experiment-01.yaml
-
-# Train with auto model selection — still predicts `action`
-automl train --data data.csv --target action --model Auto
+automl train --data data.csv --target action --model random_forest
 ```
+
+The framework CLI help lists `linear`, `logistic`, `decision_tree`, and `random_forest`; it does not advertise `gradient_boosting` or `Auto`. It has no `--config` option. The core 2048 root training CLI has its own five verified four-class candidates and uses CLI flags plus a dedicated HyperOptX JSON file, not the framework CLI examples above.
 
 ### 1.2 Prediction
 
@@ -101,28 +97,23 @@ cargo run -- benchmark compare results/policy.csv results/random.csv --output re
 cargo run -- benchmark report results/policy.csv results/random.csv --output results/report.csv
 ```
 
-`train` requires a row-aligned `--metadata` sidecar with game IDs. It reserves the final chronological 15% of distinct games by default (`--development-fraction 0.85`) from grouped CV and fitting. The AutoML fit still performs its own seeded stratified row split on development data. This distinction is documented in the training plan; the final test scoring/refit workflow remains pending.
+`train` requires a row-aligned `--metadata` sidecar with game IDs. It reserves the final chronological 15% of distinct games by default (`--development-fraction 0.85`) from grouped CV and fitting. The AutoML fit still performs its own seeded stratified row split on development data. This distinction is documented in the training plan; the final test scoring/refit workflow remains pending. Ticket #034 aligns the root command with Plan 00's 17-value input schema.
 
 ## 3. CLI Configuration
 
 The root CLI uses `clap` arguments. General training YAML loading is not implemented; the optional HyperOptX search settings can be supplied with `--hyperopt-config` using the schema-v1 JSON contract. `--tune-trials N` is the shorthand and conflicts with `--hyperopt-config`.
 
-## 4. CLI Output Formats
+## 4. Observed Output Artifacts
 
 | Format | Description | Use Case |
 |--------|-------------|----------|
-| JSON | Machine-readable | Pipeline integration |
-| CSV | Tabular data | Analysis |
-| Markdown | Human-readable | Reports |
-| Plain | Default | Terminal output |
+| CSV | Collected policy rows, game scores, comparisons, and reports | Data and analysis |
+| JSON | Sidecar manifests for collection, training, and benchmark outputs | Provenance |
+| Plain text | Clap help and command progress summaries | Terminal use |
 
 ## 5. Error Handling
 
-All CLI tools will return:
-- Exit code 0 on success
-- Exit code 1 on error
-- Exit code 2 on configuration error
-- Structured error messages to stderr
+The current root CLI uses exit code 2 for several explicit argument/schema validation errors, while many workflow failures use `expect` and panic. Do not assume a uniform exit-code or structured-stderr contract. The AutoML binary returns `anyhow::Result` from its top-level command runner and logs command errors; its runtime behavior is separate from the root CLI.
 
 ---
 

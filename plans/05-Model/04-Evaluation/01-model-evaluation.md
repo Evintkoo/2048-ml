@@ -1,6 +1,6 @@
 # Plan 01 — Model Evaluation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Seeded game-score and paired-score evaluation tooling exists; classification diagnostics and held-out model results remain pending.
+> **Status: PARTIAL (2026-09-27).** Seeded game-score and paired-score evaluation tooling exists; classification diagnostics and held-out model results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model evaluation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -72,11 +72,11 @@ flowchart LR
     Q5 --> Report
 ```
 
-> **Canonical task:** four-action classification from 27 features. The policy consumes four class probabilities and masks illegal moves. Game score is a downstream application outcome. No score regression metrics apply to the action target.
+> **Canonical task:** four-action classification from 17 features. The policy consumes four class probabilities and masks illegal moves. Game score is a downstream application outcome. No score regression metrics apply to the action target.
 
 ### 3.2 Qualitative Analysis — Concrete (2048-specific)
 
-> **Not generic.** The model predicts actions 0–3 (up/down/left/right) from a 27-dim board state. Qualitative analysis must check whether predicted moves are **legal and strategically sensible**, not just statistically accurate.
+> **Not generic.** The model predicts actions 0–3 (up/down/left/right) from a 17-dim board state. Qualitative analysis must check whether predicted moves are **legal and strategically sensible**, not just statistically accurate.
 
 **Analyses to run (with concrete definitions):**
 
@@ -91,8 +91,8 @@ flowchart LR
 ```mermaid
 flowchart TD
     Qual[Qualitative Analysis<br/>2048-concrete]
-    Qual --> Invalid[Invalid-Move Rate<br/>predicted ∉ valid_actions<br/>target &lt;5%]
-    Qual --> Corner[Corner-Stuck Analysis<br/>max in corner vs not<br/>ΔAcc ≤10%]
+    Qual --> Invalid[Invalid-Move Rate<br/>predicted ∉ valid_actions<br/>report rate; no default threshold]
+    Qual --> Corner[Corner-Stuck Analysis<br/>max in corner vs not<br/>report breakdown; no default threshold]
     Qual --> ConfMat[Confusion Matrix 4x4<br/>off-diagonal inspection]
     Qual --> Binned[Score-Binned Breakdown<br/>Low/Med/High games]
     
@@ -152,7 +152,7 @@ sequenceDiagram
     participant Metrics as Metrics Calculator
     participant Report as Report Generator
     
-    Test->>Model: Board states (27-dim)
+    Test->>Model: Board states (17-dim)
     Model->>Metrics: Predicted actions (0-3)
     Metrics->>Report: Accuracy, F1 macro, Confusion Matrix
     Report->>User: Evaluation Results

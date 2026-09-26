@@ -1,6 +1,6 @@
 # Plan 04 — Ablation Study: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Candidate ablation matrix is illustrative only; feature-removal training and evaluation are not implemented.
+> **Status: PARTIAL (2026-09-27).** Candidate ablation matrix is illustrative only; feature-removal training and evaluation are not implemented.
 
 **Goal:** State the current implementation and evidence boundary for ablation study.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -32,7 +32,7 @@ Candidate: remove one feature at a time, retrain using the same training data an
 | corner/edge | `corner_max, edge_tiles_occupied, col_worst, row_worst` | Placement and balance |
 | score | `score_normalized` | Progress context |
 
-> Reconcile this proposed grouping with the current 27-feature encoder before implementation.
+> Reconcile this proposed grouping with the canonical 17-value state (16 cells plus score) and the encoder before implementation. The listed non-cell groups do not match the current schema and need a new, justified definition.
 
 ### 1.3 Controls
 
@@ -54,7 +54,7 @@ No output schema or ablation runner exists. Base future artifacts on actual CSV/
 
 ## Implementation Record
 
-- No ablation configurations, artifact writer, or feature-removal evaluation pipeline are implemented. The matrix is proposed only. Feature removal, matched retraining/evaluation, output artifact schema, and compute budget remain unimplemented and require a pilot before scheduling.
+- No ablation configurations, artifact writer, or feature-removal evaluation pipeline are implemented. The matrix is proposed only and its groups do not yet map to the canonical 17-value state. Feature removal, matched retraining/evaluation, output artifact schema, and compute budget remain unimplemented and require a pilot before scheduling.
 
 ---
 

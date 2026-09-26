@@ -1,6 +1,6 @@
 # Plan 02 — Score as Feature: the repository status is explicit and evidence based
 
-> **Status: COMPLETE (2026-09-26).** Score contributes only the documented normalized input at index 21; action remains the sole target.
+> **Status: COMPLETE (2026-09-27).** Current score is feature index 16 of the canonical 17-value input; action remains the sole target.
 
 **Goal:** State the current implementation and evidence boundary for score as feature.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,35 +9,33 @@
 
 ## Decision and evidence
 
-**This plan treats score-as-feature as implemented, not as a research finding.** `BoardStateMl::from_board` places `log10(score+1)/6` at index 21. The score is also retained in row metadata, while move count and score history stay out of the model input and `action` remains the target.
+**This plan treats score-as-feature as implemented, not as a research finding.** `BoardStateMl::from_board` places `log10(score+1)/6` at index 16. The score is also retained in row metadata, while move count and score history stay out of the model input and `action` remains the target.
 
 ## 1. Concept
 
 Score provides game-progression context as one feature of the canonical training state. The canonical scope is board plus score; see `plans/00-scope-and-traceability.md`.
 
-## 2. Score Features — What Is in the 27
+## 2. Score Feature — Canonical Index 16
 
-> **Canonical 27 contains exactly one score feature: `score_normalized` at idx 21.** The struct below is **NOT IN 27** — do not add delta/avg/momentum as features.
+> **Canonical 17 contains exactly one score feature: `score_normalized` at idx 16.** The struct below is **NOT IN THE CANONICAL INPUT** — do not add delta/avg/momentum as features.
 
 ```rust
-// ❌ NOT IN 27 — do not add to feature vector
+// ❌ NOT IN THE CANONICAL INPUT — do not add to feature vector
 // pub struct ScoreFeatures {
-//     pub current_score: f64,      // would be idx 21 if included — but ONLY log10/6 is in 27
-//     pub score_delta: f64,        // NOT IN 27
-//     pub avg_score_per_move: f64, // NOT IN 27
-//     pub score_momentum: f64,     // NOT IN 27
+//     pub current_score: f64,      // only `score_normalized` is in the canonical input
+//     pub score_delta: f64,        // NOT IN THE CANONICAL INPUT
+//     pub avg_score_per_move: f64, // NOT IN THE CANONICAL INPUT
+//     pub score_momentum: f64,     // NOT IN THE CANONICAL INPUT
 // }
-// If history-based score features are ever explored, mark `Future Research — Not MVP, Not in Canonical 27`.
+// If history-based score features are ever explored, they require a separately documented study.
 
-// Implemented in `src/state.rs` as `features[21]`.
+// Implemented in `src/state.rs` as `features[SCORE_FEATURE_INDEX]`, currently index 16.
 ```
 
-## 3. Score in Feature Vector — idx 21 Only
+## 3. Score in Feature Vector — idx 16 Only
 
 ```
-[grid_0..grid_15, empty_count(16), max_tile_log(17), monotonicity(18), smoothness(19),
- merges_available(20), score_normalized(21) ← log10/6 ONLY, adjacency(22), corner_max(23),
- edge_occupied(24), col_worst(25), row_worst(26)]
+[grid_0..grid_15, score_normalized(16) ← log10/6 ONLY]
 ```
 26 = row_worst. No move_count_norm, no score_delta.
 
@@ -45,8 +43,8 @@ Score provides game-progression context as one feature of the canonical training
 
 | Aspect | Score as Feature | Score as Target |
 |--------|------------------|-----------------|
-| Purpose | idx 21 of X | **Not applicable — no score target** |
-| Training role | `X[21]` | **Not `y`** — `y = action: u8` (`TaskType::MultiClassification`) |
+| Purpose | idx 16 of X | **Not applicable — no score target** |
+| Training role | `X[16]` | **Not `y`** — `y = action: u8` (`TaskType::MultiClassification`) |
 | Norm | `log10(score+1)/6` | N/A |
 
 ## 5. Score Progression — Analysis Only (Not a Feature)
@@ -68,7 +66,7 @@ let mean_game_score = benchmark_mean_score(&model, n_games); // downstream bench
 
 ## Implementation Record
 
-- Score appears only as feature index 21 using `log10(score + 1) / 6` and as sidecar metadata; action remains the only training label. No score delta or history features were added.
+- Score appears only as feature index 16 using `log10(score + 1) / 6` and as sidecar metadata; action remains the only training label. No score delta or history features were added.
 - Feature index order and normalization are covered by root unit tests.
 
 ## 8. Score Distribution Analysis

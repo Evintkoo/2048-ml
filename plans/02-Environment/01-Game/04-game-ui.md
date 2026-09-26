@@ -1,6 +1,6 @@
 # Plan 04 — Game UI: the repository status is explicit and evidence based
 
-> **Status: NOT APPLICABLE (2026-09-26).** This is a deprecated UI stub; the headless MVP has no renderer, and static inspection remains optional under ticket 022.
+> **Status: NOT APPLICABLE (2026-09-26).** This is a deprecated UI stub; the headless MVP has no renderer, and optional static inspection is tracked under ticket 031.
 
 **Goal:** State the current implementation and evidence boundary for game ui.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is explicitly deprecated and out of scope for the headless MVP.** No renderer is implemented or required. The proposed terminal helper is retained here as historical design text; the optional static inspection work is tracked by ticket 022.
+**This plan is explicitly deprecated and out of scope for the headless MVP.** No renderer is implemented or required. The proposed terminal helper is retained here as historical design text; optional static inspection is tracked by ticket 031.
 
 > **Status: DEPRECATED STUB — Out of scope (headless simulation only).**
 > UI is **not MVP**. This file exists only to document the one debug-only helper.
@@ -45,7 +45,7 @@ pub fn render_board(board: &Board) -> String {
 
 - No web frontend, no browser viz, no mobile/desktop wrapper
 - No interactive game loop — headless `GameSimulator` only (`01-game-engine.md`)
-- Headless output is `GameResult` → `TrainingSample { [f64;27], u8, u64 score metadata }` → Parquet/CSV (see `06-Data/`)
+- Headless output is `GameResult` → canonical `TrainingSample { [f64;17], u8, u64 score metadata }` → CSV (see `06-Data/`).
 
 ---
 

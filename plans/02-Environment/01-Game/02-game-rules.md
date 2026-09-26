@@ -22,7 +22,7 @@
 | Scoring — score = sum merges, NEVER label, `TaskType::MultiClassification` `action:u8` | `02-Environment/02-Rules/01-scoring-rules.md` |
 | Win/lose — 2048 not terminal, terminal = `would_change==false` for all dirs, Tier thresholds | `02-Environment/02-Rules/02-win-lose-conditions.md` |
 | Valid moves — `board.would_change(dir)` + constrained renormalization | `02-Environment/02-Rules/03-valid-moves.md` |
-| Board/State/Features — `[u32;16]`, `/32768`, `[f64;27]` index 21 `/6.0` | `03-State/01-Board/01-board-state.md` |
+| Canonical training state — 16 board cells plus current score (17 values) | Plan 00 and `03-State/04-Encoding/01-state-vector.md` |
 | Engine/RNG/Spawn | `01-Game/01-game-engine.md` + `03-Simulation-Engine/02-randomness.md` |
 
 ## Purpose
@@ -42,14 +42,14 @@ Thin redirect only. Full rules live in `02-Rules/*` — this file prevents dupli
 ## Scope & Out-of-Scope
 
 - **Headless simulation only** — no UI/web (see `01-Game/04-game-ui.md` deprecated stub).
-- **Board canonical:** `[u32;16]` grid, `/32768` normalization — see `03-State/01-Board/01-board-state.md`.
+- **Board canonical:** `[u32;16]` grid; the training input is those 16 cells plus current score (17 values), per Plan 00 and implemented by ticket #034. The former 27-derived-feature vector is excluded from canonical training.
 - **RNG canonical:** `ChaCha8Rng` seed hygiene — see `03-Simulation-Engine/02-randomness.md`.
 
 ## Cross-References
 
 - `01-Game/01-game-engine.md` (SimulatorConfig `seed:42, spawn_prob_4:0.1`)
 - `01-Game/03-board-representation.md` (transforms via `slide_left`)
-- `03-Simulation-Engine/01-simulation-engine.md` (TrainingSample `[f64;27] → u8`)
+- `03-Simulation-Engine/01-simulation-engine.md` (canonical TrainingSample `[f64;17] → u8`)
 
 ---
 

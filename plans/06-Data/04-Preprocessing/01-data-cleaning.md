@@ -1,6 +1,6 @@
 # Plan 01 — Data Cleaning: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** CSV validation exists; cleaning, exact-duplicate removal, and board-dependent action legality checks are not implemented.
+> **Status: PARTIAL (2026-09-27).** CSV validation exists; cleaning, exact-duplicate removal, and board-dependent action legality checks are not implemented.
 
 **Goal:** State the current implementation and evidence boundary for data cleaning.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats schema validation as implemented and data-cleaning operations as pending.** The preprocess command validates a CSV but does not deduplicate, impute, remove malformed rows, or validate action legality against the source board. The canonical table omits board snapshots, so legality checking requires a separate audit source.
+**This plan treats schema validation as implemented and data-cleaning operations as pending.** The preprocess command validates a CSV but does not deduplicate, impute, or remove malformed rows. It cannot validate action legality against the source board. The canonical table omits board snapshots, so legality checking requires a separate audit source.
 
 ## 1. Purpose
 
@@ -65,7 +65,7 @@ flowchart TB
 
 ```mermaid
 flowchart TD
-    Dups[Find Exact Duplicate Rows<br/>same 27 features + action]
+    Dups[Find Exact Duplicate Rows<br/>same 17 features + action]
     Dups --> Compare[Compare Records<br/>game_id + move_idx + features + action]
     Compare --> Identify[Identify Exact Duplicate Rows]
     Identify --> Remove[Remove Only Exact Duplicates<br/>if any]
@@ -76,7 +76,7 @@ flowchart TD
 ```
 
 > **Duplicate board states are expected, especially early-game** (e.g., initial boards and early random tiles repeat across games). **Do NOT naively drop all rows with duplicate board states** — many distinct games share identical early states and they are valid signal.
-> **Only drop exact duplicate rows** where the entire row (`27 features + action` + optional `score` metadata) is byte-identical *and* represents a true ingest duplication (same `game_id` + `move_idx` ingested twice). If in doubt, keep the row. Deduplication key must include `game_id`/`move_idx` or the full 27+action row, not board state alone. Grouping for CV remains by `game_id`; GroupKFold is group-aware but not chronological.
+> **Only drop exact duplicate rows** where the entire row (`17 features + action` + optional `score` metadata) is byte-identical *and* represents a true ingest duplication (same `game_id` + `move_idx` ingested twice). If in doubt, keep the row. Deduplication key must include `game_id`/`move_idx` or the full 17+action row, not board state alone. Grouping for CV remains by `game_id`; GroupKFold is group-aware but not chronological.
 
 ### 3.2 Missing Value Handling
 
@@ -114,13 +114,13 @@ flowchart TD
 ```
 
 > **Do NOT use Isolation Forest, IQR, or Z-Score to filter scores.** Game scores are **heavy-tailed and are signal** — high scores correspond to rare high-tile boards that the model must learn to achieve (max score / max tile). Flagging high scores as "outliers" discards the most valuable training examples and biases evaluation.
-> **Keep all scores.** Only remove rows that are **invalid**: NaN/Inf/missing features, malformed rows (wrong `NF` ≠ 28), or illegal `action` (not 0–3 or not in `valid_moves` for that state). No score-based truncation, no top/bottom percentile filtering.
+> **Keep all scores.** Only remove rows that are **invalid**: NaN/Inf/missing features, malformed rows (wrong `NF` ≠ 18), or illegal `action` (not 0–3 or not in `valid_moves` for that state). No score-based truncation, no top/bottom percentile filtering.
 
 ## 4. Cleaning Configuration
 
 ```rust
 pub struct DataCleaningConfig {
-    pub remove_exact_duplicate_rows: bool, // only exact 27+action duplicate rows, not board-state duplicates
+    pub remove_exact_duplicate_rows: bool, // only exact 17+action duplicate rows, not board-state duplicates
     pub impute_strategy: ImputeStrategy, // automl uses ImputeStrategy (not ImputationStrategy)
     pub validate_schema: bool,
     // No outlier_method / outlier_threshold — scores are heavy-tailed signal; keep all scores.
@@ -138,8 +138,8 @@ flowchart TD
     Validation --> Check1[No Exact Duplicate Rows<br/>board-state duplicates expected — keep]
     Validation --> Check2[No Missing / NaN / Inf]
     Validation --> Check3[No Invalid Rows<br/>keep all scores — heavy-tailed signal]
-    Validation --> Check4[Schema Valid<br/>27+action = 28 cols, action 0..3]
-    Validation --> Check5[Values in Range<br/>features 0..1 where applicable]
+    Validation --> Check4[Schema Valid<br/>17+action = 18 cols, action 0..3]
+    Validation --> Check5[Values in Range<br/>finite and nonnegative features; values above 1 allowed]
     
     Check1 --> Pass{All Pass?}
     Check2 --> Pass

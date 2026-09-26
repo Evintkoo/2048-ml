@@ -11,11 +11,11 @@
 
 **Scope-based disposition:** the canonical supervised example is the pre-action state and chosen action. The root stores that as `TrainingSample` plus sidecar metadata. It does not build a separate transition object with post-state, reward, or done fields; those fields are not used for training and are not needed for the supervised 2048 policy task.
 
-> **Canonical row:** `(from_state: [f64;27], action: u8)` with `TaskType::MultiClassification`. No RL.
+> **Canonical row:** `(from_state: [f64;17], action: u8)` with `TaskType::MultiClassification`. No RL.
 
 ## 1. Structure — Training Fields vs Metadata
 
-The implemented `TrainingSample` contains `state_features:[f64;27]`,
+The implemented `TrainingSample` contains `state_features:[f64;17]`,
 `action:u8`, raw score metadata, `game_id`, and `move_index`. Only state
 features and action enter AutoML; the sidecar carries provenance and score.
 
@@ -43,7 +43,7 @@ impl GameSimulator {
 
 ```rust
 pub fn create_supervised_dataset(transitions: &[StateTransition]) -> TrainingData {
-    let states: Vec<[f64;27]> = transitions.iter().map(|t| t.from_state).collect();
+    let states: Vec<[f64;17]> = transitions.iter().map(|t| t.from_state).collect();
     let actions: Vec<u8> = transitions.iter().map(|t| t.action).collect(); // MultiClassification
     TrainingData { states, targets: actions }
 }
@@ -60,18 +60,18 @@ DataFrame conversion flattens `from_state` + `action` only; metadata dropped. Gr
 ```rust
 pub fn validate_transition(t: &StateTransition) -> Result<()> {
     if t.action > 3 { return Err("action >3".into()); }
-    if !t.from_state.iter().all(|v| v.is_finite() && (0.0..=1.0).contains(v)) { return Err("bad state".into()); }
+    if !t.from_state.iter().all(|v| v.is_finite() && *v >= 0.0) { return Err("bad state".into()); }
     Ok(())
 }
 ```
 
 ## 6. Persistence
 
-Save combined dataset via canonical DataFrame → Parquet. See `01-move-history.md` for grouping.
+Save training rows through the canonical CSV writer; row-aligned provenance stays in a metadata sidecar.
 
 ## Implementation Record
 
-- Collection records the pre-action 27-value state and chosen action; score and game/move identifiers remain metadata. Invalid moves do not produce samples because valid actions are selected from `would_change`.
+- Collection records the pre-action 17-value state and chosen action; score and game/move identifiers remain metadata. Invalid moves do not produce samples because valid actions are selected from `would_change`.
 - `TrainingSample` provides the supervised row shape without introducing RL fields. Post-state/reward/done transitions are deliberately omitted under the supervised-only scope.
 
 ---

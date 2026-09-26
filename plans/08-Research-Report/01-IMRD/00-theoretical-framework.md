@@ -27,17 +27,18 @@ The observed 4×4 board is modeled as a fully observed stochastic decision proce
 
 **Maps to code:** action labels map to `TaskType::MultiClassification`; game transitions and scoring are implemented in `src/game_engine/mod.rs`; feature encoding is in `src/state.rs`. Rollout relabeling defaults to 100 simulations per legal action. This produces heuristic labels from rollout means, not an optimal action `a*`.
 
-The board-value domain and theoretical maximum-tile claim are not established by this plan. The appendix proof is invalid and should not be cited. The simulator stores tile values in `u32`, while the feature/CSV contract has a separate 32768 scale and unresolved behavior beyond it.
+The board-value domain and theoretical maximum-tile claim are not established by this plan. The appendix proof is invalid and should not be cited. The simulator stores tile values in `u32`; state encoding divides cells by 32768 without clipping, so encoded values can exceed one. That normalization scale is not a maximum-tile claim.
 
 **Value/Bellman:**
 
 ```
-V^π(s)=E_π[Σ R_{t+k}|s_t=s],  V^π(s)=R(s,π(s))+E_{P(s'|s,π(s))}[V^π(s')],  π*=argmax V^π(s0)
+V^π(s)=E_π[Σ_{k=0}^{T-t} γ^k r_{t+k} | s_t=s]
+π*(s) ∈ argmax_a E[r_t + γV*(s_{t+1}) | s_t=s, a_t=a]
 ```
 
 ### 2.2 Learning as Supervised Function Approximation
 
-Model `M_θ: f(s)∈ℝ^27 → Δ^3` (four class probabilities) defines a policy by selecting among legal actions. Training labels are rollout-mean proxies, not proven optimal actions. Convex-optimization convergence rates do not apply to the heterogeneous tree models used here. Learning curves are not yet a completed study.
+Model `M_θ: f(s)∈ℝ^17 → Δ^3` (four class probabilities) defines a policy by selecting among legal actions. Training labels are rollout-mean proxies, not proven optimal actions. Convex-optimization convergence rates do not apply to the heterogeneous tree models used here. Learning curves are not yet a completed study.
 
 ## 3. Optional Statistical Learning Context
 
@@ -57,7 +58,7 @@ Architecture documentation and capability checks exist, but matched framework be
 
 ## Implementation Record
 
-- The code implements board transitions, score tracking, action selection, and a 27-feature supervised representation. This outline is not a verified formal analysis; invalid board-bound proofs and unsupported entropy claims must not be used. The visible-state formulation is an MDP description, not a POMDP claim.
+- The code implements board transitions, score tracking, action selection, and the canonical 17-value supervised input (16 board cells plus current score). Cell values use a 32768 scale and are not clipped at one; this scale is not a theoretical bound on tile values. This outline is not a verified formal analysis; invalid board-bound proofs and unsupported entropy claims must not be used. The visible-board formulation is an MDP description, not a POMDP claim.
 
 ---
 

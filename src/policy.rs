@@ -3,6 +3,7 @@
 use crate::{
     actions::{masked_argmax, ActionError},
     game_engine::{Direction, GameError, GameSimulator, RawBoardState, SimulatorConfig},
+    state::{BoardStateMl, HeuristicFeatures, STATE_FEATURES},
 };
 use automl::inference::{InferenceConfig, InferenceEngine};
 use ndarray::Array2;
@@ -33,12 +34,12 @@ impl HeuristicPolicy {
         for direction in board.get_valid_moves() {
             let mut next = *board;
             next.execute_move(direction)?;
-            let features = crate::state::BoardStateMl::from_board(&next).0;
-            let utility = features[16] * 100.0
-                + features[18] * 25.0
-                + features[19] * 10.0
-                + features[23] * 100.0
-                + features[20] * 15.0;
+            let features = HeuristicFeatures::from_board(&next);
+            let utility = features.empty_fraction * 100.0
+                + features.monotonicity * 25.0
+                + features.smoothness * 10.0
+                + features.corner_max * 100.0
+                + features.merges_fraction * 15.0;
             if match best {
                 None => true,
                 Some((_, best_utility)) => utility > best_utility,
@@ -58,9 +59,9 @@ impl ModelPolicy {
     }
 
     pub fn select_move(&self, board: &RawBoardState) -> Result<Direction, PolicyError> {
-        let features = crate::state::BoardStateMl::from_board(board).0;
-        let input = Array2::from_shape_vec((1, 27), features.to_vec())
-            .expect("the state encoder always produces 27 features");
+        let features = BoardStateMl::from_board(board).0;
+        let input = Array2::from_shape_vec((1, STATE_FEATURES), features.to_vec())
+            .expect("the state encoder always produces the canonical feature count");
         let probabilities = self.engine.predict_proba_array(&input)?;
         if probabilities.nrows() != 1 || probabilities.ncols() != 4 {
             return Err(PolicyError::ProbabilityShape(probabilities.ncols()));

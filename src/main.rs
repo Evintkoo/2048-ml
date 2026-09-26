@@ -40,6 +40,17 @@ enum Commands {
         #[command(subcommand)]
         command: BenchmarkCommand,
     },
+    /// Run fixed-split framework checks on the acquired standard tabular datasets.
+    FrameworkValidate {
+        #[arg(long, default_value = "data/framework_validation")]
+        data_dir: std::path::PathBuf,
+        #[arg(long, default_value = "reports/framework_validation/run-1")]
+        output_dir: std::path::PathBuf,
+        #[arg(long, default_value_t = 42)]
+        seed: u64,
+        #[arg(long, default_value_t = 0.2)]
+        test_fraction: f64,
+    },
     /// Train a supervised action classifier through the AutoML framework.
     Train {
         #[arg(long)]
@@ -263,6 +274,17 @@ fn main() {
     let cli = Cli::parse();
     match cli.command {
         None => println!("Select a command. Use --help to see the planned workflows."),
+        Some(Commands::FrameworkValidate { data_dir, output_dir, seed, test_fraction }) => {
+            if let Err(error) = framework_validation::benchmark::run_standard_datasets(
+                &data_dir,
+                &output_dir,
+                seed,
+                test_fraction,
+            ) {
+                eprintln!("framework validation failed: {error:#}");
+                std::process::exit(2);
+            }
+        }
         Some(Commands::GameEngine {
             command: GameEngineCommand::Simulate { seed, n_games },
         }) => {
@@ -317,7 +339,7 @@ fn main() {
             let manifest_data = serde_json::json!({
                 "created_utc": chrono::Utc::now().to_rfc3339(),
                 "project_version": env!("CARGO_PKG_VERSION"),
-                "dataset_schema": "2048-action-policy-v1",
+                "dataset_schema": "2048-action-policy-v2",
                 "automl_commit": "64f5edad29c9e58ee7d33abf380418d5cfbbb561",
                 "source_revision": std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|result| result.status.success()).map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned()),
                 "global_seed": seed,
@@ -383,7 +405,10 @@ fn main() {
         Some(Commands::Train { data, metadata, cv_folds, tune_trials, hyperopt_config, development_fraction, model, seed, output }) => {
             let seeds = seeds::SeedManager::new(seed);
             if data_pipeline::validate_csv(&data).is_err() {
-                eprintln!("training input must satisfy the canonical 28-column schema");
+                eprintln!(
+                    "training input must satisfy the canonical {}-column schema",
+                    crate::state::STATE_FEATURES + 1
+                );
                 std::process::exit(2);
             }
             let model_type = match model.to_ascii_lowercase().as_str() {
@@ -557,6 +582,8 @@ fn main() {
                 "model_artifact": output,
                 "model_artifact_sha256": sha256_file(&output).ok(),
                 "training_data": data,
+                "dataset_schema": "2048-action-policy-v2",
+                "state_feature_count": crate::state::STATE_FEATURES,
                 "training_data_sha256": sha256_file(&data).ok(),
                 "metadata": metadata,
                 "metadata_sha256": metadata.as_ref().and_then(|path| sha256_file(path).ok()),
@@ -565,6 +592,7 @@ fn main() {
                     "schema_version": 1,
                     "task_type": "MultiClassification",
                     "target_column": "action",
+                    "state_feature_count": crate::state::STATE_FEATURES,
                     "model": model,
                     "cv_strategy": "GroupKFold",
                     "cv_folds": cv_folds,

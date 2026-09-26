@@ -6,13 +6,13 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-algorithm-research](01-algorithm-research.md) | Algorithm Research | PARTIAL — comparisons pending |
-| [02-model-comparison](02-model-comparison.md) | Model Comparison | PARTIAL — matched evaluation pending |
-| [03-best-algorithm-finding](03-best-algorithm-finding.md) | Best Algorithm Finding | PARTIAL — evaluation results pending |
+| [01-algorithm-research](01-algorithm-research.md) | Algorithm Research | PARTIAL — compatibility audited; matched comparisons pending |
+| [02-model-comparison](02-model-comparison.md) | Model Comparison | PARTIAL — five probability-compatible candidates; matched evaluation pending |
+| [03-best-algorithm-finding](03-best-algorithm-finding.md) | Best Algorithm Finding | PARTIAL — no case-study winner; protocol and results pending |
 
 ## Reading paths
 
-1. Read the plan ticket in sequence by its numeric filename.
+1. Read tickets in repository-relative lexicographic order.
 2. Check its status and evidence before implementing remaining work.
 3. Update the root `PLAN-TICKET-LEDGER.md` after each ticket changes.
 

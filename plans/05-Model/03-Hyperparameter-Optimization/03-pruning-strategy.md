@@ -1,6 +1,6 @@
 # Plan 03 — Pruning Strategy: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** The AutoML submodule exposes pruner types, but the root HyperOptX objective has no intermediate reporting or pruning integration.
+> **Status: PARTIAL (2026-09-27).** The AutoML submodule exposes pruner types, but the root HyperOptX objective has no intermediate reporting or pruning integration.
 
 **Goal:** State the current implementation and evidence boundary for pruning strategy.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

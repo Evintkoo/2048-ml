@@ -1,6 +1,6 @@
 # Plan 01 — Introduction: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Research framing is documented; framework validation, plan-scale case-study experiments, and verified literature claims remain pending.
+> **Status: PARTIAL (2026-09-27).** Initial UCI framework diagnostics exist; full framework validation, plan-scale 2048 experiments, and verified literature claims remain pending.
 
 **Goal:** State the current implementation and evidence boundary for introduction.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -17,7 +17,7 @@
 
 The central research object is the design and validation of a Rust-native AutoML architecture. The 2048 system is the principal application case study. Several architecture components are implemented, but integrated standard-dataset validation and the complete reproducibility study remain pending.
 
-2048 is a stochastic 4×4 tile-merging game. The simulator defaults to spawning a 4 with probability 0.1; its available actions are Up, Down, Left, and Right. This study evaluates a supervised policy using 27 features and four action labels with the pinned Rust AutoML submodule. The case-study experiments remain pending.
+2048 is a stochastic 4×4 tile-merging game. The simulator defaults to spawning a 4 with probability 0.1; its available actions are Up, Down, Left, and Right. This study evaluates a supervised policy using the canonical 17-value state (16 board cells plus current score) and four action labels with the pinned Rust AutoML submodule. The case-study experiments remain pending.
 
 ## 2. Research Context
 
@@ -35,12 +35,12 @@ The study has two linked research layers. First, the independent `automl` implem
 
 **RQ2 (case study):** Under a predeclared, reproducible protocol, how does the supervised policy perform relative to measured baselines, and how do supported model types compare? Baseline values, evaluation scale, and ranking remain to be established by experiment.
 
-**Framework validation:** Does the implemented architecture satisfy its correctness, reproducibility, efficiency, and interoperability requirements on standard tabular tasks before the 2048 application results are interpreted?
+**Framework validation:** Does the implemented architecture satisfy its correctness, reproducibility, efficiency, and interoperability requirements on standard tabular tasks before the 2048 application results are interpreted? An initial seed-42 diagnostic run covers three UCI datasets and five candidate models; it is not the completed validation gate.
 
 **Secondary:**
 - RQ2: What are the mean scores, uncertainty intervals, and differences versus measured random and heuristic baselines?
 - RQ3: Is the winner reproducible across seeds 42/123/456/789/1011?
-- RQ4: Which 27-dim groups drive performance (ablation, GroupKFold, 10k games each)?
+- RQ4: Which declared feature subsets of the 17-value canonical state affect case-study performance? This ablation question remains a proposal without a frozen protocol or completed run.
 
 All answers are **pending experimentation**; methodology for answering them is defined in `02-Methodology/01-experimental-design.md`.
 
@@ -59,7 +59,7 @@ All answers are **pending experimentation**; methodology for answering them is d
 
 1. **Rust-native AutoML architecture** documented with module boundaries, data contracts, and design trade-offs.
 2. **Framework validation study** planned for correctness, reproducibility, efficiency, interoperability, and standard tabular benchmarks; results remain pending.
-3. **Supervised 4×4 case study** implemented as a 27-feature, four-action AutoML pipeline; plan-scale evaluation remains pending.
+3. **Supervised 4×4 case study** implemented as a 17-value-state, four-action AutoML pipeline; plan-scale evaluation remains pending.
 4. **Application evaluation** includes initial score and comparison tools; full uncertainty and repeated-condition evidence remain pending.
 5. **Reproducibility package** is planned; exact toolchain and artifact evidence must come from the executed study.
 
@@ -78,7 +78,7 @@ All answers are **pending experimentation**; methodology for answering them is d
 
 **Out of scope → Future/Appendix only:** 8×8 or other board sizes, ensemble/stacking, RL/policy gradients, GPU, web frontend, mobile, and multi-agent settings. Search-based and learning-based agents may be included as explicitly defined comparison baselines, but they are not the primary contribution. See `02-Methodology/01-experimental-design.md` §10 and `04-discussion.md` §7.
 
-**Limitations:** Standard-dataset validation is pending; 27 features are fixed by scope; multi-seed robustness is pending; rollout labels use finite stochastic simulations and are proxies rather than optimal actions. Candidate baseline scores in the draft are unverified.
+**Limitations:** A one-split standard-dataset diagnostic exists, but the full framework-validation gate remains pending; the canonical state has 17 values; multi-seed robustness is pending; rollout labels use finite stochastic simulations and are proxies rather than optimal actions. Candidate baseline scores in the draft are unverified.
 
 ## 8. Paper Structure
 
@@ -90,7 +90,7 @@ No result fabricated. Null/inconclusive outcomes, training failures, and any aut
 
 ## Implementation Record
 
-- Research framing and honest-reporting requirements are documented. Framework dataset validation and plan-scale 2048 experiments remain pending. Baseline literature claims and novelty must be supported by the completed source review before publication.
+- Research framing and honest-reporting requirements are documented. Initial UCI diagnostic results and the Wine KNN repeatability/serialization issue are recorded in `reports/framework_validation/`; matched baselines, broader framework validation, and plan-scale 2048 experiments remain pending. Baseline literature claims and novelty must be supported by the completed source review before publication.
 
 ---
 

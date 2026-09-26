@@ -11,7 +11,7 @@
 
 **This plan treats its subject as partial or pending work, not as a research finding.** The 10k random and heuristic baselines and whole-game bootstrap frequency intervals are complete for the measured configuration. Rollout collection now checkpoints bounded game batches and can resume after interruption; no plan-scale rollout corpus has been collected yet.
 
-> **Sample size canonical: 10k games minimum** for benchmarking (per `01-Infrastructure/01-Project/01-project-overview.md` §8 Tiers + `01-simulation-engine.md` §7 `SimulationConfig.n_games:10000`). Supervised only: `GameDataset { states:[f64;27], actions:u8, scores:u64 }` — **no `rewards`**.
+> **Sample size: 10k games minimum** for benchmarking (per project-overview Tiers and §7 below). Supervised only: the canonical state has 17 values under Plan 00, now used by the root collector. No `rewards` are used.
 
 ## 1. Purpose
 
@@ -67,11 +67,11 @@ let results: Vec<GameResult> = (0..10000)
 ```rust
 /// Canonical dataset — supervised only. No RL tuple. score is metadata, never label.
 pub struct GameDataset {
-    pub states: Vec<[f64;27]>,        // BoardStateML::to_array() per turn (includes idx21 log10(score+1)/6.0)
+    pub states: Vec<[f64;17]>,        // canonical: 16 board cells plus current score
     pub actions: Vec<u8>,             // ONLY label: 0–3 (Up=0,Down=1,Left=2,Right=3)
     pub scores: Vec<u64>,             // per-turn Board.score metadata for analysis — NEVER rewards
     pub metadata: Vec<GameMetadata>,  // { game_id:u64, move_count, final_max_tile:u32 }
-    // DELETED: pub rewards: Vec<f64> — violates supervised-only canonical (TrainingSample is [f64;27]→u8)
+    // DELETED: pub rewards: Vec<f64> — the task is supervised action classification
 }
 impl GameDataset {
     pub fn from_games(games: Vec<GameResult>) -> Self {
@@ -81,7 +81,8 @@ impl GameDataset {
     }
     fn extend_from_game(&mut self, g: GameResult) { todo!() } // flatten per-move rows
 }
-// DataFrame row: state_features:[f64;27], action:u8, score:u64, game_id:u64 (for GroupKFold groups)
+// Canonical DataFrame row: 17 state values + action and provenance metadata.
+// Root writer outputs 17 state columns.
 // See 01-simulation-engine.md §8 TrainingSample and 06-Data/02-Format/01-data-schema.md
 ```
 
@@ -90,7 +91,7 @@ impl GameDataset {
 ## 5. Data Collection Pipeline
 
 ```
-Game(i, seed.wrapping_add(i)) → record [f64;27] + u8 per valid move → checkpointed CSV + metadata → automl TrainEngine
+Game(i, seed.wrapping_add(i)) → 17 state values + u8 per valid move → checkpointed CSV + metadata → AutoML TrainEngine
 ```
 
 > Cross-ref loops: `01-simulation-engine.md` §4 (`SimulationBatch`). Do not re-define `GameSimulator` here.
@@ -139,9 +140,9 @@ cargo run --release -- data-collector collect --n-games 20000 --rollouts 100 --t
 
 - **Loops / batch (canonical):** `01-simulation-engine.md` §4 (`SimulationBatch::run`/`run_parallel`)
 - **RNG / seed:** `02-randomness.md` (`ChaCha8Rng`, `wrapping_add`, `TrainingConfig::with_random_state(42)`, rayon threads)
-- **Training row:** `01-simulation-engine.md` §8 (`TrainingSample { [f64;27], u8, u64 }`)
+- **Training row:** `01-simulation-engine.md` §8 (`TrainingSample { [f64;17], u8, u64 }`)
 - **Scoring / win-lose / valid moves:** `02-Rules/01-scoring-rules.md` (metadata), `02-win-lose-conditions.md` (`would_change`), `03-valid-moves.md`
-- **Features (27-dim, idx21 /6.0, grid /32768):** `03-State/01-Board/01-board-state.md`
+- **Canonical input:** Plan 00 (16 board cells plus current score); previous 27-column derived features are documented in `03-State/01-Board/02-feature-extraction.md`.
 - **CV:** `05-Model/04-Evaluation/02-cross-validation.md` (`GroupKFold` groups=`game_id` vs `TimeSeriesSplit`)
 - **Headless only:** `01-Game/01-game-engine.md` (SimulatorConfig `seed:42, spawn_prob_4:0.1`), `01-Game/04-game-ui.md` deprecated stub
 

@@ -1,5 +1,7 @@
 //! Executable capability smoke checks for the pinned AutoML dependency.
 
+pub mod benchmark;
+
 #[cfg(test)]
 mod tests {
     use automl::{
@@ -11,7 +13,7 @@ mod tests {
 
     fn tiny_multiclass_data() -> DataFrame {
         let mut columns = Vec::new();
-        for feature in 0..27 {
+        for feature in 0..crate::state::STATE_FEATURES {
             let values: Vec<f64> = (0..80)
                 .map(|row| ((row * (feature + 1) + feature) % 101) as f64 / 100.0)
                 .collect();
