@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan records a verified submodule dependency update, not a framework-performance finding.** Determinism, serialization, and tie-handling changes were committed and pushed on AutoML feature branches, pinned in the root repository, and the resulting submodule worktree is clean. Its full library suite passes 712 tests. The repeated standard-dataset diagnostic also passes 15/15 cases and matches predictions 15/15 across two runs; framework comparison evidence remains limited.
+**This plan records a verified submodule dependency update, not a framework-performance finding.** Determinism, serialization, and tie-handling changes were committed and pushed on AutoML feature branches, pinned in the root repository, and the resulting submodule worktree is clean. Its full library suite passes 712 tests. The repeated standard-dataset diagnostic passes 15/15 cases with exact predictions across two seed-42 runs and two seed-2026 runs; framework comparison evidence remains limited.
 
 > Pinned commit: `82d848323eed5e2af86d046d529916c448f2442c` (`v1.0.0-140-g82d8483`, branch `fix/deterministic-tie-breaking`) — verify with `git submodule status automl`.
 
