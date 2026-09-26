@@ -450,7 +450,7 @@ fn main() {
                 }
             };
             let mut data_frame = automl::cli::load_data(&data).expect("failed to read training CSV");
-            let group_ids = if let Some(metadata_path) = metadata.as_ref() {
+            let (group_ids, holdout_data, holdout_game_ids, holdout_row_indices, holdout_row_game_ids) = if let Some(metadata_path) = metadata.as_ref() {
                 if !(0.5..1.0).contains(&development_fraction) {
                     eprintln!("--development-fraction must be >= 0.5 and < 1.0");
                     std::process::exit(2);
@@ -468,12 +468,18 @@ fn main() {
                 let all: Vec<_> = distinct.into_iter().collect();
                 let test_start = ((all.len() as f64 * development_fraction).floor() as usize).clamp(cv_folds + 1, all.len() - 1);
                 let training_groups: std::collections::HashSet<_> = all[..test_start].iter().copied().collect();
+                let holdout_groups = &all[test_start..];
                 let training_indices: Vec<usize> = groups.iter().enumerate().filter_map(|(i, group)| training_groups.contains(group).then_some(i)).collect();
+                let holdout_row_indices: Vec<usize> = groups.iter().enumerate().filter_map(|(i, group)| holdout_groups.contains(group).then_some(i)).collect();
+                let holdout_row_game_ids: Vec<i64> = holdout_row_indices.iter().map(|&i| groups[i]).collect();
+                let holdout_index_ca = polars::prelude::IdxCa::from_vec("idx".into(), holdout_row_indices.iter().map(|&i| polars::prelude::IdxSize::try_from(i).expect("index fits Polars")).collect());
+                let holdout_data = data_frame.take(&holdout_index_ca).expect("failed to select chronological holdout games");
                 let training_index_ca = polars::prelude::IdxCa::from_vec("idx".into(), training_indices.iter().map(|&i| polars::prelude::IdxSize::try_from(i).expect("index fits Polars")).collect());
                 data_frame = data_frame.take(&training_index_ca).expect("failed to select pre-test games");
                 let training_groups: Vec<_> = training_indices.iter().map(|&i| groups[i]).collect();
-                println!("reserved final {} chronological games as test (unused during fitting); {} earlier games available for grouped CV and fitting", all.len() - test_start, test_start);
-                training_groups
+                let holdout_game_ids = holdout_groups.to_vec();
+                println!("reserved final {} chronological games as test (unused during fitting); {} earlier games available for grouped CV and fitting", holdout_game_ids.len(), test_start);
+                (training_groups, holdout_data, holdout_game_ids, holdout_row_indices, holdout_row_game_ids)
             } else {
                 eprintln!("--metadata is required: game IDs are needed to keep the final chronological holdout out of training");
                 std::process::exit(2);
@@ -569,9 +575,25 @@ fn main() {
                 eprintln!("selected model/data produced {} probability columns; the 2048 policy requires four classes", probability_check.ncols());
                 std::process::exit(2);
             }
+            let holdout_predictions: Vec<usize> = engine.predict(&holdout_data).expect("held-out action prediction failed")
+                .iter().map(|&action| action as usize).collect();
+            let holdout_actual = holdout_data.column("action").expect("held-out action column is required")
+                .cast(&polars::prelude::DataType::Float64).expect("held-out actions must be numeric");
+            let holdout_actual: Vec<usize> = holdout_actual.f64().expect("held-out actions must be numeric")
+                .into_no_null_iter().map(|action| action as usize).collect();
+            let holdout_summary = evaluation::summarize_classification(&holdout_actual, &holdout_predictions, 4)
+                .expect("held-out action labels must be in the four-action range");
             if let Some(parent) = output.parent() {
                 std::fs::create_dir_all(parent).expect("failed to create model output directory");
             }
+            let holdout_predictions_path = output.with_extension("holdout-predictions.csv");
+            use std::io::Write;
+            let mut holdout_file = std::fs::File::create(&holdout_predictions_path).expect("failed to create holdout prediction artifact");
+            writeln!(holdout_file, "row_index,game_id,actual_action,predicted_action").expect("failed to write holdout prediction header");
+            for ((&row_index, &game_id), (&actual, &predicted)) in holdout_row_indices.iter().zip(&holdout_row_game_ids).zip(holdout_actual.iter().zip(&holdout_predictions)) {
+                writeln!(holdout_file, "{row_index},{game_id},{actual},{predicted}").expect("failed to write holdout prediction row");
+            }
+            holdout_file.flush().expect("failed to flush holdout prediction artifact");
             engine.save(output.to_str().expect("model output path is not valid UTF-8"))
                 .expect("failed to save model artifact");
             let study_path = search_config.as_ref().map(|_| output.with_extension("study.json"));
@@ -599,6 +621,20 @@ fn main() {
                 "input_config": hyperopt_config,
                 "input_config_sha256": hyperopt_config.as_ref().and_then(|path| sha256_file(path).ok())
             }));
+            let holdout_metrics = serde_json::json!({
+                "n_rows": holdout_summary.n,
+                "accuracy": holdout_summary.accuracy,
+                "macro_precision": holdout_summary.macro_precision,
+                "macro_recall": holdout_summary.macro_recall,
+                "macro_f1": holdout_summary.macro_f1,
+                "per_action_f1": holdout_summary.per_class_f1,
+                "confusion_matrix_actual_rows_predicted_columns": holdout_summary.confusion_matrix,
+                "actions": ["up", "down", "left", "right"],
+                "game_ids": holdout_game_ids,
+                "predictions_csv": holdout_predictions_path,
+                "predictions_csv_sha256": sha256_file(&holdout_predictions_path).ok(),
+                "interpretation": "development diagnostic on chronological held-out games; not a confirmatory policy-quality estimate"
+            });
             write_json_manifest(&output, &serde_json::json!({
                 "manifest_schema": "game2048-ml.training-run",
                 "manifest_schema_version": 1,
@@ -642,10 +678,11 @@ fn main() {
                 "tune_trials": search_config.as_ref().map(|config| config.n_trials),
                 "selected_n_estimators": selected_n_estimators,
                 "selected_max_depth": selected_max_depth,
-                "study_artifact": study_path
+                "study_artifact": study_path,
+                "held_out_evaluation": holdout_metrics
             })).expect("failed to write training manifest");
             if let Some(metrics) = engine.metrics() {
-                println!("saved {}; samples={} features={} validation_accuracy={:?} training_secs={:.3} manifest={}", output.display(), metrics.n_samples, metrics.n_features, metrics.accuracy, metrics.training_time_secs, output.with_extension("manifest.json").display());
+                println!("saved {}; samples={} features={} validation_accuracy={:?} heldout_rows={} heldout_accuracy={:.4} heldout_macro_f1={:.4} training_secs={:.3} manifest={}", output.display(), metrics.n_samples, metrics.n_features, metrics.accuracy, holdout_summary.n, holdout_summary.accuracy, holdout_summary.macro_f1, metrics.training_time_secs, output.with_extension("manifest.json").display());
             }
         }
         Some(Commands::Benchmark { command: BenchmarkCommand::Run { model, n_games, seed, output } }) => {
