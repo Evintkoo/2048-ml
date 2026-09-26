@@ -1,6 +1,6 @@
 # Plan 03 — Valid Moves: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Move validity and seeded 10k random/heuristic frequencies are measured; model-policy frequency awaits a trained model.
+> **Status: PARTIAL (2026-09-27).** Move validity and seeded random/heuristic frequencies are measured; model-policy frequency awaits a trained model.
 
 **Goal:** State the current implementation and evidence boundary for valid moves.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats move validity as implemented and its frequency analysis as partial.** Seeded 10k-game random and heuristic baselines were measured; results and raw artifacts are recorded in [the action-frequency report](../../../reports/action-frequency/README.md). Intervals resample whole games to account for within-game dependence. A trained model is not available, so model-policy frequencies remain pending.
+**This plan treats move validity as implemented and its frequency analysis as partial.** Seeded 10,000-game random and heuristic baselines were measured; results and raw artifacts are recorded in [the action-frequency report](../../../reports/action-frequency/README.md). Intervals resample whole games to account for within-game dependence. The report records that the root source was locally modified during collection, so these artifacts describe that recorded run rather than an immutable release. A trained model is not available, so model-policy frequencies remain pending.
 
 > **Canonical validity:** `board.would_change(dir)` — single source. Do not duplicate `get_valid_moves` logic elsewhere.
 
@@ -88,7 +88,7 @@ These are descriptive baseline frequencies, not a training prior or framework re
 ```rust
 // Reference only — not MVP training path
 pub enum HeuristicStrategy { Monotonicity, Corner, Empty }
-// See 03-Simulation-Engine/01-simulation-engine.md Appendix — heuristic agent is baseline only (~512)
+// See 03-Simulation-Engine/01-simulation-engine.md Appendix — heuristic agent is baseline only
 ```
 
 - Monotonicity: keep rows/cols monotonic
