@@ -27,7 +27,7 @@ rustc --version  # must be ≥1.75
 git clone --recurse-submodules https://github.com/Evintkoo/2048-ml
 cd 2048-ml
 git submodule update --init --recursive
-git submodule status automl  # pinned: 64f5edad...
+git submodule status automl  # pinned: 88a86bf2...
 
 cargo build
 cargo test                   # root integration and game tests

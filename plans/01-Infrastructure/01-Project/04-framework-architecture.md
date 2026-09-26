@@ -12,7 +12,8 @@ This document records architecture observed in the pinned AutoML submodule and r
 ## Revision and scope
 
 - Root revision: `ca15cebcdf4d307126a63d4ab19e416606f50564`.
-- AutoML submodule revision: `64f5edad29c9e58ee7d33abf380418d5cfbbb561` (the declared pin).
+- AutoML submodule revision at the original audit: `64f5edad29c9e58ee7d33abf380418d5cfbbb561`.
+- Current AutoML pin: `88a86bf44a0cb03664931f7ef15201b95fa11255` (`feature/deterministic-training-serialization`). It adds deterministic leaf ties, stable class-group iteration during seeded splitting, and exact float-roundtrip deserialization; the architecture boundaries above are unchanged.
 - Environment inspected: macOS 26.5, arm64; Rust/Cargo 1.96.1.
 - Root crate directly depends on the path submodule `automl`; root training data is read as Polars `DataFrame` through the framework CLI loader.
 
@@ -69,7 +70,7 @@ The framework APIs use concrete Rust structs/enums and `Result` errors at their 
 
 ### Follow-up source and repeatability probe
 
-On 2026-09-24, the focused root RandomForest save/load smoke failed once in 20 runs. Follow-up isolation found three issues in the local AutoML checkout: leaf class ties depended on `HashMap` iteration; default `serde_json` float parsing altered serialized model values; and stratified splitting appended class rows in `HashMap` iteration order, making identical-seed fits differ. Deterministic leaf tie-breaking, `serde_json/float_roundtrip`, and ordered class grouping now address these cases. The tie regression passed; a synthetic same-seed check passed 20/20 process runs with 20 refits per run; and exact save/load model-state and prediction checks passed 20/20 process runs. The broader multi-seed and dataset reproducibility study remains outstanding. These fixes exist in the local submodule worktree and are not part of the pinned upstream commit.
+On 2026-09-24, the focused root RandomForest save/load smoke failed once in 20 runs. Follow-up isolation found three issues in the local AutoML checkout: leaf class ties depended on `HashMap` iteration; default `serde_json` float parsing altered serialized model values; and stratified splitting appended class rows in `HashMap` iteration order, making identical-seed fits differ. Deterministic leaf tie-breaking, `serde_json/float_roundtrip`, and ordered class grouping now address these cases. The tie regression passed; a synthetic same-seed check passed 20/20 process runs with 20 refits per run; and exact save/load model-state and prediction checks passed 20/20 process runs. The broader multi-seed and dataset reproducibility study remains outstanding. These fixes are committed and pinned at AutoML revision `88a86bf44a0cb03664931f7ef15201b95fa11255`.
 
 ## Evidence boundary
 

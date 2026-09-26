@@ -11,7 +11,7 @@ The framework is the primary research contribution. Results from 2048 are applic
 
 ## Repository status
 
-The initial implementation and synthetic training wiring are available. API/model capability checks passed for five four-class classifiers, but the full standard-dataset framework-validation gate is pending. A local AutoML worktree patch makes the focused RandomForest save/load smoke pass 20/20 repetitions and a same-seed synthetic refit check pass 20/20 process runs (20 refits per run). Broader repeated-fit reproducibility remains unestablished. Canonical rollout training data and 10,000-game model comparisons also remain to be completed; the 2048 case study does not establish general AutoML superiority.
+The initial implementation and synthetic training wiring are available. API/model capability checks passed for five four-class classifiers, and an initial three-dataset/five-model framework diagnostic is retained. Its two seed-42 runs matched 14/15 prediction sets; Wine KNN repeatability and save/load equivalence failed in one run, so the full framework-validation gate remains pending. The AutoML submodule now pins a published determinism/serialization fix (`88a86bf`); focused RandomForest save/load and same-seed synthetic refit checks passed 20/20 process runs before publication. Canonical rollout training data, matched framework baselines, resource measurements, and held-out 2048 comparisons also remain pending. The 2048 case study does not establish general AutoML superiority.
 
 ## Getting started
 

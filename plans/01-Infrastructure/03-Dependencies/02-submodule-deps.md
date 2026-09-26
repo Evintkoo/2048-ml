@@ -1,6 +1,6 @@
 # Plan 02 — Submodule Dependency Management: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Submodule hash matches pin and its current modified worktree passes 710 library tests; the plan's clean-worktree gate remains unmet.
+> **Status: COMPLETE (2026-09-27).** A determinism/serialization fix is published on a feature branch, pinned by the root repository, clean, and passes all 710 AutoML library tests.
 
 **Goal:** State the current implementation and evidence boundary for submodule dependency management.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial dependency management, not as a research finding.** The pinned commit hash matches, and the current local worktree library suite passes 710 tests. The health check also requires an empty worktree; local research edits remain uncommitted in `automl/Cargo.toml`, `automl/src/training/decision_tree.rs`, and `automl/src/training/engine.rs`.
+**This plan records a verified submodule dependency update, not a framework-performance finding.** The determinism/serialization changes were committed on the AutoML feature branch, pinned in the root repository, and the resulting submodule worktree is clean. Its full library suite passes 710 tests.
 
-> Pinned commit: `64f5edad29c9e58ee7d33abf380418d5cfbbb561` — verify with `git submodule status automl`.
+> Pinned commit: `88a86bf44a0cb03664931f7ef15201b95fa11255` (`v1.0.0-139-g88a86bf`) — verify with `git submodule status automl`.
 
 ## 1. Quickstart
 
@@ -19,7 +19,7 @@
 git clone --recurse-submodules https://github.com/Evintkoo/2048-ml
 # or after clone:
 git submodule update --init --recursive
-git submodule status automl   # must print 64f5eda...
+git submodule status automl   # must print 88a86bf...
 ```
 
 ## 2. Verification Smoke (run before any training)
@@ -66,8 +66,8 @@ git -C automl status --short              # must be empty (no local edits)
 
 ## Open questions
 
-- **The clean pinned-checkout gate remains unmet.** Hash is pinned and 710 tests pass on the current local worktree; its three modified files mean this run is not evidence for the unmodified pinned source. Preserve or publish the research patch and re-run verification from a clean checkout before treating this gate as complete.
+- The submodule health gate is complete for the published `88a86bf` pin. Broader framework validation and independent reproducibility remain tracked by the framework contribution and validation tickets.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **Update this pin only before a training milestone.** Follow the submodule smoke procedure after every change and keep framework evaluation evidence separate from 2048 case-study results.

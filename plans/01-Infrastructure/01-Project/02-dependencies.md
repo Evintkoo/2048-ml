@@ -19,7 +19,7 @@
 |----------|-------|
 | Repository | `https://github.com/Evintkoo/automl` |
 | Submodule Path | `automl/` |
-| Pinned Commit | `64f5edad29c9e58ee7d33abf380418d5cfbbb561` (v1.0.0-138-g64f5eda) |
+| Pinned Commit | `88a86bf44a0cb03664931f7ef15201b95fa11255` (`v1.0.0-139-g88a86bf`) |
 | Language | Rust 1.75+ |
 | License | MIT |
 

@@ -19,7 +19,7 @@ No `automl/Cargo.toml` duplication — versions pinned to automl's manifest for 
 
 ```toml
 [dependencies]
-automl = { path = "automl" }                    # pinned hash 64f5eda (v1.0.0-138)
+automl = { path = "automl" }                    # pinned hash 88a86bf (v1.0.0-139)
 ndarray = "0.16"                                # pinned to automl; board arrays
 polars = { version = "0.46", features = ["lazy", "csv", "json"] } # current DataFrame; canonical schema is 17+1
 rand = "0.8"                                    # automl-compatible RNG
@@ -65,7 +65,7 @@ sha2 = "0.10"                                   # SHA-256 artifact and dataset m
 2048-ml/
 ├── Cargo.toml     # single crate (MVP)
 ├── src/           # root CLI and cohesive game, state, action, model, data, evaluation modules
-└── automl/        # submodule @ 64f5eda
+└── automl/        # submodule @ 88a86bf
 ```
 
 The MVP uses one root crate with cohesive Rust domain modules such as `src/game_engine/`, `src/data_pipeline.rs`, and `src/evaluation.rs`; source files need not reproduce the numbered `plans/` hierarchy. Separate workspace members (`game-engine/`, `data-collector/`, `trainer/`, `benchmark/`) are out of scope until post-MVP.
