@@ -1,6 +1,6 @@
 # Plan 01 — Scoring Rules: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-26).** Merge values, positions, per-turn gains, and accumulated score are tracked; root suite passes.
+> **Status: DONE (2026-09-27).** Merge values, positions, per-turn gains, and accumulated score are tracked; root suite passes.
 
 **Goal:** State the current implementation and evidence boundary for scoring rules.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
