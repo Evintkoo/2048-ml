@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The 10k random and heuristic baselines and whole-game bootstrap frequency intervals are complete for the measured configuration. Rollout collection now checkpoints bounded game batches and can resume after interruption; no plan-scale rollout corpus has been collected yet.
+**This plan treats its subject as partial or pending work, not as a research finding.** The random and heuristic baselines and whole-game bootstrap frequency intervals are complete for the measured 10,000-game-per-agent protocol. Rollout collection now checkpoints bounded game batches and can resume after interruption; no plan-scale rollout corpus has been collected yet.
 
-> **Sample size: 10k games minimum** for benchmarking (per project-overview Tiers and §7 below). Supervised only: the canonical state has 17 values under Plan 00, now used by the root collector. No `rewards` are used.
+> Sample sizes are chosen from the study question, observed variation, desired precision or power, and available compute budget; there is no universal game-count minimum. Supervised only: the canonical state has 17 values under Plan 00, now used by the root collector. No `rewards` are used.
 
 ## 1. Purpose
 
@@ -22,7 +22,7 @@ Run N games sequentially/parallel to collect sufficient supervised rows for auto
 ```rust
 pub struct GameSequence {
     pub games: Vec<GameResult>,
-    pub total_games: usize, // 10000 canonical
+    pub total_games: usize, // selected for the study and compute budget
     pub seed: u64,          // global 42 → per-game via wrapping_add — see 02-randomness.md
     pub agent: AgentType,   // Random | Model (MVP)
 }
@@ -45,8 +45,8 @@ impl GameSequence {
 ### 3.1 Sequential (Deterministic)
 
 ```rust
-// Canonical 10k — see §6
-let results: Vec<GameResult> = (0..10000)
+// Example: choose n from the study protocol and available budget (see §6).
+let results: Vec<GameResult> = (0..n)
     .map(|i| run_game_with_seed(seed.wrapping_add(i as u64)))
     .collect();
 ```
@@ -55,7 +55,7 @@ let results: Vec<GameResult> = (0..10000)
 
 ```rust
 use rayon::prelude::*;
-let results: Vec<GameResult> = (0..10000)
+let results: Vec<GameResult> = (0..n)
     .into_par_iter()
     .map(|i| run_game_with_seed(seed.wrapping_add(i as u64)))
     .collect();
@@ -96,24 +96,24 @@ Game(i, seed.wrapping_add(i)) → 17 state values + u8 per valid move → checkp
 
 > Cross-ref loops: `01-simulation-engine.md` §4 (`SimulationBatch`). Do not re-define `GameSimulator` here.
 
-## 6. Sample Size — Canonical 10k (Not Placeholder)
+## 6. Sample Size — Study-Specific and Budgeted
 
-| Goal | Canonical Minimum | Note |
-|------|-------------------|------|
-| Baseline / benchmark / statistical significance | **10,000 games** | Per project-overview Tiers & §2/§3 above — fixed, not 1,000 |
-| Training | 10,000 minimum; 50k–100k recommended if compute allows | log scaling; measure after 10k |
-| Evaluation CI | ≥10k for bootstrap 95% CI & Mann-Whitney U p<0.05 | see 07-Benchmarking/ |
+| Goal | Sample-size basis | Evidence / note |
+|------|-------------------|-----------------|
+| Baseline / benchmark | Protocol-specific precision and budget | The retained random/heuristic action-frequency study used 10,000 games per agent; this is the completed protocol, not a universal minimum. |
+| Training | Learning-curve and label-quality study, plus budget | No training-corpus size has been established. The two-game collection pilot is only a throughput smoke. |
+| Evaluation intervals or tests | Target estimand, observed variation, precision/power, and dependence structure | No game count guarantees a particular confidence interval width or p-value. See `07-Benchmarking/` for protocol-specific analysis. |
 
-> **Deleted placeholder:** `PerformanceTargets { games_per_second: 1000 }` — **remove placeholder throughput claim**. Measure empirically and report actual `avg_game_duration_ms` in `SimulationMetrics` (see `01-simulation-engine.md` §6). Do not assert 1000 games/sec before measurement. Same for `total_time_10k: Duration` placeholder — delete.
+> Throughput and total runtime must be measured for the configured workload; do not treat `games_per_second: 1000` or `total_time_10k` as acceptance targets.
 
 ## 7. Progress Tracking
 
-The root collector displays completed games, elapsed time, and estimated time remaining. Updates arrive as each parallel game finishes.
+The root collector displays completed games, elapsed time, and estimated time remaining. Updates arrive as each parallel game finishes. Average score is not currently displayed by the collector; the fields below are an illustrative design sketch, not its implemented progress API.
 
 ```rust
 pub struct ProgressTracker {
     pub games_completed: usize,
-    pub total_games: usize,       // 10000 canonical
+    pub total_games: usize,       // configured study size
     pub current_score: u64,       // metadata
     pub best_score: u64,
     pub avg_score_so_far: f64,
@@ -130,10 +130,12 @@ Resume with the same seed, game count, rollout count, thread count, and batch
 size using `--resume`. The final CSV and metadata are assembled after all games.
 
 ```rust
-cargo run --release -- data-collector collect --n-games 20000 --rollouts 100 --threads 4 \
+cargo run --release -- data-collector collect --n-games <n_games> --rollouts 100 --threads 4 \
   --checkpoint-every 1000 --output data/raw/policy.csv
 # After interruption, rerun the same arguments and add --resume.
-# Estimated runtime is approximately 103 hours; run only after compute budget approval.
+# Select the game count only after setting a study goal and compute budget.
+# The retained two-game pilot projects ~228 hours for 20,000 games by linear
+# extrapolation; this estimate is highly uncertain and is not a runtime promise.
 ```
 
 ## 9. Cross-References
@@ -151,8 +153,9 @@ cargo run --release -- data-collector collect --n-games 20000 --rollouts 100 --t
 - Implemented fixed-thread Rayon collection, per-game `global_seed.wrapping_add(game_id)`, game-group metadata, rollout relabeling, CSV schema validation, and a JSON manifest with seeds, thread count, timing, row counts, and file hashes.
 - The collector now writes per-batch data/metadata parts and an atomic, config-checked JSON checkpoint; `--resume` continues from the next game ID. Indicatif reports live game completion. Final assembly validates both row-aligned files.
 - Baseline evidence: [`reports/action-frequency/README.md`](../../../reports/action-frequency/README.md) records 10,000 random and 10,000 heuristic games, raw score/frequency CSVs, manifests, and 2,000-replicate whole-game bootstrap 95% intervals. These runs establish case-study baselines only; they do not establish framework superiority.
-- Artifact integrity check (2026-09-27): both CSVs contain 10,000 game rows plus the header, and each SHA-256 matches its manifest. This verifies file integrity and row counts, not an independent recomputation of the statistical summaries.
-- Validation: deterministic batch coverage and checkpoint/resume tests pass. The Planout checker is part of the ticket verification. Prior throughput measurement projects approximately 103 hours for the current 20k rollout-labeled collection configuration; this compute estimate is a prerequisite to budget, not a reason to omit the collection deliverable.
+- Artifact validation (2026-09-27): both baseline CSVs contain 10,000 game rows plus a header and match their manifest SHA-256. Independent recomputation from their `score` columns reproduced manifest means (random 1,094.124; heuristic 8,056.2324) and medians (1,050; 7,136). These CSVs do not retain per-game action counts, so pooled action totals and game-cluster bootstrap intervals cannot be independently recomputed from the archived data. The published frequencies and intervals remain manifest-reported results.
+- Collection throughput evidence: [`reports/collection_pilots/2026-09-27/README.md`](../../../reports/collection_pilots/2026-09-27/README.md) documents a resumed two-game pilot (285 rows, 97,300 rollout evaluations, 82.23 seconds). Its linear projection is approximately 228 hours for 20,000 games and is highly uncertain; the prior 103-hour estimate is superseded. A larger pilot and declared compute budget precede plan-scale collection.
+- Validation: deterministic batch coverage and checkpoint/resume tests pass. The Planout checker is part of the ticket verification.
 
 ---
 
@@ -169,7 +172,7 @@ cargo run --release -- data-collector collect --n-games 20000 --rollouts 100 --t
 
 ## Open questions
 
-- **Plan-scale rollout data collection and independent report validation remain open.** Baseline CSV checksums and row counts match their manifests, but the score/frequency summaries have not been independently recomputed. The collector resumes only when all data-generation parameters match its checkpoint. The 20k run remains unscheduled until its estimated compute budget is explicitly approved; retain data, manifests, and analysis artifacts.
+- **Plan-scale rollout data collection and complete independent report validation remain open.** Baseline score means and medians were recomputed from the raw score columns, but action counts/bootstrap intervals cannot be reconstructed without per-game action-count data. The collector resumes only when all data-generation parameters match its checkpoint. A 20k run remains unscheduled pending a more reliable runtime estimate and declared compute budget; retain data, manifests, and analysis artifacts.
 
 ## Later
 
