@@ -1,6 +1,6 @@
 # Plan 02 — Glossary: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Terms are compiled, but several definitions need qualifiers and baseline scores must be tied to their local protocol.
+> **Status: PARTIAL (2026-09-27).** Terms are compiled, but several definitions need qualifiers and baseline scores must be tied to their local protocol.
 
 **Goal:** State the current implementation and evidence boundary for glossary.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -43,8 +43,9 @@ mindmap
 | Move | Slide operation (up/down/left/right) |
 | Score | Sum of all merge values during a game |
 | Game Over | Board is full with no valid moves |
-| Heuristic Baseline | Local policy using heuristic board evaluation; measured mean is protocol-specific (8,056.23 in the recorded 10k action-frequency study) |
-| Random Baseline | Agent selecting a legal move uniformly; measured mean is protocol-specific (1,094.12 in the recorded 10k action-frequency study) |
+| Heuristic Baseline | Local policy using heuristic board evaluation; measured mean is protocol-specific (8,056.23 in the recorded 10k same-seed comparison) |
+| Fitted Pilot Policy | One RandomForest fitted on a 20-game rollout-labeled corpus; exploratory mean 866.15 on the same 10k seeds, not a selected-model result |
+| Random Baseline | Agent selecting a legal move uniformly; measured mean is protocol-specific (1,094.12 in the recorded 10k same-seed comparison) |
 | Case-study winner | Model with the highest held-out mean score under the declared 2048 protocol; not a globally optimal policy |
 
 ## 4. ML Terminology
@@ -81,10 +82,10 @@ mindmap
 | Metric | Quantitative measurement (mean score, median score, std dev) |
 | Statistical significance | Decision under a declared test, comparison family, and error criterion; no universal project threshold is fixed here |
 | Repeatability | Consistent results under the same recorded conditions; this alone does not establish independent reproducibility |
-| Winner Determination | Protocol-specific comparison; no trained-policy winner has been established |
+| Winner Determination | Protocol-specific comparison; the retained pilot comparison is exploratory and does not establish a selected-policy winner |
 | Mean Score | Primary 2048 case-study metric; framework validation uses task-appropriate quality and resource metrics |
 | Bootstrap CI | Resampling-based interval; confidence interpretation depends on sampling design |
-| Effect Size | Magnitude of difference; Cohen's d helper exists, with no automatic project cutoff |
+| Effect Size | Magnitude of difference; Cohen's d helper exists, but its independent-sample estimate is not paired-seed uncertainty; no automatic project cutoff |
 
 ## 7. Statistical Terms
 
@@ -92,7 +93,7 @@ mindmap
 |------|------------|
 | p-value | Probability of observing results under null hypothesis |
 | Confidence Interval | Interval estimate; method and coverage assumptions must be stated |
-| Effect Size | Magnitude of difference (Cohen's d) |
+| Effect Size | Magnitude of difference; method must match the design (the CLI Cohen's d helper uses independent samples) |
 | Standard Deviation | Data spread measure |
 | Wilcoxon | Paired rank test; not implemented in current comparison helpers |
 | Mann-Whitney U | Two-group non-parametric comparison |

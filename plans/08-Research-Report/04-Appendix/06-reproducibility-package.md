@@ -1,6 +1,6 @@
 # Plan 06 — Reproducibility Package: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Root source, lockfile, seeded CLI workflows, and run manifests exist; Docker, public datasets, full study artifacts, and independent reproduction remain absent.
+> **Status: PARTIAL (2026-09-27).** Root source, lockfile, seeded CLI workflows, public UCI inputs, and run manifests exist; a public project data release, Docker environment, full confirmatory artifacts, and independent reproduction remain absent.
 
 **Goal:** State the current implementation and evidence boundary for reproducibility package.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -49,17 +49,17 @@ Verification checklist — mark an item complete only after the corresponding ar
 - [x] 2048 data-generation procedure is available in `cargo run -- data-collector collect --help`
 - [x] Run manifests record configured seeds; no complete study seed matrix is established
 - [ ] All scripts are executable
-- [x] Same-seed predictions/save-load matched across two runs for the retained 3-dataset/5-model matrix on AutoML `82d8483`; broader configurations/seeds/platforms remain unverified
+- [x] Same-split predictions/save-load matched across two runs for all 15 cases at split seeds 42 and 2026 on AutoML `82d8483`; seed 2027 has one run, and broader configurations/platforms remain unverified
 - [x] Comparison and report commands can reproduce summaries from supplied CSV inputs; verify manifests and limitations
 - [ ] Figures are generated from raw data
 - [ ] Paper references match code versions
-- [x] Save/load predictions matched in both retained 3-dataset/5-model runs on AutoML `82d8483`; this does not establish cross-version equivalence
+- [x] Save/load predictions matched in repeated 3-dataset/5-model runs at split seeds 42 and 2026 on AutoML `82d8483`; this does not establish cross-version equivalence
 
-Checked entries refer only to available local procedures. Plan-scale 2048 data, matched framework baselines/resource profiles, versioned releases, and independent replication remain outstanding. The retained one-seed UCI matrix is a narrow repeatability diagnostic, not broad determinism evidence. Manifests record checksums, protocol details, seeds, dependency pin when available, elapsed time, summaries, and result paths; record dirty source state separately.
+Checked entries refer only to available local procedures. Plan-scale 2048 data, matched framework baselines/resource profiles, versioned releases, and independent replication remain outstanding. The retained UCI matrix covers split seeds 42, 2026, and 2027; repeated processes at 42 and 2026 are narrow same-split diagnostics, not broad determinism evidence. Manifests record checksums, protocol details, seeds, dependency pin when available, elapsed time, summaries, and result paths; record dirty source state separately.
 
 ## Implementation Record
 
-- Root source is one Rust crate with the AutoML submodule pinned to a published commit. Collector and benchmark CLIs emit CSV/JSON artifacts. Docker, public dataset release/DOI, figures, and independent reproduction are absent; nonexistent sample paths were removed.
+- Root source is one Rust crate with the AutoML submodule pinned to a published commit. Collector and benchmark CLIs emit CSV/JSON artifacts. Docker, a public project data release/DOI, figures, and independent reproduction are absent; named source datasets and local run artifacts are retained.
 
 ## 6. Reproducibility Failure Modes
 
@@ -74,7 +74,7 @@ Checked entries refer only to available local procedures. Plan-scale 2048 data, 
 
 ## 7. Publication Artifacts
 
-Before making a reproducibility claim, provide the exact source revision, clean/dirty source state, submodule state, lockfile and toolchain versions, protocol/configuration, raw data or access instructions, generated manifests, analysis commands, outputs, and known limitations. Docker and public datasets are optional packaging choices, not current artifacts.
+Before making a reproducibility claim, provide the exact source revision, clean/dirty source state, submodule state, lockfile and toolchain versions, protocol/configuration, raw data or access instructions, generated manifests, analysis commands, outputs, and known limitations. Docker and a public release of project-generated data are optional packaging choices, not current artifacts; the cited UCI source datasets are retained locally.
 
 When generated, include raw and processed results, figures generated from retained data, and executable statistical analysis.
 

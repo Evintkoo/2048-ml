@@ -1,6 +1,6 @@
 # Plan 03 — References: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Manifest references are source-checked; academic bibliography and primary-source claim verification remain pending.
+> **Status: PARTIAL (2026-09-27).** Manifest references are source-checked and selected academic records are verified in the literature-review ticket; broader bibliography and claim verification remain pending.
 
 **Goal:** State the current implementation and evidence boundary for references.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -13,7 +13,7 @@
 
 > **This appendix holds only non-lit refs. Literature refs live in `01-IMRD/00-literature-review.md`.**
 
-See `01-IMRD/00-literature-review.md` for provisional academic source leads. Exact records and claim support have not been fully verified.
+See `01-IMRD/00-literature-review.md` for the verified AutoML/HPO and selected 2048 records, plus remaining provisional sources. Verification applies only to the bounded claims stated there; the complete bibliography is not audited.
 
 **Appendix-only non-literature refs:**
 
@@ -26,7 +26,7 @@ See `01-IMRD/00-literature-review.md` for provisional academic source leads. Exa
 
 ## Implementation Record
 
-- This is a redirect/specification for non-literature dependencies. Manifest locations and declared versions were checked. Academic references remain unverified, and actual runtime/submodule provenance must accompany each study result.
+- This is a redirect/specification for non-literature dependencies. Manifest locations and declared versions were checked. Selected academic references are verified in the literature-review ticket; broader bibliography review remains open. Actual runtime/submodule provenance must accompany each study result.
 
 ---
 

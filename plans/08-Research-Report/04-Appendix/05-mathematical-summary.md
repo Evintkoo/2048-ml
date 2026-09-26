@@ -1,6 +1,6 @@
 # Plan 05 — Mathematical Summary: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** The summary now records mathematical statements that are safe to retain and explicitly withdraws unsupported bounds.
+> **Status: PARTIAL (2026-09-27).** The summary now records mathematical statements that are safe to retain and explicitly withdraws unsupported bounds.
 
 **Goal:** State the current implementation and evidence boundary for mathematical summary.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

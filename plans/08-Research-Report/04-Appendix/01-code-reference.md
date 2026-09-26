@@ -1,6 +1,6 @@
 # Plan 01 — Code Reference: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Root crate and submodule paths have been source-audited; this reference is not a complete generated API inventory.
+> **Status: PARTIAL (2026-09-27).** Root crate and submodule paths have been source-audited; this reference is not a complete generated API inventory.
 
 **Goal:** State the current implementation and evidence boundary for code reference.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

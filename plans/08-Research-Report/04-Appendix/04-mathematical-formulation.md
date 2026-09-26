@@ -1,6 +1,6 @@
 # Plan 04 — Mathematical Formulation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Implemented process notation is provided; unsupported theorem and complexity claims were withdrawn pending formal review.
+> **Status: PARTIAL (2026-09-27).** Implemented process notation is provided; unsupported theorem and complexity claims were withdrawn pending formal review.
 
 **Goal:** State the current implementation and evidence boundary for mathematical formulation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

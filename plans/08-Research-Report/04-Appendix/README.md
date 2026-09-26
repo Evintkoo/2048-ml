@@ -8,10 +8,10 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 |---|---|---|
 | [01-code-reference](01-code-reference.md) | Code Reference | PARTIAL — current root source map |
 | [02-glossary](02-glossary.md) | Glossary | PARTIAL — evidence-qualified definitions |
-| [03-references](03-references.md) | References | PARTIAL — software refs checked; academic refs pending |
+| [03-references](03-references.md) | References | PARTIAL — software refs checked and selected academic records verified; broader bibliography pending |
 | [04-mathematical-formulation](04-mathematical-formulation.md) | Mathematical Formulation | PARTIAL — unsupported claims withdrawn |
 | [05-mathematical-summary](05-mathematical-summary.md) | Mathematical Summary | PARTIAL — no theorem asserted |
-| [06-reproducibility-package](06-reproducibility-package.md) | Reproducibility Package | PARTIAL — local manifests exist; full study package absent |
+| [06-reproducibility-package](06-reproducibility-package.md) | Reproducibility Package | PARTIAL — local manifests and repeated split diagnostics exist; full confirmatory package absent |
 
 ## Reading paths
 
