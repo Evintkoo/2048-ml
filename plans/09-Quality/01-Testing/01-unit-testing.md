@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**The root test suite was revalidated in this pass.** `cargo test` passes all 35 binary tests. `cargo test --lib` is inapplicable because the root package has no library target. No coverage report or Tarpaulin configuration was found; the proposed 80% target is not evidence.
+**The root test suite was revalidated in this pass.** `cargo test` passes all 37 binary tests. `cargo test --lib` is inapplicable because the root package has no library target. No coverage report or Tarpaulin configuration was found; the proposed 80% target is not evidence.
 
 ## 1. Purpose
 Unit tests for 4×4 game engine, feature extraction, and automl wiring. Distinct from integration (pipeline wiring) and game-validation (manual audit).
@@ -23,7 +23,7 @@ Unit tests for 4×4 game engine, feature extraction, and automl wiring. Distinct
 | 3 | `game_engine/mod.rs` | unchanged move does not spawn or score | Existing unit coverage |
 | 4 | `game_engine/mod.rs` | seeded spawn reproducibility and configured probability | Existing deterministic/probability checks; finite-sample behavior only |
 | 5 | `game_engine/mod.rs` | spawn selects an empty cell | Seeded empty-cell choice is deterministic |
-| 6 | `game_engine/mod.rs` | score accumulation and overflow behavior | Score uses `u64`; overflow boundary coverage is absent |
+| 6 | `game_engine/mod.rs` | score accumulation and overflow behavior | Score uses `u64`; explicit score-overflow atomicity regression now exists |
 | 7 | `game_engine/mod.rs` | blocked move (all moves would_change==false) | `is_game_over()==true` |
 | 8 | `state.rs` | feature vector shape/order and score encoding | Existing tests; game ID is metadata, not a feature |
 | 9 | `game_engine/mod.rs` | rollout label is one of four directions | Existing rollout-label tests |
@@ -44,7 +44,7 @@ Before release, run the agreed test suite and any adopted coverage gate; no cove
 
 ## Implementation Record
 
-- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, framework smokes, and current AutoML revision provenance. `cargo test` passed 35/35; no Tarpaulin config or coverage report exists.
+- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, framework smokes, and current AutoML revision provenance. `cargo test` passed 37/37 after adding score and move-count overflow atomicity regressions; no Tarpaulin config or coverage report exists.
 
 ---
 

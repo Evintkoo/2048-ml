@@ -1,6 +1,6 @@
 # Plan 01 — CI Pipeline: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** No CI workflow exists; this ticket remains an unimplemented infrastructure deliverable.
+> **Status: PARTIAL (2026-09-27).** A GitHub Actions workflow and local check script exist; a hosted run and retained workflow artifact are not yet verified.
 
 **Goal:** State the current implementation and evidence boundary for ci pipeline.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**No CI automation is configured.** Historical local build/test/lint runs do not establish continuous integration, and the duration/deployment stages below are only proposals.
+**A minimal CI workflow is configured** for pushes to `main`, pull requests, and manual dispatch. It initializes submodules and runs formatting, root tests, and Clippy through `scripts/ci-check.sh`. The same script passes locally; no hosted Actions run has yet been retained. Research validation and deployment remain separate or out of scope.
 
 ## 1. Purpose
 
@@ -73,9 +73,9 @@ flowchart TD
 
 | Stage | Command | Duration | Failure Action |
 |-------|---------|----------|----------------|
-| Build / check | Cargo build/check commands | Not measured in CI | Not configured |
-| Tests | Existing Cargo test targets | Not measured in CI | Not configured |
-| Lint / format | Cargo fmt and clippy | Not measured in CI | Not configured |
+| Build / check | `cargo test` (builds the root package) | Hosted duration not measured | Job fails on nonzero exit |
+| Tests | `cargo test` | Hosted duration not measured | Job fails on nonzero exit |
+| Lint / format | `cargo fmt --check`; `cargo clippy --all-targets -- -D warnings` | Hosted duration not measured | Job fails on nonzero exit |
 | Research validation | Dataset and benchmark protocols | Not automated | Pending separate evidence |
 | Deploy | No deployment target in current scope | N/A | Out of scope |
 
@@ -167,7 +167,7 @@ Each pipeline run produces:
 
 ## Current Repository Status
 
-No CI workflow is configured in `.github/workflows/`. Prior local formatter, test, and clippy results are historical and were not repeated during this pass. Coverage reporting, scheduled performance jobs, and deployment are not configured; deployment is outside current scope.
+`.github/workflows/ci.yml` runs `scripts/ci-check.sh` on GitHub-hosted Ubuntu with stable Rust. The script passed locally: format check, 37/37 root tests, and Clippy. Coverage reporting, scheduled research/performance jobs, and deployment are not configured; no hosted workflow result is recorded yet, and deployment is outside current scope. The older stage and trigger diagrams above are target descriptions where they include validation, scheduling, notifications, or deployment; the workflow configuration is authoritative for current behavior.
 
 ---
 
@@ -184,7 +184,7 @@ No CI workflow is configured in `.github/workflows/`. Prior local formatter, tes
 
 ## Open questions
 
-- **CI remains unimplemented.** A future workflow needs submodule initialization, supported Rust toolchain, dependency caching, explicit failure policy, and a CI run artifact before it can be marked complete.
+- **Hosted CI evidence remains pending.** After the workflow is pushed, verify the hosted job and retain its result. Keep benchmark studies and deployment outside this fast correctness workflow.
 
 ## Later
 

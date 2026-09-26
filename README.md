@@ -11,7 +11,7 @@ The framework is the primary research contribution. Results from 2048 are applic
 
 ## Repository status
 
-The initial implementation and synthetic training wiring are available. API/model capability checks passed for five four-class classifiers, and an initial three-dataset/five-model framework diagnostic is retained. Its two seed-42 runs matched 14/15 prediction sets; Wine KNN repeatability and save/load equivalence failed in one run, so the full framework-validation gate remains pending. The AutoML submodule now pins a published determinism/serialization fix (`88a86bf`); focused RandomForest save/load and same-seed synthetic refit checks passed 20/20 process runs before publication. Canonical rollout training data, matched framework baselines, resource measurements, and held-out 2048 comparisons also remain pending. The 2048 case study does not establish general AutoML superiority.
+The root CLI supports rollout collection, grouped validation, AutoML policy fitting, and seeded game evaluation. Framework diagnostics cover three UCI datasets and five compatible models on split seeds 42, 2026, and 2027. Repeated processes at seeds 42 and 2026 matched all 15 prediction sets and save/load outputs; these diagnostics do not establish matched-budget framework superiority. A 20-game rollout-labeling pilot (2,447 rows, 857,100 rollout evaluations in 857.36 seconds) and small chronological classifier diagnostic are retained. Linear projection to 20,000 collection games is 238.16 hours on that pilot's observed rate, with substantial uncertainty. One fitted policy was evaluated on 10,000 same-seed games alongside random and heuristic agents; that exploratory comparison is not a selected-model study, and its interval/effect-size calculations do not model the matched seeds. Larger policy studies and matched framework resources remain pending. Game scores do not establish general AutoML superiority.
 
 ## Getting started
 
@@ -44,6 +44,16 @@ Every benchmark command writes a JSON manifest beside its CSV output. The collec
 The framework's own [README](automl/README.md) documents framework-specific commands. The root [agent guide](AGENTS.md) describes how to proceed through the plans.
 
 The optional HyperOptX search input is a versioned JSON contract; the tracked example is [config/hyperopt-search.example.json](config/hyperopt-search.example.json). It controls trial count and the supported RandomForest/ExtraTrees parameter ranges. Training manifests record the selected parameters, input configuration digest, data digests, seeds, study artifact, and that pruning is unavailable in the pinned optimizer API.
+
+### Local quality checks
+
+Run the same Rust checks used by GitHub Actions:
+
+```bash
+./scripts/ci-check.sh
+```
+
+The workflow runs on pushes to `main`, pull requests, and manual dispatch. It initializes the AutoML submodule and checks formatting, the root Cargo test suite, and Clippy. It does not run research benchmarks or claim a coverage threshold.
 
 ## Research principles
 

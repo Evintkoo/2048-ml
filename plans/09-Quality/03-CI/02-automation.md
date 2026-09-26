@@ -1,6 +1,6 @@
 # Plan 02 — Automation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Build/test/deploy automation scripts and a CI workflow are absent.
+> **Status: PARTIAL (2026-09-27).** A local Rust quality-check script and GitHub workflow exist; build/test/lint are automated, while deployment and research automation are out of scope or pending.
 
 **Goal:** State the current implementation and evidence boundary for automation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a target workflow description.** It does not represent automation currently running in the repository.
+**A small quality-check script now backs the GitHub workflow.** It runs formatting, Cargo tests, and Clippy; it does not run research benchmarks or deployment.
 
 > **See canonical `09-Quality/03-CI/01-ci-pipeline.md` — this doc is a duplicate stub.** Trimmed repetitive mermaid; see canonical for pipeline diagrams.
 
@@ -29,9 +29,9 @@ Define automation procedures for the 2048 ML system development workflow.
 
 | Category | Tool | Purpose | Frequency |
 |----------|------|---------|-----------|
-| Build | Cargo | No CI trigger configured | N/A |
-| Test | Cargo | No test automation workflow configured | N/A |
-| Lint | Cargo fmt/clippy | No CI trigger configured | N/A |
+| Build/check | Cargo | GitHub Actions push/PR/manual workflow; local script available | On configured workflow events |
+| Test | Cargo | `scripts/ci-check.sh` and GitHub Actions | On configured workflow events |
+| Lint | Cargo fmt/clippy | `scripts/ci-check.sh` and GitHub Actions | On configured workflow events |
 | Deploy | None | No deployment target in scope | N/A |
 | Monitor | None | No service monitoring target | N/A |
 
@@ -49,7 +49,7 @@ Define automation procedures for the 2048 ML system development workflow.
 
 ## 8. Automation Scripts
 
-No `AutomationConfig` implementation or automation script exists; the struct above was illustrative.
+No `AutomationConfig` implementation exists. `scripts/ci-check.sh` is the implemented local quality-check script; it makes no deployment or experiment-scheduling claim.
 
 ## 9. Automation Benefits
 
@@ -61,7 +61,7 @@ No `AutomationConfig` implementation or automation script exists; the struct abo
 
 ## Implementation Record
 
-- Redirect/duplicate audited. No build/test/deploy automation scripts or CI workflow are present; this document remains a target specification.
+- Redirect/duplicate audited. The repository now contains `scripts/ci-check.sh` and `.github/workflows/ci.yml`; local execution passes. No deployment or research-benchmark automation exists, and a hosted workflow run remains unverified.
 
 ---
 
@@ -78,7 +78,7 @@ No `AutomationConfig` implementation or automation script exists; the struct abo
 
 ## Open questions
 
-- **Automation remains pending.** Any proposed automation should match actual project workflows and avoid implying deployment or monitoring systems that do not exist.
+- **Hosted workflow evidence remains pending.** Keep automation limited to the configured Rust quality checks unless a separate research-benchmark or deployment need is specified.
 
 ## Later
 

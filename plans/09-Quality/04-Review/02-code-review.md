@@ -43,7 +43,7 @@ The reviewer identifies the changed files and intended behavior, inspects releva
 
 ## 5. Tool availability is not execution evidence
 
-`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. The root test suite passed 35/35 in this execution; no current clippy result is claimed, and no repository CI workflow or coverage report is configured.
+`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. The root test suite passed 37/37; `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings` pass locally. GitHub Actions is configured but no hosted result is retained; a coverage report is not configured.
 
 ## 6. The repository has no approved composite code score
 
@@ -77,7 +77,7 @@ All code reviews result in one of:
 
 ## Implementation Record
 
-- Code-review checklist audited. The root test suite passed 35/35 during this execution; no current clippy result is claimed. This self-audit is not an independent reviewer decision.
+- Code-review checklist audited. The root test suite passed 37/37, formatting and Clippy checks pass locally, and the GitHub workflow is configured. These checks are not an independent reviewer decision. This self-audit is not an independent reviewer decision.
 
 ---
 
@@ -87,7 +87,7 @@ All code reviews result in one of:
 2. `grep -q '^> \\*\\*Status: PARTIAL' plans/09-Quality/04-Review/02-code-review.md` exits 0.
 3. `grep -q '^\\*\\*Goal:' plans/09-Quality/04-Review/02-code-review.md` exits 0.
 4. `grep -q '^## 3. The checklist separates correctness from evidence availability$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
-5. `grep -q 'no repository CI workflow or coverage report is configured' plans/09-Quality/04-Review/02-code-review.md` exits 0.
+5. `grep -q 'GitHub Actions is configured' plans/09-Quality/04-Review/02-code-review.md` and `grep -q 'coverage report is not configured' plans/09-Quality/04-Review/02-code-review.md` exit 0.
 6. `! grep -q 'See canonical\|Trimmed — see' plans/09-Quality/04-Review/02-code-review.md` exits 0.
 7. `grep -q '^## Open questions$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
 8. `grep -q '^## Later$' plans/09-Quality/04-Review/02-code-review.md` exits 0.

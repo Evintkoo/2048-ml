@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-ci-pipeline](01-ci-pipeline.md) | CI Pipeline | PARTIAL — no workflow configured |
-| [02-automation](02-automation.md) | Automation | PARTIAL — no automation scripts |
-| [03-testing-automation](03-testing-automation.md) | Testing Automation | PARTIAL — manual Cargo tests only |
+| [01-ci-pipeline](01-ci-pipeline.md) | CI Pipeline | PARTIAL — GitHub Actions workflow and local quality script configured; hosted result pending |
+| [02-automation](02-automation.md) | Automation | PARTIAL — Rust checks automated; deployment/research automation absent |
+| [03-testing-automation](03-testing-automation.md) | Testing Automation | PARTIAL — root suite runs locally and in configured workflow; hosted run pending |
 
 ## Reading paths
 

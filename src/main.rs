@@ -279,24 +279,6 @@ fn automl_revision() -> Option<String> {
         .map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned())
 }
 
-#[cfg(test)]
-mod provenance_tests {
-    use super::automl_revision;
-
-    #[test]
-    fn reports_the_checked_out_automl_revision() {
-        let expected = std::process::Command::new("git")
-            .args(["-C", "automl", "rev-parse", "HEAD"])
-            .output()
-            .expect("git should report the AutoML checkout revision");
-        assert!(expected.status.success());
-        assert_eq!(
-            automl_revision().as_deref(),
-            Some(String::from_utf8_lossy(&expected.stdout).trim())
-        );
-    }
-}
-
 fn main() {
     let cli = Cli::parse();
     match cli.command {
@@ -924,5 +906,23 @@ fn main() {
             std::fs::write(&manifest_path, serde_json::to_vec_pretty(&manifest).unwrap()).unwrap();
             println!("summarized {} runs to {}", datasets.len(), output.display());
         }
+    }
+}
+
+#[cfg(test)]
+mod provenance_tests {
+    use super::automl_revision;
+
+    #[test]
+    fn reports_the_checked_out_automl_revision() {
+        let expected = std::process::Command::new("git")
+            .args(["-C", "automl", "rev-parse", "HEAD"])
+            .output()
+            .expect("git should report the AutoML checkout revision");
+        assert!(expected.status.success());
+        assert_eq!(
+            automl_revision().as_deref(),
+            Some(String::from_utf8_lossy(&expected.stdout).trim())
+        );
     }
 }

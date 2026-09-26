@@ -1,6 +1,6 @@
 # Plan 03 — Testing Automation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Cargo provides manually invoked test targets; no CI automation, coverage gate, or scheduled test reporting exists.
+> **Status: PARTIAL (2026-09-27).** Cargo tests run in the configured GitHub workflow and local check script; hosted-run evidence, coverage gate, and scheduled reporting are absent.
 
 **Goal:** State the current implementation and evidence boundary for testing automation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is an automation plan, not a test inventory.** Existing unit tests are described in the testing tickets; none are run automatically by the repository.
+**This is an automation plan, not a test inventory.** Existing tests run through `scripts/ci-check.sh`, which is called by the GitHub Actions workflow. No hosted run record, coverage gate, or scheduled report is retained.
 
 > **See canonical `09-Quality/03-CI/01-ci-pipeline.md` — duplicate stub.** Repetitive CI mermaid trimmed; see canonical for pipeline.
 
@@ -29,9 +29,9 @@ Define automated testing procedures for the 2048 ML system.
 
 | Category | Tests | Execution Time | Frequency |
 |----------|-------|---------------|-----------|
-| Unit | Existing library test modules | Not measured here | Manual Cargo invocation |
-| Integration | Focused tests; no dedicated test target | Not measured | Manual Cargo invocation |
-| Game | Tests in `game_engine` module | Not measured here | Manual Cargo invocation |
+| Unit/root suite | Binary crate tests | 37 tests; last local run 1.46 sec | GitHub Actions on push/PR/manual dispatch and local script |
+| Integration | Focused tests; no dedicated suite | Covered by root suite; not a separate target | GitHub Actions workflow and local script |
+| Game | Tests in `game_engine` module | Covered by root suite | GitHub Actions workflow and local script |
 | Research validation | Not automated | N/A | Requires separate experiment design |
 | Performance | No scheduled suite | N/A | Not configured |
 
@@ -61,7 +61,7 @@ No automated test result dashboards, coverage reports, performance trends, or re
 
 ## Implementation Record
 
-- Redirect/duplicate audited. Local tests can be invoked through Cargo; there is no CI test automation, coverage dashboard, scheduled performance suite, or historical reporting artifact.
+- Redirect/duplicate audited. The CI script passes locally with 37/37 root tests. GitHub Actions invokes it, but hosted execution has not been verified. No coverage dashboard, scheduled performance suite, or historical report artifact exists.
 
 ---
 
@@ -78,7 +78,7 @@ No automated test result dashboards, coverage reports, performance trends, or re
 
 ## Open questions
 
-- **Test automation remains pending.** CI should be added only with a defined supported environment and artifact-retention policy.
+- **Hosted test automation evidence remains pending.** Verify a GitHub Actions run; coverage and scheduled performance reporting remain unconfigured.
 
 ## Later
 

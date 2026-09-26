@@ -115,12 +115,13 @@ impl RawBoardState {
                 .score
                 .checked_add(gained)
                 .ok_or(GameError::ScoreOverflow)?;
-            self.grid = grid;
-            self.score = score;
-            self.move_count = self
+            let move_count = self
                 .move_count
                 .checked_add(1)
                 .ok_or(GameError::MoveCountOverflow)?;
+            self.grid = grid;
+            self.score = score;
+            self.move_count = move_count;
             self.game_over = self.is_game_over();
         }
         let mut cumulative_score = score_before;
@@ -855,6 +856,32 @@ mod tests {
         let before = board;
         let result = board.execute_move(Direction::Left).unwrap();
         assert!(!result.changed);
+        assert_eq!(board, before);
+    }
+
+    #[test]
+    fn score_overflow_returns_error_without_mutating_board() {
+        let mut board = row_board([2, 2, 0, 0]);
+        board.score = u64::MAX - 1;
+        let before = board;
+
+        assert_eq!(
+            board.execute_move(Direction::Left),
+            Err(GameError::ScoreOverflow)
+        );
+        assert_eq!(board, before);
+    }
+
+    #[test]
+    fn move_count_overflow_returns_error_without_mutating_board() {
+        let mut board = row_board([2, 2, 0, 0]);
+        board.move_count = u64::MAX;
+        let before = board;
+
+        assert_eq!(
+            board.execute_move(Direction::Left),
+            Err(GameError::MoveCountOverflow)
+        );
         assert_eq!(board, before);
     }
 

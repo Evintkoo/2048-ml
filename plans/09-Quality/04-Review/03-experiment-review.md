@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Experiment review evaluates a retained protocol and its outputs, not a proposed threshold table.** The repository has protocol-specific random and heuristic baselines, while confirmatory trained-policy outputs and an independent review decision are absent.
+**Experiment review evaluates a retained protocol and its outputs, not a proposed threshold table.** The repository has protocol-specific random and heuristic baselines plus an exploratory small-corpus fitted-policy comparison; confirmatory trained-policy outputs and an independent review decision are absent.
 
 The reviewer checks the question, protocol, seeds, data, implementation, analysis, and conclusion as one evidence chain. A baseline run is interpreted only within its protocol; it cannot establish a trained-policy result or general AutoML performance.
 
@@ -89,7 +89,7 @@ All experiment reviews are documented with:
 
 ## Implementation Record
 
-- Experiment review procedure is documented. Existing random/heuristic action-frequency results are limited to their recorded protocol; trained-policy study outputs and an independent review decision are absent. No fixed p-value, effect-size, or sample-count gate is an approved project rule.
+- Experiment review procedure is documented. Random, heuristic, and fitted-pilot outputs are limited to their recorded protocol; the pilot is not confirmatory. No independent experiment-review decision is recorded. No fixed p-value, effect-size, or sample-count gate is an approved project rule.
 
 ---
 

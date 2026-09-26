@@ -1,6 +1,6 @@
 # Plan 01 — Model Validation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Model loading/benchmark and score comparison paths exist; classification quality gates and an approval report do not.
+> **Status: PARTIAL (2026-09-27).** Model loading/benchmark and score comparison paths exist; classification quality gates and an approval report do not.
 
 **Goal:** State the current implementation and evidence boundary for model validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -65,7 +65,7 @@ flowchart TD
 |--------|-----------------|------------|
 | Game score summary | Mean, standard deviation, median, p90/p99, min/max, thresholds, bootstrap mean interval | Describes supplied games; no project acceptance threshold |
 | Pairwise score comparison | Sign test or Mann–Whitney U, Holm adjustment, bootstrap mean difference, Cohen's d | Assumptions/experimental unit must be declared; no clustered paired interval |
-| Action classification metrics | Generic accuracy, macro precision/recall/F1, confusion, and legal-action helpers exist; fixed-split report absent | Wire only after defining held-out protocol |
+| Action classification metrics | Generic helpers and a 391-row chronological pilot raw-label report exist; legal-action helper is not in that report | Expand only after defining an adequate held-out protocol |
 | Robustness / approval score | Not implemented | No 0–100 quality score or deployment gate |
 
 No baseline score threshold, fixed macro-F1 target, or standard-deviation limit is established. Local baseline means are protocol-specific and are not universal quality thresholds. Deployment is outside the current project scope.
@@ -126,7 +126,7 @@ flowchart LR
 
 ## Implementation Record
 
-- Saved-model benchmarking and statistical score comparisons are available. Generic classification helpers exist but are not integrated into a fixed-split application report. No quality gates, aggregate approval score, deployment path, or validated model report exists.
+- Saved-model benchmarking and statistical score comparisons are available. The training CLI retains a 391-row chronological pilot raw-label classifier report, but no adequate-sample application report or legal-action analysis. No quality gates, aggregate approval score, deployment path, or confirmatory model-validation report exists.
 
 ---
 

@@ -143,7 +143,7 @@ flowchart LR
 
 ## Implementation Record
 
-- Same-seed simulation/batch checks exist, and manifests store configured seeds, protocol, checksums, and provenance. Root `cargo test` passed 35/35, including seed checks. The retained AutoML `82d8483` three-dataset/five-model fixed-split matrix also matched 15/15 same-seed predictions and save/load outputs across two runs. This does not constitute independent full-training or dataset replication; no fixed 1%/p-value criterion is supported.
+- Same-seed simulation/batch checks exist, and manifests store configured seeds, protocol, checksums, and provenance. Root `cargo test` passed 37/37, including seed checks. The retained AutoML `82d8483` three-dataset/five-model diagnostics matched 15/15 same-split predictions and save/load outputs in repeated processes at split seeds 42 and 2026; seed 2027 has one run. This does not constitute independent full-training or dataset replication; no fixed 1%/p-value criterion is supported.
 
 ---
 

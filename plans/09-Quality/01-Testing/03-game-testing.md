@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**The root test suite passes its existing game-mechanics checks, but does not implement every row below.** In particular, score-overflow atomicity and formal maximum-tile behavior remain unverified.
+**The root test suite passes its existing game-mechanics checks, but does not implement every row below.** Score and move-count overflow atomicity now have regression tests; formal maximum-tile behavior remains unverified.
 
 > **Distinct from `02-Validation/02-game-validation.md`:** Testing = automated `cargo test` (this file). Validation = manual audit + property tests (that file).
 
@@ -36,7 +36,7 @@ Automated unit coverage for 4×4 rules, spawns, and score tracking. The matrix i
 | 14 | corner slide | `[0,0,0,2]` → Left | `[2,0,0,0]` | 0 | 42 |
 | 15 | multi-row merges | two rows each mergable | both rows merge independently | sum deltas | 42 |
 
-Existing tests in `src/game_engine/mod.rs` cover merge rules, all directions, no-op/terminal cases, seeded spawn behavior, spawn-frequency sampling, invalid actions/tiles, corner coordinates, and randomized `would_change` consistency. The sampling replicate count and exact assertions should be checked in source when rerunning; score-overflow coverage is absent.
+Existing tests in `src/game_engine/mod.rs` cover merge rules, all directions, no-op/terminal cases, seeded spawn behavior, spawn-frequency sampling, invalid actions/tiles, corner coordinates, randomized `would_change` consistency, and score/move-count overflow atomicity. The sampling replicate count and exact assertions should be checked in source when rerunning.
 
 ## 3. Assertions
 
@@ -48,11 +48,11 @@ No aggregate `GameTestMetrics` reporter is implemented; test assertions are unit
 
 ## 5. Run
 
-There is no separate `game` test target; game tests live within the binary crate modules. `cargo test` passed 35/35. Cross-ref `09-Quality/02-Validation/02-game-validation.md` for independent validation; do not duplicate that content here.
+There is no separate `game` test target; game tests live within the binary crate modules. `cargo test` passed 37/37, including score and move-count overflow atomicity. Cross-ref `09-Quality/02-Validation/02-game-validation.md` for independent validation; do not duplicate that content here.
 
 ## Implementation Record
 
-- Game-engine tests cover most core rules and randomness behavior and passed within `cargo test` (35/35). The separate test target and score-overflow case described in earlier drafts do not exist.
+- Game-engine tests cover core rules and randomness behavior and passed within `cargo test` (37/37). Regression tests confirm score and move-count overflow return errors without mutating the board. The separate test target and formal maximum-tile proof do not exist.
 
 ---
 
@@ -69,7 +69,7 @@ There is no separate `game` test target; game tests live within the binary crate
 
 ## Open questions
 
-- **Current game-test status:** the root suite passes; explicit overflow/boundary coverage remains open where the accepted input contract applies.
+- **Current game-test status:** the root suite passes and overflow atomicity is covered; formal maximum-tile bounds and a separate test target remain open.
 
 ## Later
 
