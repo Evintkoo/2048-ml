@@ -215,7 +215,7 @@ report](../../../reports/framework_validation/README.md) records fixed-configura
 diagnostics across Iris, Wine, and Wisconsin Diagnostic with RandomForest, ExtraTrees, AdaBoost, KNN, and
 NaiveBayes. On pinned AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, seed 42 has two
 independent process runs that succeeded for all 15 cases, matched predictions in 15/15, and passed model
-save/load equivalence. Additional seeds 2026 and 2027 each completed all 15 cases once. Two
+save/load equivalence. Seed 2026 was repeated in a second independent process with identical splits and predictions in 15/15 cases; seed 2027 completed once. Two
 comparison-only scikit-learn 1.6.1 runs used the seed-42 outer split rows and AutoML's per-class trailing
 10% holdback; all 15 cases succeeded and repeated exactly, while predicted labels matched AutoML on 8/15
 cases. A one-process resource probe observed AutoML at 1.33 seconds/27,426,816-byte maximum RSS and
@@ -332,8 +332,9 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
 ## Open questions
 
 - **The evidence remains bounded by diagnostic runs.** Seed-42 AutoML runs on pinned `82d8483` succeeded
-  for 15 standard-dataset cases, matched predictions 15/15, and passed save/load equivalence; seeds 2026
-  and 2027 each completed the same 15 cases once. Two fixed-configuration sklearn runs repeated
+  for 15 standard-dataset cases, matched predictions 15/15, and passed save/load
+  equivalence. Seed 2026 repeated the same 15 cases in a second process with exact
+  predictions; seed 2027 completed once. Two fixed-configuration sklearn runs repeated
   metrics/predictions exactly for the seed-42 cases, with label agreement on 8/15. A 20-game
   canonical-schema 2048 pilot trained one policy and completed a separate 20-game simulator smoke. A
   391-row classifier diagnostic on its final three game groups is retained, but it does not establish

@@ -97,23 +97,28 @@ runtime/resource profiling remain open.
 To check sensitivity to the one seed in the initial diagnostic, the same
 candidate set, 32 estimators, maximum depth 8, raw predictors, 80/20
 stratified holdout, and 10% per-class trailing inner holdback were run with
-global seeds 2026 and 2027. Each seed has one complete run of all 15
-dataset/model cases; these are additional split diagnostics, not repeated fits
-on common test rows. Each run succeeded in 15/15 cases, with no failures.
+global seeds 2026 and 2027. Seed 2026 has two independent process runs on the
+same split; seed 2027 has one. These are split diagnostics, and the seed-2026
+repeat tests same-split repeatability for that seed. Each run succeeded in 15/15
+cases, with no failures.
 Mean accuracy over the 15 heterogeneous cases was 0.9367 at seed 2026 and
 0.9378 at seed 2027; these arithmetic summaries are descriptive only because
 the cases mix datasets and algorithms and are not independent replicates.
 The per-case rows, split assignments, predictions, serialized models, source
-hashes, and manifests are retained in `pinned-82d8483-seed2026-run-1/` and
-`pinned-82d8483-seed2027-run-1/`. Both manifests pin AutoML
-`82d848323eed5e2af86d046d529916c448f2442c` and record root source revision
+hashes, and manifests are retained in `pinned-82d8483-seed2026-run-1/`,
+`pinned-82d8483-seed2026-run-2/`, and
+`pinned-82d8483-seed2027-run-1/`. The seed-2026 comparison artifact
+`pinned-82d8483-seed2026-comparison.json` records identical split assignments,
+15/15 identical prediction CSVs, and save/load equivalence in both runs. Both
+manifests pin AutoML `82d848323eed5e2af86d046d529916c448f2442c` and record root
+source revision
 `290e1810d447e5b608b116730d28ae0222606938`.
 
 This adds evidence that the runner and all five candidates complete under two
-other stratified splits. It does not establish confidence intervals across
-datasets, tune-search quality, equivalence with an external implementation,
-or a framework winner. Existing seed-42 comparison results and its limits are
-reported separately above.
+other stratified splits and that the fixed seed-2026 split repeats exactly in two
+processes. It does not establish confidence intervals across datasets, tune-search
+quality, equivalence with an external implementation, or a framework winner. The
+seed-42 comparison and its limits are reported separately above.
 
 Both final runs used clean AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`,
 root source revision `1608ad24709ae133f68a6fed532facbda7f30ed6`, the same split
@@ -162,9 +167,10 @@ diagnostic evidence and must not be conflated with the current pinned result.
 
 ## Limits
 
-The framework diagnostic now covers three dataset split seeds, with one run
-per seed and one fixed model configuration. The fixed-configuration sklearn
+The framework diagnostic covers three dataset split seeds and one fixed model
+configuration. Seeds 42 and 2026 each have two exact prediction runs on the same
+splits; seed 2027 has one run. The fixed-configuration sklearn
 comparison is not a matched search-budget study. There is no per-model
-resource profile, repeated fits on common split rows across processes, CLI/API
-equivalence study, or independent replication. Scores are not a framework
+resource profile; repeat runs cover seeds 42 and 2026 only. CLI/API equivalence and
+independent replication remain untested. Scores are not a framework
 superiority result, and game scores remain separate application evidence.
