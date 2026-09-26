@@ -93,7 +93,7 @@ The framework validation gate must pass before the main 2048 training milestone.
 
 ## 9. Execution Status
 
-The pinned framework's API, model probability shapes, group splitter, optimizer API, model serialization, and 2048 integration smoke paths have been checked in `src/framework_validation.rs`; AutoML revision `88a86bf44a0cb03664931f7ef15201b95fa11255` passes 710/710 library tests and is pinned cleanly. Iris, Wine recognition, and Breast Cancer Wisconsin (Diagnostic) source archives are stored with hashes and UCI source descriptions. `src/framework_validation/benchmark.rs` implements a seeded stratified holdout runner for those datasets and the five integration candidates; the retained two-run diagnostic used the prior submodule revision and agreed exactly on 14/15 prediction sets. Wine KNN changed across repeated same-seed executions and failed save/load prediction equivalence in one run. The determinism fix has not yet been checked against the full dataset/model matrix. External comparisons, resource profiling, broader repeated-seed study, and CLI/API equivalence remain open. Therefore the full framework-validation gate is still pending, and 2048 smoke evidence must not be presented as framework validation.
+The pinned framework's API, model probability shapes, group splitter, optimizer API, model serialization, and 2048 integration smoke paths have been checked in `src/framework_validation.rs`; AutoML revision `82d848323eed5e2af86d046d529916c448f2442c` passes 712/712 library tests and is pinned cleanly. Iris, Wine recognition, and Breast Cancer Wisconsin (Diagnostic) source archives are stored with hashes and UCI source descriptions. `src/framework_validation/benchmark.rs` implements a seeded stratified holdout runner for those datasets and five integration candidates. Two independent processes under the fixed revision used the same seed-42 splits, succeeded on 15/15 cases each, matched all 15 prediction sets exactly, and preserved predictions through save/load. This is a one-seed, one-split diagnostic. Matched external comparisons, resource profiling, broader repeated-seed study, and CLI/API equivalence remain open. The full framework-validation gate is therefore partial; 2048 smoke evidence must not be presented as framework validation.
 
 ## Implementation Record
 
@@ -115,7 +115,7 @@ The pinned framework's API, model probability shapes, group splitter, optimizer 
 
 ## Open questions
 
-- Add matched external baselines, memory capture, and repeated seeds; then compare outcomes under the declared protocol. The initial one-seed AutoML run is diagnostic only and does not satisfy the full validation gate.
+- Add matched external baselines, memory capture, and repeated seeds; then compare outcomes under the declared protocol. The current one-seed, one-split AutoML run is diagnostic only and does not satisfy the full validation gate.
 
 ## Later
 
