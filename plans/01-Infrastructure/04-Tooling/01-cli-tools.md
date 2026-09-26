@@ -50,13 +50,13 @@ automl benchmark --data data.csv --target action  # verify: cargo run -- --help
 automl info --data data.csv
 ```
 
-### 1.5 Server Mode — Out of Scope per Initial Plan
+### 1.5 Server Mode — Available but Out of Scope
 
-> **Out of scope per initial plan.** `automl serve` is not used for this project; verify via `cargo run -- --help` and do not rely on it. Use local CLI only.
+> **Out of scope per initial plan.** The AutoML binary exposes `serve`, but this project does not use the web server; its presence is not part of the root workflow.
 
 ```bash
 # Start web server — OUT OF SCOPE, do not use
-automl serve --port 8080  # out-of-scope per initial-plan
+automl serve --port 8080  # available in AutoML; not used by this project
 ```
 
 ## 2. Custom CLI Tools (single binary, subcommands)
@@ -72,12 +72,12 @@ cargo run -- game-engine simulate --seed 42 --n-games 10
 ### 2.2 Data Collection
 
 ```bash
-cargo run -- data-collector collect --n-games 10000 --output data/raw/policy.csv
+cargo run -- data-collector collect --n-games 2 --rollouts 2 --output data/raw/policy.csv
 cargo run -- data-collector preprocess --input data/raw/policy.csv
 cargo run -- data-collector validate --input data/raw/policy.csv
 ```
 
-The implemented collector takes a CSV output file, not a directory. It writes a metadata sidecar and manifest next to the CSV. `preprocess` currently validates deterministic, already-encoded features; it does not accept an output argument.
+The implemented collector takes a CSV output file, not a directory. It writes a metadata sidecar and manifest next to the CSV. The two-game command is a smoke example; larger runs require a declared budget. `preprocess` currently validates deterministic, already-encoded features; it does not accept an output argument.
 
 ```bash
 cargo run -- data-collector collect --n-games 20 --rollouts 100 --output data/raw/random_play.csv

@@ -35,7 +35,7 @@ enum Commands {
         #[command(subcommand)]
         command: DataCollectorCommand,
     },
-    /// Run policy and framework benchmarks.
+    /// Run policy benchmarks and score analysis.
     Benchmark {
         #[command(subcommand)]
         command: BenchmarkCommand,
