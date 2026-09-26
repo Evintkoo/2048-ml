@@ -1,6 +1,6 @@
 # Plan 04 — Game UI: the repository status is explicit and evidence based
 
-> **Status: NOT APPLICABLE (2026-09-26).** This is a deprecated UI stub; the headless MVP requires no renderer or interactive interface.
+> **Status: NOT APPLICABLE (2026-09-27).** This is a deprecated UI stub; the headless MVP requires no renderer or interactive interface.
 
 **Goal:** State the current implementation and evidence boundary for game ui.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
