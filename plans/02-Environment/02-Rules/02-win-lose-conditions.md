@@ -11,7 +11,7 @@
 
 **This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: No-valid-move terminal rule, non-terminal 2048 threshold, and result metadata implemented and covered.
 
-> **Canonical terminal check: `would_change`.** Thresholds are NOT re-stated here — **See `01-Infrastructure/01-Project/01-project-overview.md` Tiers 1–3** for ranking (heuristic ~512). No 65536 speculation.
+> **Canonical terminal check: `would_change`.** Evaluation thresholds and sample sizes are defined by the project protocol and are not restated here.
 
 ## 1. Win Condition (Non-Terminal)
 
@@ -36,19 +36,12 @@ pub enum WinCondition {
 ```rust
 impl Board {
     pub fn is_game_over(&self) -> bool {
-        if !self.is_full() { return false; }
-        !self.has_valid_moves()
-    }
-    fn is_full(&self) -> bool {
-        !self.grid.contains(&0) // [u32;16], 0 = empty
-    }
-    fn has_valid_moves(&self) -> bool {
-        Direction::ALL.iter().any(|dir| self.would_change(*dir))
+        !Direction::ALL.into_iter().any(|dir| self.would_change(dir))
     }
 }
 ```
 
-Terminal iff **no valid moves in any of 4 dirs** (`would_change == false` ∀ dirs). Board-full alone is insufficient — `has_valid_moves()` is the check.
+Terminal iff **no direction changes the board**. Board fullness is not an independent condition; a full board with any available merge remains playable.
 
 ## 3. State Machine
 
@@ -80,9 +73,9 @@ pub struct GameResult {
 ## 5. Success Criteria — Reference Project Tiers (Do Not Duplicate Numbers)
 
 > **See canonical:** `01-Infrastructure/01-Project/01-project-overview.md` §8
-> - **Tier 1 (MVP):** 10k+ games, determine score ceilings, pipeline works
-> - **Tier 2:** rank by mean score, automated reproducible pipeline
-> - **Tier 3:** top model **mean > heuristic ~512** with statistical significance
+> - **Tier 1 (MVP):** capability gate, protocol, and end-to-end pipeline evidence
+> - **Tier 2:** reproducible held-out model ranking with uncertainty
+> - **Tier 3:** framework comparisons and application results under the declared protocols
 > Case-study ranking = highest held-out mean score under the declared 2048 evaluation protocol, with uncertainty and practical-effect reporting. Do **not** interpret this as globally optimal play or as the framework's primary success criterion.
 
 ## 6. Early Stopping (Configurable, Not Hardcoded)
@@ -109,7 +102,7 @@ pub struct EarlyStopCriteria {
 ## 8. Cross-References
 
 - **Scoring (metadata only):** `01-scoring-rules.md`
-- **Valid moves:** `03-valid-moves.md` (`would_change`, `constrained_action`)
+- **Valid moves:** `03-valid-moves.md` (`would_change`, legal-action masking)
 - **Training input:** Plan 00 defines 17 values; ticket #034 implements the state and encoding.
 - **CV:** `05-Model/04-Evaluation/02-cross-validation.md` (`GroupKFold` vs `TimeSeriesSplit`)
 - **RNG:** `03-Simulation-Engine/02-randomness.md` (`ChaCha8Rng`, `spawn_prob_4:0.1`)
