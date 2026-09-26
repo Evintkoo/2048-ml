@@ -239,6 +239,20 @@ pub struct GameResult {
     pub duration_ms: u64,
 }
 
+impl GameResult {
+    /// Count selected actions by the stable Up/Down/Left/Right action IDs.
+    /// Counts are derived from per-move history for game-cluster summaries.
+    pub fn action_counts(&self) -> [u64; 4] {
+        let mut counts = [0; 4];
+        for record in &self.move_history {
+            if let Some(count) = counts.get_mut(record.action as usize) {
+                *count += 1;
+            }
+        }
+        counts
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct MoveRecord {
     pub action: u8,
@@ -935,6 +949,11 @@ mod tests {
         assert_eq!(a.board, b.board);
         assert_eq!(a.move_history, b.move_history);
         assert_eq!(a.score_tracker, b.score_tracker);
+        assert_eq!(a.action_counts().iter().sum::<u64>(), a.move_count);
+        assert!(a
+            .move_history
+            .iter()
+            .all(|record| record.action < Direction::ALL.len() as u8));
 
         let mut simulator = GameSimulator::new(config).unwrap();
         let invalid = simulator.simulate_with_policy(|_| Ok(Direction::Up));

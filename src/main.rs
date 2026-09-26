@@ -661,7 +661,7 @@ fn main() {
             }
             let mut file = std::fs::File::create(&output).expect("failed to create benchmark results");
             use std::io::Write;
-            writeln!(file, "game_id,seed,score,max_tile,move_count,game_over,model").expect("failed to write results header");
+            writeln!(file, "game_id,seed,score,max_tile,move_count,game_over,up_moves,down_moves,left_moves,right_moves,model").expect("failed to write results header");
             let start = std::time::Instant::now();
             let mut scores = Vec::with_capacity(n_games);
             for game_id in 0..n_games {
@@ -669,7 +669,8 @@ fn main() {
                 let result = policy::simulate_model_game(game_seed, &policy, 1000)
                     .unwrap_or_else(|error| panic!("game {game_id} failed: {error}"));
                 scores.push(result.final_score);
-                writeln!(file, "{game_id},{game_seed},{},{},{},{},{}", result.final_score, result.max_tile, result.move_count, result.board.game_over, model.display())
+                let action_counts = result.action_counts();
+                writeln!(file, "{game_id},{game_seed},{},{},{},{},{},{},{},{},{}", result.final_score, result.max_tile, result.move_count, result.board.game_over, action_counts[0], action_counts[1], action_counts[2], action_counts[3], model.display())
                     .expect("failed to write benchmark result row");
             }
             file.flush().expect("failed to flush benchmark results");
@@ -683,6 +684,7 @@ fn main() {
                 "source_revision": std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|result| result.status.success()).map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned()),
                 "sha256": sha256_file(&output).ok(),
                 "benchmark": "model_policy",
+                "per_game_action_counts": {"columns": ["up_moves", "down_moves", "left_moves", "right_moves"], "action_ids": [0, 1, 2, 3], "source": "GameResult.move_history"},
                 "model": model,
                 "games": n_games,
                 "global_seed": seed,
