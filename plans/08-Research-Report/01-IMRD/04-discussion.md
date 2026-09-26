@@ -1,6 +1,6 @@
 # Plan 04 — Discussion: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Interpretation guidance is outlined; initial framework diagnostics include a Wine KNN repeatability failure, while matched comparisons and held-out policy results remain pending.
+> **Status: PARTIAL (2026-09-27).** Interpretation guidance is outlined; pinned framework diagnostics are repeatable on one split, while matched comparisons and held-out policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for discussion.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is an interpretation guide, not a findings discussion.** Its outcome branches remain hypothetical. The initial standard-dataset run is descriptive evidence, not a matched framework comparison; its Wine KNN same-seed mismatch is an observed reproducibility issue. Several listed tests and score thresholds are not implemented or justified and cannot serve as decision gates.
+**This plan is an interpretation guide, not a findings discussion.** Its outcome branches remain hypothetical. The standard-dataset run is descriptive evidence, not a matched framework comparison. The current pinned repeatability check passed; the earlier Wine KNN same-seed mismatch is historical evidence from a prior revision. Several listed tests and score thresholds are not implemented or justified and cannot serve as decision gates.
 
 > **Status: PENDING.** No conclusions drawn. This file defines how the primary Rust-native AutoML framework results and the downstream 2048 case-study results will be interpreted.
 
@@ -73,7 +73,7 @@ Will state framework-validation outcomes, application winner (or null), F1–F3 
 
 ## Implementation Record
 
-- Interpretation guidance is written, but no hypotheses have been evaluated. The initial framework diagnostics show 14/15 same-seed prediction sets match; Wine KNN differs across runs and failed save/load equivalence once. This is a recorded limitation, not a model-quality conclusion. Decision thresholds and predicted outcomes remain unset pending matched framework and case-study experiments.
+- Interpretation guidance is written, but no hypotheses have been evaluated. The pinned framework diagnostic matched 15/15 same-seed prediction sets and save/load predictions. The earlier Wine KNN mismatch on `88a86bf` remains recorded as a resolved historical defect, not a model-quality conclusion. Decision thresholds and predicted outcomes remain unset pending matched framework and case-study experiments.
 
 ---
 

@@ -32,7 +32,7 @@ No 2048 game score can substitute for this table.
 
 ## Implementation Record
 
-- The initial three-dataset/five-model framework matrix is populated in `reports/framework_validation/`, with raw predictions, split manifests, serialized models, run manifests, and a repeatability comparison. It is one split with two processes and includes a Wine KNN reproducibility/serialization failure. The 2048 case-study result table remains unpopulated; schema examples remain illustrative unless tied to an actual output artifact.
+- The three-dataset/five-model framework matrix is populated in `reports/framework_validation/`, with raw predictions, split manifests, serialized models, run manifests, and a repeatability comparison. Under AutoML `82d8483`, two processes matched all 15 prediction sets and save/load predictions. The earlier `88a86bf` run had a Wine KNN reproducibility/serialization failure; that is historical diagnostic evidence. The 2048 case-study result table remains unpopulated; schema examples remain illustrative unless tied to an actual output artifact.
 
 ## 2. 2048 Case-Study Winner Protocol (Canonical: `07-Benchmarking/01-Evaluation/01-benchmarking-framework.md`)
 

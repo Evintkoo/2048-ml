@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a proposed design, not a preregistered confirmatory experiment.** A seed-42 UCI diagnostic matrix (three datasets, five model variants) exists under `reports/framework_validation/`; repeated runs differed for Wine KNN and one run failed save/load prediction equivalence. Baselines, resource profiling, plan-scale training/evaluation, sample-size rationale, and analysis assumptions remain open.
+**This is a proposed design, not a preregistered confirmatory experiment.** A seed-42 UCI diagnostic matrix (three datasets, five model variants) exists under `reports/framework_validation/`; under AutoML `82d8483`, the two runs matched all 15 predictions and save/load equivalence. The earlier `88a86bf` discrepancy is retained as historical evidence. Baselines, resource profiling, plan-scale training/evaluation, sample-size rationale, and analysis assumptions remain open.
 
 ## 1. Purpose
 
@@ -79,7 +79,7 @@ flowchart TD
 
 ## 4. Experimental Procedure
 
-The framework-validation gate is partial. A standard-dataset diagnostic exists, but matched external baselines, resource measurements, and resolved repeatability are still required before claims that depend on those capabilities. Small capability smokes may continue as engineering checks, clearly separated from confirmatory policy experiments.
+The framework-validation gate is partial. A repeated standard-dataset diagnostic exists, but matched external baselines, resource measurements, and broader-seed reproducibility are still required before claims that depend on those capabilities. Small capability smokes may continue as engineering checks, clearly separated from confirmatory policy experiments.
 
 ```mermaid
 flowchart TD
@@ -175,7 +175,7 @@ All experiments use simulation only. No human subjects are involved. All data is
 ## 12. Data Quality Controls
 
 Validation checklist — mark complete only after evidence is produced:
-- [ ] Framework reproducibility with declared seeds (the initial repeated diagnostic exposed Wine KNN instability)
+- [x] Same-seed repeatability smoke under AutoML `82d8483` (15/15 prediction and save/load matches); broader seed/configuration reproducibility remains open
 - [ ] Statistical validity and test assumptions
 - [ ] Absence of systematic bias in framework and application comparisons
 - [ ] Proper data collection procedures
@@ -192,7 +192,7 @@ This design has not been externally or timestampedly preregistered. Before confi
 
 ## Implementation Record
 
-- The two-track design is proposed, not pre-registered. The initial standard-dataset diagnostic used a fixed seed-42 split and is retained, but its Wine KNN rerun disagreement and one save/load mismatch leave repeatability unresolved; it is not a matched-baseline or resource study. Policy scale and sample size are undecided. Collector labels are generated before grouped CV, and grouped CV is not chronological. Resolve leakage boundaries, trained-model versus game-level experimental units, pairing, budget, and test choice before confirmatory evaluation.
+- The two-track design is proposed, not pre-registered. The standard-dataset diagnostic used a fixed seed-42 split and is retained; under AutoML `82d8483`, two runs matched all 15 prediction sets and save/load outputs. This one-split repeatability smoke is not a matched-baseline or resource study. Policy scale and sample size are undecided. Collector labels are generated before grouped CV, and grouped CV is not chronological. Resolve leakage boundaries, trained-model versus game-level experimental units, pairing, budget, and test choice before confirmatory evaluation.
 
 ---
 

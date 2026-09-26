@@ -1,6 +1,6 @@
 # Plan 01 — Introduction: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Initial UCI framework diagnostics exist; full framework validation, plan-scale 2048 experiments, and verified literature claims remain pending.
+> **Status: PARTIAL (2026-09-27).** Repeated UCI framework diagnostics on the pinned revision exist; matched framework comparisons, plan-scale 2048 experiments, and verified literature claims remain pending.
 
 **Goal:** State the current implementation and evidence boundary for introduction.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -90,7 +90,7 @@ No result fabricated. Null/inconclusive outcomes, training failures, and any aut
 
 ## Implementation Record
 
-- Research framing and honest-reporting requirements are documented. Initial UCI diagnostic results and the Wine KNN repeatability/serialization issue are recorded in `reports/framework_validation/`; matched baselines, broader framework validation, and plan-scale 2048 experiments remain pending. Baseline literature claims and novelty must be supported by the completed source review before publication.
+- Research framing and honest-reporting requirements are documented. The pinned UCI diagnostic results and historical pre-fix Wine KNN repeatability/serialization issue are recorded in `reports/framework_validation/`; matched baselines, broader framework validation, and plan-scale 2048 experiments remain pending. Baseline literature claims and novelty must be supported by the completed source review before publication.
 
 ---
 

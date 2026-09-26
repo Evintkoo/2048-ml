@@ -11,7 +11,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | [01-introduction](01-introduction.md) | Introduction | PARTIAL — initial framework diagnostics recorded; 2048 experiments pending |
 | [02-methodology](02-methodology.md) | Methodology | PARTIAL — redirect; proposed protocol unexecuted |
 | [03-results](03-results.md) | Results | PARTIAL — initial UCI diagnostic results retained; 2048 result table pending |
-| [04-discussion](04-discussion.md) | Discussion | PARTIAL — interpretation guidance records Wine KNN repeatability issue; hypotheses unevaluated |
+| [04-discussion](04-discussion.md) | Discussion | PARTIAL — pinned framework repeatability passes on one split; historical defect and unevaluated hypotheses recorded |
 
 ## Reading paths
 
