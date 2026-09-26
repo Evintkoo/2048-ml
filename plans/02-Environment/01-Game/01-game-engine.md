@@ -22,7 +22,7 @@ Thin summary only; **See canonical:** `02-Rules/01-scoring-rules.md`, `02-Rules/
 - 4×4 grid, start = 2 tiles spawned `2` 90% / `4` 10%
 - Slide all tiles in direction → merge equal neighbours once per tile per move → score += merged value
 - After each valid move spawn `2`/`4` (90/10) in random empty cell via `ChaCha8Rng` (**See: `03-Simulation-Engine/02-randomness.md` seed hygiene**)
-- Terminal when board full AND `would_change(dir) == false` for all 4 dirs (**heuristic baseline ~512** for later eval)
+- Terminal when no direction changes the board. Baseline scores are measured under the declared benchmark protocol, not fixed here.
 
 ## 3. Engine Architecture
 
@@ -158,8 +158,8 @@ impl Default for SimulatorConfig {
 | Concern | MVP | Optional (Not MVP) |
 |---------|-----|---------------------|
 | Board state | `[u32;16]` flat, empty=0, zero-alloc moves | — |
-| Parallelism | `rayon` par_iter over games (see 03-Simulation-Engine/03-multi-game.md) — thread count fixed for determinism | — |
-| Precomputed move tables / bitboard / SIMD | **Optional, not MVP** — mark out-of-scope; profile after 10k baseline works | Precomputed tables, bitboard u64, SIMD batch — add only if >2× gain measured |
+| Parallelism | Each `GameSimulator` is sequential; independent simulations can be parallelized by callers. Seeds derive from game IDs, so results do not depend on scheduling. | — |
+| Precomputed move tables / bitboard / SIMD | **Optional, not MVP** — profile only against a declared workload and budget | Precomputed tables, bitboard u64, SIMD batch — add only if a measured benefit justifies the added complexity |
 | Serialization | Canonical `[f64;17]` + `u8` + `u64` score to CSV — see 06-Data | — |
 
 ## 8. Implementation Record
@@ -174,7 +174,7 @@ Merge events, per-turn score totals, and move action/score-delta records are inc
 - **Board transforms:** `01-Game/03-board-representation.md` (grid normalization `/32768`)
 - **Scoring / win-lose / valid-moves (canonical):** `02-Rules/01-scoring-rules.md`, `02-win-lose-conditions.md`, `03-valid-moves.md`
 - **Training row:** `03-Simulation-Engine/01-simulation-engine.md` — canonical `TrainingSample` uses 17 values plus action and score metadata.
-- **Current feature implementation:** `03-State/01-Board/01-board-state.md` describes the implemented 27 values. Plan 00 remains authoritative for the canonical 17-value model input.
+- **Canonical training input:** Plan 00 and `03-State/04-Encoding/01-state-vector.md` specify 16 board cells plus score (17 values). Board-state fields such as move count remain metadata, not model features.
 - **Out-of-scope UI:** Headless only — debug print only in `01-Game/04-game-ui.md` (deprecated stub), canonical viz JSON in `04-Visualization/01-visualization.md`
 
 ---
