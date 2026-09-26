@@ -11,7 +11,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** Preprocessing examples now use the pinned API. The root encoder produces deterministic, documented numeric features, so it does not fit imputation/scaling state; adding fitted preprocessing would change the feature protocol and must be separately justified. The illustrative training YAML remains unconsumed by the CLI. The root exposes optional grouped-CV HyperOptX tuning for RandomForest/ExtraTrees through CLI arguments or the dedicated versioned JSON search contract documented in [Plan 01](01-automl-config.md); this is not a general training YAML parser. The sibling training manifest records data digests, configuration, and derived seeds.
+**This plan treats its subject as partial or pending work, not as a research finding.** Preprocessing examples use the pinned API, but the root does not call `DataPreprocessor`; the canonical encoder produces deterministic numeric features directly. The illustrative training YAML remains unconsumed by the CLI. Optional tuning is instead a separate versioned JSON search contract for RandomForest/ExtraTrees, with grouped-CV objective, derived seed, selected settings, saved study, and training manifest. The manifest records data digests and the actual checked-out AutoML revision. YAML parsing, fitted preprocessing, and experiments that justify changing the feature protocol remain pending.
 
 ## 1. Pipeline Stages
 
@@ -79,24 +79,18 @@ config.early_stopping = true;          // struct field (no builder)
 config.early_stopping_rounds = 50;     // struct field (no builder)
 ```
 
-## 5. Experiment Configuration Template
+## 5. Experiment Configuration Template (illustrative YAML; not consumed)
 
 ```yaml
 experiment:
-  name: "2048-gradient-boosting-v1"
+  name: "2048-random-forest-v1"
   version: "1.0"
   
 training:
   task_type: multiclassification
   model_type: RandomForest  # current verified four-class output shape; root CLI does not parse YAML
-  n_estimators: 200
+  n_estimators: 100
   max_depth: 6
-  learning_rate: 0.1
-  subsample: 0.8
-  colsample_bytree: 0.8
-  # reg_alpha/reg_lambda: L1/L2 regularization — only for tree/boosting models (XGBoost/LightGBM/CatBoost); omit or keep minimal for RandomForest/ExtraTrees
-  reg_alpha: 0.01
-  reg_lambda: 1.0
   
 validation:
   cv_folds: 5
@@ -104,14 +98,17 @@ validation:
   early_stopping: true
   early_stopping_rounds: 50
   
-  optimizer:
-  enabled: false # tuning is opted into by CLI argument or the dedicated search JSON
-  algorithm: tpe
-  n_trials: 100
-  pruner: median
+optimizer:
+  enabled: false # YAML is documentation only; use the separate JSON CLI contract
   
 seed: 42
 ```
+
+The YAML block is not loaded by the root CLI and is not a runnable experiment
+configuration. The implemented tuning input is `config/hyperopt-search.example.json`;
+it controls `n_trials`, TPE, and integer ranges for `n_estimators` and
+`max_depth` only. The root currently accepts this search for RandomForest and
+ExtraTrees; other shown training settings are descriptive, not parser-backed.
 
 ## 6. Reproducibility Configuration
 
@@ -155,7 +152,7 @@ exporter.export_json(&model, "model.onnx.json")?;
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Corrected preprocessing API and removed invalid selector builder; root does not yet use fitted preprocessing or consume YAML configs. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** The root does not use fitted preprocessing or consume YAML configs. The separate JSON tuning path was smoke-run with two trials over eight development games; this verifies wiring only, not model quality. The AutoML optimizer has no intermediate-reporting hook for its standalone pruner. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 
