@@ -1,6 +1,6 @@
 # Plan 04 — Game UI: the repository status is explicit and evidence based
 
-> **Status: NOT APPLICABLE (2026-09-26).** This is a deprecated UI stub; the headless MVP has no renderer, and optional static inspection is tracked under ticket 031.
+> **Status: NOT APPLICABLE (2026-09-26).** This is a deprecated UI stub; the headless MVP requires no renderer or interactive interface.
 
 **Goal:** State the current implementation and evidence boundary for game ui.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,11 +9,11 @@
 
 ## Decision and evidence
 
-**This plan is explicitly deprecated and out of scope for the headless MVP.** No renderer is implemented or required. The proposed terminal helper is retained here as historical design text; optional static inspection is tracked by ticket 031.
+**This plan is explicitly deprecated and out of scope for the headless MVP.** No renderer is implemented or required. The proposed terminal helper is retained here as historical design text. Offline inspection uses existing CSV/JSON outputs; optional renderers are addressed separately only if a concrete need arises.
 
 > **Status: DEPRECATED STUB — Out of scope (headless simulation only).**
 > UI is **not MVP**. This file exists only to document the one debug-only helper.
-> **Canonical visualization (headless JSON/SVG/CSV export):** `02-Environment/04-Visualization/01-visualization.md` — that file = structured export; **this file = minimal terminal print for debugging only.**
+> **Offline inspection artifacts:** `02-Environment/04-Visualization/01-visualization.md` describes existing CSV/JSON outputs and optional, currently unnecessary renderers.
 
 ## Scope
 
@@ -62,7 +62,7 @@ pub fn render_board(board: &Board) -> String {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Headless-only MVP excludes the debug UI; optional static inspection work is tracked by ticket 022. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** The headless-only MVP excludes debug and interactive UI; existing CSV/JSON outputs support current offline inspection. Optional renderers remain out of scope absent a concrete need.
 
 ## Later
 
