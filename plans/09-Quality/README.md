@@ -8,7 +8,7 @@ This stage groups its work into ordered ticket series.
 |---|---|---|
 | [01-Testing](01-Testing/README.md) | Child ticket series | Partial — root suite passed 37/37; overflow atomicity covered, coverage and dedicated integration suite absent |
 | [02-Validation](02-Validation/README.md) | Child ticket series | Partial — internal evidence; independent validation pending |
-| [03-CI](03-CI/README.md) | Child ticket series | Partial — Rust quality workflow configured; hosted run artifact not yet verified |
+| [03-CI](03-CI/README.md) | Child ticket series | Partial — Rust quality workflow passed; coverage and research automation remain absent |
 | [04-Review](04-Review/README.md) | Child ticket series | Partial — procedures documented; reviews unrecorded |
 
 ## Reading paths

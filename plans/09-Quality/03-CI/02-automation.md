@@ -1,6 +1,6 @@
 # Plan 02 — Automation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** A local Rust quality-check script and GitHub workflow exist; build/test/lint are automated, while deployment and research automation are out of scope or pending.
+> **Status: PARTIAL (2026-09-27).** A local Rust quality-check script and GitHub workflow pass; deployment and research automation remain outside the configured scope.
 
 **Goal:** State the current implementation and evidence boundary for automation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -78,7 +78,7 @@ No `AutomationConfig` implementation exists. `scripts/ci-check.sh` is the implem
 
 ## Open questions
 
-- **Hosted workflow evidence remains pending.** Keep automation limited to the configured Rust quality checks unless a separate research-benchmark or deployment need is specified.
+- **Broader automation remains out of scope.** The configured checks do not schedule research benchmarks or deploy an application.
 
 ## Later
 

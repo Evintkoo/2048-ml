@@ -1,6 +1,6 @@
 # Plan 03 — Testing Automation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Cargo tests run in the configured GitHub workflow and local check script; hosted-run evidence, coverage gate, and scheduled reporting are absent.
+> **Status: PARTIAL (2026-09-27).** Cargo tests pass in the configured GitHub workflow and local check script; coverage gate and scheduled reporting are absent.
 
 **Goal:** State the current implementation and evidence boundary for testing automation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is an automation plan, not a test inventory.** Existing tests run through `scripts/ci-check.sh`, which is called by the GitHub Actions workflow. No hosted run record, coverage gate, or scheduled report is retained.
+**This is an automation plan, not a test inventory.** Existing tests run through `scripts/ci-check.sh`, which is called by the GitHub Actions workflow. Hosted run [36278428651](https://github.com/Evintkoo/2048-ml/actions/runs/36278428651) passed; no coverage gate or scheduled report is configured.
 
 > **See canonical `09-Quality/03-CI/01-ci-pipeline.md` — duplicate stub.** Repetitive CI mermaid trimmed; see canonical for pipeline.
 
@@ -78,7 +78,7 @@ No automated test result dashboards, coverage reports, performance trends, or re
 
 ## Open questions
 
-- **Hosted test automation evidence remains pending.** Verify a GitHub Actions run; coverage and scheduled performance reporting remain unconfigured.
+- **Coverage and scheduled performance reporting remain unconfigured.** The hosted workflow runs the correctness suite on push, pull request, or manual dispatch.
 
 ## Later
 

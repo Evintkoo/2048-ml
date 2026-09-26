@@ -1,6 +1,6 @@
 # Plan 01 — CI Pipeline: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** A GitHub Actions workflow and local check script exist; a hosted run and retained workflow artifact are not yet verified.
+> **Status: PARTIAL (2026-09-27).** A GitHub Actions workflow passed on the pushed revision; coverage, research validation, and deployment jobs remain outside this workflow.
 
 **Goal:** State the current implementation and evidence boundary for ci pipeline.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**A minimal CI workflow is configured** for pushes to `main`, pull requests, and manual dispatch. It initializes submodules and runs formatting, root tests, and Clippy through `scripts/ci-check.sh`. The same script passes locally; no hosted Actions run has yet been retained. Research validation and deployment remain separate or out of scope.
+**A minimal CI workflow is configured** for pushes to `main`, pull requests, and manual dispatch. It initializes submodules and runs formatting, root tests, and Clippy through `scripts/ci-check.sh`. The script passes locally, and the first hosted Actions run passed on commit `55f0fec` (run [36278428651](https://github.com/Evintkoo/2048-ml/actions/runs/36278428651)). Research validation and deployment remain separate or out of scope.
 
 ## 1. Purpose
 
@@ -167,7 +167,7 @@ Each pipeline run produces:
 
 ## Current Repository Status
 
-`.github/workflows/ci.yml` runs `scripts/ci-check.sh` on GitHub-hosted Ubuntu with stable Rust. The script passed locally: format check, 37/37 root tests, and Clippy. Coverage reporting, scheduled research/performance jobs, and deployment are not configured; no hosted workflow result is recorded yet, and deployment is outside current scope. The older stage and trigger diagrams above are target descriptions where they include validation, scheduling, notifications, or deployment; the workflow configuration is authoritative for current behavior.
+`.github/workflows/ci.yml` runs `scripts/ci-check.sh` on GitHub-hosted Ubuntu with stable Rust. The script passed locally and in hosted run [36278428651](https://github.com/Evintkoo/2048-ml/actions/runs/36278428651) for commit `55f0fec`: format check, 37/37 root tests, and Clippy. Coverage reporting, scheduled research/performance jobs, and deployment are not configured; deployment is outside current scope. The older stage and trigger diagrams above are target descriptions where they include validation, scheduling, notifications, or deployment; the workflow configuration is authoritative for current behavior.
 
 ---
 
@@ -184,7 +184,7 @@ Each pipeline run produces:
 
 ## Open questions
 
-- **Hosted CI evidence remains pending.** After the workflow is pushed, verify the hosted job and retain its result. Keep benchmark studies and deployment outside this fast correctness workflow.
+- **Broader CI coverage remains out of scope.** The workflow does not run research benchmarks, coverage measurement, or deployment; add those only with separately defined requirements.
 
 ## Later
 
