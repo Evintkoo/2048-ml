@@ -51,18 +51,34 @@
   "action_total": 1182944,
   "agent": "random",
   "benchmark": "baseline",
-  "created_utc": "2026-09-24T16:46:26.885423+00:00",
-  "elapsed_seconds": 27.887897666,
+  "created_utc": "2026-09-26T21:43:07.472927+00:00",
+  "elapsed_seconds": 27.2880125,
   "first_game_seed": 84024,
   "games": 10000,
   "global_seed": 84024,
   "last_game_seed": 94023,
   "max_moves": 1000,
+  "per_game_action_counts": {
+    "action_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "columns": [
+      "up_moves",
+      "down_moves",
+      "left_moves",
+      "right_moves"
+    ],
+    "source": "GameResult.move_history"
+  },
   "project_version": "0.1.0",
   "results_csv": "reports/action-frequency/random_10000.csv",
+  "score_summary_seed": 84025,
   "seed_derivation": "global_seed.wrapping_add(game_id)",
-  "sha256": "319ab07e65fdbb978dd2713cb88fa8b077d6c5308070b82e30b7a39d346d867c",
-  "source_revision": "ca15cebcdf4d307126a63d4ab19e416606f50564",
+  "sha256": "5371f6271b18c0831888d0f27022a5060f787a69065888dfcb5a2256396eca28",
+  "source_revision": "111b77d6008e8644b5684973d0054fc74308d274",
   "spawn_probability_for_four": 0.1,
   "summary": {
     "games_above_2048": 748,

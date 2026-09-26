@@ -664,18 +664,37 @@ fn main() {
             writeln!(file, "game_id,seed,score,max_tile,move_count,game_over,up_moves,down_moves,left_moves,right_moves,model").expect("failed to write results header");
             let start = std::time::Instant::now();
             let mut scores = Vec::with_capacity(n_games);
+            let mut per_game_action_counts = Vec::with_capacity(n_games);
             for game_id in 0..n_games {
                 let game_seed = seeds.game_seed(game_id as u64);
                 let result = policy::simulate_model_game(game_seed, &policy, 1000)
                     .unwrap_or_else(|error| panic!("game {game_id} failed: {error}"));
                 scores.push(result.final_score);
                 let action_counts = result.action_counts();
+                per_game_action_counts.push(action_counts);
                 writeln!(file, "{game_id},{game_seed},{},{},{},{},{},{},{},{},{}", result.final_score, result.max_tile, result.move_count, result.board.game_over, action_counts[0], action_counts[1], action_counts[2], action_counts[3], model.display())
                     .expect("failed to write benchmark result row");
             }
             file.flush().expect("failed to flush benchmark results");
             let summary = evaluation::summarize_scores(&scores, seeds.score_summary_seed(), 2_000)
                 .expect("benchmark produced at least one game score");
+            let action_frequency_summary = evaluation::summarize_action_frequencies(
+                &per_game_action_counts,
+                seeds.action_frequency_seed(),
+                2_000,
+            ).expect("policy games must contain recorded moves");
+            let action_total: u64 = per_game_action_counts.iter().flatten().sum();
+            let action_frequency: Vec<_> = action_frequency_summary.iter().enumerate().map(|(action, summary)| {
+                let direction = ["up", "down", "left", "right"][action];
+                serde_json::json!({
+                    "action": action,
+                    "direction": direction,
+                    "count": summary.count,
+                    "total_moves": action_total,
+                    "proportion": summary.proportion,
+                    "game_cluster_bootstrap_95_ci": summary.ci_95
+                })
+            }).collect();
             let elapsed = start.elapsed().as_secs_f64();
             write_json_manifest(&output, &serde_json::json!({
                 "created_utc": chrono::Utc::now().to_rfc3339(),
@@ -684,6 +703,8 @@ fn main() {
                 "source_revision": std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|result| result.status.success()).map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned()),
                 "sha256": sha256_file(&output).ok(),
                 "benchmark": "model_policy",
+                "action_frequency_unit": "selected moves across all games",
+                "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
                 "per_game_action_counts": {"columns": ["up_moves", "down_moves", "left_moves", "right_moves"], "action_ids": [0, 1, 2, 3], "source": "GameResult.move_history"},
                 "model": model,
                 "games": n_games,
@@ -692,6 +713,9 @@ fn main() {
                 "first_game_seed": seed,
                 "last_game_seed": seeds.game_seed((n_games - 1) as u64),
                 "score_summary_seed": seeds.score_summary_seed(),
+                "action_frequency_bootstrap_seed": seeds.action_frequency_seed(),
+                "action_total": action_total,
+                "action_frequency": action_frequency,
                 "spawn_probability_for_four": 0.1,
                 "max_moves": 1000,
                 "elapsed_seconds": elapsed,

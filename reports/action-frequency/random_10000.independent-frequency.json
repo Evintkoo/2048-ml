@@ -1,0 +1,59 @@
+{
+  "action_frequency": [
+    {
+      "action": 0,
+      "count": 295177,
+      "direction": "up",
+      "game_cluster_bootstrap_95_ci": [
+        0.24884695538969076,
+        0.2502134798649102
+      ],
+      "proportion": 0.24952745015824926,
+      "total_moves": 1182944
+    },
+    {
+      "action": 1,
+      "count": 296302,
+      "direction": "down",
+      "game_cluster_bootstrap_95_ci": [
+        0.24975728543036532,
+        0.2511808970371733
+      ],
+      "proportion": 0.25047846728162954,
+      "total_moves": 1182944
+    },
+    {
+      "action": 2,
+      "count": 295638,
+      "direction": "left",
+      "game_cluster_bootstrap_95_ci": [
+        0.24926497819463755,
+        0.25062310009682354
+      ],
+      "proportion": 0.24991715584169666,
+      "total_moves": 1182944
+    },
+    {
+      "action": 3,
+      "count": 295827,
+      "direction": "right",
+      "game_cluster_bootstrap_95_ci": [
+        0.24935568994673565,
+        0.25077897998787246
+      ],
+      "proportion": 0.2500769267184245,
+      "total_moves": 1182944
+    }
+  ],
+  "action_total": 1182944,
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 84026,
+  "exact_manifest_match": true,
+  "first_game_seed": 84024,
+  "games": 10000,
+  "last_game_seed": 94023,
+  "schema": "2048-ml.independently-recomputed-action-frequency",
+  "source_csv": "reports/action-frequency/random_10000.csv",
+  "source_csv_sha256": "5371f6271b18c0831888d0f27022a5060f787a69065888dfcb5a2256396eca28",
+  "source_manifest": "reports/action-frequency/random_10000.manifest.json"
+}
