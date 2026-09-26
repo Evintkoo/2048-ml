@@ -7,11 +7,63 @@
     "hyperopt": 90630,
     "training": 90628
   },
-  "created_utc": "2026-09-26T20:18:02.426974+00:00",
+  "created_utc": "2026-09-26T22:04:45.455911+00:00",
   "cv_folds": 2,
   "dataset_schema": "2048-action-policy-v2",
   "development_fraction": 0.85,
   "global_seed": 90628,
+  "held_out_evaluation": {
+    "accuracy": 0.3125,
+    "actions": [
+      "up",
+      "down",
+      "left",
+      "right"
+    ],
+    "confusion_matrix_actual_rows_predicted_columns": [
+      [
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        3,
+        1,
+        0
+      ],
+      [
+        0,
+        4,
+        0,
+        0
+      ]
+    ],
+    "game_ids": [
+      8,
+      9
+    ],
+    "interpretation": "development diagnostic on chronological held-out games; not a confirmatory policy-quality estimate",
+    "macro_f1": 0.20526315789473687,
+    "macro_precision": 0.31666666666666665,
+    "macro_recall": 0.3125,
+    "n_rows": 16,
+    "per_action_f1": [
+      0.0,
+      0.4210526315789474,
+      0.4,
+      0.0
+    ],
+    "predictions_csv": "reports/configuration_smokes/2026-09-27/policy-repeat.model.holdout-predictions.csv",
+    "predictions_csv_sha256": "47d61fd7816be2be16e5b9697a6fd2eca19bcaa2db3881053d2c1103faa04682"
+  },
   "hyperparameter_optimization": {
     "cv_folds": 2,
     "cv_strategy": "GroupKFold",
@@ -54,11 +106,11 @@
   "metadata_sha256": "ffcadb020cdee0299f9f349ef44cc62ba9582de6ddc64c39c2df17e7ec6b1644",
   "model": "random_forest",
   "model_artifact": "reports/configuration_smokes/2026-09-27/policy-repeat.model.json",
-  "model_artifact_sha256": "6801ca8bfff63d18274c1c387129fc08161ad00f6715d63537f68be2c78244cb",
+  "model_artifact_sha256": "430f38624dc11213acd15fce45abf4bf0fec93599e54ebd7bcad7186aa598481",
   "project_version": "0.1.0",
   "selected_max_depth": 1,
   "selected_n_estimators": 2,
-  "source_revision": "a8cc9075c2f99b2e1d2264f0073539f52dc19363",
+  "source_revision": "4b8b652eb886473759e9c56c06feb1d2c2024717",
   "state_feature_count": 17,
   "study_artifact": "reports/configuration_smokes/2026-09-27/policy-repeat.model.study.json",
   "training_configuration": {

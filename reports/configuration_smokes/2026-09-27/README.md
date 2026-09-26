@@ -18,8 +18,8 @@ The versioned two-trial TPE configuration searches 2–3 trees and depth 1–2;
 the run uses RandomForest, two grouped folds, seed `90628`, and the same 17
 features used by the canonical schema. Both invocations completed both trials,
 selected two trees at depth one, achieved grouped-CV fixture accuracy `0.296875`,
-and saved a model and study artifact. The reserved two-group tail was not used
-for fitting.
+and saved a model and study artifact. The reserved two-group tail was not used for tuning or fitting; the final model
+was scored on the 16 retained tail rows only after fitting.
 
 Reproduce the fixture and both runs with:
 
@@ -49,11 +49,14 @@ python3 scripts/compare_hyperopt_smoke_runs.py \
 The two model artifacts have different file hashes because
 `metrics.training_time_secs` differs. After removing that timing field, their
 model JSON is equal. Study trial parameters and values also match after
-excluding machine-dependent durations. The comparison script enforces both
-claims and writes `repeatability-comparison.json`.
+excluding machine-dependent durations. The comparison script also verifies that
+the held-out diagnostic metrics and all 16 prediction rows match exactly; it
+records 0.3125 accuracy and 0.2053 macro-F1 for synthetic groups 8–9. These
+labels reuse source states across groups and have no model-quality interpretation.
 
 The per-run training manifests record input/configuration digests, the actual
-AutoML pin, seed derivations, selected parameters, and model digest. Both study
-files retain each trial's parameters, score, and measured duration. This smoke
+AutoML pin, seed derivations, selected parameters, model digest, and the small
+synthetic holdout diagnostic. Both study files retain each trial's parameters,
+score, and measured duration. This smoke
 does not establish tuning efficacy, 2048 policy quality, general framework
 performance, or broad repeated-fit behavior.

@@ -11,7 +11,7 @@
         }
       },
       "value": 0.28125,
-      "duration_secs": 0.010055792,
+      "duration_secs": 0.005214958,
       "pruned": false,
       "metrics": {}
     },
@@ -26,12 +26,12 @@
         }
       },
       "value": 0.296875,
-      "duration_secs": 0.001665208,
+      "duration_secs": 0.001992542,
       "pruned": false,
       "metrics": {}
     }
   ],
   "best_trial_idx": 1,
-  "total_duration_secs": 0.011728958,
+  "total_duration_secs": 0.007217833,
   "direction": "Maximize"
 }

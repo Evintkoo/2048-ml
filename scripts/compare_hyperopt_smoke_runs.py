@@ -43,6 +43,28 @@ def compare(directory: Path):
         if first_manifest[field] != second_manifest[field]:
             raise ValueError(f"manifest field differs between runs: {field}")
 
+    first_holdout = first_manifest["held_out_evaluation"]
+    second_holdout = second_manifest["held_out_evaluation"]
+    stable_holdout_fields = (
+        "n_rows",
+        "accuracy",
+        "macro_precision",
+        "macro_recall",
+        "macro_f1",
+        "per_action_f1",
+        "confusion_matrix_actual_rows_predicted_columns",
+        "actions",
+        "game_ids",
+        "interpretation",
+    )
+    for field in stable_holdout_fields:
+        if first_holdout[field] != second_holdout[field]:
+            raise ValueError(f"held-out diagnostic differs between runs: {field}")
+    first_holdout_predictions = directory / Path(first_holdout["predictions_csv"]).name
+    second_holdout_predictions = directory / Path(second_holdout["predictions_csv"]).name
+    if first_holdout_predictions.read_bytes() != second_holdout_predictions.read_bytes():
+        raise ValueError("held-out prediction rows differ between runs")
+
     first_model = read(directory / f"{first_stem}.json")
     second_model = read(directory / f"{second_stem}.json")
     first_study = read(directory / f"{first_stem}.study.json")
@@ -72,6 +94,12 @@ def compare(directory: Path):
         "run_2_model_sha256": second_manifest["model_artifact_sha256"],
         "semantic_model_equal_ignoring_training_time": True,
         "semantic_study_equal_ignoring_trial_durations": True,
+        "heldout_metrics_equal": True,
+        "heldout_predictions_equal": True,
+        "heldout_game_ids": first_holdout["game_ids"],
+        "heldout_rows": first_holdout["n_rows"],
+        "heldout_accuracy": first_holdout["accuracy"],
+        "heldout_macro_f1": first_holdout["macro_f1"],
         "fixture_generator_sha256": fixture_manifest["runner_sha256"],
         "limitations": [
             "Elapsed training and trial durations are machine-dependent and differ between runs",

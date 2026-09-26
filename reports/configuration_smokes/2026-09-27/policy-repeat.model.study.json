@@ -11,27 +11,27 @@
         }
       },
       "value": 0.28125,
-      "duration_secs": 0.002105417,
+      "duration_secs": 0.005105708,
       "pruned": false,
       "metrics": {}
     },
     {
       "trial_id": 1,
       "params": {
-        "max_depth": {
-          "Int": 1
-        },
         "n_estimators": {
           "Int": 2
+        },
+        "max_depth": {
+          "Int": 1
         }
       },
       "value": 0.296875,
-      "duration_secs": 0.001458458,
+      "duration_secs": 0.0020825,
       "pruned": false,
       "metrics": {}
     }
   ],
   "best_trial_idx": 1,
-  "total_duration_secs": 0.003571458,
+  "total_duration_secs": 0.007198916,
   "direction": "Maximize"
 }
