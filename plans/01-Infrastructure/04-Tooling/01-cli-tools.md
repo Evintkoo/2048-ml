@@ -97,7 +97,7 @@ cargo run -- benchmark compare results/policy.csv results/random.csv --output re
 cargo run -- benchmark report results/policy.csv results/random.csv --output results/report.csv
 ```
 
-`train` requires a row-aligned `--metadata` sidecar with game IDs. It reserves the final chronological 15% of distinct games by default (`--development-fraction 0.85`) from grouped CV and fitting. The AutoML fit still performs its own seeded stratified row split on development data. This distinction is documented in the training plan; the final test scoring/refit workflow remains pending. Ticket #034 aligns the root command with Plan 00's 17-value input schema.
+`train` requires a row-aligned `--metadata` sidecar with game IDs. It reserves the final chronological 15% of distinct games by default (`--development-fraction 0.85`) from grouped CV and fitting. The AutoML fit still performs its own seeded stratified row split on development data. After fitting, the CLI now emits classification diagnostics on the chronological holdout, as documented in the training plan; adequate-sample confirmatory policy evaluation and a final refit workflow remain pending. Ticket #034 aligns the root command with Plan 00's 17-value input schema.
 
 ## 3. CLI Configuration
 
