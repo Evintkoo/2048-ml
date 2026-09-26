@@ -175,15 +175,16 @@ repeated metrics and prediction CSVs in 15/15 cases. The report retains their si
 exact-label agreement of 8/15, fixed dependencies, and the explicit limits of this one-split comparison.
 A same-host single-thread process probe measured 1.33 seconds and 27,426,816-byte maximum RSS for the
 prebuilt AutoML matrix, and 1.22 seconds and 158,466,048-byte maximum RSS for the Python matrix. Since
-process startup and implementations differ, these are not framework performance conclusions. Matched search budgets, per-model resource profiles, broader common-split process
-repeatability, API/CLI parity, and independent replication remain outstanding.
+process startup and implementations differ, these are not framework performance conclusions. Matched search
+budgets, per-model resource profiles, broader common-split process repeatability, API/CLI parity, and
+independent replication remain outstanding.
 
 ## Open questions
 
 - **The evidence remains bounded by fixed-split diagnostics.** Three standard datasets and five AutoML
   models have one split each under seeds 42, 2026, and 2027. Seeds 42 and 2026 each
-  have two exact-repeat runs with save/load equivalence; a comparison-only sklearn matrix and aggregate single-thread resource probe are
-  also retained. There is no matched search-budget comparison, per-model resource profile, broad dataset
+  have two exact-repeat runs with save/load equivalence. A comparison-only sklearn matrix and aggregate
+  single-thread resource probe are also retained. There is no matched search-budget comparison, per-model resource profile, broad dataset
   study, CLI/library equivalence, or independent replication. Further experiments require a declared
   compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
 
