@@ -1,6 +1,6 @@
 # Plan 02 — Training Pipeline Configuration: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Preprocessing guidance matches the real API; root records training inputs/seeds in model manifests, while YAML config loading remains unimplemented.
+> **Status: PARTIAL (2026-09-27).** Preprocessing guidance matches the real API; root records training inputs/seeds in model manifests, while illustrative YAML config loading remains unimplemented.
 
 **Goal:** State the current implementation and evidence boundary for training pipeline configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -155,7 +155,7 @@ exporter.export_json(&model, "model.onnx.json")?;
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** The root does not use fitted preprocessing or consume YAML configs. The separate JSON tuning path was smoke-run with two trials over eight development games; this verifies wiring only, not model quality. The AutoML optimizer has no intermediate-reporting hook for its standalone pruner. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** The root does not use fitted preprocessing or consume YAML configs. The separate JSON tuning path was rerun twice with two trials over eight synthetic development groups; its 16-row synthetic holdout produced identical predictions (accuracy 0.3125, macro-F1 0.2053). This verifies command repeatability only, not model quality. The AutoML optimizer has no intermediate-reporting hook for its standalone pruner. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 
