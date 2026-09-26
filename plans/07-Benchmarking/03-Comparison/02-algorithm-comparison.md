@@ -13,7 +13,7 @@
 
 ## 1. Purpose
 
-Compare exactly **3 groups** on the same 10k-game benchmark. No Greedy / Search-Based hallucinations; no pre-data ranking diagram.
+Compare exactly **3 groups** under the same preregistered simulator and seed protocol. Choose game count from pilot variance and available budget. No Greedy / Search-Based candidates.
 
 ## 2. Groups
 
@@ -42,7 +42,7 @@ pub struct AlgorithmComparison {
 
 ## Implementation Record
 
-- Random and heuristic baselines and model benchmark commands exist with seedable simulator and comparison support. The proposed 10k-per-group three-way comparison remains pending; target means are not results.
+- Random and heuristic baselines and model benchmark commands exist with seedable simulator and comparison support. The three-way comparison remains pending; target means are not results.
 
 ---
 

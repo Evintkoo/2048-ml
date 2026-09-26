@@ -53,7 +53,7 @@ flowchart TD
 | Memory usage | Unknown — to be measured | Model compression | To be assessed |
 | AutoML constraints | Root four-action integration currently permits RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes; broader framework behavior needs validation | Use only tested integration candidates and report capability limits | Partly assessed |
 | Rust bugs | Potential data corruption | Extensive testing | To be assessed |
-| Feature engineering fixed | Limited to 27 features | Future feature expansion | Acknowledged |
+| State representation fixed | 17 canonical values; no history or derived model features | Any change requires separately scoped study | Acknowledged |
 | No RL methods | Cannot learn from rewards | Future work | Acknowledged |
 
 ## 3. Methodological Limitations
@@ -63,10 +63,10 @@ flowchart TD
 - **Fixed evaluation criteria:** May not capture all performance aspects
 - **Sample size:** game count does not establish power or cover rare outcomes; the primary model study has not run
 - **Label quality:** Depends on rollout simulation accuracy
-- **Feature completeness:** 27 features may not capture all relevant information
+- **Feature completeness:** the fixed 17-value input may omit information relevant to the policy; no sufficiency claim is established
 - **Supervised learning only:** No reward shaping or policy gradient methods
 - **Seed variation:** model robustness across training and evaluation seeds has not been measured
-- **Feature engineering fixed:** The 27-dimensional feature vector is predetermined
+- **Feature engineering fixed:** The canonical 17-value state is predetermined; no derived features or history are included
 
 ## 4. Framework Limitations
 
@@ -122,7 +122,7 @@ No power or precision claim can be made from the planned 10,000-game number. Rar
 - Standard 4×4 2048
 - automl framework (CLI/API only)
 - Supervised classification
-- 27-dimensional feature vector
+- 17-value canonical feature vector
 - Mean score ranking
 
 **Out of Scope:**
@@ -140,7 +140,7 @@ No power or precision claim can be made from the planned 10,000-game number. Rar
 
 ## 7. Honest Assessment
 
-These limitations are acknowledged and documented transparently:
+Known implementation and evidence limits are recorded explicitly:
 
 1. The baseline report measured random and heuristic mean scores of 1,094.12 and 8,056.23 respectively across 10,000 games under its recorded local protocol; these do not represent a trained AutoML policy or framework comparison
 2. Results are specific to the 2048 game domain
@@ -161,9 +161,9 @@ These limitations are acknowledged and documented transparently:
 | Seed variation | Declare separate training/evaluation seeds and replication unit |
 | Multiple comparison | Declare comparison family; current CLI reports Holm-adjusted p-values |
 | AutoML gaps | Report framework capability failures; keep core training on AutoML per scope |
-| 4×4 / supervised / 27-dim fixed | Acknowledged — future n×n/RL is Appendix only |
+| 4×4 / supervised / 17-value input fixed | Acknowledged — future n×n/RL is Appendix only |
 
-> Generic rows (training time, PSPACE, 8×8 expansion) deleted — covered in Discussion §7 Future Work (2 lines each) and `07-computational-budget.md`.
+> Generic rows (training time, PSPACE, 8×8 expansion) deleted — covered in Discussion §7 Future Work and `07-computational-budget.md`.
 
 ## 9. Conclusion
 

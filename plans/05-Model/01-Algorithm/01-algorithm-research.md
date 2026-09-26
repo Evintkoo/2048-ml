@@ -1,6 +1,6 @@
 # Plan 01 — Algorithm Research: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Framework API smoke checks and candidate boundaries are recorded; comparative research remains pending.
+> **Status: PARTIAL (2026-09-27).** Framework API checks and an initial fixed-split dataset diagnostic are recorded; matched framework comparisons and 2048 candidate ranking remain pending.
 
 **Goal:** State the current implementation and evidence boundary for algorithm research.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats algorithm capability inspection as implemented with empirical evaluation pending.** The smoke suite exercises 13 model/task combinations, but only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes produce four-class probability output in the pinned integration. This does not rank them or establish performance on standard datasets or 2048.
+**This plan treats algorithm capability inspection as implemented with comparative evaluation pending.** The smoke suite exercises 13 model/task combinations, but only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes produce four-class probability output in the pinned integration. An initial one-split standard-dataset diagnostic is retained, but it is not a matched baseline study and does not rank candidates for 2048.
 
 > This is a secondary model-capability and case-study plan. The primary contribution is the Rust-native AutoML architecture defined in `plans/01-Infrastructure/01-Project/04-framework-contribution.md`.
 
@@ -185,7 +185,7 @@ flowchart TD
 ## Implementation Record
 
 - `src/framework_validation.rs` smoke-checks 13 model/task combinations and confirms the four-class probability subset: RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes.
-- No standard-tabular framework evaluation, common-data algorithm comparison, or 10k-game trained-model ranking has been completed. No winner or threshold pass is claimed.
+- An initial one-split diagnostic across three standard datasets and five candidates is retained in `reports/framework_validation/`; two seed-42 runs matched 14/15 prediction sets, with Wine KNN repeatability/serialization failure on the prior AutoML revision. The pinned determinism fix has not been checked against this matrix. Matched framework baselines and a 10k-game trained-model ranking remain incomplete. No winner or threshold pass is claimed.
 
 ---
 
@@ -202,7 +202,7 @@ flowchart TD
 
 ## Open questions
 
-- Run matched standard-dataset framework evaluation under #079 before making general algorithm-quality claims.
+- Complete matched standard-dataset framework validation under #103 before making general algorithm-quality claims.
 - Run a predeclared 2048 case-study comparison only after an adequate labeled corpus and compute budget are available.
 
 ## Later

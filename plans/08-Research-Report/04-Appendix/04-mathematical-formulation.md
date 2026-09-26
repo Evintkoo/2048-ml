@@ -26,7 +26,7 @@ S_{t+1} = S_t + r(B_t, a_t, B_{t+1})
 
 where `r` is the score increment from merges. The code defaults to probability 0.1 for spawning a 4; the probability is configurable. A precise probability kernel and terminal convention should be stated for any formal analysis.
 
-The supervised model receives the 27-value encoded state and predicts one of four action classes. The action-selection path masks illegal actions. The training labeler compares finite-simulation mean final scores for legal actions; the resulting label is a noisy decision proxy and is not known to be optimal.
+The supervised model receives the canonical 17-value state (16 board cells plus current score) and predicts one of four action classes. The action-selection path masks illegal actions. The training labeler compares finite-simulation mean final scores for legal actions; the resulting label is a noisy decision proxy and is not known to be optimal.
 
 For a finite horizon `T`, an optimal value function would satisfy a Bellman recursion only after the reward, transition kernel, terminal condition, and horizon are fixed:
 
@@ -39,9 +39,9 @@ This project does not compute or validate this optimal value function.
 
 ## 2. State and Feature Contract
 
-The canonical training state is the 16 board cells plus current score. The project model representation is a 27-value feature vector that contains those board values in encoded form and derived board features. Move count and game history are metadata, not model inputs. The state scope is documented in `00-scope-and-traceability.md`; the source encoder is `src/state.rs`.
+The canonical training state is the 16 board cells plus current score. These are encoded in the fixed 17-value input; no derived board features, move count, or game history are added. The state scope is documented in `00-scope-and-traceability.md`; the source encoder is `src/state.rs`.
 
-The 27-value representation is not claimed to be a sufficient statistic for optimal action selection. An ablation or predictive association analysis can assess empirical utility under a specified dataset and model, but cannot by itself prove a minimal Markov blanket or optimal-policy sufficiency.
+The 17-value representation is not claimed to be a sufficient statistic for optimal action selection. An ablation or predictive association analysis can assess empirical utility under a specified dataset and model, but cannot by itself prove a minimal Markov blanket or optimal-policy sufficiency.
 
 ## 3. Claims Explicitly Not Established
 

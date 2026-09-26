@@ -7,8 +7,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-board-state](01-board-state.md) | Board State Definition | DONE — canonical 17-value input; finite nonnegative values may exceed one |
-| [02-feature-extraction](02-feature-extraction.md) | Feature Extraction | PARTIAL — candidate metrics separated from canonical model inputs; no independent study protocol |
-| [03-state-encoding](03-state-encoding.md) | State Encoding | PARTIAL — v2 17-feature CSV implemented; Parquet unsupported |
+| [02-feature-extraction](02-feature-extraction.md) | Feature Extraction | NOT APPLICABLE — expanded candidate metrics are outside Plan 00's fixed 17-value core unless separately approved |
+| [03-state-encoding](03-state-encoding.md) | State Encoding | COMPLETE — canonical v2 CSV and provenance sidecar implemented; Parquet outside current storage contract |
 
 ## Reading paths
 

@@ -20,11 +20,10 @@ Define the statistical procedures for the primary Rust-native AutoML framework b
 ```mermaid
 flowchart TD
     subgraph "Significance Testing"
-        A[Define Hypotheses] --> B[Select Test]
-        B --> C[Set α Level with Bonferroni]
+        A[Declare Comparison and Test Family] --> B[Select Test]
+        B --> C[Choose Multiplicity Correction]
         C --> D[Collect Data]
-        D --> E[Compute Test Statistic]
-        E --> F[Calculate p-value]
+    D --> E[Compute Statistic / p-value]
         F --> G{Significant?}
         G -->|Yes| H[Conclude Improvement]
         G -->|No| I[No Evidence of Improvement]
@@ -52,7 +51,7 @@ Used only when the comparison groups are independent at the declared unit of ana
 
 **Test Statistic:** U = min(U1, U2) where U1 and U2 are the rank sums.
 
-**Significance:** p < α_adjusted (after Bonferroni correction)
+**Decision rule:** compare the p-value against the preregistered threshold after the declared multiplicity correction.
 
 The comparison report also includes Cohen's d. The implemented test helper returns a p-value; it does not return a U statistic, rank-biserial effect, or Cliff's delta.
 
@@ -81,14 +80,10 @@ Used for estimating the uncertainty of mean scores.
 flowchart LR
     A[Mean Difference] --> B[Pooled Standard Deviation]
     B --> C[Cohen's d]
-    C --> D[Effect Size Category]
-    D -->|d < 0.2| E[Negligible]
-    D -->|0.2 ≤ d < 0.5| F[Small]
-    D -->|0.5 ≤ d < 0.8| G[Medium]
-    D -->|d ≥ 0.8| H[Large]
+    C --> D[Report Estimate with Context]
 ```
 
-**Reporting standards:** All comparisons must report both p-value AND effect size. A statistically significant result with negligible effect size is not practically meaningful.
+**Reporting guidance:** Report p-values with effect sizes and uncertainty when these analyses apply. Statistical significance alone does not establish practical value.
 
 ## 6. Power Analysis
 
@@ -98,9 +93,7 @@ graph TD
     B --> C[Set Power (1-β)]
     C --> D[Calculate Required Sample Size]
     D --> E[Run Tests with N Samples]
-    E --> F{Achieved Power ≥ 0.8?}
-    F -->|Yes| G[Valid Results]
-    F -->|No| H[Increase Sample Size]
+    E --> F[Report Precision / Power Rationale]
 ```
 
 **Sample size justification:** Do not infer power from the number of game instances alone. Predeclare the experimental unit, minimum practically meaningful improvement, expected variance, number of trained-model repetitions, and clustering structure. Framework benchmarks and 2048 game evaluations require separate power or precision calculations.
@@ -112,11 +105,10 @@ graph TD
 When comparing against **multiple baselines** AND **multiple models**, the family-wise error rate inflates:
 
 ```
-N_comparisons = n_baselines × n_models
-α_adjusted = 0.05 / N_comparisons
+N_comparisons = number of hypotheses in the declared family
 ```
 
-**Example:** 2 baselines × 7 models = 14 comparisons → α_adjusted = 0.00357
+The comparison CLI applies Holm adjustment to the actual comparison family; this plan does not prescribe a fixed model/baseline matrix.
 
 ### 7.2 Holm-Bonferroni Correction
 
@@ -148,7 +140,7 @@ graph TD
 
 ## 9. Winner Determination Protocol
 
-No winner determination is currently supported. A future protocol must specify game-level or seed-level experimental units, model-training repetitions, sample size/precision rationale, matched evaluation seeds, practical threshold, and multiplicity family before collecting confirmatory data. The illustrative 10,000-game and Cohen's d thresholds above are not evidence-based acceptance rules and are removed.
+No winner determination is currently supported. A future protocol must specify game-level or seed-level experimental units, model-training repetitions, sample size/precision rationale, matched evaluation seeds, practical threshold, and multiplicity family before collecting confirmatory data. Fixed game counts and Cohen's d categories in explanatory material are not evidence-based acceptance rules.
 
 ## 10. Rust Implementation
 

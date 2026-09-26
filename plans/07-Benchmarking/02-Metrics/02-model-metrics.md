@@ -52,7 +52,7 @@ flowchart TD
 | Legal-Action Prediction Rate | Fraction of predictions that are legal for their corresponding board | 2048 policy validity diagnostic; distinct from label accuracy |
 | F1 Macro | Macro-averaged F1 across 4 action classes | Class-balance aware metric |
 | Confusion Matrix | 4×4 matrix (Up/Down/Left/Right) | Per-class error analysis |
-| Mean Game Score | Mean score over ≥10k benchmark games (separate pipeline) | Downstream benchmark — not regression |
+| Mean Game Score | Mean score over the declared benchmark sample (separate pipeline) | Downstream benchmark — not regression |
 
 > **Case-study note**: AutoML models are evaluated by classification quality and resource metrics in framework validation. In the 2048 case study, policies are compared by held-out game-score distributions, uncertainty, practical effect, and the declared statistical protocol. The case-study winner is not a claim of globally optimal play.
 
@@ -123,7 +123,7 @@ graph TD
 
 ## 8. Feature Importance — Post-Training Only
 
-Post-training only — compute permutation/SHAP importance after model is trained, then rank the 27 features. No TBD table pre-training. `MoveCount` not in 27 — do not list.
+Feature importance is not implemented. A future feature-importance study would require an explicit protocol; the canonical model input remains 17 values and excludes move count and history.
 
 ## 9. Model Comparison Metrics
 
@@ -142,7 +142,7 @@ No universal quality gates are defined. A case-study comparison should predeclar
 
 Report metrics that are implemented and retain per-game outcomes. Add classification metrics before claiming their results; do not use hypothetical loss-convergence gates for this single-fit tree workflow.
 
-> If a model/heuristic ratio is reported, treat it as descriptive and include the baseline estimate and uncertainty.
+Any comparative effect should include the baseline estimate and uncertainty under a declared protocol.
 
 ## Implementation Record
 

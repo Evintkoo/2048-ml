@@ -1,6 +1,6 @@
 # Plan 03 — Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Game-score summaries and uncertainty helpers exist; the planned classification metric suite is not implemented.
+> **Status: PARTIAL (2026-09-27).** Score and generic classifier-summary helpers exist; 2048 held-out classification diagnostics and trained-policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats game-score summaries as implemented and classification metrics as pending.** `src/evaluation.rs` summarizes score distributions, bootstrap intervals, action frequencies, and paired/unpaired score comparisons. The root training/evaluation path does not currently calculate macro F1, confusion matrices, or valid-action classification accuracy.
+**Score summaries and generic classification helpers are implemented; 2048 training integration and outcomes remain pending.** `src/evaluation.rs` summarizes score distributions, bootstrap intervals, action frequencies, and paired/unpaired score comparisons. It also computes accuracy, macro precision/recall/F1, and a confusion matrix. The root `train` command does not yet write these classification diagnostics for a 2048 model; the standard-dataset runner uses them on its separate framework-validation track.
 
 ## 1. Purpose
 
@@ -42,7 +42,7 @@ flowchart TD
     Optional -.-> ProxOpt[Proximity = model/heuristic<br/>single ratio if reported — not a gate]
 ```
 
-**Critical distinction**: Classification accuracy is measured ONLY on **valid actions** (actions that change the board state). Predicting an invalid move (no board change) is always wrong — the model should never select an invalid action. This is enforced by masking invalid actions before prediction.
+**Critical distinction**: Every training label is a legal action for its state. For raw classifier diagnostics, compare the unmasked four-class prediction to that label and count an illegal prediction as incorrect. Runtime policy selection masks illegal actions before choosing a move; report that policy behavior separately from raw label accuracy.
 
 ```rust
 pub fn masked_accuracy(
@@ -50,7 +50,8 @@ pub fn masked_accuracy(
     actual: u8, 
     valid_actions: &[u8]
 ) -> bool {
-    // Invalid predictions count as incorrect
+    // Raw classifier accuracy: invalid predictions count as incorrect.
+    // Runtime policy evaluation separately applies masked_argmax.
     valid_actions.contains(&predicted) && predicted == actual
 }
 ```
@@ -97,11 +98,13 @@ flowchart TD
     CM --> FN[False Negatives]
     CM --> TN[True Negatives]
     
-    CM --> AccCalc[Accuracy = (TP+TN)/Total]
-    CM --> PrecCalc[Precision = TP/(TP+FP)]
-    CM --> RecCalc[Recall = TP/(TP+FN)]
-    CM --> F1Calc[F1 = 2*Prec*Rec/(Prec+Rec)]
+    CM --> AccCalc[Accuracy = diagonal sum / total]
+    CM --> PrecCalc[Per-class precision = TP/(TP+FP)]
+    CM --> RecCalc[Per-class recall = TP/(TP+FN)]
+    CM --> F1Calc[Per-class F1; report macro mean]
 ```
+
+`src/evaluation.rs::summarize_classification` implements these fixed-class summaries. Macro averages include every caller-declared class, including classes absent from a sample.
 
 ### 4.2 F1 Score
 
@@ -123,9 +126,9 @@ flowchart TD
     end
     
     ModelPerf --> Rank[Rank by Mean Game Score<br/>protocol-defined; no default threshold]
-    Rank --> Gate1[Diagnostic: report valid-action accuracy]
+    Rank --> Gate1[Diagnostic: report action-label accuracy]
     Gate1 --> Gate2[Diagnostic: report F1 macro]
-    Gate2 --> SpeedW[Informative: Inference Speed ≤1ms]
+    Gate2 --> SpeedW[Informative: measure inference time on declared hardware]
     
     style ModelPerf fill:#e3f2fd
 ```
@@ -137,8 +140,8 @@ No acceptance thresholds or composite ranking rule are defined by the canonical 
 | Metric | Target | Category | Gate? |
 |--------|--------|----------|-------|
 | **Mean Game Score** | Report distribution and uncertainty | 2048 case-study outcome | Protocol-defined |
-| Valid-Action Accuracy | Not currently calculated | Classification diagnostic | Pending implementation |
-| F1 Macro | Not currently calculated | Classification diagnostic | Pending implementation |
+| Action-Label Accuracy | Generic helper implemented; not wired to 2048 training CLI | Classification diagnostic | Pending 2048 integration/results |
+| F1 Macro | Generic helper implemented; not wired to 2048 training CLI | Classification diagnostic | Pending 2048 integration/results |
 | Inference Speed | Measure on declared hardware | Resource metric | Informative |
 
 > If a model/heuristic ratio is reported, define both evaluation populations and uncertainty; it is descriptive, not a default acceptance threshold.
@@ -156,7 +159,7 @@ sequenceDiagram
     
     Pred->>Calc: Predicted actions (0-3)
     Actual->>Calc: True actions (0-3)
-    Calc->>Calc: Compute classification metrics
+    Calc->>Calc: Generic helper computes accuracy, macro F1, confusion matrix
     Calc->>Store: Store metrics
     Store --> Report[Generate Report]
 
@@ -177,14 +180,14 @@ flowchart LR
 
 ## 9. Next Steps
 
-1. Run cross-validation experiments
-2. Collect metric results
-3. Interpret against the predeclared protocol
+1. Wire the generic classification helper into a declared 2048 held-out evaluation.
+2. Record raw and legal-action-masked policy predictions distinctly.
+3. Interpret game outcomes under the predeclared protocol.
 
 ## Implementation Record
 
-- `src/evaluation.rs` implements descriptive score summaries, bootstrap intervals, action-frequency summaries, paired sign tests, Mann–Whitney U, Holm adjustment, and effect-size helpers.
-- Macro F1, confusion matrix, valid-action accuracy, and held-out trained-model metric results are not implemented. No gates are defined by scope.
+- `src/evaluation.rs` implements descriptive score summaries, bootstrap intervals, action-frequency summaries, paired sign tests, Mann–Whitney U, Holm adjustment, effect-size helpers, and generic classification summaries (accuracy, macro precision/recall/F1, confusion matrix).
+- Generic classification summaries are used by the standard-dataset diagnostic but are not wired to the 2048 `train`/evaluation path. No held-out trained-policy metrics or scope-defined performance gates exist.
 
 ---
 

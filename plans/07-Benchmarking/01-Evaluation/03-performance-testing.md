@@ -17,17 +17,17 @@ Report efficiency as **metadata only** — no pass/fail gates. The ranking metri
 
 ## 2. What We Report
 
-For each 10k-game benchmark run, log:
+For each benchmark run, log:
 
 | Metric | How | Purpose |
 |--------|-----|---------|
 | `games/sec` | `n_games / wall_time` | Throughput metadata |
-| `ms/move` | `total_move_time / total_moves` | Latency metadata |
-| `feature_compute_ms` | feature-engineering time per move | Bottleneck identification |
+| `ms/move` | `total_move_time / total_moves` (future instrumentation) | Latency metadata |
+| `feature_compute_ms` | feature-engineering time per move (future instrumentation) | Bottleneck identification |
 
 > No bottleneck is assumed; attribute time only after per-stage profiling is implemented and measured.
 
-No Thread-Group / Batch-Runner / CI regression harness — deleted as over-engineering for <10k-game research runs. No memory/CPU thresholds as gates.
+No Thread-Group / Batch-Runner / CI regression harness is implemented. No memory/CPU thresholds are used as gates.
 
 ## Implementation Record
 

@@ -143,7 +143,7 @@ No CI workflow is configured. Game unit tests can be included in a future CI wor
 
 ## Implementation Record
 
-Root game-engine tests cover merge/scoring rules, no-op and terminal behavior, tile validation, deterministic spawning and a finite spawn-frequency check, directional movement, and randomized `would_change` consistency. Expected results mostly come from internal invariants; no separate reference engine or oracle comparison report exists. Tests were not run during this pass.
+Root game-engine tests cover merge/scoring rules, no-op and terminal behavior, tile validation, deterministic spawning and a finite spawn-frequency check, directional movement, and randomized `would_change` consistency. `cargo test` passed 34/34. Expected results mostly come from internal invariants; no separate reference engine or oracle comparison report exists.
 
 ---
 

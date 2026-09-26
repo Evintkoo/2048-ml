@@ -6,7 +6,7 @@ This stage groups its work into ordered ticket series.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-Testing](01-Testing/README.md) | Child ticket series | Partial — tests exist; no test execution in this pass |
+| [01-Testing](01-Testing/README.md) | Child ticket series | Partial — root suite passed; coverage and dedicated integration suite absent |
 | [02-Validation](02-Validation/README.md) | Child ticket series | Partial — internal evidence; independent validation pending |
 | [03-CI](03-CI/README.md) | Child ticket series | Partial — CI/workflow automation absent |
 | [04-Review](04-Review/README.md) | Child ticket series | Partial — procedures documented; reviews unrecorded |

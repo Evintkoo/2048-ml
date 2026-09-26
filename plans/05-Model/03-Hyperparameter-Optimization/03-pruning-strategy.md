@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats pruning integration as pending.** The root objective currently computes grouped-CV accuracy and returns one completed scalar per trial. Its `OptimizationConfig.pruning` is disabled, and no comparable intermediate fold/resource report is connected to a pruner. The examples below describe framework APIs, not active root behavior.
+**This plan treats pruning integration as pending.** The root objective currently computes grouped-CV accuracy and returns one completed scalar per trial. Its `OptimizationConfig.pruning` is disabled, and no comparable intermediate fold/resource report is connected to a pruner. The diagrams and examples below describe a possible future design and available framework APIs, not active root behavior.
 
 ## 1. Purpose
 
@@ -18,6 +18,7 @@ Record the prerequisite for future trial pruning and the boundary of the current
 ## 2. Pruning Overview
 
 Pruning stops unpromising trials early to save computational resources and focus on the most promising hyperparameter configurations.
+The following diagram is a target workflow; current trials complete their grouped-CV objective before returning a score.
 
 ```mermaid
 flowchart TD
@@ -45,16 +46,15 @@ flowchart TB
         A[Median Pruner]
         B[Percentile Pruner]
         C[Hyperband Pruner]
-        D[ASHT Pruner]
+        D[NoPruner]
     end
     
     A --> |Median threshold| Decision[Prune Decision]
     B --> |Percentile threshold| Decision
     C --> |Resource allocation| Decision
-    D --> |Adaptive halving| Decision
-    
-    style MedianPruner fill:#e3f2fd
-    style Hyperband fill:#e8f5e9
+    D --> Keep[Keep all trials]
+    style A fill:#e3f2fd
+    style C fill:#e8f5e9
 ```
 
 ### 3.1 Median Pruner
@@ -166,9 +166,9 @@ flowchart LR
 
 ## 9. Next Steps
 
-1. Execute hyperparameter search with pruning
-2. Collect best configuration
-3. Proceed to model evaluation
+1. Add an intermediate-reporting interface to the optimizer objective.
+2. Define comparable group-fold steps, stable trial IDs, and retained prune reasons.
+3. Validate pruned and unpruned search under a declared compute budget before enabling it for model selection.
 
 ## Implementation Record
 

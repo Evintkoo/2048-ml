@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the simulator and baseline protocol as implemented, with large rollout-labeled data collection pending.** The seeded 10,000-game random and heuristic score/frequency baselines are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Those runs evaluate baseline agents; they do not fulfill the separate rollout-labeled supervised corpus requirement. A prior small-collection throughput estimate projects about 103 hours for the 20,000-game labeled configuration. That run remains unscheduled pending an explicit compute budget and the collection reliability work tracked by the multi-game ticket.
+**This plan treats the simulator and baseline protocol as implemented, with large rollout-labeled data collection pending.** The seeded 10,000-game random and heuristic score/frequency baselines are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Those runs evaluate baseline agents; they do not fulfill the separate rollout-labeled supervised corpus requirement. The collector now supports checkpoint/resume and live progress as documented by the multi-game ticket. A prior small-collection throughput estimate projects about 103 hours for the 20,000-game labeled configuration; collection remains unscheduled pending a fresh pilot and explicit compute budget.
 
 > **Canonical supervised row:** 17 state values (16 board cells plus score) and `action:u8` for `TaskType::MultiClassification`. Ticket #034 aligns the encoder, collector, and policy with this schema. Headless only, no UI.
 
@@ -169,7 +169,7 @@ pub struct TrainingSample {
 
 - `src/game_engine/mod.rs` implements the seeded reusable simulator, checked policy moves, game results, deterministic game-ID batch helper, and rollout relabeler.
 - `src/main.rs` collects games through a fixed-size Rayon pool, writes canonical CSV plus row-aligned metadata and a manifest, and exposes random/heuristic baseline and model benchmark paths. The root does not write Parquet and does not yet checkpoint rollout collection.
-- Validation: root tests passed 30/30 during #006. The 10k random/heuristic baseline runs and manifests are retained in the linked report. Rollout-labeled corpus remains unrun at plan scale; the prior 20k configuration estimate is about 103 hours and requires a declared compute budget and checkpoint/progress behavior before scheduling.
+- Validation: root tests passed 30/30 during #006. The 10k random/heuristic baseline runs and manifests are retained in the linked report. Rollout-labeled corpus remains unrun at plan scale; the prior 20k configuration estimate is about 103 hours. Checkpoint/resume and live progress are implemented, but obtain a fresh pilot and declared compute budget before scheduling the corpus.
 
 ---
 
@@ -186,8 +186,8 @@ pub struct TrainingSample {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Game-score baselines now have 10,000 games per random/heuristic agent. Rollout-labeled data collection at the plan's sample size is still pending because the prior smoke throughput estimate projects about 103 hours for 20,000 games; do not schedule that corpus without an explicit compute budget and pilot.
+- **The plan-scale evidence remains bounded by current results.** Game-score baselines have 10,000 games per random/heuristic agent. Rollout-labeled data collection at the plan's sample size is still pending; the prior smoke throughput estimate projects about 103 hours for 20,000 games. Checkpoint/resume and live progress are implemented, but a fresh pilot and explicit compute budget are still required.
 
 ## Later
 
-- **Pilot and collect the rollout-labeled corpus after a compute budget is approved internally.** The baseline game runs do not substitute for this data-generation deliverable.
+- **Pilot and collect the rollout-labeled corpus after a compute budget is declared.** The baseline game runs do not substitute for this data-generation deliverable.

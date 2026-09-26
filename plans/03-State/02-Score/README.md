@@ -6,7 +6,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-score-tracking](01-score-tracking.md) | Score Tracking | PARTIAL — tracking implemented and tested; optional reporting helpers remain |
+| [01-score-tracking](01-score-tracking.md) | Score Tracking | COMPLETE — score/merge tracking is implemented; optional reporting helpers are outside the current contract |
 | [02-score-as-feature](02-score-as-feature.md) | Score as Feature | COMPLETE — normalized current score at canonical index 16 |
 
 ## Reading paths

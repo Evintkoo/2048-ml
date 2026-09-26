@@ -19,7 +19,7 @@ Provide comprehensive analysis of benchmarking results for the 2048 ML system.
 
 Raw benchmark CSVs → score summaries (mean, sample standard deviation, median, p90, p99, min, max, threshold counts, bootstrap mean CI) and optional pairwise comparison report. Reports summarize supplied inputs; they do not establish a ranking without a declared, populated experiment.
 
-## 3. Data Processing Pipeline — Keep Full Distribution (No Truncation)
+## 3. Data Processing Pipeline — Preserve Supplied Observations
 
 ```mermaid
 flowchart LR
@@ -39,7 +39,7 @@ Score analysis retains input observations and reports available quantiles (media
 | Pairwise comparison | Mean difference interval and test result | Comparison CLI; pairing depends on seed sequence |
 | Trend / stability | Not implemented | Requires repeated, ordered runs and analysis |
 
-## 5. Heavy-Tail §3 & Anomaly §6 — Kept as Core
+## 5. Distributional Shape and Anomaly Analysis — Not Established
 
 Full scores are retained in source reports; no heavy-tail property or anomaly detector has been established. Any future anomaly investigation must preserve raw values and document its method rather than silently filtering observations.
 

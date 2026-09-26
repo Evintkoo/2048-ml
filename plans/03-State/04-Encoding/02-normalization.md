@@ -1,6 +1,6 @@
 # Plan 02 — Normalization: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Canonical deterministic scaling is implemented; fitted preprocessing is not integrated into root training.
+> **Status: COMPLETE (2026-09-27).** Canonical deterministic scaling and validation are implemented; fitted model-specific preprocessing is optional outside the current training protocol.
 
 **Goal:** State the current implementation and evidence boundary for normalization.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**The canonical input has deterministic scales and no upper bound of one.** Each board cell is divided by 32768 and score is encoded as `log10(score+1)/6` at index 16. Validation accepts finite, nonnegative values; fitted preprocessing remains a separate, unimplemented training integration.
+**The canonical normalization contract is implemented with deterministic scales and no upper bound of one.** Each board cell is divided by 32768 and score is encoded as `log10(score+1)/6` at index 16. Validation accepts finite, nonnegative values. Fitted preprocessing is an optional, model-specific extension and is not part of the current canonical training protocol.
 
 > **Cross-ref:** canonical creation is `BoardStateMl::from_board` in `src/state.rs`; see `01-state-vector.md` for vector order. This file records deterministic scaling and preprocessing status.
 > **No `move_count_norm`.** Deleted — not in 17, not predictive. Do not reintroduce.
@@ -43,11 +43,13 @@ let config = PreprocessingConfig::default()
     .with_scaler(ScalerType::Standard)      // or ScalerType::None for RandomForest/XGBoost/LightGBM
     .with_numeric_impute(ImputeStrategy::Mean)
     .with_encoder(EncoderType::OneHot);     // categoricals only; no action one-hot needed (automl handles label internally)
-let preprocessor = DataPreprocessor::new(config);
-let df_norm = preprocessor.fit_transform(&df, &feature_cols)?;
+let mut preprocessor = DataPreprocessor::with_config(config);
+// Fit only on the training fold's feature-only DataFrame; use the fitted
+// preprocessor to transform validation/test features without refitting.
+let df_norm = preprocessor.fit_transform(&train_features)?;
 ```
 
-Tree models: `ScalerType::None` is acceptable — skip scaling entirely, rely on deterministic divisors only.
+This illustrates the framework API; the root training pipeline does not call it. Tree models use the deterministic state values directly, and any future fitted transform must be fit fold-locally and persisted with its fitted state. `DataPreprocessor::new()` takes no arguments; configure via `with_config`.
 
 ## 4. Model-Specific Guidance (Future Integration)
 
@@ -101,9 +103,8 @@ fn validate_normalization(v: &[f64;17]) -> Result<()> {
 
 ## Open questions
 
-- **Preprocessing integration:** the current trainer consumes stored values directly. If fitted scaling is added, define fold-local fitting and persistence before applying it to evaluation data.
-- Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No required normalization deliverable remains open. Any future fitted transform requires a separately declared model protocol, fold-local fitting, and persistence of fitted state.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **No further normalization change is required for the current canonical input.** Keep the fixed scales stable unless a separately documented model study justifies an additional transform.

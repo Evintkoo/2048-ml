@@ -32,7 +32,7 @@ Single binary with subcommands — not a multi-binary workspace (see `04-Tooling
 ```bash
 cargo run -- --help                          # verify available subcommands
 cargo run -- game-engine simulate --help     # headless random 2048 simulation
-cargo run -- data-collector collect --help   # collect 27-dim + action rows
+cargo run -- data-collector collect --help   # collect 17-value state + action rows
 cargo run -- benchmark run --help            # mean-score benchmark (10k+ games)
 ```
 

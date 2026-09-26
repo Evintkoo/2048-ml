@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats evaluation tooling as partially implemented and outcome claims as pending.** Root tooling can benchmark a saved policy on seeded games and compute score summaries and paired statistics. It does not yet emit the planned classification diagnostics or qualitative analyses, and no trained model has been evaluated on an adequate held-out corpus.
+**This plan treats evaluation tooling as partially implemented and outcome claims as pending.** Root tooling can benchmark a saved policy on seeded games and compute score summaries and paired statistics. It does not yet emit 2048 case-study classification diagnostics or qualitative analyses, and no trained model has been evaluated on an adequate held-out corpus. The separate standard-dataset runner reports classifier metrics, but those results do not substitute for game-policy evaluation.
 
 ## 1. Purpose
 
@@ -29,9 +29,7 @@ flowchart TD
         Predict --> Metrics[Calculate Metrics]
         Metrics --> Report[Evaluation Report]
         Report --> Decision{Interpret Results}
-        Decision --> |Yes| Deploy[Deploy Model]
-        Decision --> |No| Retrain[Retrain Model]
-        Retrain --> Model
+        Decision --> Archive[Report and archive evidence]
     end
     
     style Deploy fill:#e8f5e9
@@ -86,7 +84,7 @@ flowchart LR
 
 3. **Confusion matrix inspection (4×4)** — look for systematic confusions (e.g., `up↔down` or `left↔right` swaps) that correlate with vertical/horizontal board symmetry. A uniform error pattern suggests underfitting; a strong off-diagonal (e.g., 30% of `left` misclassified as `right`) suggests feature leakage or label noise from rollout sampling.
 
-4. **Score-binned breakdown** — stratify test games into Low (<256), Medium (256–512), High (>512) score bins. Report Valid-Action Accuracy and Mean Game Score per bin. High-score games should not have markedly lower accuracy; if they do, the model overfits early-game states (where most training data comes from).
+4. **Score-binned breakdown** — if run, define bins from the declared game protocol before examining outcomes. Report action diagnostics and score summaries per bin; do not use illustrative score cutoffs as acceptance gates.
 
 ```mermaid
 flowchart TD
@@ -101,7 +99,7 @@ flowchart TD
     ConfMat --> Insights
     Binned --> Insights
     Insights --> Action{Fail threshold?}
-    Action -->|Predeclared criteria| Retrain[Review model and data]
+    Action -->|Predeclared criteria| Review[Review model and data]
     Action -->|Otherwise| Keep[Report outcome]
 ```
 
@@ -127,7 +125,7 @@ flowchart TB
 
 > **No regression metrics** (R² / RMSE / MAE) and **no ranking metrics** (NDCG / MAP) — deleted. The model predicts actions, not scores or rankings. Game score is a downstream benchmark measured by running the policy in the simulator.
 
-## 5. Test Dataset Structure
+## 5. Test Dataset Structure — Planned Roles
 
 ```mermaid
 flowchart TD
@@ -174,13 +172,13 @@ flowchart LR
 
 ## 8. Next Steps
 
-1. Perform cross-validation
-2. Calculate detailed metrics
-3. Compare with baseline models
+1. Use the implemented game-grouped CV and chronological holdout with a retained labeled dataset.
+2. Implement case-study classification diagnostics and validate them against known predictions.
+3. Compare held-out policy outcomes with declared baselines under a predeclared protocol.
 
 ## Implementation Record
 
-- Root tooling can benchmark a saved model on seeded games, collect score summaries, compare paired results, and compute bootstrap/nonparametric statistics. Classification confusion/F1, valid-action diagnostics, corner-state, and score-binned analyses are not implemented.
+- Root tooling can benchmark a saved model on seeded games, collect score summaries, compare paired results, and compute bootstrap/nonparametric statistics. The standard-dataset diagnostic reports confusion/F1 for tabular tasks; the 2048 case-study path lacks those classification metrics, valid-action diagnostics, corner-state, and score-binned analyses.
 - No trained model has been evaluated on an adequate held-out dataset. No performance gates are established by canonical scope.
 
 ---

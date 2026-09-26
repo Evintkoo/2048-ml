@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the executable training path as implemented with evaluation lifecycle gaps.** The root CLI loads canonical CSV and aligned sidecar, holds out later game IDs, runs group-aware CV on development rows, fits an AutoML model, and saves it. The final untouched-test diagnostics and selected-model refit flow are not implemented.
+**This plan treats the executable training path as implemented with evaluation lifecycle gaps.** The root CLI loads the canonical CSV and aligned sidecar, holds out later game IDs, runs group-aware CV on development rows, fits an AutoML model, and saves it. It consumes the fixed 17 numeric values directly without a fitted preprocessing stage. Final untouched-test diagnostics and selected-model refitting are not implemented.
 
 ## 1. Purpose
 
@@ -22,23 +22,23 @@ The training pipeline follows a structured flow from raw game data to a deployab
 ```mermaid
 flowchart TD
     subgraph "Training Pipeline"
-        Data[Raw Game Data]
-        Preprocess[Preprocessing]
-        Feature[Feature Engineering]
+        Data[Canonical CSV + metadata]
+        Validate[Schema and row alignment]
+        Feature[17 fixed state values]
         Train[Model Training]
         Evaluate[Model Evaluation]
         Select[Model Selection]
-        Export[Model Export]
+        Export[JSON model artifact]
     end
 
-    Data --> Preprocess
-    Preprocess --> Feature
+    Data --> Validate
+    Validate --> Feature
     Feature --> Train
     Train --> Evaluate
     Evaluate --> Select
     Select --> Export
 
-    Export --> Deploy[Deployed Classification Model]
+    Evaluate -. final held-out scoring pending .-> Select
 ```
 
 ## 3. Pipeline Stages
@@ -48,7 +48,7 @@ flowchart TD
 ```mermaid
 flowchart LR
     Collection[Game Data Collection<br/>06-Data/]
-    Loading[Load Data<br/>CSV/Parquet]
+    Loading[Load CSV + metadata sidecar]
     Validation[Validate Data<br/>State-Action Pairs]
     
     Collection --> Loading
@@ -61,14 +61,9 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    Raw[Raw Features<br/>17 numeric dims]
-    Raw --> Scaler[StandardScaler<br/>only for SVM/KNN/LogReg<br/>skip for trees]
-    Raw --> Imputer[Mean Imputation<br/>passthrough — no nulls]
-    
-    Scaler --> Processed
-    Imputer --> Processed
-    
-    Processed[Processed Features<br/>17-dim numeric vector]
+    Raw[Canonical 17 numeric values]
+    Raw --> Direct[Direct input; no fitted transform]
+    Direct --> Processed[17-value training input]
 ```
 
 ### 3.3 Training Execution
@@ -150,18 +145,18 @@ A normalization divisor is not a performance threshold. Compare models under a p
 ```mermaid
 sequenceDiagram
     participant Data as Data Collector
-    participant Preprocess as Preprocessor
+    participant Validate as Schema validation
     participant Train as TrainEngine
     participant Eval as Evaluator
     participant Select as Selector
     participant Export as Exporter
     
-    Data->>Preprocess: Raw game state-action pairs
-    Preprocess->>Train: Processed features & labels
+    Data->>Validate: CSV and aligned sidecar
+    Validate->>Train: 17 values and action labels
     Train->>Eval: Trained classifier
     Eval->>Select: Classification metrics
-    Select->>Export: Best model
-    Export->>Deploy: Serialized classifier
+    Train->>Export: current CLI saves fitted model artifact
+    Eval-->>Select: held-out results (future workflow)
 ```
 
 ## 7. Pipeline Files Location

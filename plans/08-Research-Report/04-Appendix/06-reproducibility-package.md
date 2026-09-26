@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This package describes implemented reproducibility support and missing study artifacts.** A locked dependency graph and JSON manifest support traceability, but the local submodule worktree is modified and no end-to-end research replication package exists.
+**This package describes implemented reproducibility support and missing study artifacts.** A locked dependency graph and JSON manifest support traceability. The AutoML revision is pinned to a published submodule commit; no end-to-end research replication package exists.
 
 ## 1. Purpose
 
@@ -23,7 +23,7 @@ The source-audited layout is documented in `01-code-reference.md`. The root is a
 
 ### 2.2 Version Control
 
-Record the root commit, dirty-file state or source hashes, `Cargo.lock` hash, AutoML submodule commit, and any local submodule modifications with every published run. The current manifests include source/dependency metadata when available; the local repository is not itself a published artifact release.
+Record the root commit, dirty-file state or source hashes, `Cargo.lock` hash, and AutoML submodule commit with every published run. The current manifests include source/dependency metadata when available; the local repository is not itself a published artifact release.
 
 
 ## 3. Data and Run Artifacts
@@ -59,7 +59,7 @@ Checked entries refer only to available local procedures. Plan-scale dataset art
 
 ## Implementation Record
 
-- Root source is one Rust crate with a pinned but locally modified AutoML submodule. Collector and benchmark CLIs emit CSV/JSON artifacts. Docker, public datasets/DOI, standard-dataset configs, figures, and independent reproduction are absent; nonexistent sample paths were removed.
+- Root source is one Rust crate with the AutoML submodule pinned to a published commit. Collector and benchmark CLIs emit CSV/JSON artifacts. Docker, public datasets/DOI, standard-dataset configs, figures, and independent reproduction are absent; nonexistent sample paths were removed.
 
 ## 6. Reproducibility Failure Modes
 

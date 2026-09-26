@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This ticket specifies integration coverage, but the full matrix has not been run as one suite.** Current data and benchmark workflows use CSV/JSON, and tests were not executed during this pass.
+**This ticket specifies integration coverage, but the full matrix has not been run as one dedicated suite.** `cargo test` passed all 34 current root tests, including focused collection, split, CV, and model wiring checks. Current data and benchmark workflows use CSV/JSON.
 
 ## 1. Purpose
 Verify **wiring** between modules — not unit logic. Distinct from unit (single function) and CI pipeline (stages). Use real fixtures where available; record seed roles. No single canonical integration suite is configured.
@@ -38,11 +38,11 @@ Use `RawBoardState`, canonical `TrainingSample`, game metadata CSV, and temporar
 
 ## 5. Run
 
-No dedicated `tests/integration` suite or integration JSON reporter was found. This pass did not run tests; revalidate relevant CLI paths before release.
+No dedicated `tests/integration` suite or integration JSON reporter was found. The root suite passed; revalidate relevant CLI workflows before release.
 
 ## Implementation Record
 
-- Root implementation and focused tests cover CSV collection/splitting, grouped CV, training, inference, and benchmarks. No dedicated end-to-end test suite, Parquet pipeline, or integration report artifact exists; this pass did not execute tests.
+- Root implementation and focused tests cover CSV collection/splitting, grouped CV, training, inference, and benchmarks. `cargo test` passed 34/34. No dedicated end-to-end test suite, Parquet pipeline, or integration report artifact exists.
 
 ---
 

@@ -1,6 +1,6 @@
 # Plan 02 — Feature Extraction: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** The 17-value model state is implemented; derived heuristics remain separate and this ticket needs a scope-aligned disposition.
+> **Status: NOT APPLICABLE (2026-09-27).** Plan 00 fixes the core state at 17 values; the proposed strategic metrics remain historical references unless a separate study is approved.
 
 **Goal:** State the current implementation and evidence boundary for feature extraction.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Plan 00 fixes the training state at 17 values, so these 11 derived metrics are not appended to model input.** The current model state contains 16 row-major grid values and normalized score. Root code separately computes a smaller `HeuristicFeatures` set for the built-in heuristic policy; these measurements are not used by model inference or training. This ticket is partial because its original deliverable—an 11-feature extraction protocol—has no separate approved study specification, and several listed metrics are not implemented.
+**Plan 00 fixes the training state at 17 values, so this ticket's proposed 11-metric feature expansion is outside the current core scope.** The current model state contains 16 row-major grid values and normalized score. Root code separately computes a smaller `HeuristicFeatures` set for the built-in heuristic policy; these measurements are not used by model inference or training. No separate exploratory feature study has been approved, so the remaining candidate metrics are reference material rather than required implementation.
 
 > **Canonical model input:** 17 values = 16 row-major grid cells followed by normalized current score. Values are finite and nonnegative; values above one are permitted.
 > **Status boundary:** the formulas below are historical candidates for heuristic or separately approved exploratory analysis, not canonical training features.
@@ -155,9 +155,9 @@ Validate post-hoc via permutation / impurity importance; replace any hypothesize
 
 ## Implementation Record
 
-- `BoardStateMl` now implements the 17-value state. `HeuristicFeatures` implements five measurements used by the baseline heuristic; the other candidate formulas in this ticket are not implemented.
+- `BoardStateMl` implements the 17-value state. `HeuristicFeatures` implements five measurements used by the baseline heuristic; the other candidate formulas remain unimplemented and are outside core training scope.
 - Root verification on 2026-09-27 passed 34/34 tests, `cargo fmt -- --check`, and `cargo clippy -- -D warnings`. These checks establish implementation behavior, not predictive usefulness.
-- No feature ablation, model importance, SHAP analysis, or separate exploratory protocol has been run. Such work needs explicit scope and retained artifacts.
+- No feature ablation, model importance, SHAP analysis, or separate exploratory protocol has been run. Those studies are not required for the current 17-value core; any future study needs explicit scope and retained artifacts.
 
 ---
 
@@ -174,8 +174,8 @@ Validate post-hoc via permutation / impurity importance; replace any hypothesize
 
 ## Open questions
 
-- **No separate feature-study protocol is approved.** If metrics beyond the canonical inputs are studied, define their use, labels, splits, and analysis artifacts before training or evaluation.
+- No required core feature deliverable remains open. A separate study may be proposed for metrics beyond the canonical inputs, with explicit use, labels, splits, and retained analysis artifacts.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **No strategic feature expansion is planned for the core model.** Revisit only through a separately documented study that does not silently change Plan 00's canonical state.

@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-algorithm-research](01-algorithm-research.md) | Algorithm Research | PARTIAL — compatibility audited; matched comparisons pending |
-| [02-model-comparison](02-model-comparison.md) | Model Comparison | PARTIAL — five probability-compatible candidates; matched evaluation pending |
-| [03-best-algorithm-finding](03-best-algorithm-finding.md) | Best Algorithm Finding | PARTIAL — no case-study winner; protocol and results pending |
+| [01-algorithm-research](01-algorithm-research.md) | Algorithm Research | PARTIAL — compatibility and one-split framework diagnostic recorded; matched comparisons pending |
+| [02-model-comparison](02-model-comparison.md) | Model Comparison | PARTIAL — standard-dataset diagnostic recorded; 2048 game-outcome comparison pending |
+| [03-best-algorithm-finding](03-best-algorithm-finding.md) | Best Algorithm Finding | PARTIAL — five compatible candidates identified; no case-study winner or held-out results |
 
 ## Reading paths
 

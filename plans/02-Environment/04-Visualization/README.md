@@ -6,7 +6,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-visualization](01-visualization.md) | Visualization (Debug/Inspection Only) | PARTIAL |
+| [01-visualization](01-visualization.md) | Visualization (Debug/Inspection Only) | NOT APPLICABLE — optional static outputs have no current in-scope use; offline CSV/JSON inspection exists |
 
 ## Reading paths
 

@@ -22,7 +22,7 @@ Define the score metrics used to evaluate and compare 2048 ML model performance.
 | Mean Score | Σ score / N | Primary ranking metric |
 | Median Score | Middle value | Robust tiebreaker |
 | Sample Std Dev | sample standard deviation (`N-1`) | Descriptive variability |
-| Max / Min | max/min(scores) | Ceiling / floor |
+| Max / Min | max/min(scores) | Sample extrema (not a theoretical ceiling) |
 | p50/p90/p99 | percentiles | Reported by current summary helper |
 | games_above_2048/4096/8192 | counts | Threshold hit rates |
 
@@ -95,7 +95,7 @@ impl ScoreMetrics {
 
 ## 5. Reporting
 
-Each report includes: summary table (mean/median/std/p99 etc.), threshold hit rates (`games_above_*`), full distribution percentiles — no truncation.
+Current reports include count, mean/median/sample SD, p90/p99, extrema, threshold counts, and bootstrap mean CI. Retain per-game scores so any additional predeclared percentiles can be computed; the current report does not emit a full percentile set.
 
 ## Implementation Record
 

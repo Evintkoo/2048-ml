@@ -65,18 +65,16 @@ flowchart TD
 ```mermaid
 flowchart TB
     subgraph "CV Strategies"
-        KFold[K-Fold Cross Validation]
-        Stratified[Stratified K-Fold]
-        Shuffle[Shuffle Split]
-        Time[Time Series Split]
-        Temporal[Temporal Game Split]
+        RowKFold[Row-wise K-Fold — not for game trajectories]
+        Stratified[Stratified K-Fold — row labels]
+        Group[GroupKFold — root development CV]
+        Outer[Chronological game holdout — separate outer split]
+        Temporal[Forward-chaining by whole game — not implemented]
     end
     
-    KFold --> |K=5| Stratified
-    Stratified --> |Class Balance| Shuffle
-    Shuffle --> |Random| Time
-    Time --> |Sequential| Temporal
-    Temporal --> |No Leakage| Select[Select Strategy]
+    Group --> Select[Select split for declared purpose]
+    Outer --> Select
+    Temporal -. future work .-> Select
     
     style KFold fill:#e3f2fd
     style Stratified fill:#e8f5e9
@@ -88,10 +86,10 @@ flowchart TB
 ```mermaid
 flowchart TD
     Data[Dataset]
-    Data --> Stratify[Stratify by Score Range]
-    Stratify --> Bin1[Low Score Bin]
-    Stratify --> Bin2[Medium Score Bin]
-    Stratify --> Bin3[High Score Bin]
+    Data --> Stratify[Stratify by action label]
+    Stratify --> Bin1[Action class 0]
+    Stratify --> Bin2[Action class 1]
+    Stratify --> Bin3[Action classes 2 and 3]
     
     Bin1 --> Distribute[Distribute Across Folds]
     Bin2 --> Distribute
@@ -118,13 +116,13 @@ flowchart TD
     Test --> Eval[Evaluate]
 ```
 
-### 3.3 Temporal Data Problem: Why Random CV Leaks
+### 3.3 Group Integrity: Why Row-Wise CV Leaks
 
-Game data has an inherent temporal structure that violates the i.i.d. assumption of standard K-Fold cross-validation. Each game produces a sequence of board states where later states depend on earlier states. Random CV shuffles all states together, causing the following leakage problems:
+Moves within one game are correlated. Row-wise random CV can place adjacent states from the same trajectory in both training and test folds, which overstates generalization to unseen games. This motivates grouping by `game_id`; the order of game IDs itself is not a time-series axis for independent seeded games.
 
-1. **Future state leakage**: A model trained on states from game epoch 50 can "predict" states from game epoch 10 (because they share similar board patterns), but this does not reflect real generalization to truly unseen game sequences
-2. **Sequence contamination**: Adjacent moves within a single game are highly correlated — placing a train state from move 80 and a test state from move 82 in different folds means the model has seen essentially the same game trajectory
-3. **Score correlation**: States from high-scoring games tend to cluster together (good opening sequences lead to good mid-game states), so random splitting can put correlated high-score states in both train and test sets
+1. **Trajectory overlap:** adjacent moves from one game can be near-duplicate examples across row-wise folds.
+2. **Group separation:** all rows from a given `game_id` must stay in a single fold.
+3. **Chronology is a separate question:** the root reserves later game IDs as an outer holdout. GroupKFold keeps games intact but does not enforce time order.
 
 ```mermaid
 flowchart TD
@@ -150,32 +148,23 @@ flowchart TD
 
 To prevent data leakage, we keep entire games together within a single fold:
 
-**Core Principle**: Group integrity via `GroupKFold { n_splits: 5 }` keeps all states from one game in the same fold. For true temporal ordering (train on earlier games, test on later), use `TimeSeriesSplit { n_splits: 5, max_train_size: None }` — `GroupKFold` itself is group-aware but **not** temporally ordered.
+**Core Principle**: Group integrity via `GroupKFold { n_splits: 5 }` keeps all states from one game in the same fold. The root separately holds out later game IDs chronologically. `GroupKFold` itself is group-aware but **not** temporally ordered. A row-wise `TimeSeriesSplit` is not established as a whole-game splitter.
 
 **Split Strategy**:
 
 1. **Game-level splitting**: Each game is assigned a group ID
 2. **Group integrity**: `GroupKFold { n_splits: 5 }` ensures no game is split across folds
 3. **Temporal ordering** (when needed): Use `TimeSeriesSplit` for forward-chaining; `GroupKFold` alone does not sort chronologically
-4. **Forward-chaining splits** (TimeSeriesSplit): Train on earlier games, test on later games
+4. **Forward-chaining splits:** a future group-aware implementation must train on earlier games and test on later games
 5. **No overlap**: A game's states appear in exactly one fold
 
 ```mermaid
 flowchart TD
-    subgraph "Temporal Game-Aware CV"
-        G1[Game 1<br/>States 1-50] -->|Train| Fold1_Train[Train Fold 1]
-        G2[Game 2<br/>States 1-55] -->|Train| Fold1_Train
-        G3[Game 3<br/>States 1-48] -->|Train| Fold1_Train
-        G4[Game 4<br/>States 1-60] -->|Test| Fold1_Test[Test Fold 1]
-        G5[Game 5<br/>States 1-52] -->|Test| Fold1_Test
-        
-        G1 -->|Train| Fold2_Train[Train Fold 2]
-        G2 -->|Train| Fold2_Train
-        G4 -->|Train| Fold2_Train
-        G5 -->|Train| Fold2_Train
-        G6[Game 6<br/>States 1-45] -->|Test| Fold2_Test[Test Fold 2]
-        G7[Game 7<br/>States 1-58] -->|Test| Fold2_Test
-    end
+    G1[Games 1..N: development]
+    G2[Final chronological game IDs: outer holdout]
+    G1 --> CV[GroupKFold within development set]
+    G2 --> Test[Held out from fitting and CV]
+    CV --> Fold[Games remain disjoint within each fold]
 ```
 
 **Implementation**:
@@ -192,7 +181,7 @@ let splits = cv.split(n_samples, None, Some(&groups))?;
 // which receives the group array and trains/evaluates each returned split.
 ```
 
-**Fold definitions for 5-fold temporal CV**:
+**Illustrative outer chronological holdout** (the root exposes a configurable game-group split; this is not GroupKFold):
 
 ```
 Total games: 100 (chronologically ordered)
@@ -204,11 +193,11 @@ Fold 4: Train = Games 1-92,  Test = Games 93-96
 Fold 5: Train = Games 1-96,  Test = Games 97-100
 ```
 
-When using `TimeSeriesSplit`, every test set contains only later rows. For the canonical dataset, the project wrapper calls `CrossValidator::split(..., Some(&groups))` directly, then scores each split. The current automl `cross_val_score` helper is not group-aware and must not be used for this experiment.
+The root reserves later game IDs as an outer holdout, then runs GroupKFold within the development partition. `TimeSeriesSplit` operates on row indices and has not been verified to preserve whole-game boundaries here. The current AutoML `cross_val_score` helper is not group-aware and must not be used for this experiment.
 
 **Key Properties**:
 - No game appears in both train and test sets (GroupKFold guarantee)
-- With TimeSeriesSplit, test games chronologically follow training games; GroupKFold alone preserves groups but not order
+- The root chronological outer holdout uses later game IDs; GroupKFold alone preserves groups but not order
 - TimeSeriesSplit uses an expanding window (training set grows over time); GroupKFold uses standard group partitioning
 - Game states within a test game are never seen during training
 
@@ -244,7 +233,8 @@ use automl::{CrossValidator, CVStrategy};
 let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
     .with_random_state(42);
 let splits = cv.split(n_samples, None, Some(&groups))?;
-// For true temporal ordering use: CVStrategy::TimeSeriesSplit { n_splits: 5, max_train_size: None }
+// TimeSeriesSplit is row-based; do not use it on game trajectories until
+// whole-game boundary preservation is implemented and verified.
 
 // Alternative: Stratified K-Fold (preserves class distribution)
 let cv_stratified = CrossValidator::new(CVStrategy::StratifiedKFold { n_splits: 5, shuffle: true })
@@ -253,7 +243,7 @@ let splits = cv_stratified.split(n_samples, Some(&y), None)?;
 ```
 
 **Configuration Notes**:
-- Use `GroupKFold { n_splits: 5 }` for group integrity; use `TimeSeriesSplit { n_splits: 5, max_train_size: None }` for true temporal forward-chaining
+- Use `GroupKFold { n_splits: 5 }` for root development folds; the separate root holdout is chronological by game ID. A group-preserving forward-chaining CV splitter is not implemented.
 - For `StratifiedKFold` set `shuffle` via the enum field: `StratifiedKFold { n_splits: 5, shuffle: true }` (no separate `with_shuffle` builder)
 - Always pass `groups` to `split()` for GroupKFold; pass `y` for StratifiedKFold
 - Never shuffle game IDs if temporal ordering matters — `TimeSeriesSplit` respects order by design
@@ -311,9 +301,7 @@ flowchart TB
     Fold4 --> Aggregate
     Fold5 --> Aggregate
 
-    style AvgAcc fill:#e3f2fd
-    style AvgF1 fill:#fff3e0
-    style AvgScore fill:#e8f5e9
+    style Aggregate fill:#e3f2fd
 ```
 
 > **No R².** Metrics are valid-action accuracy, F1 macro, and downstream mean game score.
@@ -332,14 +320,13 @@ flowchart LR
 
 ## 8. Next Steps
 
-1. Define evaluation metrics
-2. Execute cross-validation with temporal splits
-3. Analyze results
-4. Verify no data leakage between folds
+1. Validate the existing group-integrity checks on an adequate retained corpus.
+2. Extend diagnostics beyond fold accuracy under a declared protocol.
+3. Evaluate the separate chronological game holdout once after model selection.
 
 ## Implementation Record
 
-- The project wrapper runs seeded group folds, explicitly checks there is no game ID overlap, fits each training fold, and reports fold and mean accuracy. It does not provide chronological forward chaining, stratified-temporal folds, F1, or per-fold game-score metrics.
+- The project wrapper runs seeded group folds, explicitly checks there is no game ID overlap, fits each training fold, and reports fold and mean accuracy. It does not provide chronological forward-chaining folds, stratified-temporal folds, F1, or per-fold game-score metrics. The outer chronological holdout is a separate CLI split.
 - Validation on an adequate plan-scale corpus has not yet been run; the wrapper is implementation plumbing, not experiment results.
 
 ---

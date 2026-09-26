@@ -17,11 +17,8 @@
 
 | Failure Mode | Cause | Detection | Mitigation |
 |-------------|-------|-----------|------------|
-| Non-convergence | Learning rate too high/low | Loss curve doesn't stabilize | Adjust learning rate, increase epochs |
-| Overfitting | Model too complex for data | Training loss << validation loss | Regularization, early stopping |
-| Underfitting | Model too simple | Training loss plateaus high | Increase model complexity, add features |
-| NaN loss | Numerical instability | Loss becomes NaN | Reduce learning rate, gradient clipping |
-| Slow convergence | Insufficient training data | Loss decreases very slowly | Increase training data, adjust learning rate |
+| Training or fit failure | Model/configuration/data issue | Fit returns an error or produces invalid output | Retain error/configuration and diagnose within supported workflow |
+| Weak held-out policy outcome | Model, data, labels, or evaluation protocol | Measured score/uncertainty under a declared study | Report outcome and investigate only within the scoped design |
 | automl API mismatch | Hypothesized API doesn't exist | Runtime errors | Verify API against automl source code |
 | HyperOptX unavailable | Hyperparameter search doesn't work | Training fails | Use default hyperparameters, log issue |
 | Model type unsupported | Hypothesized model not available | ModelType enum missing | Use available models, log gap |
@@ -34,9 +31,9 @@
 If no automl model significantly beats the locally measured heuristic baseline, the following analysis will be conducted:
 
 **Possible causes:**
-1. Feature engineering insufficient — the 27-dimensional feature vector may not capture enough game information
+1. The canonical 17-value state may omit policy-relevant information; no sufficiency claim is established
 2. Model capacity insufficient — the available models in automl may be too simple
-3. Training data insufficient — 10,000 samples may not be enough for complex game strategies
+3. Training data quantity and coverage may be insufficient; no fixed sample count is treated as adequate
 4. Label quality insufficient — rollout-based labels may be noisy
 5. Game complexity — 2048 may be too complex for supervised learning with the available model types
 
@@ -52,9 +49,9 @@ If no automl model significantly beats the locally measured heuristic baseline, 
 If all models produce similar mean scores (no significant differences):
 
 **Possible causes:**
-1. Feature space saturates — all models learn from the same features equally well
+1. The candidates use the same fixed input and may have similar measured outcomes
 2. Model capacity ceiling — the available models all reach similar performance limits
-3. Game ceiling — the game itself limits performance regardless of model
+3. Finite observed outcomes do not establish a game ceiling
 
 **Response:**
 1. Report uncertainty; equal-looking means do not show equal feature importance
@@ -69,7 +66,7 @@ If results vary significantly across seeds:
 **Possible causes:**
 1. High variance in game outcomes — 2048 has high stochasticity
 2. Overfitting to specific game instances — model performs well on specific seeds but poorly on others
-3. Insufficient sample size — 10,000 games may not be enough to stabilize results
+3. The study may lack precision under its actual variance and dependence structure
 
 **Response:**
 1. Revisit sample size only after a precision/power rationale using the study unit and dependence structure

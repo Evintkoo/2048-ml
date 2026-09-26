@@ -7,7 +7,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-state-vector](01-state-vector.md) | State Vector | COMPLETE — canonical 17-value vector implemented |
-| [02-normalization](02-normalization.md) | Normalization | COMPLETE — canonical 17-value vector implemented |
+| [02-normalization](02-normalization.md) | Normalization | COMPLETE — deterministic cell/score scales and validation; fitted transforms optional |
 
 ## Reading paths
 

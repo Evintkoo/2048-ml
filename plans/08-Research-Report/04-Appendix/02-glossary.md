@@ -54,12 +54,12 @@ mindmap
 | Model | Trained supervised classifier; root four-action integration supports RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes |
 | Training | Model learning process from labeled data |
 | Inference | Model prediction on new game states |
-| Features | Input data representation (27-dimensional feature vector) |
+| Features | Canonical input: 16 row-major cells plus current score (17 values) |
 | Labels | Target action selected by rollout mean score; a finite-simulation proxy, not a proven optimal action |
 | Loss | Prediction error metric (cross-entropy) |
 | Convergence | Training stabilization (diminishing returns pattern) |
 | Hyperparameters | Configuration parameters tuned by HyperOptX |
-| Feature Vector | 27-dimensional representation of board state |
+| Feature Vector | 17-value representation of board cells and current score |
 
 ## 5. automl Framework Terms
 
@@ -83,7 +83,7 @@ mindmap
 | Reproducibility | Consistent results with fixed seed |
 | Winner Determination | Protocol-specific comparison; no trained-policy winner has been established |
 | Mean Score | Primary 2048 case-study metric; framework validation uses task-appropriate quality and resource metrics |
-| Bootstrap CI | 95% confidence interval via resampling |
+| Bootstrap CI | Resampling-based interval; confidence interpretation depends on sampling design |
 | Effect Size | Magnitude of difference; Cohen's d helper exists, with no automatic project cutoff |
 
 ## 7. Statistical Terms
@@ -91,7 +91,7 @@ mindmap
 | Term | Definition |
 |------|------------|
 | p-value | Probability of observing results under null hypothesis |
-| Confidence Interval | Range of true value estimate (95% bootstrap CI) |
+| Confidence Interval | Interval estimate; method and coverage assumptions must be stated |
 | Effect Size | Magnitude of difference (Cohen's d) |
 | Standard Deviation | Data spread measure |
 | Wilcoxon | Paired rank test; not implemented in current comparison helpers |

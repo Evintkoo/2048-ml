@@ -1,6 +1,6 @@
 # Plan 02 — Search Space: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** The active search space is `n_estimators` and `max_depth` for RandomForest/ExtraTrees; broader parameter mapping remains pending.
+> **Status: COMPLETE (2026-09-27).** The root's versioned search contract defines `n_estimators` and `max_depth` for RandomForest/ExtraTrees; unsupported parameter expansions remain outside the current search scope.
 
 **Goal:** State the current implementation and evidence boundary for search space.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the active two-parameter search space as implemented and broader spaces as pending.** Schema-v1 JSON configures integer ranges for `n_estimators` and `max_depth`. Root trial adapters apply them only to RandomForest and ExtraTrees and use grouped-CV accuracy. Other listed parameters are not consumed by the root integration.
+**This ticket's active search-space contract is implemented.** Schema-v1 JSON configures positive integer ranges for `n_estimators` and `max_depth`, a trial count, and the TPE sampler. Root trial adapters apply the ranges only to RandomForest and ExtraTrees and use grouped-CV accuracy. Other model-specific parameters and importance rankings are optional research extensions, not part of the current contract.
 
 ## 1. Purpose
 
@@ -21,32 +21,13 @@ The active search space is intentionally limited; it is not an exhaustive list o
 
 ```mermaid
 flowchart TD
-    subgraph "Complete Search Space"
-        subgraph "Tree-Based Models"
-            NEst[N_estimators<br/>50-300]
-            MD[max_depth<br/>3-10]
-            LR[learning_rate<br/>0.01-0.5]
-            SS[subsample<br/>0.5-1.0]
-            CB[colsamples_bytree<br/>0.5-1.0]
-            MN[min_child_weight<br/>1-10]
-        end
-        
-        subgraph "Regularization"
-            L1[L1 Regularization<br/>0-1.0]
-            L2[L2 Regularization<br/>0-1.0]
-            PT[Pruning Threshold<br/>0-0.5]
-        end
+    subgraph "Implemented root search space"
+        Est[n_estimators<br/>positive integer range]
+        Depth[max_depth<br/>positive integer range]
+        Est --> Optimize[Grouped-CV accuracy objective]
+        Depth --> Optimize
     end
-    
-    NEst --> Optimize[Optimize]
-    MD --> Optimize
-    LR --> Optimize
-    SS --> Optimize
-    CB --> Optimize
-    MN --> Optimize
-    L1 --> Optimize
-    L2 --> Optimize
-    PT --> Optimize
+    Optimize --> Candidates[RandomForest / ExtraTrees]
 ```
 
 ## 3. Parameter Categories
@@ -56,42 +37,24 @@ flowchart TD
 ```mermaid
 flowchart TB
     MP[Model Parameters]
-    MP --> TreeP[Tree Parameters]
-    MP --> LinP[Linear Parameters]
-    
-    TreeP --> NT[n_estimators]
-    TreeP --> MD[max_depth]
-    TreeP --> LR[learning_rate]
-    TreeP --> SW[min_child_weight]
-    
-    LinP --> C[C parameter]
-    LinP --> PT[penalty type]
+    MP --> NT[n_estimators — active]
+    MP --> MD[max_depth — active]
+    MP --> Future[Other model-specific parameters — not wired]
 ```
 
 ## 4. Search Space for automl HyperOptX
 
 ```rust
-use automl::{SearchSpace, Parameter, ParameterType};
+use automl::optimizer::SearchSpace;
 
-let mut search_space = SearchSpace::new();
-
-// Tree-based model parameters
-search_space.add(Parameter::new("n_estimators", ParameterType::Int(20, 200)));
-search_space.add(Parameter::new("max_depth", ParameterType::Int(2, 10)));
-search_space.add(Parameter::new("learning_rate", ParameterType::Float(0.01, 0.5)));
-search_space.add(Parameter::new("subsample", ParameterType::Float(0.5, 1.0)));
-search_space.add(Parameter::new("colsample_bytree", ParameterType::Float(0.5, 1.0)));
-search_space.add(Parameter::new("min_child_weight", ParameterType::Int(1, 10)));
-
-// Note: No neural-network branch — automl ModelType is classical ML only (smartcore/linfa); NN params removed
-
-
-// Regularization parameters
-search_space.add(Parameter::new("l1_regularization", ParameterType::Float(0.0, 1.0)));
-search_space.add(Parameter::new("l2_regularization", ParameterType::Float(0.0, 1.0)));
+let search_space = SearchSpace::new()
+    .int("n_estimators", 20, 200)
+    .int("max_depth", 2, 10);
 ```
 
-## 5. Parameter Importance
+The tracked JSON contract is `config/hyperopt-search.example.json`; its schema validator rejects unknown fields, unsupported samplers, invalid ranges, and unsupported schema versions.
+
+## 5. Parameter Importance — Not Measured
 
 ```mermaid
 flowchart TD
@@ -122,14 +85,13 @@ flowchart LR
 
 The broader examples above include parameters that the root does not consume. The active root adapter maps sampled `n_estimators` and `max_depth` into its grouped-CV helper for RandomForest and ExtraTrees; it does not route all values through general `TrainingConfig`.
 
-1. Freeze a model-specific search space for verified four-class candidates.
-2. Implement and validate parameter-to-`TrainingConfig` mapping.
-3. Execute grouped-CV search on development games only, with a declared compute budget.
-4. Select using validation/CV metrics; evaluate the untouched game-score test set once.
+1. Extend the search only for verified candidates with validated parameter mappings.
+2. Run grouped-CV tuning on development games with a declared compute budget.
+3. Evaluate the selected configuration on the untouched game-score test set once.
 
 ## Implementation Record
 
-- The active schema-v1 config validates positive integer ranges for `n_estimators` and `max_depth`; trial adapters apply them to RandomForest/ExtraTrees only. No parameter-importance analysis exists.
+- The active schema-v1 config validates positive integer ranges for `n_estimators` and `max_depth`; trial adapters apply them to RandomForest/ExtraTrees only. No parameter-importance analysis exists, and no broader candidate-specific search is required by the current contract.
 
 ---
 
@@ -146,8 +108,8 @@ The broader examples above include parameters that the root does not consume. Th
 
 ## Open questions
 
-- Range defaults and limits are recorded in `config/hyperopt-search.example.json`. Any expansion requires candidate-specific validation and grouped-CV evidence.
+- No required search-space definition remains open. Any expansion requires candidate-specific validation and grouped-CV evidence.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **No broader search-space implementation is required now.** Tune-run results and parameter-importance research remain in the separate HPO evaluation ticket.

@@ -29,10 +29,9 @@ flowchart TD
         Select --> Document[Document Findings]
     end
     
-    Start --> |12 candidates| Compare
-    Compare --> |Top 3| Filter
-    Filter --> |1 model| Validate
-    Validate --> |Confirmed| Select
+    Start --> |5 probability-compatible candidates| Compare
+    Compare --> |ranking pending| Validate
+    Validate --> |held-out evidence pending| Select
 ```
 
 ## 3. Candidate Summary
@@ -76,21 +75,17 @@ flowchart TD
 
 > **No R² / RMSE** — task is four-class classification; game score is a downstream case-study outcome, not a regression target. Values remain unmeasured until the comparison protocol runs.
 
-### 5.1 Automl-Compatible Model Candidates
+### 5.1 Verified Policy Candidates
 
-Since the automl framework does not implement neural networks, the candidate models are restricted to the following automl-compatible algorithms:
+Only candidates that pass the pinned framework's four-class probability contract are eligible for this case study. Compatibility is not a performance ranking.
 
-| Model | Category | Expectation (unverified) |
-|-------|----------|---------------------|
-| RandomForest | Tree-based | Unmeasured |
-| GradientBoosting | Tree-based | Unmeasured; no performance claim |
-| XGBoost | Tree-based | Unmeasured; compatibility not established for policy output |
-| LightGBM | Tree-based | Unmeasured; compatibility not established for policy output |
-| CatBoost | Tree-based | Unmeasured; compatibility not established for policy output |
-| ExtraTrees | Tree-based | Randomized tree ensemble, good diversity |
-| SVM | Linear/Kernel | Decent for smaller datasets |
-| KNN | Instance-based | Simple baseline, distance-based |
-| LogisticRegression | Linear | Baseline linear model |
+| Model | Category | Four-class policy output | Case-study result |
+|-------|----------|--------------------------|-------------------|
+| RandomForest | Tree ensemble | Verified | Unmeasured |
+| ExtraTrees | Tree ensemble | Verified | Unmeasured |
+| AdaBoost | Boosting | Verified | Unmeasured |
+| KNN | Instance-based | Verified | Unmeasured |
+| NaiveBayes | Probabilistic classifier | Verified | Unmeasured |
 
 ### 5.2 Model-family claims
 
@@ -157,7 +152,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- The case-study candidate ranking remains pending an adequate rollout-labeled corpus, a declared compute budget, matched training settings, and held-out game evaluation. The current standard-dataset diagnostic and API checks do not select a 2048 model.
 
 ## Later
 

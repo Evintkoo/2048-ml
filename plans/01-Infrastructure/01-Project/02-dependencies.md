@@ -39,7 +39,7 @@ Canonical task per [Plan 00](../../00-scope-and-traceability.md): `TaskType::Mul
 | `DataPreprocessor` | `preprocessing/` | Not currently used by the root collection/training path; feature encoding is deterministic and tree candidates are trained on the canonical numeric values. Any fitted transform must be fit on development training folds only. |
 | `InferenceEngine` | `inference/` | Root policy calls `predict_proba_array`, verifies four columns, then masks illegal moves before `argmax` |
 
-> **Not used for MultiClassification.** `KMeans`, `DBSCAN`, `SOM` require `TaskType::Clustering`; regression-only types (`LinearRegression`, `Ridge`, `Lasso`, `ElasticNet`, `PolynomialRegression`, `GaussianProcess`, `SGD` as regressor) are not candidates for 27-dim → `action` classification. Listed here for completeness only — do not benchmark them for 2048.
+> **Not used for MultiClassification.** `KMeans`, `DBSCAN`, `SOM` require `TaskType::Clustering`; regression-only types (`LinearRegression`, `Ridge`, `Lasso`, `ElasticNet`, `PolynomialRegression`, `GaussianProcess`, `SGD` as regressor) are not candidates for 17-value-state → `action` classification. Listed here for completeness only — do not benchmark them for 2048.
 
 ## 3. Current DataFrame Schema (17 canonical values)
 

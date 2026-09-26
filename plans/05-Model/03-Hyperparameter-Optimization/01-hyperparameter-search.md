@@ -26,37 +26,27 @@ flowchart TD
         Start --> Define[Define Search Space]
         Define --> Select[Select Sampler]
         Select --> Iterate[Iterate Trials]
-        Iterate --> Evaluate[Evaluate Trial]
-        Evaluate --> Prune{Prune?}
-        Prune -->|Yes| Skip[Skip Trial]
-        Prune -->|No| Continue[Continue Trial]
-        Continue --> Next{More Trials?}
+        Iterate --> Evaluate[Complete grouped-CV objective]
+        Evaluate --> Next{More Trials?}
         Next -->|Yes| Iterate
         Next -->|No| Best[Select Best Config]
-        Skip --> Next
     end
     
-    Start --> |TPE Sampler| Define
-    Define --> |100 trials| Select
-    Best --> |Best Params| Model[Trained Model]
+    Start --> |TPE sampler| Define
+    Define --> |declared trial count| Select
+    Best --> |Best Params| Model[Final AutoML Fit]
 ```
+
+Each objective returns one completed grouped-CV accuracy value. Intermediate pruning is not wired; the root explicitly disables the framework's separate pruner flag.
 
 ## 3. Search Space Definition
 
 ```mermaid
 flowchart TD
     Space[Search Space]
-    Space --> Tree[Tree-Based Models]
-    Space --> Linear[Linear Models]
-    
-    Tree --> NEstimators[n_estimators: 50-300]
-    Tree --> MaxDepth[max_depth: 3-10]
-    Tree --> LR[learning_rate: 0.01-0.5]
-    Tree --> Subsample[subsample: 0.5-1.0]
-    Tree --> Colsample[colsamples_bytree: 0.5-1.0]
-    
-    Linear --> C[Regularization C]
-    Linear --> Penalty[Penalty Type]
+    Space --> Supported[RandomForest / ExtraTrees]
+    Supported --> NEstimators[n_estimators: configured positive integer range]
+    Supported --> MaxDepth[max_depth: configured positive integer range]
 ```
 
 ## 4. Optimization Strategy
@@ -64,17 +54,9 @@ flowchart TD
 ```mermaid
 flowchart TD
     Opt[Optimization Strategy]
-    Opt --> TPE[TPE Sampler]
-    Opt --> Random[Random Search]
-    Opt --> Grid[Grid Search]
-    
-    TPE --> |Bayesian| Evolve[Evolve Search]
-    Random --> |Exploration| Sample[Random Sampling]
-    Grid --> |Exhaustive| Enumerate[Enumerate All]
-    
-    style TPE fill:#e3f2fd
-    style Random fill:#fff3e0
-    style Grid fill:#f3e5f5
+    Opt[Root CLI strategy] --> TPE[TPE sampler]
+    TPE --> Sample[Sample n_estimators and max_depth]
+    Sample --> CV[Grouped-CV accuracy objective]
 ```
 
 ## 5. Pruning Strategy
@@ -82,52 +64,36 @@ flowchart TD
 ```mermaid
 flowchart TD
     Trial[Trial Running]
-    Trial --> Monitor[Monitor Intermediate Results]
-    Monitor --> Pruner{Pruner Decision}
-    Pruner --> |Median| Prune[Prune Trial]
-    Pruner --> |Keep| Continue[Continue Trial]
-    Prune --> Release[Release Resources]
-    Continue --> Report[Report Results]
-    
-    style Prune fill:#ffcdd2
-    style Continue fill:#c8e6c9
+    Trial --> Objective[Compute complete grouped-CV score]
+    Objective --> Record[Record scalar trial result]
+    Unsupported[No intermediate-reporting hook] --> Disabled[Root sets pruning=false]
 ```
 
 ## 6. Search Configuration
 
 ```rust
-use automl::{OptimizationConfig, SearchSpace, Parameter, ParameterType, OptimizeDirection, MedianPruner};
+use automl::optimizer::{OptimizationConfig, SearchSpace, OptimizeDirection, SamplerType};
 
-let opt_config = OptimizationConfig::default()
+let mut opt_config = OptimizationConfig::default()
     .with_direction(OptimizeDirection::Maximize)
     .with_n_trials(100)
-    .with_n_jobs(4);
-// Pruner is separate — MedianPruner::new requires minimize flag
-let pruner = MedianPruner::new(false); // false = maximize (true = minimize)
+    .with_sampler(SamplerType::TPE)
+    .with_metric("grouped_cv_accuracy");
+opt_config.n_jobs = 1;       // HyperOptX objective calls are currently serial
+opt_config.pruning = false;  // no intermediate objective-reporting hook
 
-let mut search_space = SearchSpace::new();
-search_space.add(Parameter::new("n_estimators", ParameterType::Int(50, 300)));
-search_space.add(Parameter::new("max_depth", ParameterType::Int(3, 10)));
-search_space.add(Parameter::new("learning_rate", ParameterType::Float(0.01, 0.5)));
-search_space.add(Parameter::new("subsample", ParameterType::Float(0.5, 1.0)));
-search_space.add(Parameter::new("colsample_bytree", ParameterType::Float(0.5, 1.0)));
+let search_space = SearchSpace::new()
+    .int("n_estimators", 50, 300)
+    .int("max_depth", 3, 10);
 ```
 
 ## 7. Search Pipeline
 
 ```mermaid
 flowchart TD
-    Pipeline[Hyperparameter Search Pipeline]
-    Pipeline --> Stage1[Stage 1: Coarse Search]
-    Stage1 --> Stage2[Stage 2: Fine Search]
-    Stage2 --> Stage3[Stage 3: Precision Search]
-    
-    Stage1 --> |Wide Range| Stage2
-    Stage2 --> |Narrow Range| Stage3
-    Stage3 --> Best[Best Configuration]
-    
-    style Stage1 fill:#e3f2fd
-    style Stage3 fill:#e8f5e9
+    Pipeline[One declared TPE study]
+    Pipeline --> Objective[Grouped-CV accuracy per trial]
+    Objective --> Best[Best parameters for final fit]
 ```
 
 ## 8. Search Files Location
@@ -153,7 +119,7 @@ The root integration maps sampled `n_estimators` and `max_depth` into grouped-CV
 ## Implementation Record
 
 - HyperOptX trains grouped-CV objectives for RandomForest/ExtraTrees and applies the selected integer parameters to final fitting. It saves a study artifact and records configuration/seed data in the manifest.
-- Pruning is disabled because there is no intermediate-reporting hook. No best configuration is claimed beyond each exploratory run.
+- Pruning is disabled because there is no intermediate-reporting hook. The pinned optimizer marks objective errors as pruned trials with a worst-value score but does not retain the error text in `TrialResult`; trial failure diagnostics remain limited. No best configuration is claimed beyond each exploratory run.
 
 ---
 
@@ -170,7 +136,7 @@ The root integration maps sampled `n_estimators` and `max_depth` into grouped-CV
 
 ## Open questions
 
-- Search is limited to two integer parameters and two candidate families; trial failures currently surface through the command error path. Pruning, broader candidate coverage, and full performance studies remain future work.
+- Search is limited to two integer parameters and two candidate families. HyperOptX converts objective errors into pruned results but does not retain their error text. Pruning, broader candidate coverage, and full performance studies remain future work.
 
 ## Later
 

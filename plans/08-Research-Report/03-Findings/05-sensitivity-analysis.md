@@ -17,9 +17,7 @@
 
 Select supported model candidates and independent training/evaluation seed roles before the study. The previously proposed 7-model, five-seed, 350,000-game matrix and 270,000 cap are not approved. A descriptive coefficient of variation may be reported where defined, with uncertainty and model-training replication considered:
 
-```
-seed_sensitivity = σ(μ_seed) / mean(μ_seed) ×100%
-```
+If reported, define the variation summary and its handling of near-zero means in the study protocol; no single formula or threshold is canonical.
 
 Do not apply universal 10%/20% cutoffs or increase game count automatically. Report measured variation and explain its limits.
 

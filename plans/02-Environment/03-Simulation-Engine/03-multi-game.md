@@ -151,6 +151,7 @@ cargo run --release -- data-collector collect --n-games 20000 --rollouts 100 --t
 - Implemented fixed-thread Rayon collection, per-game `global_seed.wrapping_add(game_id)`, game-group metadata, rollout relabeling, CSV schema validation, and a JSON manifest with seeds, thread count, timing, row counts, and file hashes.
 - The collector now writes per-batch data/metadata parts and an atomic, config-checked JSON checkpoint; `--resume` continues from the next game ID. Indicatif reports live game completion. Final assembly validates both row-aligned files.
 - Baseline evidence: [`reports/action-frequency/README.md`](../../../reports/action-frequency/README.md) records 10,000 random and 10,000 heuristic games, raw score/frequency CSVs, manifests, and 2,000-replicate whole-game bootstrap 95% intervals. These runs establish case-study baselines only; they do not establish framework superiority.
+- Artifact integrity check (2026-09-27): both CSVs contain 10,000 game rows plus the header, and each SHA-256 matches its manifest. This verifies file integrity and row counts, not an independent recomputation of the statistical summaries.
 - Validation: deterministic batch coverage and checkpoint/resume tests pass. The Planout checker is part of the ticket verification. Prior throughput measurement projects approximately 103 hours for the current 20k rollout-labeled collection configuration; this compute estimate is a prerequisite to budget, not a reason to omit the collection deliverable.
 
 ---
@@ -168,7 +169,7 @@ cargo run --release -- data-collector collect --n-games 20000 --rollouts 100 --t
 
 ## Open questions
 
-- **Plan-scale rollout data collection and independent report validation remain open.** The collector resumes only when all data-generation parameters match its checkpoint. The 20k run remains unscheduled until its estimated compute budget is explicitly approved; retain data, manifests, and analysis artifacts.
+- **Plan-scale rollout data collection and independent report validation remain open.** Baseline CSV checksums and row counts match their manifests, but the score/frequency summaries have not been independently recomputed. The collector resumes only when all data-generation parameters match its checkpoint. The 20k run remains unscheduled until its estimated compute budget is explicitly approved; retain data, manifests, and analysis artifacts.
 
 ## Later
 

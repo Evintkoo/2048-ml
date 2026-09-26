@@ -1,6 +1,6 @@
 # Plan 02 — Randomness and Determinism: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** `SeedManager` derives CLI game, training, HyperOptX, data-sampling, CV, and analysis seeds; general config loading and broader process-level reproducibility checks remain pending.
+> **Status: PARTIAL (2026-09-27).** `SeedManager` derives CLI game, training, HyperOptX, data-sampling, CV, and analysis seeds; the known AutoML determinism defects are fixed, but general config loading and broader process-level reproducibility checks remain pending.
 
 **Goal:** State the current implementation and evidence boundary for randomness and determinism.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats seed derivation as implemented in root workflows with bounded evidence.** `src/seeds.rs` provides one `SeedManager` constructed from the CLI's global seed. Game IDs use wrapping addition with `game_id`; final AutoML fit uses the global seed, while tuning, data relabeling, CV, and analysis use documented offsets. The HyperOptX search JSON does not configure general seeds. Framework internals may retain nondeterminism.
+**This plan treats seed derivation as implemented in root workflows with bounded evidence.** `src/seeds.rs` provides one `SeedManager` constructed from the CLI's global seed. Game IDs use wrapping addition with `game_id`; final AutoML fit uses the global seed, while tuning, data relabeling, CV, and analysis use documented offsets. The HyperOptX search JSON does not configure general seeds. The identified AutoML leaf-tie, class-order, and float-roundtrip defects are fixed in the pinned revision; broader model/dataset reproducibility remains unmeasured.
 
 > **Canonical RNG:** `ChaCha8Rng::seed_from_u64(seed)` per game; global seed linked to **Evintkoo/automl `TrainingConfig::with_random_state(42)`** (see `01-Infrastructure/02-Configuration/02-training-config.md` §6). Spawn 90/10 via `spawn_prob_4:0.1`. Headless only.
 
@@ -118,7 +118,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 ## 8. Rayon Thread Count — Determinism Note
 
 - Collection uses the CLI `--threads` value to build a fixed-size Rayon pool; the value is retained in the collection manifest. The number of threads does not change game seeds or collected ordering.
-- HyperOptX tuning currently runs serially (`n_jobs = 1`). AutoML fitting may retain framework-level nondeterminism despite fixed seeds, as documented in the framework audit.
+- HyperOptX tuning currently runs serially (`n_jobs = 1`). The pinned AutoML revision fixes the identified seeded-fit and serialization defects; framework-wide determinism across models and datasets has not been established.
 - Preferred MVP: parallel with per-game seeded RNG (`ChaCha8Rng::seed_from_u64(global.wrapping_add(game_id))`) so order does not matter; still log `threads` in `SimulationMetrics`.
 
 ## 9. Checklist
@@ -160,8 +160,8 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Root CLI seed derivation is centralized, but config-file loading is absent and AutoML model fitting may remain nondeterministic despite fixed seeds (see [framework architecture audit](../../01-Infrastructure/01-Project/04-framework-architecture.md)).
+- **The evidence remains bounded by current results.** Root CLI seed derivation is centralized, but config-file loading is absent and broad AutoML repeated-run behavior has not been measured. The known defects and pinned fix are described in the [framework architecture audit](../../01-Infrastructure/01-Project/04-framework-architecture.md).
 
 ## Later
 
-- **Resolve framework-level nondeterminism and add config-file seed loading before claiming end-to-end seed reproducibility.** Retain repeated-run artifacts and exact dependency versions.
+- **Measure repeated runs across additional models and datasets, then add config-file seed loading if that configuration surface is adopted.** Retain repeated-run artifacts and exact dependency versions; the focused fixes do not establish framework-wide determinism.

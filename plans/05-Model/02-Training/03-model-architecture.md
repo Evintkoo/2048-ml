@@ -19,7 +19,7 @@ Define the architecture of the machine learning model used to predict optimal mo
 
 The classifier consumes the canonical 17-value vector and predicts one of four action labels. The verified candidates include both tree ensembles and non-tree models; no architecture winner has been selected.
 
-### 2.1 Tree-Based Model Architecture
+### 2.1 Verified Policy Candidates
 
 The root CLI currently exposes five candidates with four-class probability output. The table describes only that compatible set:
 
@@ -31,13 +31,13 @@ The root CLI currently exposes five candidates with four-class probability outpu
 | KNN | Nearest-neighbor classifier | neighbors and distance settings |
 | NaiveBayes | Probabilistic classifier | framework-specific parameters |
 
-### 2.2 Feature Input Layer
+### 2.2 Canonical 17-Value Input
 
 ```mermaid
 flowchart LR
-    Grid[Grid Features<br/>16 dimensions] --> Concat[Concatenate]
-    Derived[Derived Features<br/>11 dimensions] --> Concat
-    Concat --> Input[Input Vector<br/>17 dimensions]
+    Grid[Grid cells<br/>16 values] --> State[Canonical state<br/>17 values]
+    Score[Normalized current score<br/>index 16] --> State
+    State --> Input[Four-class AutoML classifier]
 ```
 
 ### 2.3 Tree Ensemble Architecture
@@ -62,25 +62,23 @@ flowchart TD
     style Output fill:#e8f5e9
 ```
 
-### 2.4 Model Variants
+### 2.4 Verified Model Variants
 
 ```mermaid
 flowchart TB
     subgraph "Model Variants"
-        A[Gradient Boosting]
         B[Random Forest]
-        D[XGBoost]
-        E[Logistic Regression]
-        F[SVM]
-        G[KNN]
+        C[Extra Trees]
+        D[AdaBoost]
+        E[KNN]
+        F[Naive Bayes]
     end
     
-    A --> Evaluation
     B --> Evaluation
+    C --> Evaluation
     D --> Evaluation
     E --> Evaluation
     F --> Evaluation
-    G --> Evaluation
     
     Evaluation[Architecture Evaluation]
 ```
@@ -88,25 +86,7 @@ flowchart TB
 ### 2.5 Tree-Based Model Architecture Details
 
 ```rust
-// Illustrative only: the root uses AutoML TrainingConfig, not this custom struct.
-pub struct TreeModelArchitecture {
-    pub model_type: ModelType,           // GradientBoosting, RandomForest, XGBoost, etc.
-    pub n_estimators: usize,             // Number of trees in the ensemble
-    pub max_depth: usize,                // Maximum depth of each tree
-    pub learning_rate: f64,              // Shrinkage parameter for boosting
-    pub min_samples_split: usize,        // Minimum samples to split a node
-    pub max_features: Option<usize>,     // Features considered per split
-    pub subsample: Option<f64>,          // Row subsampling rate
-    pub regularization: f64,             // L1/L2 regularization strength
-}
-
-// ModelType is defined as an enum in `automl/src/training/config.rs:22`:
-// pub enum ModelType { DecisionTree, RandomForest, GradientBoosting, XGBoost,
-//                      LightGBM, CatBoost, LinearRegression, LogisticRegression,
-//                      Ridge, Lasso, ElasticNet, PolynomialRegression, SVM,
-//                      KNN, NaiveBayes, AdaBoost, ExtraTrees, SGD,
-//                      GaussianProcess, KMeans, DBSCAN, SOM, Auto }
-// Use the enum variants directly (e.g., ModelType::RandomForest, ModelType::Auto) — not a custom struct.
+There is no root `TreeModelArchitecture` configuration struct. The root uses the AutoML `ModelType` enum and `TrainingConfig`; each adapter exposes a different subset of parameters.
 ```
 
 ### 2.6 Actionable TrainingConfig — Verified API (config.rs:174)
@@ -121,21 +101,12 @@ let config = TrainingConfig::new(TaskType::MultiClassification, "action")
     .with_model(ModelType::RandomForest)
     .with_n_estimators(150)
     .with_max_depth(8)
-    .with_cv(5)
     .with_random_state(42);
 
-// Boosting variant with learning rate
-let gb_config = TrainingConfig::new(TaskType::MultiClassification, "action")
-    .with_model(ModelType::GradientBoosting)
-    .with_n_estimators(200)
-    .with_max_depth(6)
-    .with_learning_rate(0.08)
-    .with_cv(5)
-    .with_random_state(42);
-
-// XGBoost / LightGBM / CatBoost / ExtraTrees / SVM / KNN likewise:
-// .with_model(ModelType::XGBoost) / LightGBM / CatBoost / ExtraTrees / SVM / KNN
-// Then: TrainEngine::new(config).fit(&df) → InferenceEngine::predict
+// ExtraTrees accepts the same two search parameters in the root tuner.
+// AdaBoost, KNN, and NaiveBayes are also policy-compatible, but are not
+// currently exposed through the root HyperOptX search.
+// `.with_cv(5)` sets a field; TrainEngine::fit does not execute cross-validation.
 
 // Early stopping (optional, not epochs):
 // TrainingConfig { early_stopping: true, early_stopping_rounds: 50, ..Default::default() }
@@ -163,7 +134,7 @@ flowchart LR
 
 ## Implementation Record
 
-- The implementation uses pinned AutoML classical models and the root CLI checks for exactly four probability columns before saving. Supported candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes.
+- The implementation uses AutoML revision `88a86bf` and the root CLI checks for exactly four probability columns before saving. Supported candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The known seeded-fit/serialization defects have focused fixes; broader candidate performance remains unmeasured.
 - HyperOptX search currently supports only RandomForest and ExtraTrees. No neural-network architecture is present; candidate performance remains unmeasured.
 
 ---

@@ -14,7 +14,7 @@
 This file summarizes the status of mathematical claims; it does not repeat derivations.
 
 - The implemented 4×4 process can be described using a board state, legal actions, stochastic spawn transition, merge-score increment, and terminal condition.
-- The 27-value model input is a fixed representation, not a proved sufficient statistic or minimal Markov blanket.
+- The 17-value canonical model input is a fixed representation, not a proved sufficient statistic or minimal Markov blanket.
 - No maximum score/tile theorem, PAC bound, generalization bound, fixed-width confidence interval, board entropy value, or PSPACE-hardness result is established here.
 - Empirical score summaries and intervals must be reported from retained benchmark artifacts under their actual sampling design.
 

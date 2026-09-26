@@ -69,15 +69,9 @@ flowchart TD
 
 ```mermaid
 graph TD
-    A[Seed = 42] --> B[Run 1]
-    A --> C[Run 2]
-    A --> D[Run 3]
-    B --> E[Compare Results]
-    C --> E
-    D --> E
-    E --> F{All Match?}
-    F -->|Yes| G[Deterministic ✓]
-    F -->|No| H[Non-deterministic ✗]
+    A[Same seed + same configuration] --> B[Repeated execution]
+    B --> C[Compare retained outputs]
+    C --> D[Report differences and scope]
     
     style G fill:#9f9,stroke:#363
     style H fill:#f99,stroke:#363
@@ -149,7 +143,7 @@ flowchart LR
 
 ## Implementation Record
 
-- Same-seed simulation/batch checks exist, and manifests store configured seeds, protocol, checksums, and provenance. No repeated full-training or independent dataset/model reproduction study has been completed; no fixed 1%/p-value criterion is supported.
+- Same-seed simulation/batch checks exist, and manifests store configured seeds, protocol, checksums, and provenance. Root `cargo test` passed 34/34, including seed checks. No repeated full-training or independent dataset/model reproduction study has been completed; no fixed 1%/p-value criterion is supported.
 
 ---
 

@@ -26,8 +26,7 @@ flowchart TD
         B --> C[Inferential Statistics]
         C --> D[Hypothesis Testing]
         D --> E[Confidence Intervals]
-        E --> F[Regression Analysis]
-        F --> G[Results Summary]
+        E --> F[Results Summary]
     end
 ```
 
@@ -60,11 +59,11 @@ flowchart LR
 ```mermaid
 flowchart TD
     A[Define Null Hypothesis H0] --> B[Define Alternative Hypothesis H1]
-    B --> C[Select Significance Level α]
+    B --> C[Declare Test and Multiplicity Family]
     C --> D[Collect Data]
     D --> E[Calculate Test Statistic]
     E --> F[Calculate p-value]
-    F --> G{p-value < α?}
+    F --> G{p-value below declared threshold?}
     G -->|Yes| H[Reject H0]
     G -->|No| I[Fail to Reject H0]
     H --> J[Report Finding]
@@ -106,7 +105,7 @@ flowchart LR
 
 ## 9. Statistical Significance Reporting
 
-All results must report:
+For confirmatory comparisons, report:
 - Test used and assumptions checked
 - p-value and confidence interval
 - Effect size

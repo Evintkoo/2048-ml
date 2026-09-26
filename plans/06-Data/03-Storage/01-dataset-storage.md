@@ -28,7 +28,7 @@ data/
 └── results/    # Model outputs / benchmarks
 ```
 
-<details><summary>Future optional tiered storage (out of scope for MVP, <5GB)</summary>
+<details><summary>Future optional tiered storage (out of scope unless measured needs justify it)</summary>
 
 ```mermaid
 flowchart TD

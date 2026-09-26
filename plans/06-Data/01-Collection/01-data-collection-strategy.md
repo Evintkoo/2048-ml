@@ -17,12 +17,12 @@ Define the strategy for collecting training data for the 2048 game machine learn
 
 ## 2. Data Sources
 
-Two supervised sources (no HumanPlay — out of scope) feed the single canonical dataset. The heuristic agent is benchmark-only:
+Two proposed supervised sources (no HumanPlay — out of scope) would feed the canonical dataset. The heuristic agent is benchmark-only; no fixed corpus split is approved:
 
-| Source | File | Games | Role |
+| Source | Plan file | Proposed target | Current status |
 |--------|------|-------|------|
-| Self-play | `02-self-play-data.md` | 15,000 | High-quality agent trajectories |
-| Random play | `03-random-play-data.md` | 5,000 | Wide state coverage |
+| Policy trajectories | `02-self-play-data.md` | To be declared | No dedicated collector/corpus yet |
+| Random play | `03-random-play-data.md` | To be declared | Collector implemented; proposed corpus not collected |
 | Heuristic play | Benchmark-only | 0 training games | Separate rule-based baseline |
 
 The implemented random source produces `(state_features[17], action: u8)` rows after `RolloutLabeler` relabeling (default 100 simulations per valid action). Self-play generation is not implemented. Tile spawn is stochastic 90% `2` / 10% `4` per move.
@@ -35,11 +35,11 @@ Configure → collect seeded random trajectories → rollout-relabel actions →
 
 ```mermaid
 flowchart TB
-    Volume[Collection Volume Targets — Canonical]
-    Volume --> V1[Self-Play: 15,000 games]
-    Volume --> V2[Random Play: 5,000 games]
+    Volume[Proposed Collection Volumes — Not Run]
+    Volume --> V1[Policy trajectories: count to be declared]
+    Volume --> V2[Random Play: count to be declared]
     Volume --> V3[Heuristic: benchmark only — excluded from training]
-    Volume --> V4[Total: 20,000 games<br/>14k train / 3k val / 3k test<br/>70% / 15% / 15% chronological game-ID split; GroupKFold is a separate CV procedure]
+    Volume --> V4[Total and split sizes to be declared<br/>70% / 15% / 15% is an available splitter, not an approved corpus plan]
     V1 --> Storage[Store: 06-Data/03-Storage/ — canonical]
     V2 --> Storage
     V3 -.-> Storage
@@ -47,17 +47,11 @@ flowchart TB
     style Storage fill:#e8f5e9
 ```
 
-> The 15,000 self-play + 5,000 random-play corpus and chronological split are planned targets, not current artifacts. Preserve whole-game grouping and record seeds, source type, configurations, and manifests for any collected data.
+> Corpus sizes and split protocol are not approved. Preserve whole-game grouping and record seeds, source type, configurations, and manifests for any collected data.
 
-## 5. Theoretical Limit Estimation
+## 5. Empirical Score Evaluation — No Theoretical Limit Claim
 
-To establish the performance ceiling for each model:
-- Extended sessions (500+ moves per game) until game over
-- Multiple independent runs with different seeds
-- Track running maximum to identify convergence
-- Compute mean score across all games for each model
-- Use confidence intervals to quantify score estimates
-- **Models are ranked by mean score** (heuristic baseline is a comparator whose value must be measured under the same protocol)
+The project does not estimate a theoretical maximum score. For a declared case-study protocol, report the observed game-score distribution, uncertainty, seeds, and simulator configuration. A largest observed score is a sample maximum, not a theoretical ceiling. Rank policies by held-out mean score only when the predeclared comparison protocol and adequate evaluation corpus are available.
 
 ## 6. Data Quality Checks
 
@@ -98,11 +92,11 @@ measurements are not appended to the canonical model input.
 The action taken at turn t by the agent is NOT the training label. **There is no ground truth "optimal action" for any board state.** We use **rollout-based heuristic labeling**:
 
 1. For each board state, evaluate all valid actions
-2. For each action, simulate 100 random plays to game end
-3. Derive each rollout seed as `label_seed = base_seed + game_id * 1_000_000 + move_idx * 1_000 + action`
-4. The action with the highest average final score becomes the label; ties are resolved by the fixed order `Up, Down, Left, Right`
+2. For each action, simulate 100 seeded random continuations, capped by the configured move limit
+3. Derive each rollout seed with wrapping additions: `base_seed + game_id * 1_000_000 + move_idx * 1_000 + action_id + rollout_id * 4`
+4. The action with the highest average final score becomes the label; ties follow the fixed `Direction::ALL` order
 
-Labels are generated after the game-level train/validation/test assignment, cached by `(dataset_version, game_id, move_idx, base_seed)`, and never recomputed differently for separate model variants. The relabeling stage must report total states, rollouts, wall time, and cache hit rate before training begins.
+The design proposal calls for labels after game-level train/validation/test assignment and a cache keyed by `(dataset_version, game_id, move_idx, base_seed)`. Current collection relabels before splitting and has no persistent cache. A future implementation should report total states, rollouts, wall time, and cache behavior.
 
 ```rust
 pub struct RolloutLabeler {
@@ -180,21 +174,21 @@ Verification: `validate_csv` checks the exact 18-column v2 header and every row.
 
 Because game data is sequential (each game is a correlated trajectory), standard random splitting would cause data leakage. The split is done **by `game_id` with `shuffle=false` and chronological ordering — grouped by `game_id`, no shuffle, no stratification across time**:
 
-| Split | Percentage | Method | Canonical 20k total |
+| Split | Percentage | Method | Example only |
 |-------|-----------|--------|---------------------|
-| **Train** | 70% | First 70% of games chronologically, kept intact by `game_id` | 14,000 games |
-| **Validation** | 15% | Next 15% of games chronologically | 3,000 games |
-| **Test** | 15% | Final 15% of games chronologically | 3,000 games |
+| **Train** | 70% | First 70% of games in collection order, kept intact by `game_id` | Count depends on declared corpus |
+| **Validation** | 15% | Next 15% of games in collection order | Count depends on declared corpus |
+| **Test** | 15% | Final 15% of games in collection order | Count depends on declared corpus |
 
 Rules:
 - **Entire games** go to one split — never split a single game across splits. Use the chronological holdout splitter; AutoML's `GroupKFold` is not chronological.
-- **No shuffle** (`shuffle=false`). Games are assigned in chronological collection order: First 70% → train, next 15% → val, last 15% → test. **Do NOT shuffle before assignment — shuffling leaks future states into train** and violates temporal ordering.
+- **No shuffle** (`shuffle=false`). Games are assigned by collection order: first 70% → train, next 15% → validation, final 15% → test. Collection order is not calendar time; the purpose is to reserve disjoint later-collected game IDs for evaluation.
 - **No stratification across time.** Do not rebalance splits by score or any other label across time; chronological order is preserved. Stratification across the time axis would leak future distribution into train.
-- Each split respects chronological order; collection methods are interleaved only insofar as they were run chronologically — do not intermix to break time order.
+- Each split respects collection order; do not describe this as chronological time-series validation for independently seeded games.
 - No game appears in more than one split.
 - Within the training partition, `GroupKFold` may be used for model selection because game trajectories are the grouping unit; its folds are group-disjoint but not time-ordered.
-- The split ensures the model is evaluated on game trajectories it has never seen during training and that are strictly future relative to train.
-- **Volumes are configurable** — 20,000 (14k/3k/3k) is a proposed target, not an approved or generated corpus; adjust via config but preserve the chronological 70/15/15 game-level holdout.
+- The split ensures the model is evaluated on game trajectories it has never seen during training and that have later collection IDs.
+- **Volumes are configurable** — choose corpus and split sizes after declaring the study design and compute budget; no target is currently approved or generated.
 
 ### 8.9 CSV File Format — Classification Only
 
@@ -228,7 +222,7 @@ Files in `06-Data/01-Collection/`: `01-data-collection-strategy.md` (this hub), 
 ## Implementation Record
 
 - Random trajectories are rollout-relabeled through a seeded, fixed-thread, checkpointed command. It writes validated training CSV, aligned provenance sidecar, and hash-bearing manifest.
-- The 15k single-agent plus 5k random corpus, post-split label cache, and class/action distribution report have not been produced. The collector labels before splitting and has no persistent cache.
+- The proposed 15k single-policy plus 5k random corpus, post-split label cache, and class/action distribution report have not been produced. The collector labels before splitting and has no persistent cache. This affects the evaluation/data protocol and must be decided before calling a generated corpus canonical.
 
 ---
 

@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Existing tests cover core behavior, but this ticket has not been revalidated in this pass.** No coverage report or Tarpaulin configuration was found; the proposed 80% target is not evidence.
+**The root test suite was revalidated in this pass.** `cargo test` passes all 34 binary tests. `cargo test --lib` is inapplicable because the root package has no library target. No coverage report or Tarpaulin configuration was found; the proposed 80% target is not evidence.
 
 ## 1. Purpose
 Unit tests for 4×4 game engine, feature extraction, and automl wiring. Distinct from integration (pipeline wiring) and game-validation (manual audit).
@@ -27,7 +27,7 @@ Unit tests for 4×4 game engine, feature extraction, and automl wiring. Distinct
 | 7 | board.rs | blocked move (all moves would_change==false) | `is_game_over()==true` |
 | 8 | `state.rs` | feature vector shape/order and score encoding | Existing tests; game ID is metadata, not a feature |
 | 9 | label_generation.rs | rollout label 0..3 valid | `label in 0..3` |
-| 10 | `framework_validation.rs` | supported four-class model fit/predict and integration APIs | Smoke tests exist; broad framework validation is separate |
+| 10 | `framework_validation.rs` | supported four-class model fit/predict and integration APIs | Smoke tests exist and pass; broad framework validation is separate |
 
 Add explicit boundary/error coverage for accepted tile values and score overflow if required; do not assert 32768 as a proven maximum.
 
@@ -37,14 +37,14 @@ Coverage targets remain proposed. No `tarpaulin.toml` or measured coverage repor
 
 ## 4. Execution
 
-This pass inspected existing test declarations and did not run a test suite. Previously recorded test and lint runs are historical evidence and should be rechecked before a release.
+`cargo test` validates the current root suite. Previously recorded coverage and lint runs remain historical evidence and should be rechecked before a release.
 
 ## 5. Quality Gate
 Before release, run the agreed test suite and any adopted coverage gate; no coverage threshold is currently measured or configured.
 
 ## Implementation Record
 
-- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, and framework smokes. No Tarpaulin config or coverage report exists. Tests were not run during this ticket pass.
+- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, and framework smokes. `cargo test` passed 34/34; no Tarpaulin config or coverage report exists.
 
 ---
 
@@ -61,7 +61,7 @@ Before release, run the agreed test suite and any adopted coverage gate; no cove
 
 ## Open questions
 
-- **Coverage and current test health remain unverified in this pass.** Run the repository suite and measure coverage before adopting a numerical gate.
+- **Coverage remains unmeasured.** The current root suite passed; measure coverage before adopting a numerical gate.
 
 ## Later
 

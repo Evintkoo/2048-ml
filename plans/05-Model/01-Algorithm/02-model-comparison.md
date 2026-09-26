@@ -1,6 +1,6 @@
 # Plan 02 — Model Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Runnable candidates and comparison boundary are documented; matched model results remain pending.
+> **Status: PARTIAL (2026-09-27).** Runnable candidates and a fixed-split standard-dataset diagnostic are documented; 2048 case-study model results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats candidate compatibility as audited and comparison results as pending.** The root smoke verifies 13 estimator/task combinations; only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes currently produce the four-class probability output used by `ModelPolicy`. No uniform algorithm benchmark or model-game comparison has been run.
+**This plan treats candidate compatibility as audited and the 2048 model comparison as pending.** The root smoke verifies 13 estimator/task combinations; only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes currently produce the four-class probability output used by `ModelPolicy`. A same-configuration, one-split standard-dataset diagnostic exists across three datasets, but it is limited framework-validation evidence and does not evaluate game outcomes.
 
 > This comparison characterizes AutoML-supported models and the 2048 case study. It does not define the primary framework contribution.
 
@@ -157,14 +157,14 @@ flowchart TD
 
 ## 6. Conclusion
 
-Candidate availability is gated by the pinned framework's four-class probability output. The current integration candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The other smoke-tested estimators did not meet that output contract. No common-data algorithm comparison or game-performance comparison has been completed; table values remain unmeasured.
+Candidate availability is gated by the pinned framework's four-class probability output. The current integration candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The other smoke-tested estimators did not meet that output contract. The retained three-dataset/five-model standard-task diagnostic is one-split framework evidence, not a 2048 model-game comparison; case-study table values remain unmeasured.
 
 Based on the comparison results, the best model will be selected and documented in `05-Model/01-Algorithm/03-best-algorithm-finding.md`.
 
 ## Implementation Record
 
 - Five four-class probability candidates are identified by `src/framework_validation.rs`; group-aware evaluation is available through `src/training.rs`.
-- A uniform candidate run on the same adequate dataset has not been performed; all metric cells remain unmeasured and no model has been selected.
+- A uniform candidate run on an adequate 2048 training corpus has not been performed. The initial standard-dataset diagnostic is retained separately; case-study metric cells remain unmeasured and no model has been selected.
 
 ---
 

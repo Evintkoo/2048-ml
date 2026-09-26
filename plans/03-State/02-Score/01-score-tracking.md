@@ -104,8 +104,8 @@ updates use checked addition and return `ScoreOverflow` on overflow.
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No required score-tracking deliverable remains open. Histogram and distribution summaries are optional reporting additions, not part of the current score tracker contract.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **No further score-tracking work is required for the current case-study pipeline.** Add optional summaries only when a concrete report requirement calls for them.

@@ -7,7 +7,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-score-metrics](01-score-metrics.md) | Score Metrics | PARTIAL — current summary field set documented |
-| [02-model-metrics](02-model-metrics.md) | Model Metrics | PARTIAL — classification diagnostics absent |
+| [02-model-metrics](02-model-metrics.md) | Model Metrics | PARTIAL — generic classification diagnostics implemented; fixed-split report absent |
 | [03-comparison-metrics](03-comparison-metrics.md) | Comparison Metrics | PARTIAL — comparison utility exists; ranking evidence absent |
 
 ## Reading paths

@@ -6,7 +6,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-move-history](01-move-history.md) | Move History | PARTIAL — per-game actions and score deltas retained; raw board-history export deferred |
+| [01-move-history](01-move-history.md) | Move History | COMPLETE — per-game actions, score deltas, and row provenance retained; raw snapshots outside current scope |
 | [02-state-transition](02-state-transition.md) | State Transition | NOT APPLICABLE — separate RL transition record is out of scope |
 
 ## Reading paths

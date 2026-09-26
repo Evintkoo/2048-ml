@@ -17,7 +17,7 @@ Define the data schema for all training and evaluation data used in the 2048 gam
 
 ## 2. Data Schema Overview
 
-The data schema defines the structure of all data records, ensuring consistency across the pipeline.
+The supervised training schema is the canonical 17-value state and one action label. Game and move provenance remain in an aligned sidecar, not model features.
 
 ```mermaid
 flowchart TD

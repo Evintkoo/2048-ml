@@ -1,6 +1,6 @@
 # Plan 03 — State Encoding: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** The v2 17-value CSV schema and metadata encoding are implemented; Parquet remains unsupported.
+> **Status: COMPLETE (2026-09-27).** The v2 17-value CSV schema and metadata encoding are implemented and validated; Parquet is outside the current storage contract.
 
 **Goal:** State the current implementation and evidence boundary for state encoding.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**The root writes the canonical 17-value training state as CSV.** Its ordered header has 16 grid columns, `score_normalized`, and `action`; aligned provenance (`row_index,game_id,move_index,score`) remains in a separate metadata file. Feature values must be finite and nonnegative; values above one are valid. The emitted manifest labels this breaking data schema `2048-action-policy-v2`. Parquet is not implemented.
+**This storage ticket is complete for the canonical CSV contract.** The root writes 16 grid columns, `score_normalized`, and `action`; aligned provenance (`row_index,game_id,move_index,score`) remains in a separate metadata file. Feature values must be finite and nonnegative; values above one are valid. The emitted manifest labels this breaking data schema `2048-action-policy-v2`. Parquet is not required by the current case-study protocol.
 
 > **Distinct focus:** This file covers storage encoding; `04-Encoding/01-state-vector.md` covers creation. The current implementation is in `src/data_pipeline.rs` and `src/state.rs`.
 
@@ -51,8 +51,8 @@ fn create_dataframe(states: &[[f64;17]], actions: &[u8]) -> DataFrame { /* 17 fe
 ## Implementation Record
 
 - The training CSV uses the exact ordered 17-feature header plus `action` (18 columns). Game ID, move index, and raw score are stored in a separate row-aligned metadata CSV to preserve group provenance without adding model features.
-- The CSV reader checks header, width, finite/nonnegative feature values, and action labels; values above one are accepted. A regression test verifies large tile and score values round-trip.
-- Collection checkpoints use schema version 2, and run manifests identify the dataset as `2048-action-policy-v2`; legacy headers are rejected. The plan's Parquet storage path is not implemented; CSV is the current supported format.
+- The CSV reader checks header, width, finite/nonnegative feature values, and action labels; values above one are accepted. The existing large tile/score round-trip regression covers this contract.
+- Collection checkpoints use schema version 2, and run manifests identify the dataset as `2048-action-policy-v2`; legacy headers are rejected. Parquet storage is outside the current case-study contract; CSV and its aligned metadata sidecar are the supported format.
 
 ---
 
@@ -69,8 +69,8 @@ fn create_dataframe(states: &[[f64;17]], actions: &[u8]) -> DataFrame { /* 17 fe
 
 ## Open questions
 
-- **Parquet support is outside the current implementation.** If required, add a format-specific ticket with dependency, metadata alignment, and round-trip acceptance criteria.
+- No required CSV/metadata encoding deliverable remains open. If future work requires Parquet, define it as a separate storage-format ticket with dependency, metadata alignment, and round-trip criteria.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **No in-scope state-storage work remains for this ticket.** A future Parquet request requires a separately scoped ticket.

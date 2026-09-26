@@ -1,6 +1,6 @@
 # Plan 01 — Visualization (Debug/Inspection Only): the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-25).** JSON/CSV outputs and manifests support offline inspection; optional terminal charts and SVG exports are not implemented. Interactive visualization remains out of scope.
+> **Status: NOT APPLICABLE (2026-09-27).** The MVP requires offline data inspection, already supported by CSV/JSON outputs and manifests; optional renderers and charts have no concrete in-scope use. Interactive visualization remains out of scope.
 
 **Goal:** State the current implementation and evidence boundary for visualization (debug/inspection only).
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial inspection tooling, not as a research finding.** JSON/CSV results and manifests are usable for offline inspection. The optional board renderer, terminal charts, and SVG exports are absent; the headless game UI plan does not make them an MVP prerequisite.
+**This ticket's optional renderer deliverables are not applicable to the current MVP scope.** CSV/JSON results and manifests support offline inspection, and no concrete debugging or reporting need requires a board renderer, terminal chart, or SVG export. The headless game UI plan excludes interactive rendering.
 
 ## 1. Scope
 
@@ -120,7 +120,7 @@ The current offline inspection outputs are CSV data and JSON manifests/results. 
 
 - `GameResult` serializes to JSON and collection/evaluation commands write CSV plus JSON manifests for offline inspection.
 - Terminal board rendering, ASCII score charts, move timelines, SVG board export, and training-progress charts are not implemented. They are optional inspection outputs and are not used by the headless simulation or training pipeline. The game UI plan explicitly keeps rendering out of the MVP.
-- Status: partial by scope; no web or interactive visualization is part of the project. Add static outputs only when a concrete debugging or reporting need justifies them.
+- Disposition: not applicable for optional static renderers because existing CSV/JSON artifacts support the in-scope offline inspection and no concrete use case requires more. No web or interactive visualization is part of the project.
 
 ---
 
@@ -137,8 +137,8 @@ The current offline inspection outputs are CSV data and JSON manifests/results. 
 
 ## Open questions
 
-- **Static inspection output is optional and currently absent.** Add a specific renderer only when it supports a concrete debugging or reporting task; keep interactive UI out of scope.
+- No required visualization deliverable remains open. Revisit optional static output only if a concrete debugging or reporting need is identified.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **No further visualization work is planned for the current MVP.** If a concrete offline inspection need arises, scope a separate static-output ticket; interactive UI remains out of scope.

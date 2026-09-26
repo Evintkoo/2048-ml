@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the classical training loop as implemented with evaluation gaps.** AutoML performs a single `TrainEngine::fit` call after the root grouped-CV wrapper runs explicit folds. The fit call includes its own seeded row-level validation split; the root loop does not implement epochs or a resumable optimizer state.
+**This plan treats the classical training loop as implemented with evaluation gaps.** AutoML performs a single `TrainEngine::fit` call after the root grouped-CV wrapper runs explicit folds. The fit call includes its own seeded row-level validation split; the root loop does not implement epochs or a resumable optimizer state. The pinned AutoML revision includes focused fixes for stable seeded class ordering and exact model deserialization.
 
 ## 1. Purpose
 
@@ -43,14 +43,14 @@ flowchart TD
         Config[TrainingConfig]
         Engine[TrainEngine]
         Infer[InferenceEngine]
-        CV[CrossValidator<br/>GroupKFold / TimeSeriesSplit]
+        CV[Root explicit grouped CV<br/>GroupKFold / TimeSeriesSplit]
     end
 
     DF -->|&df| Engine
-    Config -->|new(task, target).with_model().with_cv()| Engine
+    Config -->|new(task, target).with_model()| Engine
     Engine -->|fit| Infer
-    Infer -->|predict| Metrics[Valid-Action Accuracy + F1 Macro + Mean Game Score]
-    CV -->|split(n, None, Some(&groups))| Engine
+    Infer -->|predict| Metrics[Fold accuracy now; full diagnostics pending]
+    CV -->|explicit train/validate folds| Metrics
 ```
 
 No `DataLoader`, no `Optimizer`, no `LossFn`, no `Scheduler` — those were NN hallucinations and are deleted.
@@ -65,7 +65,7 @@ flowchart LR
     Config --> Engine[Initialize TrainEngine::new(config)]
     Engine --> Load[Load DataFrame<br/>state-action pairs]
     Load --> Fit[Call engine.fit(&df)]
-    Fit --> Eval[Evaluate via metrics + cross_val_score]
+    Fit --> Eval[Inspect fit metrics; final evaluation pending]
 ```
 
 ### 4.2 Single-Pass Fit (Not Epoch Loop)
@@ -76,8 +76,8 @@ flowchart TB
     Start --> Prepare[Prepare DataFrame<br/>extract X 17 dims + y 0-3]
     Prepare --> Split[Internal stratified split<br/>validation_split=0.2]
     Split --> Build[Build trees<br/>n_estimators trees, max_depth per tree]
-    Build --> Validate[Validate<br/>accuracy + F1 macro + loss if SGD]
-    Validate --> Save[Save best model<br/>TrainEngine::save + InferenceEngine::with_model]
+    Build --> Validate[Record fit metrics]
+    Validate --> Save[Save fitted model artifact<br/>TrainEngine::save]
     
     style Build fill:#e8f5e9
     style Validate fill:#e3f2fd
@@ -101,7 +101,6 @@ let df: DataFrame = load_state_action_pairs()?; // see 06-Data/
 // 2) Config — note: task is MultiClassification, not regression
 let config = TrainingConfig::new(TaskType::MultiClassification, "action")
     .with_model(ModelType::RandomForest)   // or ExtraTrees, AdaBoost, KNN, NaiveBayes
-    .with_cv(5)                                // cv_folds = 5
     .with_random_state(42)                     // random_seed = Some(42)
     // Optional tree params:
     // .with_n_estimators(150)  — number of trees, NOT epochs
@@ -121,11 +120,10 @@ if let Some(m) = engine.metrics() {
 // 5) Inference — wrap in InferenceEngine for serving
 let inference = InferenceEngine::new(InferenceConfig::new())
     .with_model(engine); // consumes TrainEngine
-let preds = engine.predict(&test_df)?; // → predicted action classes; root policy uses four-class probabilities
-// Alternative direct: engine.predict(&test_df) without InferenceEngine wrapper
+let preds = inference.predict(&test_df)?; // → predicted action classes
 
 // 6) Cross-validated variant (group-aware, no leakage — see 04-Evaluation/02-cross-validation.md)
-use automl::{CrossValidator, CVStrategy, cross_val_score};
+use automl::{CrossValidator, CVStrategy};
 let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 }).with_random_state(42);
 let splits = cv.split(n_samples, None, Some(&groups))?; // verified API
 // Use the project-owned grouped-CV wrapper; automl::cross_val_score currently
@@ -138,7 +136,7 @@ let splits = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 
 **Key API notes:**
 
-- `TrainingConfig::new(TaskType::MultiClassification, "action").with_model(...).with_n_estimators(100).with_cv(5).with_random_state(42)` — all builders verified in `config.rs:172`.
+- `TrainingConfig::new(TaskType::MultiClassification, "action").with_model(...).with_n_estimators(100).with_random_state(42)` — these builders configure one fit; `.with_cv()` does not make `TrainEngine::fit` run CV.
 - `TrainEngine::fit(&df)` takes a `&DataFrame`, not arrays — it extracts `target_column` internally via `prepare_data`.
 - `InferenceEngine::predict(&df)` (or `engine.predict(&df)`) returns `Array1<f64>` of predicted actions — no `predict_proba` needed for ranking, but available for threshold analysis.
 - `n_estimators` is **not** `n_epochs` — there is no `n_epochs` field. The hallucinated `self.config.n_epochs` and `engine.backward(&loss)` / `update_weights()` never existed.
@@ -191,7 +189,7 @@ flowchart LR
 ## 9. Next Steps
 
 1. Select model type in `03-model-architecture.md` via `TrainingConfig::new(MultiClassification, "action").with_model(...)`
-2. Run fit with group-aware CV (`GroupKFold {n_splits:5}.with_random_state(42).split(n, None, Some(&groups))`)
+2. Run explicit group-aware CV before fitting (`GroupKFold {n_splits:5}.with_random_state(42).split(n, None, Some(&groups))`)
 3. Report protocol-defined diagnostics and game scores; no canonical thresholds are set (see `04-Evaluation/`)
 
 ## Implementation Record

@@ -59,9 +59,9 @@ flowchart TD
 | Category | Description | Baseline |
 |----------|-------------|----------|
 | Score | Maximum, mean, median scores | Random agent score |
-| Speed | Games per second | Real-time threshold |
+| Speed | Games per second (where measured) | Descriptive metadata only |
 | Convergence | Not applicable to the current one-fit classical model loop | Not measured |
-| Robustness | Performance variance | Std dev threshold |
+| Robustness | Performance variance | Descriptive uncertainty; no pass/fail threshold |
 
 ## 4. Benchmarking Pipeline
 
@@ -79,15 +79,9 @@ flowchart LR
 ## 5. Configuration
 
 ```rust
-pub struct BenchmarkConfig {
-    pub n_games: usize,              // Canonical: 10000 for winner (≥10k; min 1000, recommended 5000)
-    pub baseline_agent: AgentType,   // Random, Heuristic
-    pub target_agent: AgentType,     // Model agent
-    pub metrics: Vec<MetricType>,
-    pub output_path: String,
-    pub seed: u64,
-}
-// Canonical winner benchmark is 10,000 games (see §6.6). Lower values (1000) are for quick baselines only.
+// Illustrative protocol fields, not a live root configuration type:
+// game count, candidate policy, seed sequence, simulator settings, and output path.
+// Choose game count from pilot variance and a declared compute budget.
 ```
 
 ## 6. Baseline Comparisons
@@ -150,13 +144,7 @@ ML models are compared against baselines using the following protocol:
 
 ### 6.3 Sample Size Planning (Not Empirically Powered)
 
-The following sizes were planning choices, not power-calculated guarantees. Choose game counts from a declared effect size, variance estimate, and compute budget:
-
-- **Minimum games per agent**: 1,000 games
-- **Recommended games per agent**: 5,000 games
-- **For 99% confidence (α=0.01)**: 10,000 games
-
-No prospective power analysis has been completed. The observed score distribution and pilot data should inform sample-size planning; do not treat a fixed n as a significance guarantee.
+No prospective power analysis has been completed. Choose a game count using observed pilot variance, target uncertainty/effect, and a declared compute budget; no minimum, recommended count, or fixed n has been established as a guarantee.
 
 ### 6.4 Statistical Test Requirements
 
@@ -177,16 +165,16 @@ All comparisons must satisfy the following statistical requirements:
 - Multiple comparison correction: Bonferroni correction when comparing against multiple baselines
 - Reproducibility: All tests must use fixed random seeds
 
-### 6.5 Baseline Comparison Pipeline — Canonical 10k Games
+### 6.5 Baseline Comparison Pipeline — Protocol to Declare Before a Run
 
-> Canonical: **10,000 games** per agent for winner determination (see §6.6). Minimum 1,000 for quick checks per §6.3, but final ranking uses 10k.
+> No canonical game count is established. Choose it from pilot variance, intended uncertainty, and a declared compute budget; do not treat historical fixed values as guarantees.
 
 ```mermaid
 flowchart TD
     subgraph "Baseline Comparison"
-        A[Run Random Agent<br/>10000 Games canonical] --> B[Collect Scores]
-        C[Run Heuristic Agent<br/>10000 Games canonical] --> D[Collect Scores]
-        E[Run ML Model Agent<br/>10000 Games canonical] --> F[Collect Scores]
+        A[Run Random Agent<br/>declared game count] --> B[Collect Scores]
+        C[Run Heuristic Agent<br/>declared game count] --> D[Collect Scores]
+        E[Run ML Model Agent<br/>declared game count] --> F[Collect Scores]
         
         B --> G[Compute Statistics]
         D --> G
@@ -215,8 +203,8 @@ For the 2048 case study, the provisional winner is the model with the highest he
 3. **Score Consistency** (tiebreaker 2) — lower std dev is better
 
 **Ranking Process:**
-1. Run all models (including Random and Heuristic baselines) under identical conditions
-2. Each model plays ≥10,000 games with fixed seed
+1. Run all models (including Random and Heuristic baselines) under identical declared conditions
+2. Each model plays the preregistered game count with the same declared seed design
 3. Compute mean score, median score, and std dev for each model
 4. Rank by mean score (highest = rank 1)
 5. If tied on mean, use median score as tiebreaker

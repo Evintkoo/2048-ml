@@ -1,6 +1,6 @@
 # Plan 01 — Move History: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Per-game actions and score deltas plus row provenance are retained; raw board-history export remains deferred.
+> **Status: COMPLETE (2026-09-27).** Per-game actions and score deltas plus row provenance are retained; raw board-history export is outside the current training/audit scope.
 
 **Goal:** State the current implementation and evidence boundary for move history.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats grouped provenance as implemented and raw history export as pending.** Training rows retain `game_id` and `move_index` in a sidecar, which is enough for game-group splitting. Per-move pre-state snapshots are used in memory for rollout relabeling but are not persisted as a separate history dataset; history is not a training feature.
+**This ticket's required move history and grouped provenance are implemented.** Training rows retain `game_id` and `move_index` in a sidecar, which is enough for game-group splitting. Per-move pre-state snapshots are used in memory for rollout relabeling but are not persisted as a separate history dataset; raw snapshots are not required by the current supervised training or audit protocol, and history is not a training feature.
 
 > **Not for training.** History is never fed as features. Each row for training is `(from_state: [f64;17], action: u8)` — see `02-state-transition.md`. This file = grouped raw log for `GroupKFold` leakage prevention.
 
@@ -71,8 +71,8 @@ Raw board-history export is not part of the current CSV training path. If persis
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No required move-history deliverable remains open. If a later audit requires persisted board snapshots, define a separate format and provenance ticket.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **No additional history persistence is required for the current supervised case study.** Keep history out of the model input unless a separately documented study changes Plan 00.

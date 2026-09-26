@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This appendix identifies software/dependency sources only.** It is not a verified academic bibliography, and manifest versions do not establish the exact locally executed toolchain or modified submodule state.
+**This appendix identifies software/dependency sources only.** It is not a verified academic bibliography, and manifest versions do not establish the exact locally executed toolchain or dependency state.
 
 > **This appendix holds only non-lit refs. Literature refs live in `01-IMRD/00-literature-review.md`.**
 
@@ -17,7 +17,7 @@ See `01-IMRD/00-literature-review.md` for provisional academic source leads. Exa
 
 **Appendix-only non-literature refs:**
 
-- AutoML is a local path Git submodule; `automl/Cargo.toml` declares package version `1.0.0`. Record the exact submodule commit and any local modifications.
+- AutoML is a local path Git submodule; `automl/Cargo.toml` declares package version `1.0.0`. Record the exact submodule commit for each result.
 - Root `Cargo.toml` declares minimum Rust `1.75`, Polars `0.46`, and `rand_chacha 0.3`; record the actual compiler used for each experiment.
 - AutoML manifest dependencies include Polars `0.46`, smartcore `0.3`, and linfa `0.7`. Their presence does not prove each model path is functional.
 - Optimizer implementations include TPE-related sampler/search APIs and pruner types; root tuning integration is limited and its pruning API remains unavailable.

@@ -1,6 +1,6 @@
 # Plan 02 — Self-Play Data: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** The simulator can run a supplied single-agent policy, but the collector has no self-play mode or output corpus.
+> **Status: PARTIAL (2026-09-27).** The simulator can run a supplied single-agent policy, but it does not capture policy-state rows; the collector has no policy-source mode or self-play corpus. Proposed rollout labeling also awaits a compute budget.
 
 **Goal:** State the current implementation and evidence boundary for self-play data.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats self-play collection as pending.** `GameSimulator::simulate_with_policy` accepts a policy closure, but the checkpointed `data-collector collect` path only collects uniform random legal moves. No configurable policy-source collector or `self_play.csv` artifact exists.
+**This plan treats policy-trajectory data collection as pending.** `GameSimulator::simulate_with_policy` accepts a policy closure and returns game results, but it does not capture pre-move state rows. The checkpointed `data-collector collect` path records uniform random legal moves only; no configurable policy-source collector or `self_play.csv` artifact exists.
 
 ## 1. Purpose
 
@@ -19,46 +19,11 @@ Generate state coverage by running a **single agent** against the stochastic 204
 
 2048 has no second player. "Self-play" here means **one agent vs. stochastic tile spawns** (90% `2`, 10% `4` at a random empty cell after each move).
 
-```rust
-use rand_chacha::ChaCha8Rng;
-use rand::SeedableRng;
-
-pub struct SingleAgentTrajectory {
-    pub agent: Box<dyn Agent>,          // Random or Heuristic — any policy, label is discarded
-    pub simulator: GameSimulator,        // 4×4 board, 90/10 tile spawn
-    pub rng: ChaCha8Rng,                // seeded ChaCha8Rng
-}
-
-pub struct SelfPlayConfig {
-    pub n_games: usize,                 // canonical 15,000 (part of total 20k; configurable)
-    pub agent_type: AgentType,          // Random | Heuristic — label is discarded anyway
-    pub seed: u64,                      // ChaCha8Rng seed
-    pub output_path: String,            // 06-Data/03-Storage/ canonical; data/ symlink
-}
-```
-
-> Canonical target: **15,000 games** → approximately 750k rows (~50 moves/game). This remains planned; the current collector implements random trajectories only. Part of the 20k corpus target → 14k/3k/3k chronological game-level split (`groups=game_id`).
+There is no canonical game-count target. A future collector must make the game count, policy source, seed, rollout count, move cap, and output/metadata paths explicit. It should use `GameSimulator::new(SimulatorConfig { .. })` and `simulate_with_policy`; the simulator owns the seeded spawn RNG.
 
 ## 3. Collection Loop — Record then Relabel
 
-```rust
-for game_id in 0..config.n_games {
-    let mut board = Board::new_seeded(config.seed + game_id as u64);
-    while !board.is_game_over() {
-        let state = BoardStateMl::from_board(&board);              // [f64;17] — see §8.2
-        let original_action = agent.select_move(&board); // discarded after relabel
-        let score = board.score();
-        raw_rows.push((state, original_action, score, game_id));
-        board.apply(original_action);                   // stochastic spawn inside
-    }
-}
-// Mandatory relabel — replaces original_action:
-let labeler = RolloutLabeler { simulator: GameSimulator::new(), n_rollouts: 100 };
-let training_rows: Vec<([f64;17], u8)> = raw_rows.into_iter()
-    .map(|(s, _, _, _)| { let (best, _) = labeler.label(&s); (s, best) })
-    .collect();
-// Write CSV: 17 cols + action = 18 cols — score is metadata, never label; no done/reward/next_state
-```
+The collector must retain a pre-move `RawBoardState` snapshot and its 17-value `BoardStateMl` representation for each policy decision. After the game finishes, it can call `RolloutLabeler::label(&snapshot, base_seed, game_id, move_index)` to produce the supervised action. `simulate_with_policy` currently accepts a callback over `&RawBoardState` and returns a `GameResult`, but exposes no row-capture hook; a dedicated collector or simulator callback extension is needed. Policy-selection errors must be mapped to `GameError` by the current API.
 
 Stochastic spawn note: after each `apply`, engine spawns `2` (p=0.9) or `4` (p=0.1) in a uniformly random empty cell. Seed via `ChaCha8Rng`.
 
@@ -68,11 +33,11 @@ All self-play rows **MUST** be relabeled via `01-data-collection-strategy.md §8
 
 ## 5. Storage
 
-CSV `06-Data/03-Storage/self_play.csv` — header `grid_0..score_normalized,action` (18 cols). See `02-Format/01-data-schema.md`; cross-ref `DataPreprocessor` for normalization fit on train only.
+CSV `06-Data/03-Storage/self_play.csv` — header `grid_0..score_normalized,action` (18 cols) with row-aligned game metadata. See `02-Format/01-data-schema.md`; features use the fixed deterministic scales.
 
 ## 6. Next Steps
 
-1. Run `SingleAgentTrajectory` with `n_games=10000` seeded.
+1. Select and record the policy source; obtain a data-collection compute budget.
 2. Relabel with `RolloutLabeler { n_rollouts: 100 }`.
 3. Validate `NF==18`, `action ∈ 0..3`, no `done`/`reward` columns; write to `06-Data/03-Storage/`.
 
@@ -80,7 +45,7 @@ The root collector currently supplies only random trajectories. Implement a conf
 
 ## Implementation Record
 
-- A single-agent trajectory can be represented by the simulator, but there is no distinct configurable self-play collection source or persisted `self_play.csv`. Only small random trajectories have been collected. Required rollout-labeled 15k-game self-play corpus remains pending.
+- The simulator supports callback-driven policy play, but `simulate_with_policy` does not capture state rows. There is no configurable policy-source mode or persisted `self_play.csv`; no corpus size has been approved and the corpus remains uncollected.
 
 ---
 
@@ -97,7 +62,7 @@ The root collector currently supplies only random trajectories. Implement a conf
 
 ## Open questions
 
-- The proposed 15k-game self-play contribution is not collected. Define the policy source and compute budget, then retain config, seed, data, sidecar, and manifest artifacts.
+- No policy-trajectory corpus has been collected. Define the policy source and compute budget, then retain config, seed, data, sidecar, and manifest artifacts. Any rollout labels use the documented deterministic seed derivation and move cap.
 
 ## Later
 

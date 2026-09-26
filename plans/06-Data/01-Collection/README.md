@@ -7,8 +7,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-data-collection-strategy](01-data-collection-strategy.md) | Data Collection Strategy | PARTIAL — target corpus and label cache pending |
-| [02-self-play-data](02-self-play-data.md) | Self-Play Data | PARTIAL — collector source pending |
-| [03-random-play-data](03-random-play-data.md) | Random Play Data | PARTIAL — 5k corpus pending |
+| [02-self-play-data](02-self-play-data.md) | Self-Play Data | PARTIAL — row-capturing policy collector and corpus pending |
+| [03-random-play-data](03-random-play-data.md) | Random Play Data | PARTIAL — proposed scale corpus pending budget decision |
 
 ## Reading paths
 

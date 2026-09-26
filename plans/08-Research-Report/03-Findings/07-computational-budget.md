@@ -11,7 +11,7 @@
 
 **Budget figures must be tied to measured commands and hardware.** Most former resource tables were speculative and are removed. A rollout-labeled corpus estimate is a planning prerequisite, not an approved run.
 
-> The 20,000-game rollout-labeled collection projection is approximately 103 hours at the recorded pilot throughput. This estimate depends on configuration and machine and requires a declared compute budget before collection.
+> The proposed 20,000-game rollout-labeled collection projects to approximately 103 hours at the recorded pilot throughput. This estimate depends on configuration and machine; the target is unapproved and requires a declared compute budget before collection.
 
 ## 1. Measured Evidence
 

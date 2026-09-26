@@ -13,7 +13,7 @@
 
 > **This file is a 25-line redirect. Do not duplicate flowcharts or expand scope here. All protocol, variables, and gates are defined in `02-Methodology/01-experimental-design.md`.**
 
-The planned case study uses the canonical 17-value state and four action labels with the AutoML training integration. Evaluation size, training and evaluation seed design, and comparison protocol must be justified and recorded before a confirmatory run; the previously specified ≥10,000-game case-study run has not been executed.
+The planned case study uses the canonical 17-value state and four action labels with the AutoML training integration. Evaluation size, training and evaluation seed design, and comparison protocol must be justified and recorded before a confirmatory run; no fixed game-count target has been approved.
 
 **Canonical reference:** See `02-Methodology/01-experimental-design.md` for variables, trial structure, replication, bias controls, sample-size justification, and pre-registration. See `02-Methodology/03-hypotheses.md` for framework hypotheses F1–F3 and application hypotheses H1–H3, and `02-Methodology/04-ablation-study.md` for the ablation matrix.
 
@@ -35,7 +35,7 @@ The planned case study uses the canonical 17-value state and four action labels 
 
 ## Implementation Record
 
-- Redirect audited against the experimental design, manifests, and dependency manifest. The 10k-game policy run, seed matrix, and Parquet workflow are proposals rather than executed protocol. The separate seed-42 standard-dataset diagnostic is recorded under `reports/framework_validation/`; it does not complete the framework gate or case-study protocol. Exact submodule revision and toolchain are retained in its run manifests.
+- Redirect audited against the experimental design, manifests, and dependency manifest. The policy run, seed matrix, and Parquet workflow are proposals rather than executed protocol. The separate seed-42 standard-dataset diagnostic is recorded under `reports/framework_validation/`; it does not complete the framework gate or case-study protocol. Exact submodule revision and toolchain are retained in its run manifests.
 
 ---
 

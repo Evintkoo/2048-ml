@@ -35,7 +35,7 @@ flowchart TD
         
         subgraph "Output"
             R[Validation Report]
-            Q[Quality Score]
+            Q[Evidence Summary]
         end
         
         VS1 --> M1
@@ -56,11 +56,7 @@ flowchart TD
     A[Load Trained Model] --> B[Validate Architecture]
     B --> C[Run Validation Games]
     C --> D[Compute Metrics]
-    D --> E{Passes Thresholds?}
-    E -->|Yes| F[Model Validated]
-    E -->|No| G[Model Rejected]
-    F --> H[Deploy]
-    G --> I[Return to Training]
+    D --> E[Report Measured Outcomes and Limits]
 ```
 
 ## 4. Available Evaluation Outputs and Missing Gates
@@ -69,7 +65,7 @@ flowchart TD
 |--------|-----------------|------------|
 | Game score summary | Mean, standard deviation, median, p90/p99, min/max, thresholds, bootstrap mean interval | Describes supplied games; no project acceptance threshold |
 | Pairwise score comparison | Sign test or Mann–Whitney U, Holm adjustment, bootstrap mean difference, Cohen's d | Assumptions/experimental unit must be declared; no clustered paired interval |
-| Action classification metrics | No confusion matrix, macro-F1, or valid-action accuracy report | Add only if required for the research question |
+| Action classification metrics | Generic accuracy, macro precision/recall/F1, confusion, and legal-action helpers exist; fixed-split report absent | Wire only after defining held-out protocol |
 | Robustness / approval score | Not implemented | No 0–100 quality score or deployment gate |
 
 No baseline score threshold, fixed macro-F1 target, or standard-deviation limit is established. Local baseline means are protocol-specific and are not universal quality thresholds. Deployment is outside the current project scope.
@@ -83,24 +79,16 @@ graph TD
     C --> D[Test on Games 81-84]
     D --> E{All Folds Done?}
     E -->|No| C
-    E -->|Yes| F[Average Metrics]
-    F --> G[Validate Model]
-    
-    style G fill:#9f9,stroke:#363
+    E -->|Yes| F[Report Fold Metrics and Limits]
 ```
 
 ## 6. Model Validation Tests
 
 ```mermaid
 flowchart TD
-    A[Test 1: Architecture] --> B[Model Structure Valid?]
-    B --> C[Test 2: Data Flow]
-    C --> D[Data Flows Correctly?]
-    D --> E[Test 3: Prediction]
-    E --> F[Predictions Valid?]
-    F --> G[Test 4: Performance]
-    G --> H[Meets Thresholds?]
-    H --> I[Validation Complete]
+    A[Inspect Architecture and Data Flow] --> B[Check Prediction Behavior]
+    B --> C[Measure Declared Outcomes]
+    C --> D[Report Findings and Limits]
 ```
 
 ## 7. Validation Scoring
@@ -112,21 +100,16 @@ graph TD
     C[Performance] -->|score| T1
     D[Robustness] -->|score| T1
     E[Reproducibility] -->|score| T1
-    T1 --> F[Overall Validation Score]
-    F --> G{≥ 80?}
-    G -->|Yes| H[Approved]
-    G -->|No| I[Needs Improvement]
+    T1 --> F[No Composite Approval Score Defined]
 ```
 
 ## 8. Model Comparison Validation
 
 ```mermaid
 flowchart LR
-    A[Model A] --> B[Validate]
-    C[Model B] --> B
-    D[Model C] --> B
-    B --> E[Ranked Validated Models]
-    E --> F[Best Model Selected]
+    A[Model A] --> D[Compare Only Under Declared Protocol]
+    B[Model B] --> D
+    C[Model C] --> D
 ```
 
 ## 9. Validation Artifacts
@@ -137,17 +120,13 @@ Available saved models, benchmark CSVs, and JSON manifests can be retained per r
 
 ```mermaid
 flowchart LR
-    A[Model Update] --> B[Run Validation]
-    B --> C{Passes?}
-    C -->|Yes| D[Deploy Update]
-    C -->|No| E[Reject Update]
-    E --> F[Investigate Issues]
-    D --> G[Monitor Performance]
+    A[New Model Artifact] --> B[Run Declared Evaluation]
+    B --> C[Retain Results and Limitations]
 ```
 
 ## Implementation Record
 
-- Saved-model benchmarking and statistical score comparisons are available. No classification metrics, fixed quality gates, aggregate approval score, deployment path, or validated model report exists.
+- Saved-model benchmarking and statistical score comparisons are available. Generic classification helpers exist but are not integrated into a fixed-split application report. No quality gates, aggregate approval score, deployment path, or validated model report exists.
 
 ---
 

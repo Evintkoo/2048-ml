@@ -1,6 +1,6 @@
 # Plan 03 — Game Testing: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Game-engine unit tests cover core rules and seeded randomness; edge-case matrix is incomplete and was not rerun in this pass.
+> **Status: PARTIAL (2026-09-27).** Game-engine unit tests cover core rules and seeded randomness; edge-case matrix is incomplete, though the existing suite passed.
 
 **Goal:** State the current implementation and evidence boundary for game testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Existing game tests cover many mechanics but do not implement every row below.** In particular, score-overflow atomicity and formal maximum-tile behavior remain unverified; tests were not run during this pass.
+**The root test suite passes its existing game-mechanics checks, but does not implement every row below.** In particular, score-overflow atomicity and formal maximum-tile behavior remain unverified.
 
 > **Distinct from `02-Validation/02-game-validation.md`:** Testing = automated `cargo test` (this file). Validation = manual audit + property tests (that file).
 
@@ -48,11 +48,11 @@ No aggregate `GameTestMetrics` reporter is implemented; test assertions are unit
 
 ## 5. Run
 
-There is no separate `game` test target; game tests live within the library module. This pass did not execute tests. Cross-ref `09-Quality/02-Validation/02-game-validation.md` for manual audit checklist; do not duplicate that content here.
+There is no separate `game` test target; game tests live within the binary crate modules. `cargo test` passed 34/34. Cross-ref `09-Quality/02-Validation/02-game-validation.md` for independent validation; do not duplicate that content here.
 
 ## Implementation Record
 
-- Game-engine tests cover most core rules and randomness behavior. The separate test target and score-overflow case described in earlier drafts do not exist. This pass did not run tests.
+- Game-engine tests cover most core rules and randomness behavior and passed within `cargo test` (34/34). The separate test target and score-overflow case described in earlier drafts do not exist.
 
 ---
 
@@ -69,7 +69,7 @@ There is no separate `game` test target; game tests live within the library modu
 
 ## Open questions
 
-- **Current game-test status is unverified in this pass.** Re-run the library suite before release and add explicit overflow/boundary coverage only where the accepted input contract is defined.
+- **Current game-test status:** the root suite passes; explicit overflow/boundary coverage remains open where the accepted input contract applies.
 
 ## Later
 

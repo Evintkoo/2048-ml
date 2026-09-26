@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-unit-testing](01-unit-testing.md) | Unit Testing | PARTIAL — tests exist; coverage not measured |
-| [02-integration-testing](02-integration-testing.md) | Integration Testing | PARTIAL — focused tests; dedicated suite pending |
-| [03-game-testing](03-game-testing.md) | Game Testing | PARTIAL — core rule tests exist; edge coverage pending |
+| [01-unit-testing](01-unit-testing.md) | Unit Testing | PARTIAL — 34 root tests pass; coverage not measured |
+| [02-integration-testing](02-integration-testing.md) | Integration Testing | PARTIAL — focused checks pass; dedicated suite pending |
+| [03-game-testing](03-game-testing.md) | Game Testing | PARTIAL — core rule tests pass; overflow edge case pending |
 
 ## Reading paths
 

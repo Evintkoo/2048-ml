@@ -17,7 +17,7 @@
 2048-ml/
 ├── src/
 │   ├── game_engine/mod.rs       # board, moves, spawn, simulator, rollout labeler
-│   ├── state.rs                 # 27-value supervised state encoding
+│   ├── state.rs                 # 17-value supervised state encoding
 │   ├── actions.rs / policy.rs   # action types, masking, policy helpers
 │   ├── data_pipeline.rs         # CSV schema, metadata, game splits
 │   ├── training.rs              # grouped cross-validation helper
@@ -52,7 +52,7 @@ Previous `learning_rate/epochs/batch_size` example deleted — not real automl f
 
 ## 4. Dependencies (Pinned)
 
-The root manifest declares Rust 1.75 minimum, a local-path AutoML dependency, Polars 0.46, and rand_chacha 0.3. Record the actual compiler, submodule commit, and local modifications for each result; no released-version label alone captures the dirty local worktree.
+The root manifest declares Rust 1.75 minimum, a local-path AutoML dependency, Polars 0.46, and rand_chacha 0.3. Record the actual compiler and exact submodule commit for each result; manifest constraints alone do not capture the runtime environment.
 
 ## Implementation Record
 
@@ -73,7 +73,7 @@ The root manifest declares Rust 1.75 minimum, a local-path AutoML dependency, Po
 
 ## Open questions
 
-- **Keep this source map aligned with code changes.** Record local submodule modifications as well as its declared pin when citing framework internals.
+- **Keep this source map aligned with code changes.** Record the declared AutoML pin and exact root revision when citing framework internals.
 
 ## Later
 
