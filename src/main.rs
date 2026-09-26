@@ -663,6 +663,13 @@ fn main() {
                 "tune_trials": search_config.as_ref().map(|config| config.n_trials),
                 "selected_n_estimators": selected_n_estimators,
                 "selected_max_depth": selected_max_depth,
+                "grouped_cv_evaluation": {
+                    "strategy": "GroupKFold",
+                    "n_splits": cv.fold_accuracy.len(),
+                    "fold_accuracy": cv.fold_accuracy,
+                    "mean_accuracy": cv.mean_accuracy,
+                    "std_accuracy": cv.std_accuracy
+                },
                 "study_artifact": study_path,
                 "held_out_evaluation": holdout_metrics
             })).expect("failed to write training manifest");
