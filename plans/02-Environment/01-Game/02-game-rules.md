@@ -21,7 +21,7 @@
 |------|---------------|
 | Scoring — score = sum merges, NEVER label, `TaskType::MultiClassification` `action:u8` | `02-Environment/02-Rules/01-scoring-rules.md` |
 | Win/lose — 2048 not terminal, terminal = `would_change==false` for all dirs, Tier thresholds | `02-Environment/02-Rules/02-win-lose-conditions.md` |
-| Valid moves — `board.would_change(dir)` + constrained renormalization | `02-Environment/02-Rules/03-valid-moves.md` |
+| Valid moves — `board.would_change(dir)` + legal-action masking | `02-Environment/02-Rules/03-valid-moves.md` |
 | Canonical training state — 16 board cells plus current score (17 values) | Plan 00 and `03-State/04-Encoding/01-state-vector.md` |
 | Engine/RNG/Spawn | `01-Game/01-game-engine.md` + `03-Simulation-Engine/02-randomness.md` |
 
@@ -35,7 +35,7 @@ Thin redirect only. Full rules live in `02-Rules/*` — this file prevents dupli
 - **Move:** slide all tiles in direction → merge equal neighbours once per tile per move (compressed → merged → compressed). One merge per tile per move.
 - **Spawn after move:** one new `2`/`4` 90/10 via seeded RNG; if board unchanged, no spawn and move is invalid.
 - **Score:** sum of merged-tile values, stored as `u64` metadata only — see `01-scoring-rules.md` (action `u8` 0–3 is the only label).
-- **Terminal:** board full AND no `would_change` — see `02-win-lose-conditions.md`. Score evaluation vs heuristic ~512.
+- **Terminal:** no direction changes the board — see `02-win-lose-conditions.md`. Baseline score comparisons use retained results under the declared evaluation protocol.
 
 > No `GameState` enum defined here. No abort variant. No variant table (all variants out-of-scope; 4×4 fixed).
 
