@@ -69,7 +69,7 @@ Canonical `masked_argmax` in `01-model-output-to-action.md`.
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- The action-selection implementation is complete. Its game-level quality remains unmeasured until a trained model and held-out policy evaluation are available.
 
 ## Later
 

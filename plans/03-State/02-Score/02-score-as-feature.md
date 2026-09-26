@@ -92,7 +92,7 @@ let mean_game_score = benchmark_mean_score(&model, n_games); // downstream bench
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No score-feature implementation work remains open. Predictive usefulness is an empirical question for the case-study evaluation; the canonical feature definition remains fixed by Plan 00.
 
 ## Later
 

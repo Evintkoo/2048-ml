@@ -22,7 +22,7 @@ Canonical header (17 features + action = 18 columns): `grid_0,...,grid_15,score_
 ## 3. Quality Contract
 
 - **Validation:** header regex exact match; `NF==18`; `action ∈ {0,1,2,3}` ; features are finite and checked against current per-feature ranges; score feature is index 16 and may exceed one. The validator cannot check source-board legality.
-- **Splits:** chronological game-level 70/15/15 holdout (14k/3k/3k canonical); keep every `game_id` intact. `GroupKFold` is reserved for group-preserving CV inside training and does not enforce chronological order. No fitted preprocessing is currently applied.
+- **Splits:** chronological game-level 70/15/15 split when selected by the study protocol; keep every `game_id` intact. No dataset volume is canonical. `GroupKFold` is reserved for group-preserving CV inside training and does not enforce chronological order. No fitted preprocessing is currently applied.
 - **Normalization:** deterministic divisors are used; fitted `StandardScaler` is not in the root training path. Values above one are permitted for large tiles and scores.
 - Versioning: see `03-Storage/02-data-versioning.md`. Storage paths: see `03-Storage/01-dataset-storage.md`.
 

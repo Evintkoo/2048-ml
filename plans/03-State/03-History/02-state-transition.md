@@ -89,7 +89,7 @@ Save training rows through the canonical CSV writer; row-aligned provenance stay
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No separate transition-object deliverable remains under the supervised-only scope. Any later reinforcement-learning study requires a distinct scope and data protocol.
 
 ## Later
 

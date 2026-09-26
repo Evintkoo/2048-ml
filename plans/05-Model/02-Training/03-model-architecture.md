@@ -134,7 +134,7 @@ flowchart LR
 
 ## Implementation Record
 
-- The implementation uses AutoML revision `88a86bf` and the root CLI checks for exactly four probability columns before saving. Supported candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The known seeded-fit/serialization defects have focused fixes; broader candidate performance remains unmeasured.
+- The implementation uses AutoML revision `82d8483` and the root CLI checks for exactly four probability columns before saving. Supported candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The known seeded-fit/serialization defects have focused fixes; broader candidate performance remains unmeasured.
 - HyperOptX search currently supports only RandomForest and ExtraTrees. No neural-network architecture is present; candidate performance remains unmeasured.
 
 ---

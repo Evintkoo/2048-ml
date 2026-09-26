@@ -25,7 +25,7 @@ Same loop as `02-self-play-data.md §3` — record `(state, random_action)` then
 
 ## 4. Volume — Canonical (Configurable)
 
-The CLI game count is configurable; no 5,000-game target is approved or canonical. The proposed 20k rollout-labeled corpus is unrun and projected at roughly 103 hours, pending a declared compute budget. Any split must keep games intact and follow the selected protocol.
+The CLI game count is configurable; no 5,000-game target is approved or canonical. The proposed 20k rollout-labeled corpus is unrun; the retained two-game pilot projects about 228 hours by linear extrapolation, with high uncertainty. A larger pilot and declared compute budget are prerequisites. Any split must keep games intact and follow the selected protocol.
 
 ## 5. Storage & Validation
 
@@ -36,7 +36,7 @@ CSV `06-Data/03-Storage/random_play.csv` — 18 cols `grid_0..score_normalized,a
 ## Implementation Record
 
 - The CLI implements uniform valid-action random play and rollout relabeling, with deterministic per-game seeds, checkpoint/resume, group metadata, and manifest output. Game count and output path are configurable.
-- No canonical 5k-game corpus has been approved or created; the measured 20k proposal is roughly 103 hours and awaits a declared compute budget.
+- No canonical 5k-game corpus has been approved or created; the two-game pilot projects about 228 hours for 20k games by linear extrapolation, with high uncertainty; a larger pilot and declared budget are needed.
 
 - Volumes: `01-data-collection-strategy.md §4`
 - Labeling: `01-data-collection-strategy.md §8.3`

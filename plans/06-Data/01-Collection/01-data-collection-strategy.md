@@ -239,7 +239,7 @@ Files in `06-Data/01-Collection/`: `01-data-collection-strategy.md` (this hub), 
 
 ## Open questions
 
-- A 20k rollout-labeled corpus is estimated at roughly 103 hours under the measured configuration. It remains unscheduled pending explicit compute budget; checkpoint/resume support now exists. Resolve whether labeling must follow the train/test split before describing a canonical run.
+- The 20k rollout-labeled corpus is unrun. The retained two-game pilot projects roughly 228 hours by linear extrapolation, with high uncertainty; a larger pilot and declared budget are required. Checkpoint/resume support exists. Resolve whether labeling must follow the train/test split before describing a canonical run.
 
 ## Later
 
