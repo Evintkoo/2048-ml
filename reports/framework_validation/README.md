@@ -150,6 +150,16 @@ Artifacts:
 - `pinned-82d8483-run-2/`
 - `pinned-82d8483-comparison.json`
 
+### Per-case fit/predict timing summary
+
+The two repeated seed-42 result files also retain a `fit_predict_seconds` measurement for each
+dataset/model case. `scripts/summarize_framework_fit_timings.py` reproduces
+[`pinned-82d8483-per-case-timings.csv`](pinned-82d8483-per-case-timings.csv), which records both
+observations and their median for all 15 cases. This is a descriptive two-run timing summary on one
+host. The timer includes `TrainEngine::fit`, `predict`, and `predict_proba`; it excludes data loading,
+serialization, process startup, and peak memory. The separate aggregate process probe remains the only
+RSS measurement. These timings do not form a matched framework performance comparison.
+
 ## Diagnosis and fix
 
 The preceding pinned commit `88a86bf44a0cb03664931f7ef15201b95fa11255`

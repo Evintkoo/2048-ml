@@ -1,0 +1,16 @@
+dataset,model,repeats,run1_fit_predict_seconds,run2_fit_predict_seconds,median_fit_predict_seconds
+breast_cancer_wisconsin_diagnostic,adaboost,2,0.308331083,0.336238958,0.322285020
+breast_cancer_wisconsin_diagnostic,extra_trees,2,0.044517083,0.026024042,0.035270562
+breast_cancer_wisconsin_diagnostic,knn,2,0.011741750,0.013073333,0.012407542
+breast_cancer_wisconsin_diagnostic,naive_bayes,2,0.003558083,0.003634584,0.003596333
+breast_cancer_wisconsin_diagnostic,random_forest,2,0.069261209,0.088313292,0.078787251
+iris,adaboost,2,0.012802917,0.010866583,0.011834750
+iris,extra_trees,2,0.002923917,0.002631583,0.002777750
+iris,knn,2,0.000966125,0.000986500,0.000976312
+iris,naive_bayes,2,0.000751792,0.000695333,0.000723563
+iris,random_forest,2,0.008718709,0.008517583,0.008618146
+wine,adaboost,2,0.043544000,0.043657167,0.043600583
+wine,extra_trees,2,0.015830375,0.006024958,0.010927667
+wine,knn,2,0.001849542,0.001806625,0.001828084
+wine,naive_bayes,2,0.000955917,0.000962709,0.000959313
+wine,random_forest,2,0.012085625,0.011392875,0.011739250

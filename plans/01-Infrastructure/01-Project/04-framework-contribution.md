@@ -1,8 +1,8 @@
 # Plan 04 — Rust-Native AutoML Framework Contribution: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Fixed-configuration sklearn comparisons, three split seeds, and one
-  aggregate resource probe are retained; matched-budget study, per-model profiles, and independent
-  replication remain pending.
+> **Status: PARTIAL (2026-09-27).** Fixed-configuration sklearn comparisons, three split seeds, two-run
+  per-case fit/predict timings, and one aggregate resource probe are retained; matched-budget study,
+  per-model memory profiles, and independent replication remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework
 contribution.
@@ -149,9 +149,12 @@ establish general AutoML superiority.
 - [x] Aggregate single-thread process resource probe retained for the same 15-case fixed-split matrix:
   AutoML 1.33s/27,426,816-byte max RSS; scikit-learn 1.22s/158,466,048-byte max RSS. The process
   boundaries differ, so these values are descriptive only.
+- [x] Per-case fit/predict timings summarized from both seed-42 process runs for all 15 dataset/model
+  cases; source measurements, reproduction script, and CSV are retained in `reports/framework_validation/`.
+  Timings are descriptive and do not include peak memory.
 - [x] Same-split process repeats now cover seeds 42 and 2026; repeated-fit evidence remains bounded to
   these fixed candidate/configuration matrices.
-- [ ] Per-model resource profiles and CLI/library equivalence evidence collected.
+- [ ] Per-model memory profiles and CLI/library equivalence evidence collected.
 - [ ] Independent replication or validation completed.
 
 The original 2026-09-24 root smoke failed once in 20 repetitions. Follow-up checks isolated three issues
@@ -173,10 +176,12 @@ Seed-2026 predictions also match exactly in two processes; seed 2027 remains a
 single-run split diagnostic. Two scikit-learn 1.6.1 runs succeeded and
 repeated metrics and prediction CSVs in 15/15 cases. The report retains their side-by-side metrics,
 exact-label agreement of 8/15, fixed dependencies, and the explicit limits of this one-split comparison.
-A same-host single-thread process probe measured 1.33 seconds and 27,426,816-byte maximum RSS for the
+Per-case fit/predict timings from the two seed-42 runs are summarized in
+`pinned-82d8483-per-case-timings.csv`; no per-model memory measurement is available. A same-host
+single-thread process probe measured 1.33 seconds and 27,426,816-byte maximum RSS for the
 prebuilt AutoML matrix, and 1.22 seconds and 158,466,048-byte maximum RSS for the Python matrix. Since
 process startup and implementations differ, these are not framework performance conclusions. Matched search
-budgets, per-model resource profiles, broader common-split process repeatability, API/CLI parity, and
+budgets, per-model memory profiles, broader common-split process repeatability, API/CLI parity, and
 independent replication remain outstanding.
 
 ## Open questions
@@ -184,8 +189,9 @@ independent replication remain outstanding.
 - **The evidence remains bounded by fixed-split diagnostics.** Three standard datasets and five AutoML
   models have one split each under seeds 42, 2026, and 2027. Seeds 42 and 2026 each
   have two exact-repeat runs with save/load equivalence. A comparison-only sklearn matrix and aggregate
-  single-thread resource probe are also retained. There is no matched search-budget comparison, per-model resource profile, broad dataset
-  study, CLI/library equivalence, or independent replication. Further experiments require a declared
+  single-thread resource probe are also retained. There is no matched search-budget comparison,
+  per-model memory profile, broad dataset study, CLI/library equivalence, or independent replication.
+  Further experiments require a declared
   compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
 
 ## Later
