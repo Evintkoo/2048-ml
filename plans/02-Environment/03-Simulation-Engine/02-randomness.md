@@ -1,6 +1,6 @@
 # Plan 02 — Randomness and Determinism: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** `SeedManager` derives CLI game, training, HyperOptX, data-sampling, CV, and analysis seeds; the known AutoML determinism defects are fixed, but general config loading and broader process-level reproducibility checks remain pending.
+> **Status: PARTIAL (2026-09-27).** `SeedManager` derives CLI game, training, HyperOptX, data-sampling, CV, and analysis seeds; a 10,000-game fitted-policy CSV repeated exactly on the same machine, while config loading and broad framework/platform reproducibility remain open.
 
 **Goal:** State the current implementation and evidence boundary for randomness and determinism.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats seed derivation as implemented in root workflows with bounded evidence.** `src/seeds.rs` provides one `SeedManager` constructed from the CLI's global seed. Game IDs use wrapping addition with `game_id`; final AutoML fit uses the global seed, while tuning, data relabeling, CV, and analysis use documented offsets. The HyperOptX search JSON does not configure general seeds. The identified AutoML leaf-tie, class-order, and float-roundtrip defects are fixed in the pinned revision; broader model/dataset reproducibility remains unmeasured.
+**This plan treats seed derivation as implemented in root workflows with bounded evidence.** `src/seeds.rs` provides one `SeedManager` constructed from the CLI's global seed. Game IDs use wrapping addition with `game_id`; final AutoML fit uses the global seed, while tuning, data relabeling, CV, and analysis use documented offsets. The HyperOptX search JSON does not configure general seeds. The identified AutoML leaf-tie, class-order, float-roundtrip, KNN vote-tie, and ExtraTrees selection-tie defects are fixed in pinned revision `82d8483`. A 10,000-game fitted-policy run repeated with the same seed sequence and produced the same per-game CSV digest and action counts on the same machine. This is bounded simulator evidence; broader model/dataset, cross-platform, and cross-version reproducibility remain unmeasured.
 
 > **Canonical RNG:** `ChaCha8Rng::seed_from_u64(seed)` per game; global seed linked to **Evintkoo/automl `TrainingConfig::with_random_state`** (see `01-Infrastructure/02-Configuration/02-training-config.md` §6). Spawn 90/10 via `spawn_prob_4:0.1`. Headless only.
 
@@ -118,7 +118,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 ## 8. Rayon Thread Count — Determinism Note
 
 - Collection uses the CLI `--threads` value to build a fixed-size Rayon pool; the value is retained in the collection manifest. The number of threads does not change game seeds or collected ordering.
-- HyperOptX tuning currently runs serially (`n_jobs = 1`). Pinned AutoML `82d848323eed5e2af86d046d529916c448f2442c` fixes the identified seeded-fit, serialization, and KNN/ExtraTrees tie-handling defects. Two fixed-split standard-dataset runs matched 15/15 predictions, but framework-wide determinism across models, datasets, seeds, platforms, and versions has not been established.
+- HyperOptX tuning currently runs serially (`n_jobs = 1`). Pinned AutoML `82d848323eed5e2af86d046d529916c448f2442c` fixes the identified seeded-fit, serialization, and KNN/ExtraTrees tie-handling defects. Two fixed-split standard-dataset runs matched 15/15 predictions. The saved-policy benchmark was also run twice on seeds 84024–94023; the 10,000-row per-game action CSV digest and counts matched exactly. These fixed-machine checks do not establish framework-wide determinism across models, datasets, platforms, or versions.
 - Preferred MVP: parallel with per-game seeded RNG (`ChaCha8Rng::seed_from_u64(global.wrapping_add(game_id))`) so order does not matter; still log `threads` in `SimulationMetrics`.
 
 ## 9. Checklist
@@ -142,7 +142,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 
 - Games use `ChaCha8Rng::seed_from_u64`; initial tiles, random actions, and spawned tiles share the per-game RNG. Four-tile spawn probability is configurable and defaults to 0.1.
 - `SeedManager` centralizes root CLI seed derivation; final-fit uses the global seed, while HyperOptX, data sampling, CV, and analysis use documented offsets. Game batches use the same manager and do not depend on Rayon scheduling. Collector manifests record seed range and thread count.
-- On 2026-09-24, `cargo check`, `cargo clippy -- -D warnings`, formatting validation, and a temporary synthetic-data `train --tune-trials 2` wiring run passed. The emitted run manifest recorded global seed 42 and derived training/HyperOptX/data/CV seeds 42/44/45/46. Synthetic metrics are not research evidence. Current seed-42 fixed-split framework validation on AutoML `82d8483` matched predictions for 15/15 dataset/model pairs across two runs; this is limited evidence, not a general guarantee.
+- On 2026-09-24, `cargo check`, `cargo clippy -- -D warnings`, formatting validation, and a temporary synthetic-data `train --tune-trials 2` wiring run passed. The emitted run manifest recorded global seed 42 and derived training/HyperOptX/data/CV seeds 42/44/45/46. Synthetic metrics are not research evidence. Current seed-42 fixed-split framework validation on AutoML `82d8483` matched predictions for 15/15 dataset/model pairs across two runs. A separately fitted pilot policy also produced identical 10,000-game CSV results on a repeated same-machine run; this does not establish cross-platform behavior or model quality.
 - Validation: deterministic same-seed checks and a 10,000-spawn frequency check pass in the root test suite. Cross-platform/version identity is not claimed beyond the pinned dependency versions.
 
 ---
@@ -160,7 +160,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 
 ## Open questions
 
-- **The evidence remains bounded by current results.** Root CLI seed derivation is centralized, but config-file loading is absent and broad AutoML repeated-run behavior has not been measured. The known defects and pinned fix are described in the [framework architecture audit](../../01-Infrastructure/01-Project/04-framework-architecture.md).
+- **The evidence remains bounded by current results.** Root CLI seed derivation is centralized, and one policy simulator seed sequence plus one fixed-split dataset matrix have exact same-machine repeats. Config-file loading is absent; broad AutoML behavior across models, datasets, platforms, and versions remains unmeasured. The known defects and pinned fixes are described in the [framework architecture audit](../../01-Infrastructure/01-Project/04-framework-architecture.md).
 
 ## Later
 
