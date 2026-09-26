@@ -7,22 +7,221 @@
     "hyperopt": 90629,
     "training": 90627
   },
-  "created_utc": "2026-09-26T23:37:41.099206+00:00",
+  "created_utc": "2026-09-26T23:55:17.270529+00:00",
   "cv_folds": 5,
   "dataset_schema": "2048-action-policy-v2",
   "development_fraction": 0.85,
   "global_seed": 90627,
   "grouped_cv_evaluation": {
     "fold_accuracy": [
-      0.2852512155591572,
+      0.2884927066450567,
       0.2694063926940639,
-      0.28370786516853935,
+      0.27808988764044945,
       0.26380368098159507,
-      0.2852664576802508
+      0.27586206896551724
     ],
-    "mean_accuracy": 0.2774871224167213,
+    "fold_classification_metrics": [
+      {
+        "accuracy": 0.2884927066450567,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            67,
+            29,
+            31,
+            38
+          ],
+          [
+            50,
+            54,
+            21,
+            30
+          ],
+          [
+            52,
+            47,
+            23,
+            18
+          ],
+          [
+            61,
+            45,
+            17,
+            34
+          ]
+        ],
+        "macro_f1": 0.27756911507293636,
+        "macro_precision": 0.2833022774327122,
+        "macro_recall": 0.2838234816686635,
+        "n_rows": 617,
+        "per_action_f1": [
+          0.3392405063291139,
+          0.3272727272727273,
+          0.19827586206896552,
+          0.24548736462093862
+        ]
+      },
+      {
+        "accuracy": 0.2694063926940639,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            44,
+            33,
+            6,
+            29
+          ],
+          [
+            24,
+            38,
+            9,
+            35
+          ],
+          [
+            34,
+            37,
+            4,
+            38
+          ],
+          [
+            35,
+            35,
+            5,
+            32
+          ]
+        ],
+        "macro_f1": 0.24564721617791396,
+        "macro_precision": 0.24809369644046622,
+        "macro_recall": 0.2714528398860305,
+        "n_rows": 438,
+        "per_action_f1": [
+          0.35341365461847385,
+          0.3052208835341365,
+          0.05839416058394161,
+          0.26556016597510373
+        ]
+      },
+      {
+        "accuracy": 0.27808988764044945,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            40,
+            6,
+            24,
+            24
+          ],
+          [
+            29,
+            11,
+            29,
+            14
+          ],
+          [
+            32,
+            5,
+            25,
+            15
+          ],
+          [
+            40,
+            10,
+            29,
+            23
+          ]
+        ],
+        "macro_f1": 0.2654739941169745,
+        "macro_precision": 0.290928595505716,
+        "macro_recall": 0.2770568890323252,
+        "n_rows": 356,
+        "per_action_f1": [
+          0.34042553191489366,
+          0.191304347826087,
+          0.2717391304347826,
+          0.2584269662921348
+        ]
+      },
+      {
+        "accuracy": 0.26380368098159507,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            12,
+            12,
+            1,
+            57
+          ],
+          [
+            8,
+            24,
+            4,
+            44
+          ],
+          [
+            6,
+            23,
+            4,
+            54
+          ],
+          [
+            7,
+            22,
+            2,
+            46
+          ]
+        ],
+        "macro_f1": 0.22985005074910786,
+        "macro_precision": 0.3131061862405146,
+        "macro_recall": 0.2724302680778711,
+        "n_rows": 326,
+        "per_action_f1": [
+          0.20869565217391303,
+          0.29813664596273287,
+          0.0816326530612245,
+          0.33093525179856115
+        ]
+      },
+      {
+        "accuracy": 0.27586206896551724,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            27,
+            4,
+            11,
+            39
+          ],
+          [
+            21,
+            11,
+            13,
+            22
+          ],
+          [
+            35,
+            4,
+            20,
+            29
+          ],
+          [
+            35,
+            6,
+            12,
+            30
+          ]
+        ],
+        "macro_f1": 0.27095787473575966,
+        "macro_precision": 0.3189891041162228,
+        "macro_recall": 0.2715577370540507,
+        "n_rows": 319,
+        "per_action_f1": [
+          0.27135678391959794,
+          0.2391304347826087,
+          0.2777777777777778,
+          0.29556650246305416
+        ]
+      }
+    ],
+    "mean_accuracy": 0.27513094738533644,
+    "mean_macro_f1": 0.2578996501705385,
     "n_splits": 5,
-    "std_accuracy": 0.009077792707594491,
+    "std_accuracy": 0.008353489897135845,
+    "std_macro_f1": 0.017616344291638154,
     "strategy": "GroupKFold"
   },
   "held_out_evaluation": {
@@ -47,10 +246,10 @@
         30
       ],
       [
-        37,
+        36,
         11,
         15,
-        29
+        30
       ],
       [
         22,
@@ -65,18 +264,18 @@
       19
     ],
     "interpretation": "development diagnostic on chronological held-out games; not a confirmatory policy-quality estimate",
-    "macro_f1": 0.2741490504683366,
-    "macro_precision": 0.2983934735260883,
+    "macro_f1": 0.27413350750952126,
+    "macro_precision": 0.29861536835251745,
     "macro_recall": 0.28673161633808886,
     "n_rows": 391,
     "per_action_f1": [
-      0.30000000000000004,
+      0.3012552301255231,
       0.2465753424657534,
       0.2127659574468085,
-      0.33725490196078434
+      0.3359375
     ],
     "predictions_csv": "reports/candidate_classifier_pilot/2026-09-27/extra_trees.policy.holdout-predictions.csv",
-    "predictions_csv_sha256": "b62c1fa85429abee2b15521fa41197e742c4e99ec87ca2f29b690a8c2ee3e06f"
+    "predictions_csv_sha256": "9b8ff85ea1d40579ad4e4e87ce85319793f213c74f20067b6702c15f7f56bbf4"
   },
   "hyperparameter_optimization": null,
   "manifest_schema": "game2048-ml.training-run",
@@ -85,11 +284,11 @@
   "metadata_sha256": "3951d0d6abb3c569736a138e4aa0e19780fd420d1ddb59f80b573afdc31ad41b",
   "model": "extra_trees",
   "model_artifact": "reports/candidate_classifier_pilot/2026-09-27/extra_trees.policy.json",
-  "model_artifact_sha256": "a87e3fbd2d172d6bd15835374c17b21a06ba1dc413fe0f3dfb090b63414d0ba7",
+  "model_artifact_sha256": "df71565b7a770f2c21dead0e139f818c0026d2466a5009b34cf616eeeb853e73",
   "project_version": "0.1.0",
   "selected_max_depth": 6,
   "selected_n_estimators": 100,
-  "source_revision": "db628f49a0aa9201125fcfbb8cf71cbcf19337cb",
+  "source_revision": "af022d00b7fe4adc04678543fbd0e7e8743ebc39",
   "state_feature_count": 17,
   "study_artifact": null,
   "training_configuration": {

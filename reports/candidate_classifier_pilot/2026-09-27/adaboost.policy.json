@@ -771,7 +771,7 @@
     "rmse": null,
     "mae": null,
     "r2": null,
-    "training_time_secs": 1.678798416,
+    "training_time_secs": 1.651664125,
     "n_features": 17,
     "n_samples": 2056
   },

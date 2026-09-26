@@ -21,8 +21,11 @@ pub enum TrainingError {
 #[derive(Clone, Debug, PartialEq)]
 pub struct GroupedCvResult {
     pub fold_accuracy: Vec<f64>,
+    pub fold_metrics: Vec<crate::evaluation::ClassificationSummary>,
     pub mean_accuracy: f64,
     pub std_accuracy: f64,
+    pub mean_macro_f1: f64,
+    pub std_macro_f1: f64,
 }
 
 /// Builds the canonical tree-policy training configuration. Classical tree
@@ -83,6 +86,7 @@ pub fn grouped_cross_validate_configured(
         CrossValidator::new(CVStrategy::GroupKFold { n_splits }).with_random_state(seed);
     let folds = validator.split(data.height(), None, Some(&group_array))?;
     let mut fold_accuracy = Vec::with_capacity(folds.len());
+    let mut fold_metrics = Vec::with_capacity(folds.len());
     for fold in folds {
         let train_groups: std::collections::HashSet<i64> =
             fold.train_indices.iter().map(|&i| groups[i]).collect();
@@ -108,11 +112,17 @@ pub fn grouped_cross_validate_configured(
             .column("action")?
             .cast(&polars::prelude::DataType::Float64)?;
         let actual = actual.f64()?.into_no_null_iter();
-        let correct = actual
-            .zip(predicted.iter())
-            .filter(|(a, p)| (*a - *p).abs() < 0.5)
-            .count();
-        fold_accuracy.push(correct as f64 / test.height() as f64);
+        let actual: Vec<usize> = actual.map(|action| action as usize).collect();
+        let predicted: Vec<usize> = predicted.iter().map(|&action| action as usize).collect();
+        let summary = crate::evaluation::summarize_classification(&actual, &predicted, 4)
+            .ok_or_else(|| {
+                TrainingError::AutoMl(automl::AutoMLError::ValidationError(
+                    "grouped CV fold contains empty, unaligned, or out-of-range action labels"
+                        .to_string(),
+                ))
+            })?;
+        fold_accuracy.push(summary.accuracy);
+        fold_metrics.push(summary);
     }
     let mean_accuracy = fold_accuracy.iter().sum::<f64>() / fold_accuracy.len() as f64;
     let variance = fold_accuracy
@@ -120,10 +130,23 @@ pub fn grouped_cross_validate_configured(
         .map(|score| (score - mean_accuracy).powi(2))
         .sum::<f64>()
         / fold_accuracy.len() as f64;
+    let fold_macro_f1: Vec<f64> = fold_metrics
+        .iter()
+        .map(|summary| summary.macro_f1)
+        .collect();
+    let mean_macro_f1 = fold_macro_f1.iter().sum::<f64>() / fold_macro_f1.len() as f64;
+    let variance_macro_f1 = fold_macro_f1
+        .iter()
+        .map(|score| (score - mean_macro_f1).powi(2))
+        .sum::<f64>()
+        / fold_macro_f1.len() as f64;
     Ok(GroupedCvResult {
         fold_accuracy,
+        fold_metrics,
         mean_accuracy,
         std_accuracy: variance.sqrt(),
+        mean_macro_f1,
+        std_macro_f1: variance_macro_f1.sqrt(),
     })
 }
 

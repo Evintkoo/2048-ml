@@ -47,6 +47,16 @@ def classify(actual: list[int], predicted: list[int]) -> dict:
     }
 
 
+def classify_matrix(matrix: list[list[int]]) -> dict:
+    actual = []
+    predicted = []
+    for truth, row in enumerate(matrix):
+        for guess, count in enumerate(row):
+            actual.extend([truth] * count)
+            predicted.extend([guess] * count)
+    return classify(actual, predicted)
+
+
 def close(a: float, b: float) -> bool:
     return abs(a - b) <= 1e-12
 
@@ -81,6 +91,19 @@ def main() -> None:
         assert len(grouped_cv["fold_accuracy"]) == 5
         assert close(fmean(grouped_cv["fold_accuracy"]), grouped_cv["mean_accuracy"])
         assert close(pstdev(grouped_cv["fold_accuracy"]), grouped_cv["std_accuracy"])
+        fold_metrics = grouped_cv["fold_classification_metrics"]
+        assert len(fold_metrics) == 5
+        assert len(grouped_cv["fold_accuracy"]) == len(fold_metrics)
+        for accuracy, fold in zip(grouped_cv["fold_accuracy"], fold_metrics):
+            matrix = fold["confusion_matrix_actual_rows_predicted_columns"]
+            assert len(matrix) == 4 and all(len(row) == 4 for row in matrix)
+            assert sum(map(sum, matrix)) == fold["n_rows"]
+            assert close(accuracy, classify_matrix(matrix)["accuracy"])
+            for field in ("macro_precision", "macro_recall", "macro_f1"):
+                assert close(fold[field], classify_matrix(matrix)[field])
+        fold_macro_f1 = [fold["macro_f1"] for fold in fold_metrics]
+        assert close(fmean(fold_macro_f1), grouped_cv["mean_macro_f1"])
+        assert close(pstdev(fold_macro_f1), grouped_cv["std_macro_f1"])
         assert holdout["game_ids"] == [17, 18, 19]
         assert holdout["n_rows"] == 391
 

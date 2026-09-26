@@ -1,6 +1,6 @@
 # Plan 03 — Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Score and generic classifier-summary helpers exist, and a 391-row pilot holdout diagnostic is retained; adequate-sample diagnostics and trained-policy results remain pending.
+> **Status: PARTIAL (2026-09-27).** Score and generic classifier-summary helpers exist, grouped-CV fold diagnostics and a 391-row pilot holdout diagnostic are retained; adequate-sample diagnostics and trained-policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Score summaries and generic classification helpers are implemented; the 2048 integration is a bounded pilot diagnostic.** `src/evaluation.rs` summarizes score distributions, bootstrap intervals, action frequencies, and paired/unpaired score comparisons. It also computes accuracy, macro precision/recall/F1, and a confusion matrix. The root `train` command now writes these diagnostics and row-level predictions for 391 chronological pilot holdout rows. This diagnostic is not an adequate-sample or confirmatory policy-quality estimate; valid-action analysis and trained-policy game outcomes remain pending. The standard-dataset runner uses the same helpers on its separate framework-validation track.
+**Score summaries and generic classification helpers are implemented; the 2048 integration is a bounded pilot diagnostic.** `src/evaluation.rs` summarizes score distributions, bootstrap intervals, action frequencies, and paired/unpaired score comparisons. It also computes accuracy, macro precision/recall/F1, and a confusion matrix. The root `train` command reports accuracy, macro precision/recall/F1, per-action F1, and confusion matrices for every grouped-CV fold, and writes the same summaries plus row-level predictions for 391 chronological pilot holdout rows. This diagnostic is not an adequate-sample or confirmatory policy-quality estimate; valid-action analysis and trained-policy game outcomes remain pending. The standard-dataset runner uses the same helpers on its separate framework-validation track.
 
 ## 1. Purpose
 
@@ -187,7 +187,7 @@ flowchart LR
 ## Implementation Record
 
 - `src/evaluation.rs` implements descriptive score summaries, bootstrap intervals, action-frequency summaries, paired sign tests, Mann–Whitney U, Holm adjustment, effect-size helpers, and generic classification summaries (accuracy, macro precision/recall/F1, confusion matrix).
-- Generic classification summaries are used by the standard-dataset diagnostic and the 2048 training command's 391-row chronological pilot holdout report. The latter includes accuracy, macro precision/recall/F1, a confusion matrix, and row-level predictions. It is a bounded classifier diagnostic, not an adequate-sample policy estimate; valid-action analysis, trained-policy results, and scope-defined performance gates remain absent.
+- Generic classification summaries are used for each grouped-CV fold and by the standard-dataset diagnostic and the 2048 training command's 391-row chronological pilot holdout report. Both include accuracy, macro precision/recall/F1, per-class F1, and a confusion matrix; the holdout report also retains row-level predictions. It is a bounded classifier diagnostic, not an adequate-sample policy estimate; valid-action analysis, trained-policy results, and scope-defined performance gates remain absent.
 
 ---
 

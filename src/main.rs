@@ -668,7 +668,18 @@ fn main() {
                     "n_splits": cv.fold_accuracy.len(),
                     "fold_accuracy": cv.fold_accuracy,
                     "mean_accuracy": cv.mean_accuracy,
-                    "std_accuracy": cv.std_accuracy
+                    "std_accuracy": cv.std_accuracy,
+                    "fold_classification_metrics": cv.fold_metrics.iter().map(|summary| serde_json::json!({
+                        "n_rows": summary.n,
+                        "accuracy": summary.accuracy,
+                        "macro_precision": summary.macro_precision,
+                        "macro_recall": summary.macro_recall,
+                        "macro_f1": summary.macro_f1,
+                        "per_action_f1": summary.per_class_f1,
+                        "confusion_matrix_actual_rows_predicted_columns": summary.confusion_matrix
+                    })).collect::<Vec<_>>(),
+                    "mean_macro_f1": cv.mean_macro_f1,
+                    "std_macro_f1": cv.std_macro_f1
                 },
                 "study_artifact": study_path,
                 "held_out_evaluation": holdout_metrics

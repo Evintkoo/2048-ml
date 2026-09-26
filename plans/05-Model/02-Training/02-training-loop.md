@@ -1,6 +1,6 @@
 # Plan 02 — Training Loop: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Classical fit/save/load, grouped CV with retained fold accuracy, and a five-candidate small chronological holdout classifier diagnostic are implemented; adequate-corpus diagnostics and the final refit/test workflow remain pending.
+> **Status: PARTIAL (2026-09-27).** Classical fit/save/load, grouped CV with fold-level class metrics, and a five-candidate small chronological holdout classifier diagnostic are implemented; adequate-corpus diagnostics and the final refit/test workflow remain pending.
 
 **Goal:** State the current implementation and evidence boundary for training loop.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -194,8 +194,8 @@ flowchart LR
 
 ## Implementation Record
 
-- Training uses one classical `TrainEngine::fit` call and exports a serialized model. The root `GroupKFold` wrapper keeps games separate in explicit CV folds and stores fold/mean/SD accuracy in each training manifest; AutoML fit then makes a seeded row-level validation split.
-- No iterative epoch/checkpoint loop is used. The grouped-CV wrapper reports fold accuracy only. Separately, the training CLI writes accuracy, macro precision/recall/F1, a confusion matrix, and row-level predictions for its small chronological holdout; adequate-corpus diagnostics and confirmatory untouched-test scoring remain pending.
+- Training uses one classical `TrainEngine::fit` call and exports a serialized model. The root `GroupKFold` wrapper keeps games separate in explicit CV folds and stores fold/mean/SD accuracy, per-fold classification metrics, and confusion matrices in each training manifest; AutoML fit then makes a seeded row-level validation split.
+- No iterative epoch/checkpoint loop is used. The grouped-CV wrapper reports accuracy, macro precision/recall/F1, per-class F1, and confusion matrices for every fold. Separately, the training CLI writes classification summaries and row-level predictions for its small chronological holdout; adequate-corpus diagnostics and confirmatory untouched-test scoring remain pending.
 - The five compatible classifiers were run on the same 17-game development partition and 391-row, three-game chronological holdout in the 20-game pilot. Manifests and predictions are retained and independently verified under `reports/candidate_classifier_pilot/2026-09-27/`. This small raw-label comparison is exploratory and not model-selection evidence.
 
 ---
@@ -213,7 +213,7 @@ flowchart LR
 
 ## Open questions
 
-- The pilot retains grouped-CV fold accuracy values and holdout predictions/metrics for five candidates, but does not retain per-fold predictions or legal-action metrics. An adequate untouched game-group evaluation and final-refit protocol are still needed; the pilot is too small for model selection.
+- The pilot retains grouped-CV fold accuracy, class metrics and confusion matrices, plus holdout predictions/metrics for five candidates; it does not retain per-fold predictions or legal-action metrics. An adequate untouched game-group evaluation and final-refit protocol are still needed; the pilot is too small for model selection.
 
 ## Later
 
