@@ -1,0 +1,113 @@
+{
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "component_seeds": {
+    "cross_validation": 90631,
+    "data_sampling": 90630,
+    "game_base": 90627,
+    "hyperopt": 90629,
+    "training": 90627
+  },
+  "created_utc": "2026-09-26T23:37:41.099206+00:00",
+  "cv_folds": 5,
+  "dataset_schema": "2048-action-policy-v2",
+  "development_fraction": 0.85,
+  "global_seed": 90627,
+  "grouped_cv_evaluation": {
+    "fold_accuracy": [
+      0.2852512155591572,
+      0.2694063926940639,
+      0.28370786516853935,
+      0.26380368098159507,
+      0.2852664576802508
+    ],
+    "mean_accuracy": 0.2774871224167213,
+    "n_splits": 5,
+    "std_accuracy": 0.009077792707594491,
+    "strategy": "GroupKFold"
+  },
+  "held_out_evaluation": {
+    "accuracy": 0.2864450127877238,
+    "actions": [
+      "up",
+      "down",
+      "left",
+      "right"
+    ],
+    "confusion_matrix_actual_rows_predicted_columns": [
+      [
+        36,
+        12,
+        6,
+        64
+      ],
+      [
+        27,
+        18,
+        17,
+        30
+      ],
+      [
+        37,
+        11,
+        15,
+        29
+      ],
+      [
+        22,
+        13,
+        11,
+        43
+      ]
+    ],
+    "game_ids": [
+      17,
+      18,
+      19
+    ],
+    "interpretation": "development diagnostic on chronological held-out games; not a confirmatory policy-quality estimate",
+    "macro_f1": 0.2741490504683366,
+    "macro_precision": 0.2983934735260883,
+    "macro_recall": 0.28673161633808886,
+    "n_rows": 391,
+    "per_action_f1": [
+      0.30000000000000004,
+      0.2465753424657534,
+      0.2127659574468085,
+      0.33725490196078434
+    ],
+    "predictions_csv": "reports/candidate_classifier_pilot/2026-09-27/extra_trees.policy.holdout-predictions.csv",
+    "predictions_csv_sha256": "b62c1fa85429abee2b15521fa41197e742c4e99ec87ca2f29b690a8c2ee3e06f"
+  },
+  "hyperparameter_optimization": null,
+  "manifest_schema": "game2048-ml.training-run",
+  "manifest_schema_version": 1,
+  "metadata": "reports/collection_pilots/2026-09-27-20-game/training.metadata.csv",
+  "metadata_sha256": "3951d0d6abb3c569736a138e4aa0e19780fd420d1ddb59f80b573afdc31ad41b",
+  "model": "extra_trees",
+  "model_artifact": "reports/candidate_classifier_pilot/2026-09-27/extra_trees.policy.json",
+  "model_artifact_sha256": "a87e3fbd2d172d6bd15835374c17b21a06ba1dc413fe0f3dfb090b63414d0ba7",
+  "project_version": "0.1.0",
+  "selected_max_depth": 6,
+  "selected_n_estimators": 100,
+  "source_revision": "db628f49a0aa9201125fcfbb8cf71cbcf19337cb",
+  "state_feature_count": 17,
+  "study_artifact": null,
+  "training_configuration": {
+    "cv_folds": 5,
+    "cv_strategy": "GroupKFold",
+    "development_fraction": 0.85,
+    "early_stopping_enabled": false,
+    "feature_preprocessing": "canonical state encoder; deterministic scaling",
+    "final_fit_seed": 90627,
+    "model": "extra_trees",
+    "schema_version": 1,
+    "selected_max_depth": 6,
+    "selected_n_estimators": 100,
+    "state_feature_count": 17,
+    "target_column": "action",
+    "task_type": "MultiClassification"
+  },
+  "training_data": "reports/collection_pilots/2026-09-27-20-game/training.csv",
+  "training_data_sha256": "4b1063b3b5c318e271e7191c77a3d440a3fa912e9a9150fb62ddf0d18abd21b3",
+  "tune_trials": null
+}

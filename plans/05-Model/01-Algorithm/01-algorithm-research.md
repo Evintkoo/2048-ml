@@ -1,6 +1,6 @@
 # Plan 01 — Algorithm Research: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Framework API checks and repeated fixed-protocol diagnostics across three standard-dataset split seeds are recorded; matched framework comparisons and 2048 candidate ranking remain pending.
+> **Status: PARTIAL (2026-09-27).** Framework API checks and repeated standard-dataset diagnostics are recorded; a same-split five-candidate 2048 classifier pilot now exists, while matched framework comparisons and confirmatory 2048 ranking remain pending.
 
 **Goal:** State the current implementation and evidence boundary for algorithm research.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats algorithm capability inspection as implemented with comparative evaluation pending.** The smoke suite exercises 13 model/task combinations, but only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes produce four-class probability output in the pinned integration. An initial one-split standard-dataset diagnostic is retained, but it is not a matched baseline study and does not rank candidates for 2048.
+**This plan treats algorithm capability inspection and bounded candidate diagnostics as implemented, with comparative evaluation pending.** The smoke suite exercises 13 model/task combinations, but only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes produce four-class probability output in the pinned integration. A same-split pilot classifier comparison now covers those five models on 391 rows from three held-out games. Its corpus is too small and its outcome is raw action-label classification, so it does not rank policies or establish a case-study winner.
 
 > This is a secondary model-capability and case-study plan. The primary contribution is the Rust-native AutoML architecture defined in `plans/01-Infrastructure/01-Project/04-framework-contribution.md`.
 
@@ -186,6 +186,7 @@ flowchart TD
 
 - `src/framework_validation.rs` smoke-checks 13 model/task combinations and confirms the four-class probability subset: RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes.
 - Fixed-protocol diagnostics across three standard datasets and five candidates are retained in `reports/framework_validation/`. Seed 42 succeeded in all 15 cases and reproduced predictions exactly in all 15. Seed 2026 has two exact repeated process runs, also 15/15; seed 2027 completed 15/15 once. AutoML label agreement with the seed-42 comparison baseline is 8/15; this is not a superiority result. These are fixed-split diagnostics, not matched-budget framework comparisons. A trained 2048 candidate ranking remains incomplete; no winner or threshold pass is claimed.
+- A five-candidate exploratory classifier pilot on the same 20-game corpus is retained under `reports/candidate_classifier_pilot/2026-09-27/`. All candidates used the same 17 development groups, five grouped-CV folds, seed, and 391-row chronological holdout. The report contains fold metrics, holdout predictions, model/data provenance, and independent metric/digest verification. The pilot does not evaluate valid-action rate or game score, and it does not select a model.
 
 ---
 

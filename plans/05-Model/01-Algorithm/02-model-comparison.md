@@ -1,6 +1,6 @@
 # Plan 02 — Model Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Runnable candidates and fixed-protocol standard-dataset diagnostics across three split seeds are documented; 2048 case-study model results remain pending.
+> **Status: PARTIAL (2026-09-27).** Runnable candidates, standard-dataset diagnostics, and a same-split five-candidate 2048 classifier pilot are documented; adequate game-score comparison remains pending.
 
 **Goal:** State the current implementation and evidence boundary for model comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats candidate compatibility as audited and the 2048 model comparison as pending.** The root smoke verifies 13 estimator/task combinations; only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes currently produce the four-class probability output used by `ModelPolicy`. A same-configuration, one-split standard-dataset diagnostic exists across three datasets, but it is limited framework-validation evidence and does not evaluate game outcomes.
+**This plan treats candidate compatibility and a bounded classifier comparison as audited, with the 2048 policy comparison pending.** The root smoke verifies 13 estimator/task combinations; only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes currently produce the four-class probability output used by `ModelPolicy`. A same-configuration, one-split standard-dataset diagnostic exists across three datasets. A separate five-candidate 2048 pilot compares raw rollout-label classification on identical folds and holdout rows, but it is too small to rank game policies and does not evaluate game scores.
 
 > This comparison characterizes AutoML-supported models and the 2048 case study. It does not define the primary framework contribution.
 
@@ -78,13 +78,15 @@ flowchart LR
 
 ## 4. Comparison Metrics — Canonical
 
-| Model | Mean Game Score (rank) | Valid-Action Accuracy | F1 Macro | Inference Time | Notes |
-|-------|------------------------|------------------------------|-----------------|----------------------|-------|
-| RandomForest | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
-| ExtraTrees | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
-| KNN | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
-| AdaBoost | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
-| NaiveBayes | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
+| Model | Mean Game Score (rank) | Valid-Action Accuracy | Pilot Holdout Raw-Label Accuracy | Pilot Holdout Raw-Label Macro-F1 | Inference Time |
+|-------|------------------------|----------------------|-------------------------------:|------------------------------:|--------------|
+| RandomForest | Not measured | Not measured | 0.2967 | 0.2914 | Not measured |
+| ExtraTrees | Not measured | Not measured | 0.2864 | 0.2741 | Not measured |
+| KNN | Not measured | Not measured | 0.2813 | 0.2746 | Not measured |
+| AdaBoost | Not measured | Not measured | 0.3171 | 0.2949 | Not measured |
+| NaiveBayes | Not measured | Not measured | 0.2506 | 0.2282 | Not measured |
+
+These classifier values come from one 391-row holdout of three games in a 20-game rollout corpus. The full grouped-CV and holdout metrics, fold scores, predictions, and digests are retained in [`reports/candidate_classifier_pilot/2026-09-27/`](../../../reports/candidate_classifier_pilot/2026-09-27/README.md). The action targets are rollout-derived labels. This pilot provides no valid-action rate, game-score, inference-time, repeated-fit, or uncertainty comparison.
 
 > Predeclare the case-study ranking rule and uncertainty analysis before running candidates. The canonical scope sets no score or classification thresholds. Game results characterize the 2048 application only.
 >
@@ -157,14 +159,14 @@ flowchart TD
 
 ## 6. Conclusion
 
-Candidate availability is gated by the pinned framework's four-class probability output. The current integration candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The other smoke-tested estimators did not meet that output contract. The retained three-dataset/five-model standard-task diagnostic is one-split framework evidence, not a 2048 model-game comparison; case-study table values remain unmeasured.
+Candidate availability is gated by the pinned framework's four-class probability output. The current integration candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The other smoke-tested estimators did not meet that output contract. The standard-task diagnostic is one-split framework evidence. The 20-game 2048 pilot adds raw-label classifier metrics on one chronological holdout, but game-score, valid-action, and confirmatory case-study results remain unmeasured.
 
 Based on the comparison results, the best model will be selected and documented in `05-Model/01-Algorithm/03-best-algorithm-finding.md`.
 
 ## Implementation Record
 
 - Five four-class probability candidates are identified by `src/framework_validation.rs`; group-aware evaluation is available through `src/training.rs`.
-- A uniform candidate run on an adequate 2048 training corpus has not been performed. The standard-dataset diagnostics include seed-42 and seed-2026 two-process exact prediction repeats plus one seed-2027 run; they check fixed-split capability and reproducibility, not matched tuning budgets or game outcomes. Case-study metric cells remain unmeasured and no model has been selected.
+- All five compatible candidates were fitted with the same seed and split on the retained 20-game pilot. Their five grouped-CV fold metrics and common 391-row chronological holdout predictions were retained and independently verified. This is a small classifier diagnostic only: it does not establish valid-action quality, game-score performance, repeated-fit stability, or a selected-model ranking. No model has been selected.
 
 ---
 

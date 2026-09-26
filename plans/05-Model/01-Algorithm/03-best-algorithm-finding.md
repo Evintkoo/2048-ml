@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan records a pending result, not an inferred winner.** The comparison has not been run on a common adequate dataset or held-out game set. The canonical scope requires separating 2048 case-study evidence from general framework claims; it defines no universal score or classification thresholds.
+**This plan records a pending result, not an inferred winner.** A five-candidate classifier pilot has been run on one common split of the 20-game corpus, but it covers only three held-out games and uses rollout-derived action labels. No matched game-score comparison on adequate evaluation data exists. The canonical scope requires separating 2048 case-study evidence from general framework claims; it defines no universal score or classification thresholds.
 
 ## 1. Purpose
 
@@ -67,9 +67,9 @@ flowchart TD
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Mean Game Score (benchmark) | TBD — run after training | Predeclared practical comparison | Pending — case-study ranking |
-| Valid-Action Accuracy | TBD — run after training | Report with uncertainty | Pending — diagnostic |
-| F1 Macro (weighted, valid actions) | TBD — run after training | Report with uncertainty | Pending — diagnostic |
+| Mean Game Score (benchmark) | Not measured | Predeclared practical comparison | Pending — case-study ranking |
+| Valid-Action Accuracy | Not measured | Report with uncertainty | Pending — diagnostic |
+| Raw-label Macro-F1 (pilot only) | 0.2282–0.2949 across five candidates | Report with uncertainty | Exploratory 391-row holdout; not valid-action or winner evidence |
 | Inference Time | TBD — run after training | Report hardware and distribution | Pending — framework/application efficiency |
 | Training Time | TBD — run after training | Report configuration and budget | Pending — framework efficiency |
 
@@ -81,11 +81,16 @@ Only candidates that pass the pinned framework's four-class probability contract
 
 | Model | Category | Four-class policy output | Case-study result |
 |-------|----------|--------------------------|-------------------|
-| RandomForest | Tree ensemble | Verified | Unmeasured |
-| ExtraTrees | Tree ensemble | Verified | Unmeasured |
-| AdaBoost | Boosting | Verified | Unmeasured |
-| KNN | Instance-based | Verified | Unmeasured |
-| NaiveBayes | Probabilistic classifier | Verified | Unmeasured |
+| RandomForest | Tree ensemble | Verified | 391-row pilot accuracy 0.2967; macro-F1 0.2914 |
+| ExtraTrees | Tree ensemble | Verified | 391-row pilot accuracy 0.2864; macro-F1 0.2741 |
+| AdaBoost | Boosting | Verified | 391-row pilot accuracy 0.3171; macro-F1 0.2949 |
+| KNN | Instance-based | Verified | 391-row pilot accuracy 0.2813; macro-F1 0.2746 |
+| NaiveBayes | Probabilistic classifier | Verified | 391-row pilot accuracy 0.2506; macro-F1 0.2282 |
+
+All five rows refer to raw rollout-label classification on the same small
+chronological holdout. They do not represent game scores, legal-action rates, or
+a model-selection result; full limits and artifacts are in the
+[candidate pilot report](../../../reports/candidate_classifier_pilot/2026-09-27/README.md).
 
 ### 5.2 Model-family claims
 
@@ -134,7 +139,7 @@ flowchart LR
 
 ## Implementation Record
 
-- Selection protocol remains incomplete; matched model and game-score evaluations have not been executed. The winner is intentionally left unselected and metric tables remain TBD.
+- A same-split five-candidate pilot classifier matrix now exists, with common grouped-CV folds and 391 chronological holdout rows. The winner remains unselected because raw-label accuracy/F1 from three games is not a game-score evaluation and is too small for model selection. Valid-action metrics and matched game-score evaluation remain absent.
 - Status: research execution pending; do not select a model from architecture expectations or smoke runs.
 
 ---

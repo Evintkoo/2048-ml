@@ -5,6 +5,7 @@ import argparse
 import csv
 import hashlib
 import json
+from statistics import fmean, pstdev
 from pathlib import Path
 
 MODELS = ("random_forest", "extra_trees", "adaboost", "knn", "naive_bayes")
@@ -19,8 +20,10 @@ def sha256(path: Path) -> str:
 
 
 def classify(actual: list[int], predicted: list[int]) -> dict:
+    if not actual or len(actual) != len(predicted):
+        raise ValueError("actual and predicted labels must be nonempty and aligned")
     matrix = [[0] * 4 for _ in range(4)]
-    for truth, guess in zip(actual, predicted, strict=True):
+    for truth, guess in zip(actual, predicted):
         matrix[truth][guess] += 1
     precision = []
     recall = []
@@ -57,6 +60,10 @@ def main() -> None:
 
     common_rows = None
     summary = []
+    common_training_digest = None
+    common_metadata_digest = None
+    common_source_revision = None
+    common_automl_commit = None
     for model in MODELS:
         stem = f"{model}.policy"
         manifest_path = args.report_dir / f"{stem}.manifest.json"
@@ -72,6 +79,8 @@ def main() -> None:
         assert config["early_stopping_enabled"] is False
         assert grouped_cv["strategy"] == "GroupKFold" and grouped_cv["n_splits"] == 5
         assert len(grouped_cv["fold_accuracy"]) == 5
+        assert close(fmean(grouped_cv["fold_accuracy"]), grouped_cv["mean_accuracy"])
+        assert close(pstdev(grouped_cv["fold_accuracy"]), grouped_cv["std_accuracy"])
         assert holdout["game_ids"] == [17, 18, 19]
         assert holdout["n_rows"] == 391
 
@@ -79,6 +88,22 @@ def main() -> None:
         prediction_path = args.report_dir / f"{stem}.holdout-predictions.csv"
         assert sha256(model_path) == manifest["model_artifact_sha256"]
         assert sha256(prediction_path) == holdout["predictions_csv_sha256"]
+        training_path = Path(manifest["training_data"])
+        metadata_path = Path(manifest["metadata"])
+        training_digest = sha256(training_path)
+        metadata_digest = sha256(metadata_path)
+        assert training_digest == manifest["training_data_sha256"]
+        assert metadata_digest == manifest["metadata_sha256"]
+        if common_training_digest is None:
+            common_training_digest = training_digest
+            common_metadata_digest = metadata_digest
+            common_source_revision = manifest["source_revision"]
+            common_automl_commit = manifest["automl_commit"]
+        else:
+            assert training_digest == common_training_digest
+            assert metadata_digest == common_metadata_digest
+            assert manifest["source_revision"] == common_source_revision
+            assert manifest["automl_commit"] == common_automl_commit
 
         with prediction_path.open(newline="") as stream:
             rows = list(csv.DictReader(stream))
@@ -119,6 +144,10 @@ def main() -> None:
         "models_verified": len(summary),
         "same_holdout_rows": len(common_rows or []),
         "holdout_game_ids": [17, 18, 19],
+        "training_data_sha256": common_training_digest,
+        "metadata_sha256": common_metadata_digest,
+        "source_revision": common_source_revision,
+        "automl_commit": common_automl_commit,
         "models": summary,
         "interpretation": "Small exploratory rollout-label diagnostic; not a policy-quality estimate or model-selection result.",
     }

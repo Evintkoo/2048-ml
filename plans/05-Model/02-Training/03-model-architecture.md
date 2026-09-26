@@ -1,6 +1,6 @@
 # Plan 03 — Model Architecture: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** The integration uses AutoML classical classifiers; five four-class probability candidates are verified, but performance and final selection remain open.
+> **Status: PARTIAL (2026-09-27).** The integration uses AutoML classical classifiers; five four-class candidates have exploratory same-split pilot metrics, but adequate performance evidence and final selection remain open.
 
 **Goal:** State the current implementation and evidence boundary for model architecture.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the model interface as implemented and architecture selection as pending evidence.** The root policy requires 17 numeric features and four class probabilities. RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes pass the integration smoke. No model family is established as best.
+**This plan treats the model interface as implemented and architecture selection as pending evidence.** The root policy requires 17 numeric features and four class probabilities. RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes pass the integration smoke and have metrics from one small, common 2048 classifier split. These raw-label results do not establish a best model family.
 
 ## 1. Purpose
 
@@ -134,8 +134,8 @@ flowchart LR
 
 ## Implementation Record
 
-- The implementation uses AutoML revision `82d8483` and the root CLI checks for exactly four probability columns before saving. Supported candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The known seeded-fit/serialization defects have focused fixes; broader candidate performance remains unmeasured.
-- HyperOptX search currently supports only RandomForest and ExtraTrees. No neural-network architecture is present; candidate performance remains unmeasured.
+- The implementation uses AutoML revision `82d8483` and the root CLI checks for exactly four probability columns before saving. Supported candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The known seeded-fit/serialization defects have focused fixes. Exploratory 391-row holdout metrics are retained for each candidate, but broader candidate performance remains unmeasured.
+- HyperOptX search currently supports only RandomForest and ExtraTrees. No neural-network architecture is present; no candidate has been selected from the pilot.
 
 ---
 

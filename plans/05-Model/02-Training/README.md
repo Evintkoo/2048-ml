@@ -7,8 +7,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-training-pipeline](01-training-pipeline.md) | Training Pipeline | PARTIAL — final test/refit lifecycle pending |
-| [02-training-loop](02-training-loop.md) | Training Loop | PARTIAL — diagnostics pending |
-| [03-model-architecture](03-model-architecture.md) | Model Architecture | PARTIAL — candidate comparison pending |
+| [02-training-loop](02-training-loop.md) | Training Loop | PARTIAL — five-candidate pilot classifier matrix exists; adequate evaluation/final refit pending |
+| [03-model-architecture](03-model-architecture.md) | Model Architecture | PARTIAL — five compatible candidates have small pilot metrics; adequate evaluation and selection pending |
 
 ## Reading paths
 
