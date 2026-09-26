@@ -1,6 +1,6 @@
 # Plan 01 — Rust Dependencies Specification: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** Added sha2 and clarified single-crate domain module layout; root manifest and lockfile present.
+> **Status: DONE (2026-09-24).** Added sha2 and clarified single-crate domain module layout; root manifest and lockfile are present. The AutoML submodule pin was updated to `82d848323eed5e2af86d046d529916c448f2442c` after deterministic tie fixes and validation.
 
 **Goal:** State the current implementation and evidence boundary for rust dependencies specification.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Added sha2 and clarified single-crate domain module layout; root manifest and lockfile present.
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Added sha2 and clarified single-crate domain module layout; root manifest and lockfile are present. The AutoML submodule pin was updated to `82d848323eed5e2af86d046d529916c448f2442c` after deterministic tie fixes and validation.
 
 > **Scope:** This file = `Cargo.toml` constraints & workspace layout. For AutoML capability table (TrainingConfig, ModelType, CV) see `01-Project/02-dependencies.md`. Plan 00 defines the canonical 17-value training input; ticket #034 aligns the root implementation with it.
 
@@ -19,7 +19,7 @@ No `automl/Cargo.toml` duplication — versions pinned to automl's manifest for 
 
 ```toml
 [dependencies]
-automl = { path = "automl" }                    # pinned hash 88a86bf (v1.0.0-139)
+automl = { path = "automl" }                    # pinned hash 82d8483 (v1.0.0-140)
 ndarray = "0.16"                                # pinned to automl; board arrays
 polars = { version = "0.46", features = ["lazy", "csv", "json"] } # current DataFrame; canonical schema is 17+1
 rand = "0.8"                                    # automl-compatible RNG
@@ -65,7 +65,7 @@ sha2 = "0.10"                                   # SHA-256 artifact and dataset m
 2048-ml/
 ├── Cargo.toml     # single crate (MVP)
 ├── src/           # root CLI and cohesive game, state, action, model, data, evaluation modules
-└── automl/        # submodule @ 88a86bf
+└── automl/        # submodule @ 82d8483
 ```
 
 The MVP uses one root crate with cohesive Rust domain modules such as `src/game_engine/`, `src/data_pipeline.rs`, and `src/evaluation.rs`; source files need not reproduce the numbered `plans/` hierarchy. Separate workspace members (`game-engine/`, `data-collector/`, `trainer/`, `benchmark/`) are out of scope until post-MVP.
@@ -91,7 +91,7 @@ The MVP uses one root crate with cohesive Rust domain modules such as `src/game_
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Added sha2 and clarified single-crate domain module layout; root manifest and lockfile present. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** Added sha2 and clarified single-crate domain module layout; root manifest and lockfile are present. The AutoML submodule pin was updated to `82d848323eed5e2af86d046d529916c448f2442c` after deterministic tie fixes and validation. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 
