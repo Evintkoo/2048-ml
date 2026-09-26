@@ -61,7 +61,7 @@ No `AutomationConfig` implementation exists. `scripts/ci-check.sh` is the implem
 
 ## Implementation Record
 
-- Redirect/duplicate audited. The repository now contains `scripts/ci-check.sh` and `.github/workflows/ci.yml`; local execution passes 38/38 tests, fmt, and Clippy. Earlier source revisions passed GitHub Actions; the latest test/config change awaits hosted verification. No deployment or research-benchmark automation exists.
+- Redirect/duplicate audited. The repository now contains `scripts/ci-check.sh` and `.github/workflows/ci.yml`; local execution and hosted run [36279514071](https://github.com/Evintkoo/2048-ml/actions/runs/36279514071) pass 38/38 tests, fmt, and Clippy. No deployment or research-benchmark automation exists.
 
 ---
 

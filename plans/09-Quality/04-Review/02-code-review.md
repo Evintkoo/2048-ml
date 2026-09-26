@@ -43,7 +43,7 @@ The reviewer identifies the changed files and intended behavior, inspects releva
 
 ## 5. Tool availability is not execution evidence
 
-`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. The current root suite passed 38/38; `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings` pass locally. GitHub Actions has passed on earlier revisions; the current source change awaits its hosted run. A coverage report is not configured.
+`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. The current root suite passed 38/38; `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings` pass locally. Hosted run [36279514071](https://github.com/Evintkoo/2048-ml/actions/runs/36279514071) also passes on the current source. A coverage report is not configured.
 
 ## 6. The repository has no approved composite code score
 
@@ -77,7 +77,7 @@ All code reviews result in one of:
 
 ## Implementation Record
 
-- Code-review checklist audited. The root test suite passed 38/38, formatting and Clippy checks pass locally, and earlier revisions passed the configured GitHub workflow. These checks are not an independent reviewer decision. No independent reviewer decision is recorded.
+- Code-review checklist audited. The root test suite passed 38/38, formatting and Clippy checks pass locally, and the current source passed the configured GitHub workflow. These checks are not an independent reviewer decision. No independent reviewer decision is recorded.
 
 ---
 

@@ -1,6 +1,6 @@
 # Plan 03 — Testing Automation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Cargo tests pass in the configured GitHub workflow and local check script; coverage gate and scheduled reporting are absent.
+> **Status: PARTIAL (2026-09-27).** Cargo tests pass locally and in the configured GitHub workflow; coverage gate and scheduled reporting are absent.
 
 **Goal:** State the current implementation and evidence boundary for testing automation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is an automation plan, not a test inventory.** Existing tests run through `scripts/ci-check.sh`, which is called by the GitHub Actions workflow. The latest local run passed 38/38; hosted runs pass on the prior source revision, and this update awaits a 38-test hosted run. No coverage gate or scheduled report is configured.
+**This is an automation plan, not a test inventory.** Existing tests run through `scripts/ci-check.sh`, which is called by the GitHub Actions workflow. Local and hosted run [36279514071](https://github.com/Evintkoo/2048-ml/actions/runs/36279514071) passed 38/38. No coverage gate or scheduled report is configured.
 
 > **See canonical `09-Quality/03-CI/01-ci-pipeline.md` — duplicate stub.** Repetitive CI mermaid trimmed; see canonical for pipeline.
 
@@ -61,7 +61,7 @@ No automated test result dashboards, coverage reports, performance trends, or re
 
 ## Implementation Record
 
-- Redirect/duplicate audited. The CI script passes locally with 38/38 root tests. GitHub Actions passes on the prior source revision; the current 38-test state awaits a hosted run. No coverage dashboard, scheduled performance suite, or historical report artifact exists.
+- Redirect/duplicate audited. The CI script passes locally and in hosted run [36279514071](https://github.com/Evintkoo/2048-ml/actions/runs/36279514071) with 38/38 root tests. No coverage dashboard, scheduled performance suite, or historical report artifact exists.
 
 ---
 
