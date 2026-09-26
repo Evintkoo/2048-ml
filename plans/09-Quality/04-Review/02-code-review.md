@@ -43,7 +43,7 @@ The reviewer identifies the changed files and intended behavior, inspects releva
 
 ## 5. Tool availability is not execution evidence
 
-`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. The current root suite passed 38/38; `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings` pass locally. Hosted run [36279514071](https://github.com/Evintkoo/2048-ml/actions/runs/36279514071) also passes on the current source. A coverage report is not configured.
+`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. The current root suite passed 38/38; `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings` pass locally. Hosted run [36280654071](https://github.com/Evintkoo/2048-ml/actions/runs/36280654071) also passes on commit `af022d0`. A coverage report is not configured.
 
 ## 6. The repository has no approved composite code score
 

@@ -1,6 +1,6 @@
 # Plan 03 — Hypotheses: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Hypotheses remain provisional and untested. UCI diagnostics on AutoML `82d8483` include repeated fixed splits at seeds 42 and 2026 (15/15 prediction matches each). An exploratory 2048 comparison exists but is not confirmatory; statistical tests, effect thresholds, and study power require a finalized protocol.
+> **Status: PARTIAL (2026-09-27).** Hypotheses remain provisional and untested. UCI diagnostics on AutoML `82d8483` include repeated fixed splits at seeds 42, 2026, and 2027 (15/15 prediction matches per repeated split). An exploratory 2048 comparison exists but is not confirmatory; statistical tests, effect thresholds, and study power require a finalized protocol.
 
 **Goal:** State the current implementation and evidence boundary for hypotheses.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -166,7 +166,7 @@ Declare the comparison family and correction before analysis. The CLI currently 
 
 - An exploratory same-seed comparison of Random, Heuristic, and one small-corpus RandomForest pilot is retained in `reports/action-frequency/pilot-comparison.md`. It is not confirmatory evidence for any application hypothesis; independent-sample intervals/effect sizes do not represent paired uncertainty.
 
-- Framework and application hypotheses remain provisional and untested. UCI diagnostics on split seeds 42, 2026, and 2027 are retained; repeated processes on seeds 42 and 2026 matched 15/15 predictions and save/load outputs under AutoML `82d8483`. An exploratory three-policy 2048 score comparison is retained but does not satisfy H1/H2; its intervals and Cohen's d are not paired-seed uncertainty estimates. The `88a86bf` Wine KNN disagreement is historical. No matched-budget benchmark, selected-model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
+- Framework and application hypotheses remain provisional and untested. UCI diagnostics on split seeds 42, 2026, and 2027 are retained; repeated processes on seeds 42, 2026, and 2027 matched 15/15 predictions and save/load outputs under AutoML `82d8483`. An exploratory three-policy 2048 score comparison is retained but does not satisfy H1/H2; its intervals and Cohen's d are not paired-seed uncertainty estimates. The `88a86bf` Wine KNN disagreement is historical. No matched-budget benchmark, selected-model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
 
 ---
 

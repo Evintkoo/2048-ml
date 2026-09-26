@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a proposed design, not a preregistered confirmatory experiment.** UCI diagnostics cover three datasets, five model variants, and split seeds 42, 2026, and 2027 under `reports/framework_validation/`; repeated runs on seeds 42 and 2026 matched all 15 prediction sets and save/load equivalence. An exploratory 10,000-seed 2048 comparison of Random, Heuristic, and a small-corpus fitted policy is retained separately; its bootstrap intervals and Cohen's d use independent-sample formulas despite pairing for sign tests. The earlier `88a86bf` discrepancy is historical. Matched-budget baselines, per-model resources, confirmatory policy evaluation, sample-size rationale, and analysis assumptions remain open.
+**This is a proposed design, not a preregistered confirmatory experiment.** UCI diagnostics cover three datasets, five model variants, and split seeds 42, 2026, and 2027 under `reports/framework_validation/`; repeated runs on seeds 42, 2026, and 2027 matched all 15 prediction sets and save/load equivalence. An exploratory 10,000-seed 2048 comparison of Random, Heuristic, and a small-corpus fitted policy is retained separately; its bootstrap intervals and Cohen's d use independent-sample formulas despite pairing for sign tests. The earlier `88a86bf` discrepancy is historical. Matched-budget baselines, per-model resources, confirmatory policy evaluation, sample-size rationale, and analysis assumptions remain open.
 
 ## 1. Purpose
 
@@ -192,7 +192,7 @@ This design has not been externally or timestampedly preregistered. Before confi
 
 ## Implementation Record
 
-- The two-track design is proposed, not pre-registered. The standard-dataset diagnostics use split seeds 42, 2026, and 2027; repeated processes on seeds 42 and 2026 matched all 15 prediction sets and save/load outputs. These are not matched-budget or per-model resource studies. The separate 2048 pilot comparison is exploratory and does not meet a selected-model protocol. Policy scale and sample size are undecided. Collector labels are generated before grouped CV, and grouped CV is not chronological. Resolve leakage boundaries, trained-model versus game-level experimental units, pairing, budget, and test choice before confirmatory evaluation.
+- The two-track design is proposed, not pre-registered. The standard-dataset diagnostics use split seeds 42, 2026, and 2027; repeated processes on seeds 42, 2026, and 2027 matched all 15 prediction sets and save/load outputs. These are not matched-budget or per-model resource studies. The separate 2048 pilot comparison is exploratory and does not meet a selected-model protocol. Policy scale and sample size are undecided. Collector labels are generated before grouped CV, and grouped CV is not chronological. Resolve leakage boundaries, trained-model versus game-level experimental units, pairing, budget, and test choice before confirmatory evaluation.
 
 ---
 

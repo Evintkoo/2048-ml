@@ -11,7 +11,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | [01-introduction](01-introduction.md) | Introduction | PARTIAL — framework diagnostics and exploratory 2048 comparison recorded; confirmatory studies pending |
 | [02-methodology](02-methodology.md) | Methodology | PARTIAL — redirect; UCI diagnostics and exploratory comparison exist, confirmatory protocol unexecuted |
 | [03-results](03-results.md) | Results | PARTIAL — UCI diagnostics and exploratory 2048 comparison retained; selected-model result table pending |
-| [04-discussion](04-discussion.md) | Discussion | PARTIAL — repeatability passes on two fixed splits; exploratory policy comparison and unevaluated hypotheses recorded |
+| [04-discussion](04-discussion.md) | Discussion | PARTIAL — repeatability passes on three fixed splits; exploratory policy comparison and unevaluated hypotheses recorded |
 
 ## Reading paths
 

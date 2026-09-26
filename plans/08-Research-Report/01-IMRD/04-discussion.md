@@ -1,6 +1,6 @@
 # Plan 04 — Discussion: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Interpretation guidance is outlined; framework diagnostics repeat on two fixed splits and an exploratory 2048 comparison exists, while confirmatory comparisons remain pending.
+> **Status: PARTIAL (2026-09-27).** Interpretation guidance is outlined; framework diagnostics repeat on three fixed splits and an exploratory 2048 comparison exists, while confirmatory comparisons remain pending.
 
 **Goal:** State the current implementation and evidence boundary for discussion.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is an interpretation guide, not a completed findings discussion.** The standard-dataset runs are diagnostics, not matched-budget framework evidence. An exploratory 2048 score comparison exists, but the fitted policy came from a small corpus and its intervals/effect sizes are not paired-design uncertainty estimates. The current pinned repeatability checks passed on two fixed splits; the earlier Wine KNN mismatch is historical evidence. Unjustified thresholds are not decision gates.
+**This plan is an interpretation guide, not a completed findings discussion.** The standard-dataset runs are diagnostics, not matched-budget framework evidence. An exploratory 2048 score comparison exists, but the fitted policy came from a small corpus and its intervals/effect sizes are not paired-design uncertainty estimates. The current pinned repeatability checks passed on three fixed splits; the earlier Wine KNN mismatch is historical evidence. Unjustified thresholds are not decision gates.
 
 > **Status: PENDING.** No conclusions drawn. This file defines how the primary Rust-native AutoML framework results and the downstream 2048 case-study results will be interpreted.
 

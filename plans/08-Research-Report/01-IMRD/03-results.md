@@ -32,7 +32,7 @@ No 2048 game score can substitute for this table.
 
 ## Implementation Record
 
-- The three-dataset/five-model framework matrix is populated for split seeds 42, 2026, and 2027. Same-split repeated processes at seeds 42 and 2026 matched all 15 prediction sets each; save/load predictions matched. One run exists at seed 2027. The earlier `88a86bf` Wine KNN issue is historical. The 2048 comparison report retains exploratory descriptive outcomes only; the selected-model result table remains unpopulated.
+- The three-dataset/five-model framework matrix is populated for split seeds 42, 2026, and 2027. Same-split repeated processes at seeds 42, 2026, and 2027 matched all 15 prediction sets per seed; save/load predictions matched in each run. The earlier `88a86bf` Wine KNN issue is historical. The 2048 comparison report retains exploratory descriptive outcomes only; the selected-model result table remains unpopulated.
 
 ## 2. 2048 Case-Study Winner Protocol (Canonical: `07-Benchmarking/01-Evaluation/01-benchmarking-framework.md`)
 

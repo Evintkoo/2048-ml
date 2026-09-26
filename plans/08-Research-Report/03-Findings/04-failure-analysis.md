@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is primarily a failure-analysis protocol; no trained-policy failure study has run.** A small-corpus fitted policy and exploratory benchmark exist, but do not provide systematic failure coverage. A historical framework failure is recorded: AutoML `88a86bf` produced KNN/ExtraTrees nondeterminism and a Wine KNN save/load mismatch. AutoML `82d8483` fixes deterministic tie handling; repeated matrices matched 15/15 predictions and save/load outputs at seeds 42 and 2026. See the framework and pilot reports.
+**This is primarily a failure-analysis protocol; no trained-policy failure study has run.** A small-corpus fitted policy and exploratory benchmark exist, but do not provide systematic failure coverage. A historical framework failure is recorded: AutoML `88a86bf` produced KNN/ExtraTrees nondeterminism and a Wine KNN save/load mismatch. AutoML `82d8483` fixes deterministic tie handling; repeated matrices matched 15/15 predictions and save/load outputs at seeds 42, 2026, and 2027. See the framework and pilot reports.
 
 > **Note:** This section anticipates potential failures and defines response protocols. Probability estimates are illustrative, not empirically determined. No trained-policy failure data exists yet.
 
