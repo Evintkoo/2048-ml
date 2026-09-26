@@ -1,6 +1,6 @@
 # Plan 00 — Theoretical Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** The policy-learning formulation is outlined; several formal claims are unsound or unverified and are excluded pending review.
+> **Status: PARTIAL (2026-09-27).** The policy-learning formulation is outlined; several formal claims are unsound or unverified and are excluded pending review.
 
 **Goal:** State the current implementation and evidence boundary for theoretical framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

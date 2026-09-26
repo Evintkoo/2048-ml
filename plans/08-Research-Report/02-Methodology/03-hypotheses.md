@@ -1,6 +1,6 @@
 # Plan 03 — Hypotheses: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Hypotheses remain provisional and untested. A seed-42 UCI repeatability diagnostic on AutoML `82d8483` matched 15/15 prediction sets and save/load outputs; it informs framework validation only; statistical tests, effect thresholds, and study power require a finalized protocol.
+> **Status: PARTIAL (2026-09-27).** Hypotheses remain provisional and untested. UCI diagnostics on AutoML `82d8483` include repeated fixed splits at seeds 42 and 2026 (15/15 prediction matches each). An exploratory 2048 comparison exists but is not confirmatory; statistical tests, effect thresholds, and study power require a finalized protocol.
 
 **Goal:** State the current implementation and evidence boundary for hypotheses.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan records questions for future testing, not hypothesis evidence.** The study protocol is not finalized; the initial UCI diagnostic is not a confirmatory matched benchmark. Planned sample sizes do not establish power, and several named tests are not implemented.
+**This plan records questions for future testing, not confirmatory hypothesis evidence.** The study protocol is not finalized; UCI diagnostics are not a matched-budget benchmark. The exploratory 2048 comparison does not resolve H1 or H2 because it uses an unselected pilot policy, and its intervals/effect sizes are independent-sample. Planned sample sizes do not establish power, and several named tests are not implemented.
 
-> **Note:** This section defines hypotheses to be tested. No results are claimed. All answers are pending experimentation.
+> **Note:** This section defines hypotheses to be tested. The retained exploratory 2048 comparison is descriptive context only; no confirmatory hypothesis decision is claimed.
 
 The primary hypotheses concern the Rust-native AutoML framework. The 2048 hypotheses are application-case-study hypotheses. Architecture questions that cannot be reduced to a valid statistical test are evaluated through design evidence, correctness tests, benchmark comparisons, and documented trade-offs.
 
@@ -77,14 +77,14 @@ flowchart TD
 - Choose paired or independent inference based on the evaluation design. Available helpers include Mann–Whitney U for unmatched samples and an exact sign test for matching seed sequences; dependence between games still needs consideration.
 - Declare the multiplicity family before confirmatory analysis.
 - **Effect size:** Cohen's d is reported to quantify practical magnitude; no universal 0.5 cutoff is used as an automatic exclusion rule.
-- **Status:** Not tested; baseline and protocol pending
+- **Status:** Not tested; exploratory baseline comparison exists, but selection and confirmatory protocol are pending
 
 ### H2: Algorithm Comparison
 
 - Candidates must be limited to the actual integration-supported models.
 - The comparison CLI can emit pairwise results and Holm-adjusted p-values; no global multi-group or post-hoc Dunn test is implemented.
 - No sample-size/power analysis or outcome comparison has been completed.
-- **Status:** Not tested; candidate matrix and protocol pending
+- **Status:** Not tested; exploratory single-candidate result is insufficient; full matrix and protocol pending
 
 ### H3: Hyperparameter Tuning Effect
 
@@ -164,7 +164,9 @@ Declare the comparison family and correction before analysis. The CLI currently 
 
 ## Implementation Record
 
-- Framework and application hypotheses remain provisional and untested. The three-dataset/five-model UCI repeatability diagnostic matches 15/15 predictions and save/load outputs under AutoML `82d8483`; the `88a86bf` Wine KNN disagreement is a historical fixed defect. No matched benchmark, model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
+- An exploratory same-seed comparison of Random, Heuristic, and one small-corpus RandomForest pilot is retained in `reports/action-frequency/pilot-comparison.md`. It is not confirmatory evidence for any application hypothesis; independent-sample intervals/effect sizes do not represent paired uncertainty.
+
+- Framework and application hypotheses remain provisional and untested. UCI diagnostics on split seeds 42, 2026, and 2027 are retained; repeated processes on seeds 42 and 2026 matched 15/15 predictions and save/load outputs under AutoML `82d8483`. An exploratory three-policy 2048 score comparison is retained but does not satisfy H1/H2; its intervals and Cohen's d are not paired-seed uncertainty estimates. The `88a86bf` Wine KNN disagreement is historical. No matched-budget benchmark, selected-model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
 
 ---
 

@@ -1,6 +1,6 @@
 # Plan 03 — Limitations: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Design limitations are documented; empirical trained-policy and full framework limitations remain unknown.
+> **Status: PARTIAL (2026-09-27).** Design limitations and a bounded small-corpus trained-policy pilot are documented; confirmatory policy and full framework limitations remain unresolved.
 
 **Goal:** State the current implementation and evidence boundary for limitations.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan combines known scope limits with open empirical limits.** A 10,000-game random/heuristic action-frequency study exists, but there is no trained-policy result or full framework benchmark.
+**This plan combines known scope limits with open empirical limits.** A 10,000-game random/heuristic/fitted-pilot action-frequency study and an exploratory same-seed score comparison exist. The fitted policy used a 20-game labeled corpus; this is wiring/descriptive evidence, not a selected-model quality result or full framework benchmark.
 
 > Limits below distinguish observed implementation boundaries from questions that require the planned studies.
 
@@ -61,7 +61,7 @@ flowchart TD
 - **Limited game variants:** Only standard 4×4 2048 tested
 - **No external data:** All data from game simulation
 - **Fixed evaluation criteria:** May not capture all performance aspects
-- **Sample size:** game count does not establish power or cover rare outcomes; the primary model study has not run
+- **Sample size:** game count does not establish power or cover rare outcomes; the 20-game training corpus and 10,000-game pilot evaluation are not a confirmatory model study
 - **Label quality:** Depends on rollout simulation accuracy
 - **Feature completeness:** the fixed 17-value input may omit information relevant to the policy; no sufficiency claim is established
 - **Supervised learning only:** No reward shaping or policy gradient methods
@@ -70,7 +70,7 @@ flowchart TD
 
 ## 4. Framework Limitations
 
-Capability and probability-shape smokes pass for five four-class candidates. A one-split, two-run standard-dataset diagnostic under AutoML `82d8483` matched 15/15 prediction sets and save/load outputs. Broader framework validation remains open: matched external baselines, resource measurements, broader-seed reliability, and CLI/API equivalence. Group-aware cross-validation is implemented in the integration because the framework scoring helper does not forward groups.
+Capability and probability-shape smokes pass for five four-class candidates. Standard-dataset diagnostics under AutoML `82d8483` cover split seeds 42, 2026, and 2027; repeated processes on seeds 42 and 2026 matched 15/15 prediction sets and save/load outputs. Broader framework validation remains open: matched external baselines, resource measurements, broader-seed reliability, and CLI/API equivalence. Group-aware cross-validation is implemented in the integration because the framework scoring helper does not forward groups.
 
 The framework-validation ticket further requires:
 
@@ -102,7 +102,7 @@ No minimum practically meaningful effect has been declared. Select one before co
 
 ### 6.3 Seed Variation
 
-Game and training outcomes may vary by seed. The listed study seed matrix has not been executed and does not by itself establish generalizability.
+Game and training outcomes may vary by seed. No confirmatory 2048 training/evaluation seed matrix has been executed; the UCI framework split diagnostics do not establish policy generalizability.
 
 **Impact:** Results may not generalize to different game instances.
 
@@ -142,16 +142,16 @@ No power or precision claim can be made from the planned 10,000-game number. Rar
 
 Known implementation and evidence limits are recorded explicitly:
 
-1. The baseline report measured random and heuristic mean scores of 1,094.12 and 8,056.23 respectively across 10,000 games under its recorded local protocol; these do not represent a trained AutoML policy or framework comparison
+1. The retained report measured random, heuristic, and fitted-pilot mean scores of 1,094.12, 8,056.23, and 866.15 across 10,000 matched-seed games; the pilot used a 20-game corpus and is not a confirmatory model comparison
 2. Results are specific to the 2048 game domain
 3. Generalizability to other games is untested
 4. Computational constraints may affect optimal model selection
 5. The theoretical score bound has not been established in this repository
 6. Supervised learning may not capture all aspects of optimal play
-7. Model results await full experimentation
+7. The fitted-policy score run is exploratory and does not establish selected-model performance
 8. Feature contribution is unknown; no ablation study has run
 9. Multi-seed validation is planned but not yet completed
-10. Standard-dataset framework validation remains partial despite the 15/15 repeatability diagnostic; matched baselines and comparative resource measurements remain incomplete
+10. Standard-dataset framework validation remains partial despite repeated 15/15 prediction matches at two splits; matched budgets and per-model resource measurements remain incomplete
 11. PSPACE-hardness is outside core scope and not established here
 
 ## 8. Mitigation Strategies (Trimmed — No Generic Filler)
@@ -167,13 +167,13 @@ Known implementation and evidence limits are recorded explicitly:
 
 ## 9. Conclusion
 
-Despite limitations, the research provides a rigorous framework for evaluating automl effectiveness for game AI. The limitations are acknowledged and documented transparently. Future work should address these limitations for a more comprehensive understanding.
+The retained diagnostics document specific implementation behavior but do not yet establish AutoML effectiveness for game AI. Remaining limitations require matched framework evaluation and a confirmatory 2048 study.
 
 All results will be reported honestly, including null results and failed experiments. No results are fabricated or selectively reported.
 
 ## Implementation Record
 
-- Measured baseline evidence is summarized in `reports/action-frequency/README.md`; its random/heuristic scores are protocol-specific. Trained-policy, standard-dataset framework, and resource limitations remain unresolved.
+- Measured random, heuristic, and fitted-pilot evidence is summarized in `reports/action-frequency/README.md`; all scores are protocol-specific. Selected-policy quality, complete standard-dataset framework validation, and matched resource limitations remain unresolved.
 
 ---
 

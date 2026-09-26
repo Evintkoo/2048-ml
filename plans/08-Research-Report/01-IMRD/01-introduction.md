@@ -1,6 +1,6 @@
 # Plan 01 — Introduction: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Repeated UCI framework diagnostics on the pinned revision exist; matched framework comparisons, plan-scale 2048 experiments, and verified literature claims remain pending.
+> **Status: PARTIAL (2026-09-27).** Repeated UCI diagnostics and an exploratory same-seed 2048 policy comparison exist; matched framework comparisons, confirmatory case-study experiments, and broader literature review remain pending.
 
 **Goal:** State the current implementation and evidence boundary for introduction.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is a research framing document, not a findings report.** The AutoML framework capability checks are partial; standard-dataset validation and the 2048 model study have not met their planned gates. Literature-based baseline estimates and novelty claims are not verified.
+**This plan is a research framing document, not a findings report.** Framework checks remain partial. An exploratory 10,000-seed comparison of Random, Heuristic, and one small-corpus fitted policy is retained, but it does not meet the selected-model study protocol. Broader literature review and claim verification remain incomplete.
 
 > The primary contribution is the design and validation of a Rust-native AutoML architecture. The 2048 ML system is the implementation and principal case study used to evaluate that architecture.
 
@@ -17,11 +17,11 @@
 
 The central research object is the design and validation of a Rust-native AutoML architecture. The 2048 system is the principal application case study. Several architecture components are implemented, but integrated standard-dataset validation and the complete reproducibility study remain pending.
 
-2048 is a stochastic 4×4 tile-merging game. The simulator defaults to spawning a 4 with probability 0.1; its available actions are Up, Down, Left, and Right. This study evaluates a supervised policy using the canonical 17-value state (16 board cells plus current score) and four action labels with the pinned Rust AutoML submodule. The case-study experiments remain pending.
+2048 is a stochastic 4×4 tile-merging game. The simulator defaults to spawning a 4 with probability 0.1; its available actions are Up, Down, Left, and Right. This study evaluates a supervised policy using the canonical 17-value state (16 board cells plus current score) and four action labels with the pinned Rust AutoML submodule. A small pilot policy has been trained and scored; its same-seed baseline comparison is exploratory, and confirmatory case-study experiments remain pending.
 
 ## 2. Research Context
 
-The literature review has not yet verified publication details, prior-agent protocols, or score estimates. Do not present the draft heuristic mean or novelty claim as established. The implemented pipeline includes AutoML training and grouped validation paths; Parquet and the full planned benchmark workflow are not established as completed.
+Selected HPO, AutoML-system, and 2048 search/RL publication records are verified in the literature-review ticket. Broader source and claim review remains open. Measured local random, heuristic, and pilot score values are retained in `reports/action-frequency/`; they are protocol-specific exploratory observations, not literature-derived targets or a selected-model result. Parquet and the full planned benchmark workflow are not established as completed.
 
 Case-study ranking rule (canonical, §3): highest held-out mean score across the declared 2048 evaluation games, with uncertainty, practical effect, and seed-level robustness reported alongside the ranking. This is not the framework's primary success criterion.
 
@@ -35,11 +35,11 @@ The study has two linked research layers. First, the independent `automl` implem
 
 **RQ2 (case study):** Under a predeclared, reproducible protocol, how does the supervised policy perform relative to measured baselines, and how do supported model types compare? Baseline values, evaluation scale, and ranking remain to be established by experiment.
 
-**Framework validation:** Does the implemented architecture satisfy its correctness, reproducibility, efficiency, and interoperability requirements on standard tabular tasks before the 2048 application results are interpreted? An initial seed-42 diagnostic run covers three UCI datasets and five candidate models; it is not the completed validation gate.
+**Framework validation:** Does the implemented architecture satisfy its correctness, reproducibility, efficiency, and interoperability requirements on standard tabular tasks before the 2048 application results are interpreted? Fixed-protocol diagnostics cover three UCI datasets, five candidate models, and split seeds 42, 2026, and 2027; they do not complete the validation gate.
 
 **Secondary:**
-- RQ2: What are the mean scores, uncertainty intervals, and differences versus measured random and heuristic baselines?
-- RQ3: Is the winner reproducible across seeds 42/123/456/789/1011?
+- RQ2: What are the mean scores, uncertainty intervals, and differences versus measured random and heuristic baselines? An exploratory same-seed comparison exists; confirmatory inference remains pending.
+- RQ3: Is the selected policy reproducible across independently declared training and evaluation seeds? No robustness matrix is complete.
 - RQ4: Which declared feature subsets of the 17-value canonical state affect case-study performance? This ablation question remains a proposal without a frozen protocol or completed run.
 
 All answers are **pending experimentation**; methodology for answering them is defined in `02-Methodology/01-experimental-design.md`.
@@ -78,7 +78,7 @@ All answers are **pending experimentation**; methodology for answering them is d
 
 **Out of scope → Future/Appendix only:** 8×8 or other board sizes, ensemble/stacking, RL/policy gradients, GPU, web frontend, mobile, and multi-agent settings. Search-based and learning-based agents may be included as explicitly defined comparison baselines, but they are not the primary contribution. The experimental design excludes larger boards, RL training, and ensembles ([design limitations §10](../02-Methodology/01-experimental-design.md)); the discussion keeps those as future work ([discussion §8](04-discussion.md)).
 
-**Limitations:** A one-split standard-dataset diagnostic exists, but the full framework-validation gate remains pending; the canonical state has 17 values; multi-seed robustness is pending; rollout labels use finite stochastic simulations and are proxies rather than optimal actions. Candidate baseline scores in the draft are unverified.
+**Limitations:** Fixed-protocol standard-dataset diagnostics cover split seeds 42, 2026, and 2027, but the full framework-validation gate remains pending; the canonical state has 17 values; multi-seed robustness is pending; rollout labels use finite stochastic simulations and are proxies rather than optimal actions. The local exploratory score comparison is not a selected-model result; earlier literature-based score estimates remain unverified.
 
 ## 8. Paper Structure
 
@@ -90,7 +90,7 @@ No result fabricated. Null/inconclusive outcomes, training failures, and any aut
 
 ## Implementation Record
 
-- Research framing and honest-reporting requirements are documented. The pinned UCI diagnostic results and historical pre-fix Wine KNN repeatability/serialization issue are recorded in `reports/framework_validation/`; matched baselines, broader framework validation, and plan-scale 2048 experiments remain pending. Baseline literature claims and novelty must be supported by the completed source review before publication.
+- Research framing and honest-reporting requirements are documented. Pinned UCI diagnostics and the historical pre-fix Wine KNN issue are recorded in `reports/framework_validation/`. An exploratory matched-seed comparison across Random, Heuristic, and one pilot policy is retained in `reports/action-frequency/pilot-comparison.md`; the independent-sample interval/effect-size limitation is documented. Matched framework budgets, broader literature review, and confirmatory 2048 experiments remain pending.
 
 ---
 

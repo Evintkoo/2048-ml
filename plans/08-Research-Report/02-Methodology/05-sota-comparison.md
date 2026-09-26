@@ -1,6 +1,6 @@
 # Plan 05 — State-of-the-Art Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Random and heuristic baselines and model runners exist; no trained-policy comparison or verified external-agent reproduction is complete.
+> **Status: PARTIAL (2026-09-27).** Random and heuristic baselines and a fitted-policy runner exist; an exploratory comparison is retained, while selected-policy comparison and external-agent reproduction remain incomplete.
 
 **Goal:** State the current implementation and evidence boundary for state-of-the-art comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a comparison plan, not a ranking.** Local baseline commands exist, but trained-policy results are absent. Published methods and their quoted score ranges remain unverified and are not measured baselines.
+**This is a comparison plan, not a ranking.** Local random/heuristic and fitted-policy runs exist, with one exploratory same-seed comparison retained. The model came from a small corpus and was not selected under a predeclared protocol; no confirmatory result exists. Published methods and their quoted score ranges are not local measured baselines.
 
 ## 1. Purpose
 
@@ -27,11 +27,11 @@ This section frames possible context against methods in game AI, heuristic searc
 
 ### 2.2 Heuristic Agent
 
-**Description:** Uses a weighted evaluation function combining empty tiles, monotonicity, smoothness, and merge potential. The evaluation function is:
+**Description:** Uses a weighted evaluation function over board properties. A local implementation may combine empty cells, monotonicity, smoothness, and merge potential; this does not establish the historical source or validate those terms. The illustrative evaluation function is:
 ```
 score = w1 × empty_count + w2 × monotonicity + w3 × smoothness + w4 × merge_potential
 ```
-where weights are tuned empirically (Björk, 2014; Kishore et al., 2014).
+where weights are implementation-specific. Prior attributions to Björk (2014) and Kishore et al. (2014) are unverified and are not cited as support.
 
 **Performance:** Measure locally; prior score estimates and source attribution are not verified.
 
@@ -73,7 +73,7 @@ Rank only after declaring the evaluation sample, seed roles, trained-model repet
 | Candidate | Status |
 |-----------|--------|
 | Supported AutoML model candidates | Training runners exist; plan-scale scores pending |
-| Local heuristic and random policies | Baseline runners exist; measurement artifacts exist for action-frequency work; full score comparison protocol pending |
+| Local heuristic and random policies | 10,000-game score runs on common seeds; exploratory comparison retained, not a confirmatory protocol |
 | Expectimax, DQN, MCTS | Not reproduced; retain as literature context only until verified and implemented |
 
 ## 4. Detailed Comparison Tables
@@ -134,7 +134,7 @@ This comparison sets the methodological standard for the entire research and pro
 
 ## Implementation Record
 
-- Random, heuristic, and model benchmark commands exist; no trained-policy model comparison has been completed. Quoted external score estimates and agent implementations are unverified and excluded from empirical claims. The standard-dataset AutoML diagnostic is a separate framework track and provides no 2048 ranking evidence.
+- Random, heuristic, and model benchmark commands exist; an exploratory same-seed comparison of Random, Heuristic, and one fitted RandomForest pilot is retained in `reports/action-frequency/pilot-comparison.md`. The model was trained on a small corpus, was not selected under a declared candidate protocol, and the interval/effect-size calculations are independent-sample; no confirmatory selected-policy comparison is complete. Quoted external score estimates remain excluded. The standard-dataset AutoML diagnostic is a separate framework track.
 
 ---
 

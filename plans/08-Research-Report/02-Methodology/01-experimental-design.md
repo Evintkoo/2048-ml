@@ -1,6 +1,6 @@
 # Plan 01 — Experimental Design: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Two-track design remains proposed. A three-dataset diagnostic was run; matched baselines, resource profiling, power rationale, and plan-scale policy experiments remain pending.
+> **Status: PARTIAL (2026-09-27).** Two-track design remains proposed. UCI diagnostics span three split seeds, and an exploratory 2048 policy comparison is retained; matched budgets, resource profiles, power rationale, and confirmatory policy experiments remain pending.
 
 **Goal:** State the current implementation and evidence boundary for experimental design.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a proposed design, not a preregistered confirmatory experiment.** A seed-42 UCI diagnostic matrix (three datasets, five model variants) exists under `reports/framework_validation/`; under AutoML `82d8483`, the two runs matched all 15 predictions and save/load equivalence. The earlier `88a86bf` discrepancy is retained as historical evidence. Baselines, resource profiling, plan-scale training/evaluation, sample-size rationale, and analysis assumptions remain open.
+**This is a proposed design, not a preregistered confirmatory experiment.** UCI diagnostics cover three datasets, five model variants, and split seeds 42, 2026, and 2027 under `reports/framework_validation/`; repeated runs on seeds 42 and 2026 matched all 15 prediction sets and save/load equivalence. An exploratory 10,000-seed 2048 comparison of Random, Heuristic, and a small-corpus fitted policy is retained separately; its bootstrap intervals and Cohen's d use independent-sample formulas despite pairing for sign tests. The earlier `88a86bf` discrepancy is historical. Matched-budget baselines, per-model resources, confirmatory policy evaluation, sample-size rationale, and analysis assumptions remain open.
 
 ## 1. Purpose
 
@@ -135,7 +135,7 @@ flowchart LR
 - **Fixed game rules** across all experiments (standard 4×4 board, 0.9/0.1 spawn)
 - **Consistent data pipeline** for all models (same canonical 17-value state, rollout labels 100 sims/action, and game-group boundaries for GroupKFold where applicable)
 - **Same evaluation criteria** for all models (same declared instances where pairing is intended; measure baselines under the same protocol)
-- **Seed roles** are declared per study; the seed-42 diagnostic is not a canonical primary seed or completed robustness matrix
+- **Seed roles** are declared per study; the current 42/2026/2027 diagnostic matrix is not a completed robustness study
 - **Analysis transparency** — retain raw outcomes and prespecified analysis choices; use blinding only if it addresses a specific researcher degree of freedom
 - **Comparison assumptions**: shared sequences induce pairing; select a paired/clustered method rather than treating them as independent observations
 
@@ -192,7 +192,7 @@ This design has not been externally or timestampedly preregistered. Before confi
 
 ## Implementation Record
 
-- The two-track design is proposed, not pre-registered. The standard-dataset diagnostic used a fixed seed-42 split and is retained; under AutoML `82d8483`, two runs matched all 15 prediction sets and save/load outputs. This one-split repeatability smoke is not a matched-baseline or resource study. Policy scale and sample size are undecided. Collector labels are generated before grouped CV, and grouped CV is not chronological. Resolve leakage boundaries, trained-model versus game-level experimental units, pairing, budget, and test choice before confirmatory evaluation.
+- The two-track design is proposed, not pre-registered. The standard-dataset diagnostics use split seeds 42, 2026, and 2027; repeated processes on seeds 42 and 2026 matched all 15 prediction sets and save/load outputs. These are not matched-budget or per-model resource studies. The separate 2048 pilot comparison is exploratory and does not meet a selected-model protocol. Policy scale and sample size are undecided. Collector labels are generated before grouped CV, and grouped CV is not chronological. Resolve leakage boundaries, trained-model versus game-level experimental units, pairing, budget, and test choice before confirmatory evaluation.
 
 ---
 

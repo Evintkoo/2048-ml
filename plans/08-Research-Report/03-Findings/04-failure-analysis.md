@@ -1,6 +1,6 @@
 # Plan 04 — Failure Analysis: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Failure categories are prospective; only capability and baseline artifacts provide current observations.
+> **Status: PARTIAL (2026-09-27).** Failure categories are prospective; framework defect history and pilot outcomes are retained, but no systematic policy-failure study exists.
 
 **Goal:** State the current implementation and evidence boundary for failure analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is primarily a failure-analysis protocol; no trained-policy failure study has run.** A historical framework failure is recorded: AutoML `88a86bf` produced KNN/ExtraTrees nondeterminism and a Wine KNN save/load mismatch. AutoML `82d8483` fixes deterministic tie handling; the repeated matrix then matched 15/15 predictions and save/load outputs. See `reports/framework_validation/README.md`.
+**This is primarily a failure-analysis protocol; no trained-policy failure study has run.** A small-corpus fitted policy and exploratory benchmark exist, but do not provide systematic failure coverage. A historical framework failure is recorded: AutoML `88a86bf` produced KNN/ExtraTrees nondeterminism and a Wine KNN save/load mismatch. AutoML `82d8483` fixes deterministic tie handling; repeated matrices matched 15/15 predictions and save/load outputs at seeds 42 and 2026. See the framework and pilot reports.
 
 > **Note:** This section anticipates potential failures and defines response protocols. Probability estimates are illustrative, not empirically determined. No trained-policy failure data exists yet.
 
@@ -38,7 +38,7 @@ If no automl model significantly beats the locally measured heuristic baseline, 
 5. Game complexity — 2048 may be too complex for supervised learning with the available model types
 
 **Response:**
-1. Expand feature engineering (add more features)
+1. If a feature study is separately approved, test additions under a documented scope change and matched protocol
 2. Revisit the question and scope; do not add excluded methods without a documented scope change
 3. Increase training data
 4. Investigate reinforcement learning as an alternative
@@ -166,7 +166,7 @@ Null results are valid scientific findings. If automl cannot beat heuristic base
 
 ## Implementation Record
 
-- This file remains a prospective protocol for application failures. The framework nondeterminism defect and its fixed-version rerun are retained in the framework-validation report; no trained-policy failure log exists. Probability estimates were removed and responses are constrained by project scope.
+- This file remains a prospective protocol for application failures. The framework nondeterminism defect and fixed-version reruns are retained in the framework-validation report; the fitted-policy pilot is not a failure study and no trained-policy failure log exists. Probability estimates were removed and responses are constrained by project scope.
 
 ---
 

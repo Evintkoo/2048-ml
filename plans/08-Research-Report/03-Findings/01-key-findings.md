@@ -1,6 +1,6 @@
 # Plan 01 — Key Findings: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Reporting checklist is a template; no research findings or complete result artifacts exist.
+> **Status: PARTIAL (2026-09-27).** The overall findings checklist remains a template; bounded UCI and exploratory 2048 artifacts exist, while confirmatory findings remain incomplete.
 
 **Goal:** State the current implementation and evidence boundary for key findings.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This remains a reporting protocol for overall findings.** A one-split framework diagnostic is available, but framework validation and trained-policy evaluation remain incomplete. Checklist items are proposed evidence requirements, not acceptance gates already met.
+**This remains a reporting protocol for overall findings.** UCI diagnostics and an exploratory same-seed comparison of Random, Heuristic, and a small-corpus fitted policy are available, but framework validation and confirmatory trained-policy evaluation remain incomplete. Checklist items are proposed evidence requirements, not acceptance gates already met.
 
 > The result pipeline described below is proposed. Current benchmark artifacts are CSV plus JSON manifests, and statistics live in `src/evaluation.rs`.
 
@@ -27,7 +27,7 @@ declared benchmark CSVs + JSON manifests
 - [ ] Grouped training/held-out evaluation protocol documented
 - [ ] Uncertainty reported for measured comparisons with dependence addressed
 - [ ] Test family and multiplicity correction declared before analysis
-- [ ] Cohen's **d** reported (not just p; no fixed cutoff)
+- [ ] An effect estimate and uncertainty method appropriate to the declared design are reported (not just p; no fixed cutoff)
 - [ ] Training/evaluation seed roles recorded; robustness study completed if claimed
 - [ ] Ablation outcomes reported only after matched experiments
 - [ ] No 8×8/ensemble/RL claim in findings
@@ -42,7 +42,7 @@ F1–F3→RQ1/RQ2 framework validation, H1→2048 baseline comparison, H2→appl
 
 ## Implementation Record
 
-- The overall findings template remains unpopulated. A standard-dataset diagnostic is retained separately in `reports/framework_validation/`; no trained-policy ranking exists. The original Parquet/statistics artifacts and ranking script do not exist. Checklist items remain pending until the remaining evidence is produced.
+- The overall findings template remains unpopulated. Standard-dataset diagnostics and their repeatability artifacts are retained in `reports/framework_validation/`; an exploratory 10,000-seed policy comparison is retained in `reports/action-frequency/pilot-comparison.md`. It is not a selected-model ranking; the CLI interval/effect-size calculations are independent-sample despite paired sign tests. The original Parquet pipeline and ranking script do not exist. Checklist items remain pending.
 
 ---
 

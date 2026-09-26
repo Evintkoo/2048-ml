@@ -1,6 +1,6 @@
 # Plan 02 — Insights: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Insights are proposed analyses; only baseline action-frequency outputs currently provide measured behavioral summaries.
+> **Status: PARTIAL (2026-09-27).** Baseline and one fitted pilot action-frequency outputs exist; broader model-policy and step-level insights remain unimplemented.
 
 **Goal:** State the current implementation and evidence boundary for insights.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**No model-policy insight is claimed.** Baseline action-frequency reports cover random and heuristic agents; no trained policy or step-level model outcome corpus is available.
+**No model-quality or causal policy insight is claimed.** Action-frequency reports cover Random, Heuristic, and one fitted RandomForest pilot. These pooled action summaries are descriptive; there is no trained-policy per-move board/action timeline or confirmatory policy analysis.
 
 > The following are candidate analyses. The proposed Parquet file and general per-step model-log export do not exist.
 
@@ -18,7 +18,7 @@
 1. **Action validity** — measure invalid chosen moves only if the benchmark records them. Do not assume invalid moves are attempted, since the policy masks illegal actions.
 2. **Board-position patterns** — require a per-move board/action timeline export; current final-score reports cannot support this analysis.
 3. **Feature association** — requires aligned state/feature and outcome artifacts plus an analysis plan; association would not establish feature importance or causality.
-4. **Action distribution** — measured random and heuristic action-frequency artifacts exist. No trained-policy frequency is available; see `reports/action-frequency/README.md`.
+4. **Action distribution** — measured action-frequency artifacts exist for random, heuristic, and a small-corpus fitted pilot policy; see `reports/action-frequency/README.md`.
 5. **Score distribution** — report implemented summary fields for supplied benchmark inputs. Bimodality tests are not implemented.
 6. **Within-game phase analysis** — requires per-move timelines and a declared clustered analysis; not supported by current aggregate files.
 
@@ -32,7 +32,7 @@ No insights generator exists. Preserve input manifests and analysis code for any
 
 ## Implementation Record
 
-- Baseline action-frequency artifacts are available for random and heuristic agents. Model-specific step logs, board-position analyses, correlations, bimodality tests, and report generation remain unimplemented.
+- Per-game action-frequency artifacts and independent recomputations are retained for random, heuristic, and one small-corpus fitted pilot policy. These pooled summaries do not provide per-move state/action trajectories. Board-position analyses, correlations, bimodality tests, and general insight generation remain unimplemented.
 
 ---
 

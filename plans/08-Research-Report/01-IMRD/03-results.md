@@ -1,6 +1,6 @@
 # Plan 03 — Results: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Initial UCI framework diagnostics and repeatability artifacts are populated; matched framework comparisons and plan-scale 2048 policy results remain pending.
+> **Status: PARTIAL (2026-09-27).** UCI diagnostics and an exploratory same-seed 2048 score comparison are retained; matched framework comparisons and confirmatory policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for results.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan remains an output specification, not a completed results report.** Initial UCI fixed-split outcomes and a two-run repeatability analysis are retained in `reports/framework_validation/`; no matched external baseline comparison or 2048 trained-model ranking is available. The initial dataset matrix is diagnostic and does not establish framework superiority.
+**This plan remains an output specification, not a completed results report.** UCI fixed-split outcomes and repeatability analyses are retained in `reports/framework_validation/`. An exploratory 10,000-seed comparison of Random, Heuristic, and one fitted pilot policy is retained in `reports/action-frequency/pilot-comparison.md`. It is not the selected five-candidate matrix, and its bootstrap intervals/effect sizes use independent-sample formulas despite matched seeds. No matched-budget external framework comparison or confirmatory 2048 ranking is available.
 
 > No empirical result or winner is claimed in this document.
 
@@ -26,13 +26,13 @@ Framework results must report, for each named dataset and configuration:
 - Model serialization and reload equivalence.
 - CLI/library/API output equivalence.
 
-Initial named-dataset results are reported in `reports/framework_validation/README.md`. Matched external baselines, memory/resource profiles, CLI/API equivalence, and a broader repeated-run study remain pending.
+Initial named-dataset results are reported in `reports/framework_validation/README.md`. Matched external budgets, per-model resource profiles, CLI/API equivalence, and broader repeated-run evidence remain pending.
 
 No 2048 game score can substitute for this table.
 
 ## Implementation Record
 
-- The three-dataset/five-model framework matrix is populated in `reports/framework_validation/`, with raw predictions, split manifests, serialized models, run manifests, and a repeatability comparison. Under AutoML `82d8483`, two processes matched all 15 prediction sets and save/load predictions. The earlier `88a86bf` run had a Wine KNN reproducibility/serialization failure; that is historical diagnostic evidence. The 2048 case-study result table remains unpopulated; schema examples remain illustrative unless tied to an actual output artifact.
+- The three-dataset/five-model framework matrix is populated for split seeds 42, 2026, and 2027. Same-split repeated processes at seeds 42 and 2026 matched all 15 prediction sets each; save/load predictions matched. One run exists at seed 2027. The earlier `88a86bf` Wine KNN issue is historical. The 2048 comparison report retains exploratory descriptive outcomes only; the selected-model result table remains unpopulated.
 
 ## 2. 2048 Case-Study Winner Protocol (Canonical: `07-Benchmarking/01-Evaluation/01-benchmarking-framework.md`)
 
@@ -72,7 +72,7 @@ The helper inventory and its limitations are summarized in the benchmarking anal
 |-------|------|--------|----|---------------------|------|---------------|-----------|
 | TBD | TBD | TBD | TBD | [TBD, TBD] | TBD | TBD | p=TBD, d=TBD |
 
-The CLI can summarize and compare game-score files, but no case-study model ranking has been run. Populate only with measured scores and manifests from a declared protocol.
+The CLI can summarize and compare game-score files. An exploratory three-policy analysis exists, but no selected-model ranking has been run. Populate only with results from a declared protocol.
 
 ### 3.2 Gate Table
 

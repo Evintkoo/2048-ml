@@ -1,6 +1,6 @@
 # Plan 02 — Research Questions: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Research questions are defined but unanswered. A seed-42 standard-dataset diagnostic exists; repeatability, matched baselines, and confirmatory application evidence remain pending.
+> **Status: PARTIAL (2026-09-27).** Research questions are defined but unanswered. Standard-dataset diagnostics cover three split seeds; an exploratory same-seed 2048 policy comparison also exists. Matched-budget baselines and confirmatory application evidence remain pending.
 
 **Goal:** State the current implementation and evidence boundary for research questions.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Research questions are framing, not findings.** Initial framework diagnostics exist, but validation is incomplete. Plan-scale 2048 comparisons remain pending; no baseline superiority, model winner, or robustness result is claimed.
+**Research questions are framing, not findings.** Framework diagnostics and an exploratory three-policy same-seed score comparison exist, but validation is incomplete. The pilot model was not selected under a predeclared protocol, and its reported intervals/effect sizes do not account for pairing. No confirmatory baseline superiority, model winner, or robustness result is claimed.
 
 > **Canonical mapping:** 4 RQs, with the Rust-native AutoML architecture as the primary contribution and 2048 as the principal case study. Speculative theory is not treated as a primary research question.
 
@@ -23,7 +23,7 @@ Define the exact RQs for both the independent AutoML framework and the 4×4 supe
 |----|----------|--------------------|-----------------------------|--------|
 | **RQ1** | What Rust-native architecture and data contracts integrate the documented AutoML capabilities? | Architecture and source audit | Design-trade-off review | Framed; validation incomplete |
 | **RQ2** | Does the framework satisfy declared correctness and usability criteria on standard tabular tasks? | Framework-validation protocol | Capability tests and matched benchmark study | Partial; diagnostic dataset matrix exists, matched baseline/resource study pending |
-| **RQ3** | How does the framework-trained supervised policy compare with locally measured baselines and supported model candidates? | Four-action training and benchmark CLI | Declared pairwise protocol | Unanswered; plan-scale run pending |
+| **RQ3** | How does the framework-trained supervised policy compare with locally measured baselines and supported model candidates? | Four-action training and benchmark CLI | Declared pairwise protocol | Unanswered; exploratory pilot comparison retained, confirmatory run pending |
 | **RQ4** | What uncertainty and seed sensitivity characterize the 2048 case-study result? | Retained per-game scores and manifests | Declared experimental unit and sensitivity analysis | Unanswered; replication pending |
 
 Secondary diagnostics (not separate RQs): feature-group contribution, label quality, convergence learning curves, and framework search efficiency — answered in ablation, framework validation, and findings.
@@ -65,7 +65,7 @@ No result is claimed before data; implemented statistics reside in `src/evaluati
 
 ## Implementation Record
 
-- Research questions are defined, not answered. The named statistical module/API in the closing note does not exist under that path; score statistics live in `src/evaluation.rs`. The retained UCI diagnostic does not answer RQ2's matched comparison or resource claims.
+- Research questions are defined, not answered. Score statistics live in `src/evaluation.rs`. The retained UCI diagnostics do not answer RQ2's matched-budget or resource questions; the exploratory 2048 comparison does not answer RQ3 under a selected-model protocol.
 
 ---
 

@@ -1,6 +1,6 @@
 # Plan 04 — Ablation Study: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Candidate ablation matrix is illustrative only; feature-removal training and evaluation are not implemented.
+> **Status: PARTIAL (2026-09-27).** Candidate removals are mapped to the canonical 17-value state; feature-removal training and evaluation are not implemented.
 
 **Goal:** State the current implementation and evidence boundary for ablation study.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -23,16 +23,11 @@ Candidate: remove one feature at a time, retrain using the same training data an
 
 | Group | Features Removed | Rationale |
 |-------|------------------|-----------|
-| grid | `grid_0..15` | Raw board |
-| empty | `empty_count` | Flexibility |
-| max | `max_tile_log` | Progress |
-| monotonicity | `monotonicity` | Board shape |
-| smoothness | `smoothness` | Board shape |
-| merges | `merges_available, adjacency_merge_score` | Immediate merge opportunity |
-| corner/edge | `corner_max, edge_tiles_occupied, col_worst, row_worst` | Placement and balance |
-| score | `score_normalized` | Progress context |
+| board | Cell indices `0..15` (cell positions defined by the row-major encoder) | Remove board observations as one block |
+| score | Feature index `16` (`score_normalized`) | Remove current-score context |
+| individual cell (optional finer analysis) | One selected index in `0..15` per ablation | Locate position-specific sensitivity; exploratory only |
 
-> Reconcile this proposed grouping with the canonical 17-value state (16 cells plus score) and the encoder before implementation. The listed non-cell groups do not match the current schema and need a new, justified definition.
+The canonical model input contains no `empty_count`, `max_tile_log`, monotonicity, smoothness, merge, corner, or edge features. Such quantities may exist in agent heuristics, but they are not model columns and cannot be presented as feature ablations. Confirm index-to-coordinate names against `src/state.rs` before implementing the optional per-cell analysis.
 
 ### 1.3 Controls
 
@@ -54,7 +49,7 @@ No output schema or ablation runner exists. Base future artifacts on actual CSV/
 
 ## Implementation Record
 
-- No ablation configurations, artifact writer, or feature-removal evaluation pipeline are implemented. The matrix is proposed only and its groups do not yet map to the canonical 17-value state. Feature removal, matched retraining/evaluation, output artifact schema, and compute budget remain unimplemented and require a pilot before scheduling.
+- No ablation configurations, artifact writer, or feature-removal evaluation pipeline are implemented. Candidate removals now map to the canonical 17-value state: board indices `0..15` and score index `16`; heuristic-only quantities are explicitly excluded as non-features. Feature removal, matched retraining/evaluation, output artifact schema, and compute budget remain unimplemented and require a pilot before scheduling.
 
 ---
 

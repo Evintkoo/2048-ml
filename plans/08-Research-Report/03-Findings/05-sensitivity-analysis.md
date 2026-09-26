@@ -1,6 +1,6 @@
 # Plan 05 — Sensitivity Analysis: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Sensitivity analyses are proposed; no model, data-size, or training-seed sweep has run.
+> **Status: PARTIAL (2026-09-27).** Sensitivity analyses are proposed; UCI split diagnostics exist, but no 2048 model, data-size, or training-seed sensitivity sweep has run.
 
 **Goal:** State the current implementation and evidence boundary for sensitivity analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -43,7 +43,7 @@ Ablation and data-size results answer different questions. Neither alone establi
 
 ## Implementation Record
 
-- No model, data-size, label-perturbation, feature, or multi-seed sensitivity sweep has been run; proposed thresholds and sample counts are not evidence.
+- No 2048 model, data-size, label-perturbation, feature, or training-seed sensitivity sweep has been run. The UCI framework split-seed diagnostics are separate and are not policy sensitivity results; proposed thresholds and sample counts are not evidence.
 
 ---
 

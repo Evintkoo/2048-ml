@@ -1,6 +1,6 @@
 # Plan 02 — Methodology: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** This redirect points to an experimental design that remains proposed; an initial UCI diagnostic exists, but no confirmatory protocol has been executed.
+> **Status: PARTIAL (2026-09-27).** This redirect points to a proposed design; UCI diagnostics and an exploratory 2048 comparison exist, but no confirmatory protocol has been executed.
 
 **Goal:** State the current implementation and evidence boundary for methodology.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a redirect ticket.** It points to the current design document and clarifies that its numeric sample sizes, seeds, and benchmark setup are proposals. Implementation of a command or helper does not mean the corresponding experiment ran.
+**This is a redirect ticket.** It points to the current design document and distinguishes diagnostics from the proposed confirmatory protocol. An exploratory three-policy same-seed score comparison ran, but its pilot model was not selected under a declared protocol and its interval/effect-size calculations do not account for pairing. Numeric sample sizes, seed matrices, and winner criteria remain proposals.
 
 > **This file is a 25-line redirect. Do not duplicate flowcharts or expand scope here. All protocol, variables, and gates are defined in `02-Methodology/01-experimental-design.md`.**
 
@@ -27,7 +27,7 @@ The planned case study uses the canonical 17-value state and four action labels 
 | Features | 17-value model vector | 16 board cells plus current score; game ID is provenance/group key |
 | polars | `0.46` dependency | Root output paths include CSV; Parquet is not established for this workflow |
 | Seeds | To be declared per study | Record training and evaluation seed roles separately |
-| Games | To be justified and declared | No winner ranking has been performed |
+| Games | To be justified and declared | Exploratory pilot comparison exists; no winner ranking has been performed |
 
 **Statistical protocol:** available CLI helpers choose a paired exact sign test when seed sequences match, or Mann–Whitney U for unmatched samples; reports also include Holm adjustment, bootstrap intervals, and Cohen's d. Assumptions and the experimental unit require explicit review. No protocol has been preregistered and no winner claim is available. See `07-Benchmarking/04-Analysis/02-statistical-analysis.md`.
 
@@ -35,7 +35,7 @@ The planned case study uses the canonical 17-value state and four action labels 
 
 ## Implementation Record
 
-- Redirect audited against the experimental design, manifests, and dependency manifest. The policy run, seed matrix, and Parquet workflow are proposals rather than executed protocol. The separate seed-42 standard-dataset diagnostic is recorded under `reports/framework_validation/`; it does not complete the framework gate or case-study protocol. Exact submodule revision and toolchain are retained in its run manifests.
+- Redirect audited against the experimental design, manifests, and dependency manifest. The policy-selection protocol and Parquet workflow are proposals rather than executed confirmatory protocol. The UCI diagnostics and exploratory 2048 comparison are retained separately; neither completes its respective validation gate. Exact submodule revision, seeds, and toolchain are retained in run manifests.
 
 ---
 

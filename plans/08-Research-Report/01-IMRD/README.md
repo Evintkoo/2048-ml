@@ -6,12 +6,12 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [00-literature-review](00-literature-review.md) | Literature Review | PARTIAL — core HPO/game-learning sources verified; broader topic/source audit pending |
+| [00-literature-review](00-literature-review.md) | Literature Review | PARTIAL — HPO, AutoML-system, and selected 2048 sources verified; broader Rust/literature audit pending |
 | [00-theoretical-framework](00-theoretical-framework.md) | Theoretical Framework | PARTIAL — 17-value formulation reconciled; formal claims need review |
-| [01-introduction](01-introduction.md) | Introduction | PARTIAL — initial framework diagnostics recorded; 2048 experiments pending |
-| [02-methodology](02-methodology.md) | Methodology | PARTIAL — redirect; proposed protocol unexecuted |
-| [03-results](03-results.md) | Results | PARTIAL — initial UCI diagnostic results retained; 2048 result table pending |
-| [04-discussion](04-discussion.md) | Discussion | PARTIAL — pinned framework repeatability passes on one split; historical defect and unevaluated hypotheses recorded |
+| [01-introduction](01-introduction.md) | Introduction | PARTIAL — framework diagnostics and exploratory 2048 comparison recorded; confirmatory studies pending |
+| [02-methodology](02-methodology.md) | Methodology | PARTIAL — redirect; UCI diagnostics and exploratory comparison exist, confirmatory protocol unexecuted |
+| [03-results](03-results.md) | Results | PARTIAL — UCI diagnostics and exploratory 2048 comparison retained; selected-model result table pending |
+| [04-discussion](04-discussion.md) | Discussion | PARTIAL — repeatability passes on two fixed splits; exploratory policy comparison and unevaluated hypotheses recorded |
 
 ## Reading paths
 

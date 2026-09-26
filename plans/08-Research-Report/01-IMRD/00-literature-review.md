@@ -1,6 +1,6 @@
 # Plan 00 — Literature Review: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Core HPO references are verified and linked; AutoML architecture, Rust ecosystem, and 2048 literature verification remain incomplete.
+> **Status: PARTIAL (2026-09-27).** Core HPO, AutoML-system, and selected 2048 references are verified; Rust-ecosystem and broader claim-to-source review remain incomplete.
 
 **Goal:** State the current implementation and evidence boundary for literature review.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is partial.** It identifies the review domains and requires primary-source verification. Several HPO and contextual game-learning references are now checked; the draft is not a completed literature review. Unsupported 2048 score estimates and Rust performance claims are not treated as facts.
+**This plan is partial.** Bibliographic records and bounded claims for core HPO systems and two 2048 studies have been checked against proceedings, publisher, or repository records. The draft is not a completed comparative literature review. Unsupported 2048 score estimates and categorical Rust performance claims are not treated as facts.
 
 ## 1. Scope and Method
 
@@ -39,7 +39,7 @@ Review dataset leakage, nested validation, random-seed control, benchmark fairne
 
 ### 3.1 History
 
-Source leads concerning the original game, weighted heuristics, expectimax, and formal decision-process treatments require bibliographic verification before inclusion. The current notes do not establish authorship, publication dates, methods, or results.
+Rodgers and Levine (2014) compare Monte-Carlo Tree Search with Averaged Depth Limited Search for 2048; their abstract reports that ADLS performed better when supplied with a board-property evaluation function, while heuristic-guided MCTS rollouts did not help in their setup. This is a short conference paper and its result is not a baseline for the present simulator. The original game's publication/history source still needs verification.
 
 Prior notes contained unverified score estimates for heuristic and random policies and an unsupported attribution. Those figures are removed as evidence. Any future baseline claim requires a verifiable source or a reproducible local measurement under a declared protocol. Search agents remain optional context under the canonical scope.
 
@@ -49,7 +49,7 @@ Candidate heuristic concepts include empty-cell count, monotonicity, smoothness,
 
 ### 3.3 ML on 2048 (Case-Study Context)
 
-Prior notes named several possible ML and search sources and attached score ranges without verified bibliographic records or reproduced protocols. Do not cite those names or scores until the sources, task setup, and comparability are checked. External reproduction is optional context, not an existing result.
+Szubert and Jaskowski (2014) study temporal-difference learning with n-tuple networks; Szubert et al. (2016) report extensions using delayed temporal coherence, multi-stage weight promotion, redundant encoding, and carousel shaping. These are reinforcement-learning methods and contextual prior work, not direct baselines for this supervised AutoML case study. Their task setups and published scores must not be compared with local scores without protocol-level reconciliation. External reproduction remains optional context, not an existing result.
 
 ### 3.4 Theory
 
@@ -59,7 +59,9 @@ Earlier notes about 15-puzzle complexity, a theoretical maximum tile, and hardne
 
 ### 4.1 Hyperparameter Optimization
 
-[Bergstra et al. (2011)](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization) introduce model-based hyperparameter optimization using a tree-structured Parzen estimator; [Bergstra and Bengio (2012)](https://jmlr.org/papers/v13/bergstra12a.html) evaluate random search; [Li et al. (2018)](https://jmlr.org/papers/volume18/16-558/16-558.html) present Hyperband; [Feurer and Hutter (2019)](https://doi.org/10.1007/978-3-030-05318-5_1) survey HPO methods. These records have been checked against the primary proceedings/publisher pages; they support method definitions, not claims about this project's performance.
+[Bergstra et al. (2011)](https://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimization) introduce model-based HPO using a tree-structured Parzen estimator; [Bergstra and Bengio (2012)](https://jmlr.org/papers/v13/bergstra12a.html) evaluate random search; [Li et al. (2018)](https://jmlr.org/papers/volume18/16-558/16-558.html) present Hyperband; and [Feurer and Hutter (2019)](https://doi.org/10.1007/978-3-030-05318-5_1) survey HPO methods. These records were checked against proceedings or publisher pages; they support method descriptions, not claims about this project's performance.
+
+System-level examples clarify the distinction between an optimizer and an AutoML system. [Auto-WEKA](https://doi.org/10.1145/2487575.2487629) formulates combined algorithm selection and hyperparameter optimization (CASH) over WEKA classifiers and feature selectors. [auto-sklearn](https://proceedings.neurips.cc/paper/2015/hash/11d0e6287202fced83f79975ec59a3a6-Abstract.html) adds meta-learning warm starts and ensembles to Bayesian optimization. [TPOT](https://proceedings.mlr.press/v64/olson_tpot_2016.pdf) searches composed pipelines using genetic programming and evaluates them on classification tasks. These papers illustrate different search-space and lifecycle choices; their benchmark results are not directly comparable across protocols and do not establish that any system is superior to this project's framework.
 
 The root integration uses `HyperOptX` with TPE for a limited RandomForest/ExtraTrees search over two parameters. Although the framework exposes a `MedianPruner` type, the root optimizer callback has no intermediate-reporting hook and pruning is disabled. Hyperband is contextual literature only; it is not implemented in the active root search.
 
@@ -71,7 +73,7 @@ For contextual comparison only, [Silver et al. (2017)](https://doi.org/10.1038/n
 
 - `automl v1.0.0` (`https://github.com/Evintkoo/automl`): the pinned source declares `TrainEngine`, `TaskType::MultiClassification`, multiple `ModelType` variants, and `CrossValidator`. Five variants (RandomForest, ExtraTrees, AdaBoost, KNN, NaiveBayes) have verified four-class probability output for the current 2048 task; other available variants are not assumed compatible.
 - `polars 0.46`, `smartcore 0.3`, `linfa 0.7` (see `automl/Cargo.toml`).
-- Bravegates & Renzelmann (2019, arXiv unverified – Rust ML survey) and Matsakis/Lamport claims marked **unverified**.
+- Linfa and SmartCore are documented as Rust ML ecosystem projects in their [official repository](https://github.com/rust-ml/linfa) and [official repository](https://github.com/smartcorelib/smartcore). These project descriptions establish scope and API positioning only; no peer-reviewed, controlled Rust-versus-other-language performance evidence has been identified here. Bravegates & Renzelmann (2019, arXiv Rust ML survey) and Matsakis/Lamport claims remain **unverified**.
 
 ## 6. Gap Analysis
 
@@ -93,11 +95,11 @@ The primary contribution is the Rust-native AutoML architecture and its validati
 
 ## 8. References (Verified vs Provisional)
 
-Potential starting points include primary work on random search and Hyperband, AutoML surveys, framework repositories, and official Rust/data-system documentation. Their exact records, versions, and claim support still require checking. No candidate listed here should be treated as verified solely because it appears in this draft. See `04-Appendix/03-references.md` for bibliography curation.
+The linked AutoML and 2048 sources above have verified records for the limited claims stated next to them. References still requiring primary-source and claim checks include Rust ML surveys, 2048 history and formal game properties, detailed reproducibility/benchmark methodology, and every final thesis claim. Software repositories document current project capabilities but are not substitutes for peer-reviewed comparative evidence. See `04-Appendix/03-references.md` for dependency provenance.
 
 ## Implementation Record
 
-- Review topics and a source-verification policy are outlined. Primary bibliographic records for random search, TPE, Hyperband, HPO methods, and two contextual game-learning works were checked and linked above. Rust ecosystem comparisons, AutoML architecture coverage, 2048-specific literature, and remaining claim-to-source checks are pending; historical scores and categorical Rust performance assertions remain unverified or excluded.
+- Review topics and a source-verification policy are outlined. Primary records for random search, TPE, Hyperband, Auto-WEKA, auto-sklearn, TPOT, and selected 2048 search/RL work have been checked and linked. A limited architecture comparison is now stated. Rust ecosystem performance, reproducibility literature, 2048 history, and broader claim-to-source coverage remain pending; historical scores and categorical Rust performance assertions remain excluded.
 
 ---
 

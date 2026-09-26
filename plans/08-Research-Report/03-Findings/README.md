@@ -7,12 +7,12 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-key-findings](01-key-findings.md) | Key Findings | PARTIAL — reporting template only |
-| [02-insights](02-insights.md) | Insights | PARTIAL — baseline frequencies only |
-| [03-limitations](03-limitations.md) | Limitations | PARTIAL — measured baseline and implementation boundaries |
+| [02-insights](02-insights.md) | Insights | PARTIAL — random, heuristic, and fitted-pilot action frequencies; broader policy insights pending |
+| [03-limitations](03-limitations.md) | Limitations | PARTIAL — protocol-specific baseline/pilot evidence and implementation boundaries |
 | [04-failure-analysis](04-failure-analysis.md) | Failure Analysis | PARTIAL — prospective protocol; no study log |
 | [05-sensitivity-analysis](05-sensitivity-analysis.md) | Sensitivity Analysis | PARTIAL — sweeps not run |
-| [06-cross-validation](06-cross-validation.md) | Cross-Validation | PARTIAL — helper implemented; corpus study pending |
-| [07-computational-budget](07-computational-budget.md) | Computational Budget | PARTIAL — pilot timings/projection only; no approved full budget |
+| [06-cross-validation](06-cross-validation.md) | Cross-Validation | PARTIAL — grouped CV and small pilot holdout diagnostic; plan-scale split study pending |
+| [07-computational-budget](07-computational-budget.md) | Computational Budget | PARTIAL — baseline timings and 20-game collection projection; no approved full budget |
 
 ## Reading paths
 
