@@ -1,6 +1,6 @@
 # Plan 01 — 2048 Game Engine: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** Added validated reusable simulator for random and policy play, game histories/results, and deterministic batch seed derivation; root suite passes.
+> **Status: DONE (2026-09-27).** Validated reusable simulator supports random and policy play, game histories/results, per-game action counts, and deterministic batch seed derivation; root suite passes 35/35.
 
 **Goal:** State the current implementation and evidence boundary for 2048 game engine.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -166,7 +166,7 @@ impl Default for SimulatorConfig {
 
 Implemented in `src/game_engine/mod.rs`: fixed-size validated board state, four `Direction` encodings, pure slide transforms, checked merge scoring, valid-move detection, seeded 90/10 tile spawning, reusable `SimulatorConfig`/`GameSimulator`, random and policy-driven execution, and per-game simulation entrypoints. The model and heuristic policies now use the shared simulator. The random simulator is reproducible across repeated fixed-seed calls; illegal policy moves return an error. Root tests cover move rules, spawn behavior, configuration validation, and simulation determinism.
 
-Merge events, per-turn score totals, and move action/score-delta records are included in `GameResult`. The rollout collector also retains the sampled states needed for relabeling. A separate simulation configuration file is not part of the current MVP; `SimulatorConfig` is currently constructed through code. `game_over` records the terminal no-move state; the optional move cap remains a safety limit.
+Merge events, per-turn score totals, move action/score-delta records, and an action-count summary are included in `GameResult`. The rollout collector also retains the sampled states needed for relabeling. A separate simulation configuration file is not part of the current MVP; `SimulatorConfig` is currently constructed through code. `game_over` records the terminal no-move state; the optional move cap remains a safety limit.
 
 ## 9. Cross-References
 
@@ -192,7 +192,7 @@ Merge events, per-turn score totals, and move action/score-delta records are inc
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Added validated reusable simulator for random and policy play, game histories/results, and deterministic batch seed derivation; root suite passes. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** Validated reusable simulator for random and policy play, game histories/results, per-game action counts, and deterministic batch seed derivation; root suite passes 35/35. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 
