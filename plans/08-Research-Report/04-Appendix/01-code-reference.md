@@ -27,7 +27,7 @@
 │   ├── framework_validation.rs  # API/capability smoke paths
 │   ├── seeds.rs                 # seed derivation
 │   └── main.rs                  # CLI commands and report output
-├── automl/                      # pinned Git submodule; local worktree may be modified
+├── automl/                      # pinned Git submodule; verify commit/worktree state for each run
 ├── Cargo.toml / Cargo.lock      # root Rust package and locked dependencies
 └── plans/                       # plan tickets and research documentation
 ```

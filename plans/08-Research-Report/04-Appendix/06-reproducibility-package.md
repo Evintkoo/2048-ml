@@ -45,21 +45,21 @@ Verification checklist — mark an item complete only after the corresponding ar
 - [ ] A versioned public source release is available
 - [x] Rust dependencies are locked in `Cargo.lock` (this does not pin toolchain distribution)
 - [ ] Docker environment is provided
-- [ ] Framework benchmark data/configuration is available
+- [x] Named UCI data, split manifests, and one fixed diagnostic configuration are retained under `data/framework_validation/` and `reports/framework_validation/`
 - [x] 2048 data-generation procedure is available in `cargo run -- data-collector collect --help`
 - [x] Run manifests record configured seeds; no complete study seed matrix is established
 - [ ] All scripts are executable
-- [ ] Determinism is verified across repeated runs
+- [x] Same-seed predictions/save-load matched across two runs for the retained 3-dataset/5-model matrix on AutoML `82d8483`; broader configurations/seeds/platforms remain unverified
 - [x] Comparison and report commands can reproduce summaries from supplied CSV inputs; verify manifests and limitations
 - [ ] Figures are generated from raw data
 - [ ] Paper references match code versions
-- [ ] Framework artifacts can be reloaded with equivalent predictions
+- [x] Save/load predictions matched in both retained 3-dataset/5-model runs on AutoML `82d8483`; this does not establish cross-version equivalence
 
-Checked entries refer only to available local procedures. Plan-scale dataset artifacts, standard-dataset framework validation, versioned releases, and independent replication remain outstanding. Manifests record checksums, protocol details, seeds, dependency pin when available, elapsed time, summaries, and result paths; record dirty source state separately.
+Checked entries refer only to available local procedures. Plan-scale 2048 data, matched framework baselines/resource profiles, versioned releases, and independent replication remain outstanding. The retained one-seed UCI matrix is a narrow repeatability diagnostic, not broad determinism evidence. Manifests record checksums, protocol details, seeds, dependency pin when available, elapsed time, summaries, and result paths; record dirty source state separately.
 
 ## Implementation Record
 
-- Root source is one Rust crate with the AutoML submodule pinned to a published commit. Collector and benchmark CLIs emit CSV/JSON artifacts. Docker, public datasets/DOI, standard-dataset configs, figures, and independent reproduction are absent; nonexistent sample paths were removed.
+- Root source is one Rust crate with the AutoML submodule pinned to a published commit. Collector and benchmark CLIs emit CSV/JSON artifacts. Docker, public dataset release/DOI, figures, and independent reproduction are absent; nonexistent sample paths were removed.
 
 ## 6. Reproducibility Failure Modes
 
