@@ -7,15 +7,15 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [00-scope-and-traceability](00-scope-and-traceability.md) | Canonical Scope and Traceability | DONE (2026-09-24) |
-| [01-Infrastructure](01-Infrastructure/README.md) | Plan series index | See child series |
-| [02-Environment](02-Environment/README.md) | Plan series index | See child series |
-| [03-State](03-State/README.md) | Plan series index | See child series |
-| [04-Actions](04-Actions/README.md) | Plan series index | See child series |
-| [05-Model](05-Model/README.md) | Plan series index | See child series |
-| [06-Data](06-Data/README.md) | Plan series index | See child series |
-| [07-Benchmarking](07-Benchmarking/README.md) | Plan series index | See child series |
-| [08-Research-Report](08-Research-Report/README.md) | Plan series index | See child series |
-| [09-Quality](09-Quality/README.md) | Plan series index | See child series |
+| [01-Infrastructure](01-Infrastructure/README.md) | Plan series index | See child index; ticket dispositions in root ledger |
+| [02-Environment](02-Environment/README.md) | Plan series index | See child index; ticket dispositions in root ledger |
+| [03-State](03-State/README.md) | Plan series index | See child index; ticket dispositions in root ledger |
+| [04-Actions](04-Actions/README.md) | Plan series index | See child index; ticket dispositions in root ledger |
+| [05-Model](05-Model/README.md) | Plan series index | See child index; ticket dispositions in root ledger |
+| [06-Data](06-Data/README.md) | Plan series index | See child index; ticket dispositions in root ledger |
+| [07-Benchmarking](07-Benchmarking/README.md) | Plan series index | See child index; ticket dispositions in root ledger |
+| [08-Research-Report](08-Research-Report/README.md) | Plan series index | Partial — implementation and research evidence remain incomplete |
+| [09-Quality](09-Quality/README.md) | Plan series index | Partial — see child dispositions |
 
 ## Reading paths
 

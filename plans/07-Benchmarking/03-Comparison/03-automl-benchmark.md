@@ -1,6 +1,6 @@
 # Plan 03 — Rust-Native AutoML Benchmark: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Focused API/model smoke checks exist; named-dataset framework benchmarks, baselines, and resource comparisons remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl benchmark.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats capability smoke checks as implemented and framework benchmarking as pending.** The root tests check selected AutoML APIs, model output shapes, grouped CV, optimization primitives, and model save/load. They do not constitute standard-dataset benchmark evidence or an external comparison.
 
 ## 1. Purpose
 
@@ -56,6 +56,7 @@ flowchart TD
 ## 3. AutoML Configuration
 
 ```rust
+// Proposed result/config schemas only; no general benchmark runner exists.
 pub struct AutoMLBenchmarkConfig {
     pub train_engine: TrainEngine,
     pub training_config: TrainingConfig,
@@ -72,12 +73,11 @@ pub struct AutoMLBenchmarkConfig {
 
 | Scenario | Description | Trials | Expected Time |
 |----------|-------------|--------|---------------|
-| Default Config | automl with defaults | 1 | 5 minutes |
-| Grid Search | Full grid search | 100 | 2 hours |
-| Bayesian Opt | TPE optimization | 50 | 1 hour |
-| Random Search | Random sampling | 50 | 1 hour |
+| Fixed configuration | declared model/config | protocol-defined | unmeasured |
+| Search | supported TPE integration | protocol-defined | unmeasured |
+| External baseline | matched library/config | protocol-defined | unmeasured |
 
-The framework track must be completed before the 2048 application results are interpreted.
+Report framework validation separately from the 2048 application case study. The 2048 result cannot substitute for standard-dataset evidence.
 
 ## 5. Benchmark Scenarios — 2048 Application Track
 
@@ -132,6 +132,7 @@ flowchart TD
 ## 10. Benchmark Results Structure
 
 ```rust
+// Proposed result schema only; the repository has no AutoMLBenchmarkResult type.
 pub struct AutoMLBenchmarkResult {
     pub automl_config: AutoMLBenchmarkConfig,
     pub best_model: ModelType,
@@ -161,7 +162,7 @@ Findings are filled post-training only.
 
 ## Implementation Record
 
-- Framework capability smoke validation and the 2048 model benchmark path are implemented separately. The Iris/Wine/Breast Cancer matrix, matched framework comparisons/resource profile, and actual HyperOptX training trials remain pending, so hypotheses are untested.
+- Framework capability smoke validation and 2048 model benchmark path are separate. Named standard-dataset matrix, matched framework comparisons/resource profile, and independent search efficiency study remain pending; hypotheses are untested.
 
 ## 12. Benchmark Reproducibility
 
@@ -193,7 +194,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Execute the dataset/baseline matrix under #104 after naming dataset versions, splits, metrics, hardware, dependencies, and compute budget. Keep all raw outcomes and scripts.
 
 ## Later
 

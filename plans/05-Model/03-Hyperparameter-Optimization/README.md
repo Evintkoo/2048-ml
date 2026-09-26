@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-hyperparameter-search](01-hyperparameter-search.md) | Hyperparameter Search | PLANNED |
-| [02-search-space](02-search-space.md) | Search Space | PLANNED |
-| [03-pruning-strategy](03-pruning-strategy.md) | Pruning Strategy | PLANNED |
+| [01-hyperparameter-search](01-hyperparameter-search.md) | Hyperparameter Search | PARTIAL — pruning unavailable |
+| [02-search-space](02-search-space.md) | Search Space | PARTIAL — active space limited to two integers |
+| [03-pruning-strategy](03-pruning-strategy.md) | Pruning Strategy | PARTIAL — reporter integration pending |
 
 ## Reading paths
 

@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-algorithm-research](01-algorithm-research.md) | Algorithm Research | PLANNED |
-| [02-model-comparison](02-model-comparison.md) | Model Comparison | PLANNED |
-| [03-best-algorithm-finding](03-best-algorithm-finding.md) | Best Algorithm Finding | PLANNED |
+| [01-algorithm-research](01-algorithm-research.md) | Algorithm Research | PARTIAL — comparisons pending |
+| [02-model-comparison](02-model-comparison.md) | Model Comparison | PARTIAL — matched evaluation pending |
+| [03-best-algorithm-finding](03-best-algorithm-finding.md) | Best Algorithm Finding | PARTIAL — evaluation results pending |
 
 ## Reading paths
 

@@ -1,6 +1,6 @@
 # Plan 03 — Reproduction Validation: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Seeded simulator/collection checks and run manifests exist; independent full-training reproduction has not been demonstrated.
 
 **Goal:** State the current implementation and evidence boundary for reproduction validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**Deterministic helper checks are narrower than research reproducibility.** No repeated full-training or independent reproduction study is available, and no universal pass threshold has been established.
 
 ## 1. Purpose
 
@@ -70,8 +70,8 @@ flowchart TD
 ```mermaid
 graph TD
     A[Seed = 42] --> B[Run 1]
-    Seed --> C[Run 2]
-    Seed --> D[Run 3]
+    A --> C[Run 2]
+    A --> D[Run 3]
     B --> E[Compare Results]
     C --> E
     D --> E
@@ -79,19 +79,19 @@ graph TD
     F -->|Yes| G[Deterministic ✓]
     F -->|No| H[Non-deterministic ✗]
     
-    style G fill:#9f9,stroke:#333
-    style H fill:#f99,stroke:#333
+    style G fill:#9f9,stroke:#363
+    style H fill:#f99,stroke:#363
 ```
 
-## 5. Configuration Reproducibility
+## 5. Configuration and Provenance
 
 | Configuration Element | Reproducible | Verification Method |
 |----------------------|-------------|-------------------|
-| TrainingConfig | Yes | Checksum comparison |
-| HyperOptX settings | Yes | Seed + parameters |
-| Game Engine | Yes | Version pinned |
-| Data Pipeline | Yes | Fixed data source |
-| Random Seed | Yes | Seed recorded |
+| Training configuration | Record in manifest | Compare config digest and resolved parameters |
+| HyperOptX settings | Schema/config available for supported paths | Retain config, seed, and study artifacts |
+| Game Engine | Record source revision | Root revision and source state |
+| Data Pipeline | Record input/output hashes | Retain CSV and metadata provenance |
+| Random Seed | Record role-specific seeds | Distinguish collection, training, evaluation, and bootstrap seeds |
 
 ## 6. Reproduction Test Matrix
 
@@ -124,24 +124,7 @@ graph TD
 
 ## 8. Reproducibility Metrics
 
-```rust
-pub struct ReproducibilityResult {
-    pub seed: u64,
-    pub original_mean: f64,
-    pub replicated_mean: f64,
-    pub difference: f64,
-    pub p_value: f64,
-    pub is_reproducible: bool,
-    pub confidence_level: f64,
-    pub runs_compared: usize,
-}
-
-impl ReproducibilityResult {
-    pub fn evaluate(&self) -> bool {
-        self.p_value > 0.05 && (self.difference / self.original_mean).abs() < 0.01
-    }
-}
-```
+No generic `ReproducibilityResult` evaluator or fixed 1%/p-value rule exists. For repeated runs, declare the independent replication unit and practical tolerance before comparing outcomes. Report exact differences and uncertainty rather than reducing reproducibility to a binary label.
 
 ## 9. Reproducibility Checklist
 
@@ -166,7 +149,7 @@ flowchart LR
 
 ## Implementation Record
 
-- Same-seed simulation and batch outputs have automated checks; run manifests store seed/config/provenance and hashes. No independent dataset/model reproduction report or repeated full-training run has been completed. The fixed 1%/p-value rule is not a validated general reproducibility criterion.
+- Same-seed simulation/batch checks exist, and manifests store configured seeds, protocol, checksums, and provenance. No repeated full-training or independent dataset/model reproduction study has been completed; no fixed 1%/p-value criterion is supported.
 
 ---
 
@@ -183,7 +166,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Research reproducibility remains pending.** Retain source, submodule, toolchain, data, config, and output state; design independent repetition around the actual experimental unit.
 
 ## Later
 

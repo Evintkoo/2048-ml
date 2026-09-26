@@ -1,6 +1,6 @@
 # Plan 02 — Evaluation Methodology: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Benchmark CLI records seeds and score summaries; final held-out model protocol and powered sample size remain pending.
 
 **Goal:** State the current implementation and evidence boundary for evaluation methodology.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,19 +9,17 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats benchmark mechanics as implemented and final evaluation design as pending.** The CLI can record seeded game outcomes and uncertainty summaries. No trained model, selected-model holdout, or prospective power analysis is available.
 
 > **This is a 30-line supplement, not a duplicate.** Full statistical tests live in `01-benchmarking-framework.md §6.4`; significance protocol lives in `04-Analysis/03-significance-testing.md`. This file adds only the constants and formulas not covered there.
 
-## 1. Theoretical Limit — Unknown Max 32768
+## 1. Score Interpretation
 
-- Max tile on 4×4 is **32768 (2^15)** — capacity bound (2^16 needs 17 cells).
-- Exact max score is **unknown** — perfect game may be unachievable.
-- Models are ranked by **mean score only**, not proximity to a theoretical limit.
+Do not state an unproven theoretical maximum tile or score. Report observed game outcomes under the declared simulator protocol; score is not the training target.
 
 ## 2. CI Width — Canonical Numbers
 
-For `n = 10,000`, `σ ≈ 512`: `CI_95 width ≈ 2 × 1.96 × 512/√10000 ≈ 20` — narrow enough to rank models separated by ≥20 score points.
+The old illustration assumed `n=10,000` and `σ≈512`; these values are not measured or prospective power results. Estimate uncertainty from retained pilot/game data and choose the test size within a declared budget.
 
 ## 3. Evaluation Protocol
 
@@ -29,13 +27,13 @@ For the 2048 case study, use the protocol in `01-benchmarking-framework.md §6.2
 
 ## 4. Controls & Limits
 
-Same engine/data/criteria/seed/hardware; blinded analysis where applicable. Limits: 2048-only, supervised `MultiClassification` (27→4 logits), feature vector fixed 27-dim.
+Use the same simulator configuration, candidate data/split, seed design, and declared hardware where applicable. The 2048 result is application evidence; it does not establish framework superiority. The policy uses four-class probabilities.
 
 > For test layout and metric definitions see `01-benchmarking-framework.md` and `02-Metrics/`.
 
 ## Implementation Record
 
-- The evaluation CLI records seeded benchmark conditions and score summaries. The CI-width arithmetic and assumed standard deviation are planning estimates, not measured values; final protocol still requires a held-out candidate selection lifecycle and completed runs.
+- The evaluation CLI records seeded conditions and score summaries. The prior CI-width arithmetic and assumed standard deviation were planning illustrations, not measured results; final protocol requires model selection/holdout separation and completed runs.
 
 ---
 
@@ -52,7 +50,7 @@ Same engine/data/criteria/seed/hardware; blinded analysis where applicable. Limi
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Define a held-out game-seed protocol and prospective uncertainty/sample-size approach after pilot variance is measured. Retain per-game scores and analysis code.
 
 ## Later
 

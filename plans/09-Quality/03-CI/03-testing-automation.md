@@ -1,6 +1,6 @@
 # Plan 03 — Testing Automation: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Cargo provides manually invoked test targets; no CI automation, coverage gate, or scheduled test reporting exists.
 
 **Goal:** State the current implementation and evidence boundary for testing automation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This is an automation plan, not a test inventory.** Existing unit tests are described in the testing tickets; none are run automatically by the repository.
 
 > **See canonical `09-Quality/03-CI/01-ci-pipeline.md` — duplicate stub.** Repetitive CI mermaid trimmed; see canonical for pipeline.
 
@@ -29,11 +29,11 @@ Define automated testing procedures for the 2048 ML system.
 
 | Category | Tests | Execution Time | Frequency |
 |----------|-------|---------------|-----------|
-| Unit | 100+ | 30 seconds | Every commit |
-| Integration | 50+ | 2 minutes | Every commit |
-| Game | 20+ | 5 minutes | Every commit |
-| Validation | 30+ | 3 minutes | Daily |
-| Performance | 10+ | 10 minutes | Weekly |
+| Unit | Existing library test modules | Not measured here | Manual Cargo invocation |
+| Integration | Focused tests; no dedicated test target | Not measured | Manual Cargo invocation |
+| Game | Tests in `game_engine` module | Not measured here | Manual Cargo invocation |
+| Research validation | Not automated | N/A | Requires separate experiment design |
+| Performance | No scheduled suite | N/A | Not configured |
 
 ## 5. Test Execution Strategy
 
@@ -41,17 +41,7 @@ Define automated testing procedures for the 2048 ML system.
 
 ## 6. Test Automation Configuration
 
-```rust
-pub struct TestAutomationConfig {
-    pub test_types: Vec<TestType>,
-    pub parallel_execution: bool,
-    pub max_parallel_tests: usize,
-    pub timeout_per_test: u64,
-    pub retry_failed_tests: usize,
-    pub coverage_threshold: f64,
-    pub fail_fast: bool,
-}
-```
+No test automation configuration type or coverage threshold is implemented.
 
 ## 7. Test Execution Dashboard
 
@@ -67,12 +57,7 @@ pub struct TestAutomationConfig {
 
 ## 10. Reporting
 
-Automated test runs produce:
-- Test pass/fail summary
-- Coverage analysis
-- Performance benchmarks
-- Historical trend charts
-- Regression alerts
+No automated test result dashboards, coverage reports, performance trends, or regression alerts are generated.
 
 ## Implementation Record
 
@@ -93,7 +78,7 @@ Automated test runs produce:
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Test automation remains pending.** CI should be added only with a defined supported environment and artifact-retention policy.
 
 ## Later
 

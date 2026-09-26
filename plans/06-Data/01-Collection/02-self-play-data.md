@@ -1,6 +1,6 @@
 # Plan 02 — Self-Play Data: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** The simulator can run a supplied single-agent policy, but the collector has no self-play mode or output corpus.
 
 **Goal:** State the current implementation and evidence boundary for self-play data.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,11 +9,11 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats self-play collection as pending.** `GameSimulator::simulate_with_policy` accepts a policy closure, but the checkpointed `data-collector collect` path only collects uniform random legal moves. No configurable policy-source collector or `self_play.csv` artifact exists.
 
 ## 1. Purpose
 
-Generate state coverage by running a **single agent** against the stochastic 2048 environment (no opponent). Every `(state, action)` is relabeled by `RolloutLabeler` (§8.3) — the agent's action is discarded.
+Generate state coverage by running a **single agent** against the stochastic 2048 environment (no opponent). A future policy-source collector would need to pass states through the same rollout labeler; the current collector does not provide this source option.
 
 ## 2. Single-Agent Model (2048 is single-player)
 
@@ -76,7 +76,7 @@ CSV `06-Data/03-Storage/self_play.csv` — header `grid_0..row_worst,action` (28
 2. Relabel with `RolloutLabeler { n_rollouts: 100 }`.
 3. Validate `NF==28`, `action ∈ 0..3`, no `done`/`reward` columns; write to `06-Data/03-Storage/`.
 
-The root `data-collector collect` command currently supplies the random-trajectory path. A configurable random/heuristic trajectory policy is still needed to execute this self-play ticket without changing the mandatory rollout relabeling.
+The root collector currently supplies only random trajectories. Implement a configurable single-agent policy source and preserve rollout-based labels to fulfill this ticket.
 
 ## Implementation Record
 
@@ -97,7 +97,7 @@ The root `data-collector collect` command currently supplies the random-trajecto
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- The proposed 15k-game self-play contribution is not collected. Define the policy source and compute budget, then retain config, seed, data, sidecar, and manifest artifacts.
 
 ## Later
 

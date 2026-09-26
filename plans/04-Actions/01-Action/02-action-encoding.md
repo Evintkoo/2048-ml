@@ -1,6 +1,6 @@
 # Plan 02 — Action Encoding: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: COMPLETE (2026-09-26).** Integer direction labels and CSV label validation are implemented.
 
 **Goal:** State the current implementation and evidence boundary for action encoding.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats integer action encoding as implemented.** `Direction` has stable `repr(u8)` values 0 through 3, `try_from_action` rejects other values, and the data pipeline validates action labels in the same range. Training uses the integer `action` classification target; the root data path does not manually one-hot encode it.
 
 > **Canonical:** `01-action-space.md` — 4 discrete actions. This file = label encoding. **No one-hot / binary / multi-output.**
 > **automl handles encoding internally** via `EncoderType` — do not manually expand `action` to 4 dims.
@@ -68,7 +68,7 @@ Canonical `masked_argmax` in `03-Mapping/01-model-output-to-action.md`.
 
 ## Implementation Record
 
-- `Direction::try_from_action` and `Direction as u8` implement the integer label mapping without a one-hot user-data encoding. The canonical training CSV validates action labels in `0..=3`.
+- `Direction::try_from_action` and `Direction as u8` implement the integer label mapping without a one-hot user-data encoding. `data_pipeline.rs` validates parsed CSV labels and in-memory samples in `0..=3`; `main.rs` trains the action classification target.
 
 ---
 
@@ -85,7 +85,7 @@ Canonical `masked_argmax` in `03-Mapping/01-model-output-to-action.md`.
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Internal categorical encoding is handled by the model framework; this repository stores labels as integers in the four-class action space.
 
 ## Later
 

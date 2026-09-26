@@ -1,10 +1,12 @@
 use clap::{Parser, Subcommand};
 
 pub mod actions;
+pub mod collection;
 pub mod data_pipeline;
 pub mod evaluation;
 mod framework_validation;
 pub mod game_engine;
+pub mod hyperopt_config;
 pub mod policy;
 pub mod seeds;
 pub mod state;
@@ -45,8 +47,11 @@ enum Commands {
         #[arg(long, default_value_t = 5)]
         cv_folds: usize,
         /// Run HyperOptX trials over RandomForest n_estimators/max_depth before final fitting.
-        #[arg(long)]
+        #[arg(long, conflicts_with = "hyperopt_config")]
         tune_trials: Option<usize>,
+        /// Load a versioned JSON HyperOptX search configuration (not a training YAML file).
+        #[arg(long, conflicts_with = "tune_trials")]
+        hyperopt_config: Option<std::path::PathBuf>,
         /// Fraction of games before the held-out test tail used for model development (train + validation).
         #[arg(long, default_value_t = 0.85)]
         development_fraction: f64,
@@ -83,6 +88,10 @@ enum DataCollectorCommand {
         rollouts: usize,
         #[arg(long, default_value_t = 1)]
         threads: usize,
+        #[arg(long, default_value_t = 1_000)]
+        checkpoint_every: usize,
+        #[arg(long, default_value_t = false)]
+        resume: bool,
         #[arg(long, default_value = "data/raw/random_play.csv")]
         output: std::path::PathBuf,
     },
@@ -278,49 +287,32 @@ fn main() {
                     seed,
                     rollouts,
                     threads,
+                    checkpoint_every,
+                    resume,
                     output,
                 },
         }) => {
-            if n_games == 0 || rollouts == 0 || threads == 0 {
-                eprintln!("--n-games, --rollouts, and --threads must be greater than zero");
+            if n_games == 0 || rollouts == 0 || threads == 0 || checkpoint_every == 0 {
+                eprintln!("--n-games, --rollouts, --threads, and --checkpoint-every must be greater than zero");
                 std::process::exit(2);
             }
-            let labeler = game_engine::RolloutLabeler {
-                n_rollouts: rollouts,
-                ..Default::default()
+            let checkpoint_dir = output.with_extension("checkpoint");
+            let progress = indicatif::ProgressBar::new(n_games as u64);
+            progress.set_style(indicatif::ProgressStyle::with_template("{wide_bar} {pos}/{len} games ({elapsed_precise}, ETA {eta_precise})").expect("valid progress template"));
+            let collection_config = collection::CollectionConfig {
+                n_games,
+                seed,
+                rollouts_per_valid_action: rollouts,
+                threads,
+                checkpoint_every,
             };
-            let seeds = seeds::SeedManager::new(seed);
-            use rayon::prelude::*;
-            let pool = rayon::ThreadPoolBuilder::new()
-                .num_threads(threads)
-                .build()
-                .expect("failed to create fixed-size simulation thread pool");
-            let start = std::time::Instant::now();
-            let games = pool.install(|| {
-                (0..n_games)
-                    .into_par_iter()
-                    .map(|game_id| {
-                        let game_seed = seeds.game_seed(game_id as u64);
-                        let mut game = game_engine::collect_random_game(game_id as u64, game_seed, 0.1, 1000);
-                        game_engine::relabel_game(&mut game, &labeler, seeds.data_sampling_seed())?;
-                        Ok::<_, game_engine::GameError>(game)
-                    })
-                    .collect::<Result<Vec<_>, _>>()
-            }).expect("rollout labeling failed");
-            let states_collected = games.iter().map(|game| game.samples.len()).sum::<usize>();
-            let rollouts_evaluated = games
-                .iter()
-                .flat_map(|game| game.states.iter())
-                .map(|board| board.get_valid_moves().len() * rollouts)
-                .sum::<usize>();
-            let samples: Vec<_> = games.into_iter().flat_map(|game| game.samples).collect();
-            let elapsed = start.elapsed().as_secs_f64();
+            let summary = collection::collect(&collection_config, &checkpoint_dir, resume, &progress)
+                .expect("rollout collection failed");
             let metadata_path = output.with_extension("metadata.csv");
-            data_pipeline::write_samples_csv(&output, &samples)
-                .expect("failed to write training CSV");
-            data_pipeline::write_sample_metadata_csv(&metadata_path, &samples)
-                .expect("failed to write metadata CSV");
-            let rows = data_pipeline::validate_csv(&output).expect("generated CSV validation failed");
+            let rows = collection::assemble(&checkpoint_dir, &output, &metadata_path)
+                .expect("failed to assemble or validate collected dataset");
+            progress.finish_with_message("collection complete");
+            let seeds = seeds::SeedManager::new(seed);
             let manifest = output.with_extension("manifest.json");
             let manifest_data = serde_json::json!({
                 "created_utc": chrono::Utc::now().to_rfc3339(),
@@ -336,12 +328,15 @@ fn main() {
                 "threads": threads,
                 "spawn_probability_for_four": 0.1,
                 "training_rows": rows,
-                "states_collected": states_collected,
-                "rollouts_evaluated": rollouts_evaluated,
+                "states_collected": summary.states_collected,
+                "rollouts_evaluated": summary.rollouts_evaluated,
                 "label_cache_hits": 0,
-                "label_cache_misses": rollouts_evaluated,
-                "elapsed_seconds": elapsed,
-                "labeling_rows_per_second": rows as f64 / elapsed.max(f64::MIN_POSITIVE),
+                "label_cache_misses": summary.rollouts_evaluated,
+                "elapsed_seconds": summary.elapsed_seconds,
+                "labeling_rows_per_second": rows as f64 / summary.elapsed_seconds.max(f64::MIN_POSITIVE),
+                "checkpoint_every_games": checkpoint_every,
+                "resumed": summary.resumed,
+                "checkpoint_dir": summary.checkpoint_dir,
                 "training_csv": output,
                 "metadata_csv": metadata_path,
                 "training_csv_sha256": sha256_file(&output).ok(),
@@ -351,10 +346,11 @@ fn main() {
             std::fs::write(&manifest, serde_json::to_vec_pretty(&manifest_data).unwrap())
                 .expect("failed to write collection manifest");
             println!(
-                "validated {rows} rows in {}; metadata={} manifest={} elapsed_secs={elapsed:.2}",
+                "validated {rows} rows in {}; metadata={} manifest={} elapsed_secs={:.2}",
                 output.display(),
                 metadata_path.display(),
-                manifest.display()
+                manifest.display(),
+                summary.elapsed_seconds
             );
         }
         Some(Commands::DataCollector { command: DataCollectorCommand::Validate { input } }) => {
@@ -384,7 +380,7 @@ fn main() {
                 println!("{split}: {rows} rows");
             }
         }
-        Some(Commands::Train { data, metadata, cv_folds, tune_trials, development_fraction, model, seed, output }) => {
+        Some(Commands::Train { data, metadata, cv_folds, tune_trials, hyperopt_config, development_fraction, model, seed, output }) => {
             let seeds = seeds::SeedManager::new(seed);
             if data_pipeline::validate_csv(&data).is_err() {
                 eprintln!("training input must satisfy the canonical 28-column schema");
@@ -432,27 +428,37 @@ fn main() {
             };
             let mut selected_n_estimators = 100;
             let mut selected_max_depth = 6;
-            if let Some(n_trials) = tune_trials {
-                if n_trials == 0 {
-                    eprintln!("--tune-trials must be greater than zero");
-                    std::process::exit(2);
-                }
+            let search_config = hyperopt_config
+                .as_ref()
+                .map(|path| {
+                    hyperopt_config::HyperOptSearchConfig::read(path).unwrap_or_else(|error| {
+                        eprintln!("invalid HyperOpt configuration {}: {error}", path.display());
+                        std::process::exit(2);
+                    })
+                })
+                .or_else(|| tune_trials.map(hyperopt_config::HyperOptSearchConfig::defaults));
+            if let Some(search_config) = search_config.as_ref() {
+                let n_trials = search_config.n_trials;
                 if !matches!(&model_type, automl::training::ModelType::RandomForest | automl::training::ModelType::ExtraTrees) {
                     eprintln!("--tune-trials currently supports random_forest and extra_trees only; their adapters both apply n_estimators and max_depth");
                     std::process::exit(2);
                 }
                 let search_space = automl::optimizer::SearchSpace::new()
-                    .int("n_estimators", 20, 200)
-                    .int("max_depth", 2, 10);
+                    .int("n_estimators", search_config.n_estimators.low, search_config.n_estimators.high)
+                    .int("max_depth", search_config.max_depth.low, search_config.max_depth.high);
                 let mut optimization_config = automl::optimizer::OptimizationConfig::default()
                     .with_n_trials(n_trials)
                     .with_direction(automl::optimizer::OptimizeDirection::Maximize)
+                    .with_sampler(automl::optimizer::SamplerType::TPE)
                     .with_metric("grouped_cv_accuracy");
                 optimization_config.random_state = Some(seeds.hyperopt_seed());
                 // HyperOptX's current optimize loop runs objective calls serially. Do not
                 // advertise its n_jobs option as effective parallel search here.
                 optimization_config.n_jobs = 1;
                 optimization_config.cv_folds = cv_folds;
+                // HyperOptX::optimize accepts a completed scalar objective only; the
+                // standalone Pruner trait has no intermediate-reporting hook here.
+                optimization_config.pruning = false;
                 let mut optimizer = automl::optimizer::HyperOptX::new(optimization_config, search_space);
                 let study = optimizer.optimize(|params| {
                     let n_estimators = params.get("n_estimators")
@@ -516,8 +522,34 @@ fn main() {
             }
             engine.save(output.to_str().expect("model output path is not valid UTF-8"))
                 .expect("failed to save model artifact");
-            let study_path = tune_trials.map(|_| output.with_extension("study.json"));
+            let study_path = search_config.as_ref().map(|_| output.with_extension("study.json"));
+            let hyperopt_manifest = search_config.as_ref().map(|config| serde_json::json!({
+                "schema_version": config.schema_version,
+                "enabled": true,
+                "optimizer": "HyperOptX",
+                "sampler": config.sampler,
+                "direction": "maximize",
+                "objective": "grouped_cv_accuracy",
+                "n_trials": config.n_trials,
+                "n_jobs": 1,
+                "seed": seeds.hyperopt_seed(),
+                "cv_strategy": "GroupKFold",
+                "cv_folds": cv_folds,
+                "pruner": {
+                    "enabled": false,
+                    "reason": "The pinned HyperOptX optimize API has no intermediate reporting or pruner callback"
+                },
+                "search_space": config,
+                "selected_parameters": {
+                    "n_estimators": selected_n_estimators,
+                    "max_depth": selected_max_depth
+                },
+                "input_config": hyperopt_config,
+                "input_config_sha256": hyperopt_config.as_ref().and_then(|path| sha256_file(path).ok())
+            }));
             write_json_manifest(&output, &serde_json::json!({
+                "manifest_schema": "game2048-ml.training-run",
+                "manifest_schema_version": 1,
                 "created_utc": chrono::Utc::now().to_rfc3339(),
                 "project_version": env!("CARGO_PKG_VERSION"),
                 "automl_commit": "64f5edad29c9e58ee7d33abf380418d5cfbbb561",
@@ -529,6 +561,19 @@ fn main() {
                 "metadata": metadata,
                 "metadata_sha256": metadata.as_ref().and_then(|path| sha256_file(path).ok()),
                 "model": model,
+                "training_configuration": {
+                    "schema_version": 1,
+                    "task_type": "MultiClassification",
+                    "target_column": "action",
+                    "model": model,
+                    "cv_strategy": "GroupKFold",
+                    "cv_folds": cv_folds,
+                    "development_fraction": development_fraction,
+                    "final_fit_seed": seeds.training_seed(),
+                    "selected_n_estimators": selected_n_estimators,
+                    "selected_max_depth": selected_max_depth
+                },
+                "hyperparameter_optimization": hyperopt_manifest,
                 "global_seed": seeds.global_seed(),
                 "component_seeds": {
                     "game_base": seeds.game_seed(0),
@@ -539,7 +584,7 @@ fn main() {
                 },
                 "cv_folds": cv_folds,
                 "development_fraction": development_fraction,
-                "tune_trials": tune_trials,
+                "tune_trials": search_config.as_ref().map(|config| config.n_trials),
                 "selected_n_estimators": selected_n_estimators,
                 "selected_max_depth": selected_max_depth,
                 "study_artifact": study_path

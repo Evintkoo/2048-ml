@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-move-history](01-move-history.md) | Move History | PLANNED |
-| [02-state-transition](02-state-transition.md) | State Transition | PLANNED |
+| [01-move-history](01-move-history.md) | Move History | PARTIAL — persisted raw history audit deferred |
+| [02-state-transition](02-state-transition.md) | State Transition | NOT APPLICABLE — separate RL transition record is out of scope |
 
 ## Reading paths
 

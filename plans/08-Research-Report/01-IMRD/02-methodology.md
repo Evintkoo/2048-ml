@@ -1,6 +1,6 @@
 # Plan 02 — Methodology: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** This redirect points to an experimental design that remains proposed; no full study protocol has been executed.
 
 **Goal:** State the current implementation and evidence boundary for methodology.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,33 +9,33 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This is a redirect ticket.** It points to the current design document and clarifies that its numeric sample sizes, seeds, and benchmark setup are proposals. Implementation of a command or helper does not mean the corresponding experiment ran.
 
 > **This file is a 25-line redirect. Do not duplicate flowcharts or expand scope here. All protocol, variables, and gates are defined in `02-Methodology/01-experimental-design.md`.**
 
-The study is a controlled 4×4 supervised experiment: 27-dim feature vector → `TaskType::MultiClassification` (labels 0–3 = Up/Down/Left/Right) → `TrainEngine`/`HyperOptX` → benchmark-framework evaluation over **≥10,000 games** at **seed 42**.
+The planned case study uses a 27-feature vector and four action labels with the AutoML training integration. Evaluation size, training and evaluation seed design, and comparison protocol must be justified and recorded before a confirmatory run; the previously specified ≥10,000 games and seed 42 have not been executed.
 
 **Canonical reference:** See `02-Methodology/01-experimental-design.md` for variables, trial structure, replication, bias controls, sample-size justification, and pre-registration. See `02-Methodology/03-hypotheses.md` for framework hypotheses F1–F3 and application hypotheses H1–H3, and `02-Methodology/04-ablation-study.md` for the ablation matrix.
 
-**Pinned equipment (do not drift):**
+**Repository configuration (not evidence of an executed experiment):**
 
 | Component | Pinned Value | Notes |
 |-----------|--------------|-------|
-| automl | `v1.0.0` (`https://github.com/Evintkoo/automl`) | `TrainEngine`, `HyperOptX`, `CrossValidator::GroupKFold` |
-| Rust | `1.75` (pinned `Cargo.lock`) | No GPU |
+| automl | Local path dependency; submodule revision recorded in Git | Record exact revision and local modifications |
+| Rust | Manifest minimum `1.75`; current toolchain may differ | Record actual compiler and target |
 | Task | `TaskType::MultiClassification` | 4 actions 0–3 |
-| Features | 27-dim fixed | `game_id` column for GroupKFold |
-| polars | `0.46` | Parquet I/O |
-| Seed | `42` primary; `123,456,789,1011` secondary | Deterministic spawns |
-| Games | `10,000` per model/config | Winner = mean ranking |
+| Features | 27-value model vector | Game ID is row provenance / group key |
+| polars | `0.46` dependency | Root output paths include CSV; Parquet is not established for this workflow |
+| Seeds | To be declared per study | Record training and evaluation seed roles separately |
+| Games | To be justified and declared | No winner ranking has been performed |
 
-**Statistical protocol:** pre-registered MWU with Holm correction; bootstrap 95% CIs and Cohen's d are reported as uncertainty and practical-magnitude measures, not extra automatic exclusion gates. See `07-Benchmarking/04-Analysis/02-statistical-analysis.md`.
+**Statistical protocol:** available CLI helpers choose a paired exact sign test when seed sequences match, or Mann–Whitney U for unmatched samples; reports also include Holm adjustment, bootstrap intervals, and Cohen's d. Assumptions and the experimental unit require explicit review. No protocol has been preregistered and no winner claim is available. See `07-Benchmarking/04-Analysis/02-statistical-analysis.md`.
 
 **No duplication:** No flowchart copy here; no PSPACE/Markov/8×8/ensemble/RL in core.
 
 ## Implementation Record
 
-- Redirect audited. The claimed Rust 1.75 verification and Parquet workflow conflict with the current local compiler/integration state; this is a reference to a planned protocol, not evidence that the pinned environment or workflow was executed.
+- Redirect audited against the experimental design, manifests, and current dependency manifest. The 10k/game, seed matrix, and Parquet workflow are proposals rather than executed protocol; the exact submodule revision and actual Rust version must be recorded with each study.
 
 ---
 
@@ -52,7 +52,7 @@ The study is a controlled 4×4 supervised experiment: 27-dim feature vector → 
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The full study protocol remains pending.** Declare experimental units, seed roles, comparison assumptions, sample-size rationale, resource budget, and retained artifacts before confirmatory runs.
 
 ## Later
 

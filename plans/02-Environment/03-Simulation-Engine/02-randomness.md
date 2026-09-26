@@ -1,6 +1,6 @@
 # Plan 02 — Randomness and Determinism: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** `SeedManager` now derives CLI game, training, HyperOptX, data-sampling, CV, and analysis seeds; config-file loading and broader process-level reproducibility checks remain pending.
+> **Status: PARTIAL (2026-09-26).** `SeedManager` derives CLI game, training, HyperOptX, data-sampling, CV, and analysis seeds; general config loading and broader process-level reproducibility checks remain pending.
 
 **Goal:** State the current implementation and evidence boundary for randomness and determinism.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats seed derivation as implemented in root workflows with bounded evidence.** `src/seeds.rs` provides one `SeedManager` constructed from the CLI's global seed. Game IDs use `global + game_id`; final AutoML fit deliberately uses the global seed, matching the training-config ticket; tuning, data relabeling, CV, and report bootstraps use documented offsets. Config files are not consumed by the CLI, and framework internals may retain nondeterminism.
+**This plan treats seed derivation as implemented in root workflows with bounded evidence.** `src/seeds.rs` provides one `SeedManager` constructed from the CLI's global seed. Game IDs use wrapping addition with `game_id`; final AutoML fit uses the global seed, while tuning, data relabeling, CV, and analysis use documented offsets. The HyperOptX search JSON does not configure general seeds. Framework internals may retain nondeterminism.
 
 > **Canonical RNG:** `ChaCha8Rng::seed_from_u64(seed)` per game; global seed linked to **Evintkoo/automl `TrainingConfig::with_random_state(42)`** (see `01-Infrastructure/02-Configuration/02-training-config.md` §6). Spawn 90/10 via `spawn_prob_4:0.1`. Headless only.
 
@@ -61,7 +61,7 @@ impl Board {
 | Property | Guarantee |
 |----------|-----------|
 | Same seed → same games | deterministic (`ChaCha8Rng` seeded) |
-| Different seed → different games | randomized |
+| Different seed → different games | normally different; collisions are possible |
 | Cross-platform | same `ChaCha8Rng` output if same Rust/rand_chacha version |
 | Cross-version | may vary if `rand_chacha` changes — pin deps |
 
@@ -117,15 +117,15 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 
 ## 8. Rayon Thread Count — Determinism Note
 
-- **Fix threads** for full determinism: `SimulationConfig.threads = 1` and `config.n_jobs = Some(1)` in TrainingConfig (see `01-simulation-engine.md` §7).
-- If `parallel:true` with `rayon`, **fix thread pool size** (`RAYON_NUM_THREADS=...`) — varying counts change scheduling and can affect game ordering unless seeds are per-game (they are via `game_seed(game_id)`).
+- Collection uses the CLI `--threads` value to build a fixed-size Rayon pool; the value is retained in the collection manifest. The number of threads does not change game seeds or collected ordering.
+- HyperOptX tuning currently runs serially (`n_jobs = 1`). AutoML fitting may retain framework-level nondeterminism despite fixed seeds, as documented in the framework audit.
 - Preferred MVP: parallel with per-game seeded RNG (`ChaCha8Rng::seed_from_u64(global.wrapping_add(game_id))`) so order does not matter; still log `threads` in `SimulationMetrics`.
 
 ## 9. Checklist
 
 - [x] Root game randomness uses seeded `ChaCha8Rng`; no `thread_rng()` call exists in root implementation.
 - [x] `spawn_prob_4` defaults to 0.1 and is validated.
-- [x] `SeedManager::training_seed() == TrainingConfig::with_random_state(global_seed)`.
+- [x] `SeedManager::training_seed() == global_seed`, supplied to `TrainingConfig::with_random_state`.
 - [x] Per-game seed is `global.wrapping_add(game_id)`.
 - [x] Root component seeds use the documented `wrapping_add` offsets (§6).
 - [x] Collector thread count is fixed per run and recorded in its manifest.

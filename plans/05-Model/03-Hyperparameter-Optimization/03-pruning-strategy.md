@@ -1,6 +1,6 @@
 # Plan 03 — Pruning Strategy: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** The AutoML submodule exposes pruner types, but the root HyperOptX objective has no intermediate reporting or pruning integration.
 
 **Goal:** State the current implementation and evidence boundary for pruning strategy.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,11 +9,11 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats pruning integration as pending.** The root objective currently computes grouped-CV accuracy and returns one completed scalar per trial. Its `OptimizationConfig.pruning` is disabled, and no comparable intermediate fold/resource report is connected to a pruner. The examples below describe framework APIs, not active root behavior.
 
 ## 1. Purpose
 
-Define the pruning strategy for eliminating poorly performing hyperparameter trials during the optimization process.
+Record the prerequisite for future trial pruning and the boundary of the current framework API.
 
 ## 2. Pruning Overview
 
@@ -172,7 +172,7 @@ flowchart LR
 
 ## Implementation Record
 
-- The pinned framework exposes pruner types, but the supported tree training integration has no comparable intermediate resource reports. No trial pruning workflow is wired or evaluated.
+- The pinned framework exposes `Pruner` types with `report` and `should_prune` methods. The root optimizer callback receives no trial context or reporter, and the current grouped-CV helper returns a final aggregate. The root explicitly disables pruning; no trial is pruned or evaluated early.
 
 ---
 
@@ -189,7 +189,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- A future implementation must define a comparable intermediate step (for example, each group fold), assign stable trial IDs, retain prune reasons, and verify that pruning does not touch held-out test games.
 
 ## Later
 

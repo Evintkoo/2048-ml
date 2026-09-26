@@ -1,6 +1,6 @@
 # Plan 03 — Performance Testing: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Whole-run wall time is recorded; per-move and feature timing have not been measured.
 
 **Goal:** State the current implementation and evidence boundary for performance testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats whole-run timing as implemented and detailed profiling as pending.** Benchmark manifests record game count and elapsed wall time, allowing games/second. The root does not measure per-move latency or feature extraction separately, and no trained-model performance run is documented.
 
 ## 1. Purpose
 
@@ -25,13 +25,13 @@ For each 10k-game benchmark run, log:
 | `ms/move` | `total_move_time / total_moves` | Latency metadata |
 | `feature_compute_ms` | feature-engineering time per move | Bottleneck identification |
 
-> Feature-compute (11 derived features per state) is the typical bottleneck, not model inference.
+> No bottleneck is assumed; attribute time only after per-stage profiling is implemented and measured.
 
 No Thread-Group / Batch-Runner / CI regression harness — deleted as over-engineering for <10k-game research runs. No memory/CPU thresholds as gates.
 
 ## Implementation Record
 
-- Benchmark manifests record game count and wall time, supporting games/second. Per-move timing and feature-computation timing are not instrumented. No 10k model efficiency run has been completed.
+- Benchmark manifests record game count and wall time, supporting games/second. Per-move timing and feature-computation timing are not instrumented. No trained-model efficiency run has been completed.
 
 ---
 
@@ -48,7 +48,7 @@ No Thread-Group / Batch-Runner / CI regression harness — deleted as over-engin
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Instrument model inference and feature extraction separately if those measures are needed; record hardware, warmup, workload, and timing distribution alongside raw game results.
 
 ## Later
 

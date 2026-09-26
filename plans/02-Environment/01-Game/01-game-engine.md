@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Added validated reusable simulator for random and policy play, game histories/results, and deterministic batch seed derivation; root suite passes.
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The evidence is in `src/game_engine/mod.rs`: validated reusable simulation, deterministic batch seeds, per-move score and merge histories, and result metadata; root tests cover the rules and reproducibility.
 
 ## 1. Purpose
 
@@ -52,12 +52,17 @@ pub enum Direction { Up = 0, Down = 1, Left = 2, Right = 3 }
 
 impl Direction {
     pub const ALL: [Direction; 4] = [Self::Up, Self::Down, Self::Left, Self::Right];
-    pub fn from_u8(v: u8) -> Self { match v { 0=>Self::Up, 1=>Self::Down, 2=>Self::Left, 3=>Self::Right, _=>panic!("invalid action") } }
+    pub fn try_from_action(v: u8) -> Result<Self, GameError> { /* reject values outside 0..=3 */ todo!() }
 }
 /// Supervised label: `action: u8` in 0..=3 — see 04-Actions/01-Action/01-action-space.md. TaskType::MultiClassification.
 ```
 
 ### 4.2 Move Execution (via would_change)
+
+Implemented by `RawBoardState::execute_move`; invalid actions are rejected by
+`Direction::try_from_action`. An unchanged move does not alter score or move
+count. Successful moves return score gained and merge events with result-cell
+coordinates and turn index.
 
 ```rust
 impl Board {
@@ -66,12 +71,7 @@ impl Board {
     pub fn get_valid_moves(&self) -> Vec<Direction> {
         Direction::ALL.iter().copied().filter(|d| self.would_change(*d)).collect()
     }
-    pub fn execute_move(&mut self, dir: Direction) -> MoveResult {
-        // 1. slide/merge via slide_left + transforms (see 03-board-representation.md)
-        // 2. returns { changed: bool, score_gained: u64 }
-        // 3. caller spawns tile only if changed
-        todo!()
-    }
+    pub fn execute_move(&mut self, dir: Direction) -> Result<MoveResult, GameError> { todo!() }
     pub fn is_game_over(&self) -> bool {
         self.get_valid_moves().is_empty()
     }
@@ -165,7 +165,7 @@ impl Default for SimulatorConfig {
 
 Implemented in `src/game_engine/mod.rs`: fixed-size validated board state, four `Direction` encodings, pure slide transforms, checked merge scoring, valid-move detection, seeded 90/10 tile spawning, reusable `SimulatorConfig`/`GameSimulator`, random and policy-driven execution, and per-game simulation entrypoints. The model and heuristic policies now use the shared simulator. The random simulator is reproducible across repeated fixed-seed calls; illegal policy moves return an error. Root tests cover move rules, spawn behavior, configuration validation, and simulation determinism.
 
-Detailed per-merge history, complete trajectory records, and a standalone simulation configuration file are not part of the current MVP implementation. `game_over` records the terminal no-move state; the optional move cap remains a safety limit.
+Merge events, per-turn score totals, and move action/score-delta records are included in `GameResult`. The rollout collector also retains the sampled states needed for relabeling. A separate simulation configuration file is not part of the current MVP; `SimulatorConfig` is currently constructed through code. `game_over` records the terminal no-move state; the optional move cap remains a safety limit.
 
 ## 9. Cross-References
 

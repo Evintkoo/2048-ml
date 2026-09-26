@@ -1,6 +1,6 @@
 # Plan 04 — Ablation Study: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Candidate ablation matrix is illustrative only; feature-removal training and evaluation are not implemented.
 
 **Goal:** State the current implementation and evidence boundary for ablation study.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,17 +9,17 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**No ablation result is claimed.** The proposed matrix requires a feature-selection-aware training path, matched labeling/data splits, independent experimental units, and a compute budget. None has been completed.
 
-> **No TBD.** Every row maps to a `TrainingConfig` + `ScoreMetrics` evaluation (10k games, pre-registered MWU/Holm protocol, bootstrap CI, and effect size). Leakage control: `CrossValidator::GroupKFold` split on `game_id` (games are i.i.d. given seed; TimeSeries is not canonical).
+> This is a candidate design, not an executable specification or preregistered protocol. CV grouping does not by itself establish independent game-level outcomes.
 
 ## 1. Matrix
 
-### 1.1 Leave-One-Out (27 configs)
+### 1.1 Leave-One-Out (candidate design)
 
-For each canonical feature in (`grid_0..15, empty_count, max_tile_log, monotonicity, smoothness, merges_available, score_normalized, adjacency_merge_score, corner_max, edge_tiles_occupied, col_worst, row_worst`): train `MultiClassification` (0-3) without that feature; evaluate 10k games seed 42; report `Δ = mean_full - mean_minus_i` with CI.
+Candidate: remove one feature at a time, retrain using the same training data and declared model-selection protocol, then compare held-out outcomes. The feature list and model configuration must match the canonical encoder and supported four-class model set.
 
-### 1.2 Group Removal (8 configs)
+### 1.2 Group Removal (candidate design)
 
 | Group | Features Removed | Rationale |
 |-------|------------------|-----------|
@@ -32,29 +32,29 @@ For each canonical feature in (`grid_0..15, empty_count, max_tile_log, monotonic
 | corner/edge | `corner_max, edge_tiles_occupied, col_worst, row_worst` | Placement and balance |
 | score | `score_normalized` | Progress context |
 
-> The 8 groups cover all 27 canonical features without inventing derived columns; the 16 raw grid columns remain one group.
+> Reconcile this proposed grouping with the current 27-feature encoder before implementation.
 
 ### 1.3 Controls
 
-- **Baseline full-27** trained once per `ModelType` (winner ModelType defines primary ablation; cheapest run precedes others if budget tight).
-- **Cross-validation:** `TrainingConfig { cv_folds:5 }` with `CVStrategy::GroupKFold{ n_splits:5 }` using `game_id` column; no leakage across games.
+- **Baseline full feature set** must use the same training samples, model, hyperparameters, and evaluation seeds as each removal run.
+- **Validation:** keep all rows from a game in one fold; separately retain a held-out evaluation set. GroupKFold is group-disjoint, not chronological.
 - **Labels:** rollout 100 sims/action; same label pipeline for all configs.
 
 ## 2. Cost Cap
 
-`35 configs (27+8) × 10k = 350k games`. Cap at **270k** by priority: run 8 groups first, then top-12 LOO by expected impact (empty, max, mono, merge groups); expand to full 27 only if `Δ` CI excludes 0 for any group. Evaluation is `~2h/10k` → 54h full, 40h capped (see `07-computational-budget.md`).
+No execution budget is approved. Estimate end-to-end runtime from a small measured pilot using the intended trained-policy evaluation path; the prior hours/game estimates and 270k cap are unsupported planning figures and are removed.
 
 ## 3. Statistical Gate per Ablation
 
-Each removal vs full: report Mann-Whitney U p-values with Holm correction over the planned comparisons, bootstrap CI on Δ, and effect size. A feature is not declared necessary from a single threshold; conclusions distinguish statistical evidence from practical magnitude.
+Before analysis, define the inferential unit, matched-pair structure, multiplicity family, practical threshold, and suitable uncertainty method. Available comparison helpers do not yet provide a clustered paired ablation analysis.
 
 ## 4. Output
 
-`data/evaluation_data/ablation.parquet` with `config_id, removed_feature/group, mean, bootstrap_lo/hi, U, p_holm, d, significant`. Visualization: ranked Δ bar with CI — no "TBD" placeholder; TBD only until pipeline runs.
+No output schema or ablation runner exists. Base future artifacts on actual CSV/manifest conventions; include configuration, data, seed, model, removed features, raw outcomes, and analysis provenance.
 
 ## Implementation Record
 
-- No ablation configurations, artifact writer, or feature-removal evaluation pipeline are implemented. The stated 35×10k budget is an estimate and needs reconciliation with current measured throughput before execution.
+- No ablation configurations, artifact writer, or feature-removal evaluation pipeline are implemented. The matrix is proposed only. Feature removal, matched retraining/evaluation, output artifact schema, and compute budget remain unimplemented and require a pilot before scheduling.
 
 ---
 
@@ -71,7 +71,7 @@ Each removal vs full: report Mann-Whitney U p-values with Holm correction over t
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Ablation work remains pending.** Resolve the canonical feature groups, split/label leakage boundary, inferential unit, method, and resource budget before running experiments.
 
 ## Later
 

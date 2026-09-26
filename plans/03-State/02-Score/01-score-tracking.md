@@ -1,6 +1,6 @@
 # Plan 01 — Score Tracking: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: COMPLETE (2026-09-26).** Score tracker records merge details, cumulative event score, per-turn gains, merge count, and maximum tile.
 
 **Goal:** State the current implementation and evidence boundary for score tracking.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats score tracking as implemented metadata, not as a research finding.** `ScoreTracker` initializes from the game board, aggregates score and merge counts, tracks the maximum tile reached, and retains per-turn and per-merge records. Score remains metadata; `action` is the training label.
 
 ## 1. Purpose
 
@@ -19,42 +19,22 @@ Track scores for **analysis/benchmarking only**. Score is metadata — the super
 
 ```rust
 pub struct ScoreTracker {
-    pub current_score: u64,
-    pub score_history: Vec<ScoreEvent>,
+    pub total_score: u64,
+    pub merge_history: Vec<MergeEvent>,
     pub turn_scores: Vec<u64>,
     pub total_merges: u64,
     pub max_tile_ever: u64,
 }
-pub struct ScoreEvent {
-    pub turn: u64,
-    pub tile_value: u64,        // merged tile value (e.g., 8 for 4+4→8)
-    pub score_gained: u64,        // == tile_value (the merged tile value)
-    pub position: (usize, usize),
-    pub cumulative_score: u64,
-}
+// MergeEvent also records cumulative_score after this merge.
 ```
 
 ## 3. Score Recording — Canonical
 
 > **2048 scoring rule:** merging two `value` tiles produces one `2*value` tile; **score gained = `2*value`** which equals the **merged tile value**. Pass `merged_tile_value` (not half).
 
-```rust
-impl ScoreTracker {
-    /// `merged_value` is the resulting tile (e.g., 8). Score gained == merged_value.
-    pub fn record_merge(&mut self, turn: u64, merged_value: u64, position: (usize, usize)) {
-        debug_assert!(merged_value.is_power_of_two(), "merged tile must be power of 2");
-        let score_gained = merged_value; // NOT value*2 where value is half — use merged value directly
-        self.current_score += score_gained;
-        self.turn_scores.push(score_gained);
-        self.total_merges += 1;
-        self.max_tile_ever = self.max_tile_ever.max(merged_value);
-        self.score_history.push(ScoreEvent {
-            turn, tile_value: merged_value, score_gained, position,
-            cumulative_score: self.current_score,
-        });
-    }
-}
-```
+`RawBoardState::execute_move` creates one `MergeEvent` per merge, including the
+merged value, result position, turn, score gained, and cumulative score at that
+merge. `ScoreTracker::record_move` aggregates the move result and its merges.
 
 ## 4. Score Metrics (Benchmark Only)
 
@@ -91,32 +71,23 @@ pub struct Reward { pub immediate_reward: f64, pub survival_reward: f64, pub pro
 ## 7. Score Logging — Analysis Artifact
 
 ```rust
-// Implemented with finite checks; analysis only
-pub fn log_scores(trackers: &[ScoreTracker], path: &str) -> Result<()> {
-    for t in trackers { if !t.current_score.is_finite() as f64 { return Err(..); } }
-    let mut wtr = csv::Writer::from_path(path)?;
-    for t in trackers { wtr.serialize((t.current_score, t.total_merges, t.max_tile_ever))?; }
-    wtr.flush()?; Ok(())
-}
+Game results serialize `final_score` and the `ScoreTracker`; benchmark commands
+write per-game scores to CSV and include score summaries in JSON manifests.
 ```
 
 ## 8. Score Visualization — Analysis Only
 
 Histogram generation is an analysis helper — not a training step. Implement only if needed for the report.
 
-## 9. Score Quality Checks — Implemented
+## 9. Score Quality Checks
 
-```rust
-pub fn validate_scores(scores: &[u64]) -> Result<()> {
-    for &s in scores { if ! (s as f64).is_finite() { return Err("non-finite score".into()); } }
-    Ok(())
-}
-```
+Scores are stored as `u64`, so they cannot be NaN or infinite. Board score
+updates use checked addition and return `ScoreOverflow` on overflow.
 
 ## Implementation Record
 
-- `ScoreTracker` records total score, per-turn score gains, and merge events containing turn, resulting tile value, position, and score gained. It does not currently track cumulative score per event, total merge count, or max tile ever as separate fields; final game results carry max tile.
-- Automated coverage confirms correct merge scores and positions in all directions. Histogram generation and score distribution report helpers are not implemented.
+- `ScoreTracker` records initial/final score, per-turn gains, cumulative score per merge, merge count, and maximum tile ever reached. Histogram generation and score distribution report helpers are not implemented and remain optional analysis work.
+- Automated coverage confirms cumulative scores, merge counts, maximum tile tracking, and correct merge positions for all directions.
 
 ---
 

@@ -1,6 +1,6 @@
 # Plan 02 — Feature Extraction: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** The 27-value encoder is implemented; validation policy for boards above the declared 32768 tile scale remains unresolved.
 
 **Goal:** State the current implementation and evidence boundary for feature extraction.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats feature computation as implemented, with one input-range contract gap pending.** `BoardStateMl::from_board` matches the documented order and formulas. `RawBoardState` accepts powers of two above 32768, which can produce feature values above one outside index 21 and then fail `BoardStateMl::validate` or dataset CSV validation. Whether to cap game tiles or expand the accepted normalized range is not specified by the canonical scope, so the protocol choice remains open.
 
-> **Canonical encoding:** `04-Encoding/01-state-vector.md:31` `create_state_vector`. This file is the **detailed appendix** for the 11 derived features — no duplication of the canonical impl.
+> **Canonical encoding:** `../04-Encoding/01-state-vector.md` and `src/state.rs`. This file is the detailed appendix for the 11 derived features; it does not duplicate the implementation.
 > **Total dims:** 27 = 16 raw grid + 11 derived. Most features are in [0,1]; `score_normalized` is finite and non-negative but may exceed 1 for scores above 1,000,000.
 
 ## 1. Purpose
@@ -71,18 +71,7 @@ fn monotonicity(grid: &[u32; 16]) -> f64 {
 
 ### 3.4 Smoothness — idx 19
 
-```rust
-fn smoothness(grid: &[u32; 16]) -> f64 {
-    let mut diff_sum: i32 = 0;
-    for i in 0..4 {
-        for j in 0..4 {
-            if j < 3 { diff_sum += (grid[i*4+j] as i32 - grid[i*4+j+1] as i32).abs(); }
-            if i < 3 { diff_sum += (grid[i*4+j] as i32 - grid[(i+1)*4+j] as i32).abs(); }
-        }
-    }
-    1.0 / (1.0 + diff_sum as f64 / 100.0)
-}
-```
+The implementation uses `u32::abs_diff` and accumulates differences as `u64` to avoid signed overflow; the final feature is `1.0 / (1.0 + diff_sum as f64 / 100.0)`.
 
 ### 3.5 Corner Max — idx 23
 
@@ -156,14 +145,7 @@ Post-training only — see §8. Runtime model exposes impurity/permutation impor
 
 ## 7. Feature Normalization Pipeline
 
-```rust
-use automl::preprocessing::{DataPreprocessor, PreprocessingConfig, ScalerType};
-let preprocessor = DataPreprocessor::new(
-    PreprocessingConfig::default().with_scaler(ScalerType::Standard)
-);
-let features = preprocessor.fit_transform(&raw_features)?;
- // Tree models may use ScalerType::None — see 04-Encoding/02-normalization.md
-```
+No fitted preprocessing is currently applied. The root encoder emits these deterministic values directly; introducing learned scaling would require fold-local fitting and a separately scoped protocol change.
 
 ## 8. Feature Validation — Future Research, Not MVP
 
@@ -173,7 +155,8 @@ Validate post-hoc via permutation / impurity importance; replace any hypothesize
 
 ## Implementation Record
 
-- All 11 derived features are implemented in `src/state.rs` using the documented deterministic formulas. Tests cover canonical order, score feature, randomized boards, and maximum merge density.
+- All 11 derived features are implemented in `src/state.rs` using the documented deterministic formulas. Root tests cover canonical order, score feature, randomized boards, and maximum merge density; the latest root suite passed 31/31 during #028.
+- Values above the declared 32768 scale are accepted by `RawBoardState` but rejected by the current feature/data validators for some indices. Resolve this input-range contract before declaring the feature protocol complete.
 - Post-training feature importance, SHAP, and ablation are not yet measured; these remain future research tasks.
 
 ---

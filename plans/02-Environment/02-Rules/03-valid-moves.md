@@ -1,6 +1,6 @@
 # Plan 03 — Valid Moves: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-24).** Move validity is implemented; seeded 10k random/heuristic frequencies are measured, with model-policy frequency pending a trained model.
+> **Status: PARTIAL (2026-09-26).** Move validity and seeded 10k random/heuristic frequencies are measured; model-policy frequency awaits a trained model.
 
 **Goal:** State the current implementation and evidence boundary for valid moves.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats move validity as implemented and its frequency analysis as partial.** Seeded 10k-game random and heuristic baselines were measured; results and raw artifacts are recorded in [the action-frequency report](../../../reports/action-frequency/README.md). Their intervals resample whole games to account for within-game move dependence. A trained model was not available, so model-policy frequencies remain pending.
+**This plan treats move validity as implemented and its frequency analysis as partial.** Seeded 10k-game random and heuristic baselines were measured; results and raw artifacts are recorded in [the action-frequency report](../../../reports/action-frequency/README.md). Intervals resample whole games to account for within-game dependence. A trained model is not available, so model-policy frequencies remain pending.
 
 > **Canonical validity:** `board.would_change(dir)` — single source. Do not duplicate `get_valid_moves` logic elsewhere.
 
@@ -56,50 +56,28 @@ pub struct MoveAnalysis {
 
 ## 5. ML Encoding — Action u8 0–3
 
-Model outputs 4 logits → `argmax` → `action:u8`.
+The model returns four class probabilities. The root selects from legal action IDs with `actions::masked_argmax`, then converts the selected ID with `Direction::try_from_action`. The supervised row is `state_features:[f64;27] → action:u8`; score remains metadata.
 
-```rust
-pub fn output_to_action(outputs: &[f64;4]) -> Direction {
-    let (idx,_) = outputs.iter().enumerate()
-        .max_by(|a,b| a.1.partial_cmp(b.1).unwrap()).unwrap();
-    Direction::from_u8(idx as u8)
-}
-/// Supervised row: state_features:[f64;27] → action:u8 — TaskType::MultiClassification; score is metadata only (see 01-scoring-rules.md)
-```
+## 6. Constrained Action (Legal-Action Masking)
 
-## 6. Constrained Action (Renormalization)
+`ModelPolicy::select_move` calls `predict_proba_array`, collects valid actions from
+`RawBoardState::get_valid_moves`, and applies `masked_argmax` only to those IDs.
+The selection does not need probability renormalization. The standalone
+`actions::masked_argmax` also rejects empty legal sets, non-finite scores, and
+invalid action IDs, and breaks ties by action order.
 
-Force invalid moves to prob 0; renormalize over valid only.
+## 7. Action Frequency — Measured Baselines
 
-```rust
-pub fn constrained_action(outputs: &[f64;4], board: &Board) -> Direction {
-    let valid = board.get_valid_moves();
-    debug_assert!(!valid.is_empty(), "call only when not game_over");
-    let sum: f64 = valid.iter().map(|d| outputs[*d as usize].max(0.0)).sum();
-    // Guard div-by-zero: if sum==0, fallback to uniform over valid
-    let mut constrained = [0.0f64;4];
-    if sum > 1e-12 {
-        for d in valid.iter() { constrained[*d as usize] = outputs[*d as usize].max(0.0) / sum; }
-    } else {
-        for d in valid.iter() { constrained[*d as usize] = 1.0 / valid.len() as f64; }
-    }
-    output_to_action(&constrained)
-}
-```
+The retained report summarizes 10,000 games per agent with game-cluster bootstrap 95% intervals:
 
-> **Requires `InferenceConfig` output handling:** automl `InferenceEngine` returns raw logits — apply softmax then `constrained_action` in post-processing. Do not mutate automl internals; handle in `04-Actions/03-Mapping/01-model-output-to-action.md` policy. See `01-Infrastructure/02-Configuration/02-training-config.md`.
+| Move | Random proportion (95% CI) | Heuristic proportion (95% CI) |
+|------|----------------------------|------------------------------|
+| Up | 0.249527 [0.248847, 0.250213] | 0.262476 [0.262011, 0.262956] |
+| Down | 0.250478 [0.249757, 0.251181] | 0.241385 [0.240928, 0.241848] |
+| Left | 0.249917 [0.249265, 0.250623] | 0.257937 [0.257469, 0.258413] |
+| Right | 0.250077 [0.249356, 0.250779] | 0.238202 [0.237747, 0.238662] |
 
-## 7. Action Frequency — Unvalidated Hypothesis (Measure, Do Not Assert)
-
-> **Not asserted.** Numbers below are **unvalidated hypothesis — measure empirically** over ≥10k games per agent. Do not use as training prior.
-
-| Move | Frequency (Hypothesis, TBD) | Hypothesized Rationale |
-|------|-----------------------------|------------------------|
-| Left | hypothesized dominant | Left is base slide; monotonic boards favor left/up |
-| Up | secondary | — |
-| Down / Right | rare | — |
-
-> **Procedure:** log `action:u8` histogram per `SimulationBatch` in `03-Simulation-Engine/03-multi-game.md`; report empirical distribution with 95% CI. Update this doc after measurement.
+These are descriptive baseline frequencies, not a training prior or framework result. Raw CSVs, manifests, seed range, and bootstrap protocol are retained in the linked report.
 
 ## 8. Deleted — No Sequence / LSTM Hint
 

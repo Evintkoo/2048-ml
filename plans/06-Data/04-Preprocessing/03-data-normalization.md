@@ -1,6 +1,6 @@
 # Plan 03 — Data Normalization: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Fixed divisors are applied during feature encoding; fitted scaler integration is absent and tile-range bounds remain unresolved.
 
 **Goal:** State the current implementation and evidence boundary for data normalization.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats deterministic feature scaling as implemented and fitted preprocessing as absent.** `BoardStateMl::from_board` applies fixed divisors before storage. The root trainer consumes these values directly and does not fit or persist a `DataPreprocessor`. Tile values above 32768 can exceed the declared range for several features; score index 21 is intentionally uncapped.
 
 ## 1. Purpose
 
@@ -115,18 +115,18 @@ flowchart TB
 | `grid_0..15` | `/ 32768.0` | [0,1] |
 | `empty_count` | `/ 16.0` | [0,1] |
 | `max_tile_log` | `log2(max)/15.0` | [0,1] |
-| `monotonicity` | `/ max_possible` | [0,1] |
-| `smoothness` | `1 - sum|Δlog|/max` | [0,1] |
+| `monotonicity` | fraction of adjacent pairs equal or containing an empty tile | [0,1] |
+| `smoothness` | `1 / (1 + adjacent_abs_diff_sum/100)` | [0,1] |
 | `merges_available` | `/ 16.0` | [0,1] |
 | `score_normalized` | `log10(score+1)/6.0` | [0,~1.02] |
-| `adjacency_merge_score` | `/ (16*2048)` | [0,1] |
-| `corner_max` | `/ 32768.0` or binary | [0,1] |
+| `adjacency_merge_score` | equal-adjacent tile sum `/ (16*32768)` | [0,1] through documented tile scale |
+| `corner_max` | maximum corner tile `/32768.0` | [0,1] through documented tile scale |
 | `edge_tiles_occupied` | `/ 12.0` | [0,1] |
-| `col_worst` / `row_worst` | `/ (32768*4)` | [0,1] |
+| `col_worst` / `row_worst` | minimum axis sum `/8192.0` | [0,1] through documented tile scale |
 
-**Optional (fitted, train only):** `DataPreprocessor` with `StandardScaler` may additionally z-score the 27-dim vector — but **fit on train only**, then transform val/test (see §8). Deterministic divisors above are always applied first. `Available Moves` / `MoveCount` is not a feature — deleted (not in 27). `Moves` in old diagram = `merges_available`.
+Fitted preprocessing is not in the current root training path. If added later, fit it on training partitions only and apply the same fitted instance to validation/test. `Available Moves` / `MoveCount` is not a feature — deleted (not in 27). `Moves` in old diagram = `merges_available`.
 
-> **No contradiction:** §3–§4 `StandardScaler`/`MinMaxScaler` are the *optional fitted* path via `DataPreprocessor`; the deterministic table above is the *always-on* path. Use one or both, but never fit on val/test.
+> The fitted scaler examples below are future integration guidance. The live path uses deterministic features only.
 
 ## 6. Normalization Pipeline
 
@@ -151,7 +151,7 @@ sequenceDiagram
 ```mermaid
 flowchart TD
     Verify[Normalization Verification]
-    Verify --> Check1[All features in [0,1]]
+    Verify --> Check1[Finite and nonnegative; feature-specific ranges]
     Verify --> Check2[No NaN values]
     Verify --> Check3[No Inf values]
     Verify --> Check4[Distribution preserved]
@@ -207,7 +207,8 @@ flowchart LR
 
 ## Implementation Record
 
-- The fixed canonical divisors are applied by `BoardStateMl::from_board` before data writing. There is no fitted scaler stage in the current data or training commands; this avoids fitting on validation/test data but also means the optional scaler lifecycle is not implemented.
+- Fixed canonical divisors are applied by `BoardStateMl::from_board` before data writing. The current data/training commands have no fitted scaler stage.
+- Values above tile 32768 may violate current upper bounds for non-score features; resolve this contract before claiming all encoded data is valid.
 
 ---
 
@@ -224,7 +225,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Resolve the tile-range contract with the canonical state plans. If learned scaling is later added, implement fold-local fit/transform and persist the fitted parameters.
 
 ## Later
 

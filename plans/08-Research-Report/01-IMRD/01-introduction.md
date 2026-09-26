@@ -1,6 +1,6 @@
 # Plan 01 — Introduction: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Research framing is documented; framework validation, plan-scale case-study experiments, and verified literature claims remain pending.
 
 **Goal:** State the current implementation and evidence boundary for introduction.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,19 +9,19 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan is a research framing document, not a findings report.** The AutoML framework capability checks are partial; standard-dataset validation and the 2048 model study have not met their planned gates. Literature-based baseline estimates and novelty claims are not verified.
 
 > The primary contribution is the design and validation of a Rust-native AutoML architecture. The 2048 ML system is the implementation and principal case study used to evaluate that architecture.
 
 ## 1. Background and Primary Contribution
 
-The central research object is not only a model that plays 2048. It is an integrated Rust-native AutoML architecture that combines data processing, preprocessing, model training, validation, hyperparameter optimization, inference, serialization, and reproducible experiment control. The 2048 system provides a demanding implementation context in which these framework components must operate together on sequential stochastic data.
+The central research object is the design and validation of a Rust-native AutoML architecture. The 2048 system is the principal application case study. Several architecture components are implemented, but integrated standard-dataset validation and the complete reproducibility study remain pending.
 
-The 2048 game is a 4×4 stochastic puzzle where each move slides tiles (Up/Down/Left/Right, encoded 0-3) and spawns a 2 (p=0.9) or 4 (p=0.1). State space is `16` cells but decision depth ~50-100 moves makes optimal play intractable. This work tests whether `Evintkoo/automl v1.0.0` — a Rust AutoML engine — can learn a competitive 4×4 supervised policy from a fixed 27-dim feature vector via `TaskType::MultiClassification` over action labels `0..3`.
+2048 is a stochastic 4×4 tile-merging game. The simulator defaults to spawning a 4 with probability 0.1; its available actions are Up, Down, Left, and Right. This study evaluates a supervised policy using 27 features and four action labels with the pinned Rust AutoML submodule. The case-study experiments remain pending.
 
 ## 2. Research Context
 
-2048 was released by Cirulli (2014). Prior work: heuristic corner/monotonicity agents (`~512` mean on 4×4, Björk 2014), expectimax (depth 4-6, but out-of-scope for core evaluation — see Appendix), RL/DQN and MCTS+NN (out-of-scope, see Future Work). AutoML for 4×4 supervised classification on puzzle games remains underexplored. This project fills that gap with a Rust-native pipeline: `TrainEngine` + `HyperOptX` (TPE) + `CrossValidator::GroupKFold(game_id)` + `polars 0.46`.
+The literature review has not yet verified publication details, prior-agent protocols, or score estimates. Do not present the draft heuristic mean or novelty claim as established. The implemented pipeline includes AutoML training and grouped validation paths; Parquet and the full planned benchmark workflow are not established as completed.
 
 Case-study ranking rule (canonical, §3): highest held-out mean score across the declared 2048 evaluation games, with uncertainty, practical effect, and seed-level robustness reported alongside the ranking. This is not the framework's primary success criterion.
 
@@ -33,12 +33,12 @@ The study has two linked research layers. First, the independent `automl` implem
 
 **RQ1 (primary):** How can a Rust-native AutoML architecture be designed and validated to provide reproducible preprocessing, model training, validation, optimization, inference, and artifact management?
 
-**RQ2 (case study):** Can the validated framework train a 4×4 policy whose mean score exceeds heuristic `~512` under the statistical protocol above, and which `ModelType` performs best over 10k games?
+**RQ2 (case study):** Under a predeclared, reproducible protocol, how does the supervised policy perform relative to measured baselines, and how do supported model types compare? Baseline values, evaluation scale, and ranking remain to be established by experiment.
 
 **Framework validation:** Does the implemented architecture satisfy its correctness, reproducibility, efficiency, and interoperability requirements on standard tabular tasks before the 2048 application results are interpreted?
 
 **Secondary:**
-- RQ2: What is the best mean score and its bootstrap CI vs heuristic `~512` and random `~128`?
+- RQ2: What are the mean scores, uncertainty intervals, and differences versus measured random and heuristic baselines?
 - RQ3: Is the winner reproducible across seeds 42/123/456/789/1011?
 - RQ4: Which 27-dim groups drive performance (ablation, GroupKFold, 10k games each)?
 
@@ -49,19 +49,19 @@ All answers are **pending experimentation**; methodology for answering them is d
 | Objective | Deliverable | Criterion |
 |-----------|-------------|-----------|
 | Validate the independent framework | Capability and correctness report | Required APIs and workflows pass validation |
-| Maximize mean score via automl | Trained `TrainEngine` models | Mean over 10k games, seed 42 |
-| Identify best algorithm | Ranked table | MWU/Holm + bootstrap CI + effect size |
-| Establish statistical rigor | `statistical_tests.rs` | Holm correction, bootstrap CI, effect size |
-| Validate 27-dim engineering | Ablation (27 LOO + 8 groups) | GroupKFold, cost-capped |
-| Reproducibility | Package (§06) | Rust 1.75, automl v1.0.0, seed 42 |
+| Evaluate the 2048 policy | Trained models and retained results | Protocol and evaluation size to be declared before the study |
+| Compare supported models | Pairwise comparison report | Use implemented tests with assumptions and limitations recorded |
+| Establish statistical rigor | Statistical analysis artifact | Helpers exist; full protocol and power rationale remain pending |
+| Validate feature contribution | Ablation study | Planned; no ablation experiment or runner completed |
+| Reproducibility | Reproduction package | Pinned framework revision and actual tool versions recorded |
 
 ## 5. Novel Contributions (In-Scope, Supervised 4×4 Only)
 
-1. **Rust-native AutoML architecture** with documented module boundaries, data contracts, and design trade-offs.
-2. **Framework validation** covering correctness, reproducibility, efficiency, interoperability, and standard tabular benchmarks.
-3. **Supervised 4×4 AutoML case study**: 27-dim → `MultiClassification(0-3)` → `TrainEngine` → benchmark evaluation.
-4. **Rigorous application evaluation** using uncertainty intervals, effect sizes, and repeated-condition analysis.
-5. **Reproducibility package** pinned to `rust 1.75`, `polars 0.46`, `automl v1.0.0`, and documented seeds.
+1. **Rust-native AutoML architecture** documented with module boundaries, data contracts, and design trade-offs.
+2. **Framework validation study** planned for correctness, reproducibility, efficiency, interoperability, and standard tabular benchmarks; results remain pending.
+3. **Supervised 4×4 case study** implemented as a 27-feature, four-action AutoML pipeline; plan-scale evaluation remains pending.
+4. **Application evaluation** includes initial score and comparison tools; full uncertainty and repeated-condition evidence remain pending.
+5. **Reproducibility package** is planned; exact toolchain and artifact evidence must come from the executed study.
 
 > **Future / Appendix (not core):** PSPACE-hardness conjecture, Markov blanket / information-theoretic analysis, PAC lower-bound refinements, 8×8 or larger boards, ensemble/stacking, RL/MCTS reproduction, and GPU acceleration. These are not needed to establish the Rust-native AutoML architecture or the 2048 case study.
 
@@ -74,11 +74,11 @@ All answers are **pending experimentation**; methodology for answering them is d
 
 ## 7. Scope and Limitations
 
-**In scope:** Independent AutoML framework validation, standard tabular benchmark tasks, standard 4×4 2048, automl via `TrainEngine`/`HyperOptX` (CLI/API), supervised `MultiClassification` (27→4), mean-score ranking over 10k games, GroupKFold by `game_id`, multi-seed robustness, and `polars 0.46`.
+**In scope:** Independent AutoML framework validation, standard tabular tasks, 4×4 2048, supervised four-action learning, grouped validation by game, model comparisons, and reproducibility. Dataset count, game count, and seed matrix are experimental design choices that must be justified and recorded before collection.
 
 **Out of scope → Future/Appendix only:** 8×8 or other board sizes, ensemble/stacking, RL/policy gradients, GPU, web frontend, mobile, and multi-agent settings. Search-based and learning-based agents may be included as explicitly defined comparison baselines, but they are not the primary contribution. See `02-Methodology/01-experimental-design.md` §10 and `04-discussion.md` §7.
 
-**Limitations (acknowledged):** `automl` capability gate pending (`ModelType`, `TaskType::MultiClassification`, `CrossValidator`); 27-dim is fixed; single-seed primary (multi-seed planned); rollout labels (100 sims/action) are noisy proxies.
+**Limitations:** Standard-dataset validation is pending; 27 features are fixed by scope; multi-seed robustness is pending; rollout labels use finite stochastic simulations and are proxies rather than optimal actions. Candidate baseline scores in the draft are unverified.
 
 ## 8. Paper Structure
 
@@ -90,7 +90,7 @@ No result fabricated. Null/inconclusive outcomes, training failures, and any aut
 
 ## Implementation Record
 
-- Research framing and honest-reporting requirements are documented. The framework dataset validation and 2048 experiments are pending, so research questions, novelty claims, and baseline literature claims have not been answered or independently verified.
+- Research framing and honest-reporting requirements are documented. Framework dataset validation and plan-scale 2048 experiments remain pending. Baseline literature claims and novelty must be supported by the completed source review before publication.
 
 ---
 
@@ -107,7 +107,7 @@ No result fabricated. Null/inconclusive outcomes, training failures, and any aut
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Research conclusions remain bounded by collected evidence.** Declare compute budgets before large studies and retain datasets, configurations, seeds, versions, and analysis outputs.
 
 ## Later
 

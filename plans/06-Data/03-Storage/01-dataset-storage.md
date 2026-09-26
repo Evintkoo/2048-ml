@@ -1,6 +1,6 @@
 # Plan 01 — Dataset Storage: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Local CSV, metadata, checkpoint, and manifest outputs exist; catalog/version management and Parquet are absent.
 
 **Goal:** State the current implementation and evidence boundary for dataset storage.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats local artifact storage as implemented with optional infrastructure absent.** The collector writes training CSV, aligned metadata, checkpoint chunks, and a JSON manifest to a caller-selected path. Parquet, dataset cataloging, and managed archival are not implemented.
 
 ## 1. Purpose
 
@@ -67,7 +67,7 @@ flowchart TD
 
 ## 4. Storage Locations — MVP Local Only
 
-> **MVP: local `data/` only.** Parquet/CSV both acceptable; cache layer is future optional.
+> The live collector writes CSV. Parquet and a cache layer are not supported.
 
 ```mermaid
 flowchart TB
@@ -121,7 +121,7 @@ flowchart TD
 
 ## 6. Storage Configuration
 
-Canonical path is `06-Data/03-Storage/` with `data/` as symlink for runtime. No dual-source confusion.
+Plan documents live under `plans/06-Data/03-Storage/`; runtime outputs default to `data/raw/random_play.csv` and can be redirected with `--output`. There is no symlink requirement.
 
 ```rust
 use std::path::PathBuf;
@@ -168,7 +168,7 @@ The local CSV MVP is implemented: `data-collector collect` writes training rows,
 
 ## Implementation Record
 
-- Local collection uses a caller-selected path (default `data/raw/random_play.csv`); metadata and JSON manifest are emitted alongside. `split` writes chronological game-level CSV partitions. No storage catalog, managed index, or Parquet writer exists.
+- Local collection writes to a caller-selected CSV path (default `data/raw/random_play.csv`); row-aligned metadata, checkpoint parts, and JSON manifest are emitted alongside. `split` writes chronological game-level CSV partitions. No storage catalog, managed index, or Parquet writer exists.
 
 ---
 
@@ -185,7 +185,7 @@ The local CSV MVP is implemented: `data-collector collect` writes training rows,
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Storage outputs are local and can be removed by the user; the project does not currently commit or synchronize generated data. Preserve manifests and hashes with any retained experiment.
 
 ## Later
 

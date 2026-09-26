@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-action-space](01-action-space.md) | Action Space Definition | PLANNED |
-| [02-action-encoding](02-action-encoding.md) | Action Encoding | PLANNED |
-| [03-action-mapping](03-action-mapping.md) | Action Mapping | PLANNED |
+| [01-action-space](01-action-space.md) | Action Space Definition | COMPLETE |
+| [02-action-encoding](02-action-encoding.md) | Action Encoding | COMPLETE |
+| [03-action-mapping](03-action-mapping.md) | Action Mapping | COMPLETE |
 
 ## Reading paths
 

@@ -1,6 +1,6 @@
 # Plan 01 — Code Reference: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Root crate and submodule paths have been source-audited; this reference is not a complete generated API inventory.
 
 **Goal:** State the current implementation and evidence boundary for code reference.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,28 +9,29 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This is a source map, not an API guarantee.** Root modules below exist; framework APIs should be checked against the pinned submodule revision and its local worktree modifications.
 
-> **Fix:** Prior `plans/` org diagram deleted. References now align with real `automl/` crate + proposed 2048 crates under root. Paths verified against `automl/src` and `plans/**/reproducibility-package.md`.
+## 1. Repository Layout (Source-Audited)
 
-## 1. Real Repo Layout
-
+```text
+2048-ml/
+├── src/
+│   ├── game_engine/mod.rs       # board, moves, spawn, simulator, rollout labeler
+│   ├── state.rs                 # 27-value supervised state encoding
+│   ├── actions.rs / policy.rs   # action types, masking, policy helpers
+│   ├── data_pipeline.rs         # CSV schema, metadata, game splits
+│   ├── training.rs              # grouped cross-validation helper
+│   ├── collection.rs            # resumable parallel rollout collection
+│   ├── hyperopt_config.rs       # schema-versioned search configuration
+│   ├── evaluation.rs            # score summaries and statistical helpers
+│   ├── framework_validation.rs  # API/capability smoke paths
+│   ├── seeds.rs                 # seed derivation
+│   └── main.rs                  # CLI commands and report output
+├── automl/                      # pinned Git submodule; local worktree may be modified
+├── Cargo.toml / Cargo.lock      # root Rust package and locked dependencies
+└── plans/                       # plan tickets and research documentation
 ```
-2048-ml/                          # root (plans/ + automl submodule)
-├── automl/                      # submodule Evintkoo/automl v1.0.0
-│   ├── src/training/config.rs   # TrainingConfig, TaskType::MultiClassification, ModelType
-│   ├── src/training/engine.rs   # TrainEngine::fit / fit_predict_arrays
-│   ├── src/training/cross_validation.rs # CrossValidator, CVStrategy::GroupKFold
-│   ├── src/optimizer/           # HyperOptX, TPE
-│   ├── src/preprocessing/       # DataPreprocessor
-│   └── Cargo.toml               # polars 0.46, smartcore 0.3
-├── src/                          # (proposed) single root MVP crate
-│   ├── game_engine/              # board, score, engine, spawn
-│   ├── data_pipeline/            # feature extraction and rollout labels
-│   └── evaluation/               # benchmark, statistics, ranking
-├── Cargo.lock / requirements.txt # pinned
-└── plans/                       # this docs repo — not code
-```
+
 
 ## 2. Correct TrainingConfig Example (Real API)
 
@@ -40,23 +41,22 @@ let config = TrainingConfig::new(TaskType::MultiClassification, "action")
     .with_model(ModelType::RandomForest)
     .with_random_state(42)
     .with_cv(5);
-// feature_columns: 27 feature names; game_id is metadata passed separately
-// to CrossValidator::split, never a model feature.
+// Project helpers carry game IDs separately and validate their row alignment.
 ```
 
 Previous `learning_rate/epochs/batch_size` example deleted — not real automl fields (see `automl/src/training/config.rs`: `n_estimators, max_depth, learning_rate, subsample`, etc.).
 
 ## 3. Data Flow (Code-Verified)
 
-`engine.rs:GameEngine::execute_move(0..3)` → `feature_extraction::extract_27(board)` → `label_generation::rollout_label(board, 100)` → `TrainEngine::fit` → `benchmark_runner::run_n(10000, seed=42)` → `statistical_tests::mann_whitney`.
+`src/game_engine/mod.rs` simulator/relabeler → `src/state.rs` feature encoding → `src/data_pipeline.rs` CSV and game split → `src/training.rs` AutoML/grouped CV → `src/main.rs` train, benchmark, and compare CLI → `src/evaluation.rs` summaries and test helpers.
 
 ## 4. Dependencies (Pinned)
 
-`automl v1.0.0, rust 1.75, polars 0.46, rand_chacha 0.3`. See `automl/Cargo.toml`.
+The root manifest declares Rust 1.75 minimum, a local-path AutoML dependency, Polars 0.46, and rand_chacha 0.3. Record the actual compiler, submodule commit, and local modifications for each result; no released-version label alone captures the dirty local worktree.
 
 ## Implementation Record
 
-- Several referenced modules and paths in this appendix do not exist (`benchmark_runner`, `statistical_tests`, `feature_extraction`, and separate crate layouts). Current source paths are documented in `06-reproducibility-package.md` and the root crate; reconcile this appendix with the actual repository.
+- Replaced nonexistent module paths and package layout with the current root modules. Framework internals remain a submodule; this appendix does not promise API stability or reproduce the full capability matrix.
 
 ---
 
@@ -73,7 +73,7 @@ Previous `learning_rate/epochs/batch_size` example deleted — not real automl f
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Keep this source map aligned with code changes.** Record local submodule modifications as well as its declared pin when citing framework internals.
 
 ## Later
 

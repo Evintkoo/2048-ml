@@ -1,6 +1,6 @@
 # Plan 01 — Benchmarking Framework: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Seeded benchmark/compare commands and score statistics exist; model ranking and performance profiling remain pending.
 
 **Goal:** State the current implementation and evidence boundary for benchmarking framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the score benchmarking tools as implemented and comparative results as pending.** The CLI runs random, heuristic, or saved-model policies with seeded games; it writes per-game CSV and manifests and provides paired/unpaired score comparisons. No trained-model winner run or per-move performance profile is recorded.
 
 ## 1. Purpose
 
@@ -60,7 +60,7 @@ flowchart TD
 |----------|-------------|----------|
 | Score | Maximum, mean, median scores | Random agent score |
 | Speed | Games per second | Real-time threshold |
-| Convergence | Training speed | Fixed epoch count |
+| Convergence | Not applicable to the current one-fit classical model loop | Not measured |
 | Robustness | Performance variance | Std dev threshold |
 
 ## 4. Benchmarking Pipeline
@@ -115,7 +115,7 @@ The random agent selects moves uniformly at random from available actions. It se
 | Max Tile | Typically 64-128 |
 | Games Completed | ~30-50 moves average |
 
-**Rationale**: A random agent has no strategy and will quickly reach a dead state. The expected score of ~128 comes from the limited number of merges possible before the board fills.
+**Rationale**: A random agent has no strategy and will quickly reach a dead state. These values are historical hypotheses, not benchmark results; replace them with retained seeded measurements before citing them.
 
 #### Heuristic Agent Baseline
 
@@ -128,7 +128,7 @@ The heuristic agent uses domain-specific rules to select moves: prioritize maint
 | Max Tile | Typically 512-1024 |
 | Games Completed | ~80-120 moves average |
 
-**Rationale**: The heuristic agent uses established 2048 strategies (monotonicity, corner placement, empty tile preservation) and consistently achieves scores significantly above random play.
+**Rationale**: The implemented heuristic is a rule-based comparison policy; its score distribution must be reported from a seeded run rather than assumed.
 
 #### Summary Table
 
@@ -148,19 +148,15 @@ ML models are compared against baselines using the following protocol:
 4. **Statistical comparison**: Compare the ML model's score distribution against each baseline using the tests defined in 6.4
 5. **Effect size**: Report Cohen's d alongside p-values to quantify the magnitude of improvement
 
-### 6.3 Sample Size Requirements
+### 6.3 Sample Size Planning (Not Empirically Powered)
 
-To achieve statistical significance, the following sample sizes are required:
+The following sizes were planning choices, not power-calculated guarantees. Choose game counts from a declared effect size, variance estimate, and compute budget:
 
 - **Minimum games per agent**: 1,000 games
 - **Recommended games per agent**: 5,000 games
 - **For 99% confidence (α=0.01)**: 10,000 games
 
-Sample size justification:
-- Game scores follow a heavy-tailed distribution (many low scores, few very high scores)
-- Larger samples reduce the impact of outliers on mean estimates
-- The central limit theorem ensures the sampling distribution of the mean approaches normality for n ≥ 1,000
-- For detecting a 2x improvement over random (128 → 256), approximately 500 games per group are needed at 80% power with α=0.05
+No prospective power analysis has been completed. The observed score distribution and pilot data should inform sample-size planning; do not treat a fixed n as a significance guarantee.
 
 ### 6.4 Statistical Test Requirements
 
@@ -231,17 +227,12 @@ For the 2048 case study, the provisional winner is the model with the highest he
 - Bootstrap 95% CI on mean difference must not include zero
 - If not statistically significant, the ranking is inconclusive and more games are needed
 
-**Success Criteria:**
-- Top model significantly outperforms Random agent (≥2x mean score, p < 0.05)
-- Top model significantly outperforms Heuristic agent (≥1.5x mean score, p < 0.05)
-- Sample sizes meet minimum requirements (≥1,000 games per agent)
-- Bonferroni correction applied across all comparisons
-- All results reproducible with seed-based initialization
+**Reporting criteria:** declare the case-study comparison and statistical procedure before evaluation; retain per-game outcomes, seeds, uncertainty, and corrected comparisons. Do not require an invented score ratio or infer framework quality from game results.
 
 ## Implementation Record
 
 - CLI supports seeded random, heuristic, and saved-model score runs; paired comparisons; score summaries; bootstrap intervals; exact sign tests; Mann–Whitney U; Holm adjustment; and effect sizes. Results include manifests and source/file hashes.
-- Plan-scale runs, all-baseline 10k comparison, and efficiency-by-move profiling have not been completed. Random/heuristic score values in this ticket are unverified planning estimates, not results.
+- A model-versus-baseline ranking at the declared scale and efficiency-by-move profiling have not been completed. Random/heuristic values previously shown as expectations are unverified estimates, not results.
 
 ---
 
@@ -258,7 +249,7 @@ For the 2048 case study, the provisional winner is the model with the highest he
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Run the selected trained model on held-out game seeds after the model-selection workflow exists. Set game count from pilot variance and available compute; retain raw scores and manifests.
 
 ## Later
 

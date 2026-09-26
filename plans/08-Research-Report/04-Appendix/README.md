@@ -6,12 +6,12 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-code-reference](01-code-reference.md) | Code Reference | PLANNED |
-| [02-glossary](02-glossary.md) | Glossary | PLANNED |
-| [03-references](03-references.md) | References | PLANNED |
-| [04-mathematical-formulation](04-mathematical-formulation.md) | Mathematical Formulation | PLANNED |
-| [05-mathematical-summary](05-mathematical-summary.md) | Mathematical Summary | PLANNED |
-| [06-reproducibility-package](06-reproducibility-package.md) | Reproducibility Package | PLANNED |
+| [01-code-reference](01-code-reference.md) | Code Reference | PARTIAL — current root source map |
+| [02-glossary](02-glossary.md) | Glossary | PARTIAL — evidence-qualified definitions |
+| [03-references](03-references.md) | References | PARTIAL — software refs checked; academic refs pending |
+| [04-mathematical-formulation](04-mathematical-formulation.md) | Mathematical Formulation | PARTIAL — unsupported claims withdrawn |
+| [05-mathematical-summary](05-mathematical-summary.md) | Mathematical Summary | PARTIAL — no theorem asserted |
+| [06-reproducibility-package](06-reproducibility-package.md) | Reproducibility Package | PARTIAL — local manifests exist; full study package absent |
 
 ## Reading paths
 

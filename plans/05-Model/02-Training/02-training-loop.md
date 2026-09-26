@@ -1,6 +1,6 @@
 # Plan 02 — Training Loop: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Classical fit/save/load and grouped CV are implemented; broader diagnostics and final test workflow remain pending.
 
 **Goal:** State the current implementation and evidence boundary for training loop.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the classical training loop as implemented with evaluation gaps.** AutoML performs a single `TrainEngine::fit` call after the root grouped-CV wrapper runs explicit folds. The fit call includes its own seeded row-level validation split; the root loop does not implement epochs or a resumable optimizer state.
 
 ## 1. Purpose
 
@@ -17,13 +17,13 @@ Define the training loop for classical tree-based models on the 2048 task. Unlik
 
 ## 2. Training Loop Overview
 
-Training is **not** iterative weight updates. It is: DataFrame → `TrainingConfig` → `TrainEngine::fit(&df)` → `InferenceEngine::predict`.
+Training is **not** iterative weight updates. It is: DataFrame → `TrainingConfig` → `TrainEngine::fit(&df)` → serialized engine / inference.
 
 ```mermaid
 flowchart TD
     subgraph "Classical Training Loop — No NN"
         DF[DataFrame<br/>27 numeric features + action 0-3]
-        DF --> Config[TrainingConfig<br/>TaskType::MultiClassification<br/>ModelType::GradientBoosting<br/>cv_folds=5, random_state=42]
+        DF --> Config[TrainingConfig<br/>TaskType::MultiClassification<br/>ModelType::RandomForest<br/>cv_folds=5, random_state=42]
         Config --> Engine[TrainEngine::new(config)]
         Engine --> Fit[engine.fit(&df)<br/>builds trees — no forward/backward]
         Fit --> Save[engine.save(path) / metrics]
@@ -100,7 +100,7 @@ let df: DataFrame = load_state_action_pairs()?; // see 06-Data/
 
 // 2) Config — note: task is MultiClassification, not regression
 let config = TrainingConfig::new(TaskType::MultiClassification, "action")
-    .with_model(ModelType::GradientBoosting)   // or RandomForest, XGBoost, LightGBM, CatBoost, ExtraTrees
+    .with_model(ModelType::RandomForest)   // or ExtraTrees, AdaBoost, KNN, NaiveBayes
     .with_cv(5)                                // cv_folds = 5
     .with_random_state(42)                     // random_seed = Some(42)
     // Optional tree params:
@@ -121,7 +121,7 @@ if let Some(m) = engine.metrics() {
 // 5) Inference — wrap in InferenceEngine for serving
 let inference = InferenceEngine::new(InferenceConfig::new())
     .with_model(engine); // consumes TrainEngine
-let preds: Array1<f64> = inference.predict(&test_df)?; // → action 0-3 as f64
+let preds = engine.predict(&test_df)?; // → predicted action classes; root policy uses four-class probabilities
 // Alternative direct: engine.predict(&test_df) without InferenceEngine wrapper
 
 // 6) Cross-validated variant (group-aware, no leakage — see 04-Evaluation/02-cross-validation.md)
@@ -133,7 +133,7 @@ let splits = cv.split(n_samples, None, Some(&groups))?; // verified API
 let splits = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
     .with_random_state(42)
     .split(x.nrows(), Some(&y), Some(&groups))?;
-// Gate: cv_results.mean_score must correspond to Valid-Action Accuracy ≥60% and later Mean Game Score ≥512
+// The root wrapper currently summarizes fold accuracy; declare additional diagnostics before use.
 ```
 
 **Key API notes:**
@@ -152,7 +152,7 @@ pub early_stopping: bool,              // default true
 pub early_stopping_rounds: usize,      // default 50 — rounds without improvement before stopping
 ```
 
-- For **boosting** models (GradientBoosting, XGBoost, LightGBM, CatBoost), `early_stopping_rounds` stops adding trees when validation F1/accuracy stalls.
+- Early stopping and iteration behavior are model-specific framework details; do not assume the same behavior across estimator variants without checking their implementation.
 - For **bagging** models (RandomForest, ExtraTrees), `early_stopping` is inert — more trees monotonically reduce variance; tune `n_estimators` directly.
 - For **SGD** (`ModelType::SGD`), `epoch_history: Vec<EpochRecord>` is populated and `max_iter` controls iterations, but SGD is the only iterative learner — not the primary 2048 model.
 
@@ -196,8 +196,8 @@ flowchart LR
 
 ## Implementation Record
 
-- Training uses one classical `TrainEngine::fit` call and exports a serialized inference model. A project-owned `GroupKFold` wrapper prevents games appearing in both train and validation folds.
-- No iterative epoch/checkpoint loop is used. The wrapper currently reports fold accuracy only; full four-class F1/confusion diagnostics and final test scoring remain pending.
+- Training uses one classical `TrainEngine::fit` call and exports a serialized model. The root `GroupKFold` wrapper keeps games separate in explicit CV folds; AutoML fit then makes a seeded row-level validation split.
+- No iterative epoch/checkpoint loop is used. The wrapper currently reports fold accuracy only; full four-class diagnostics and untouched test scoring remain pending.
 
 ---
 
@@ -214,7 +214,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- The model comparison depends on retained fold predictions/metrics and an untouched game-group test set, neither of which the current training command reports completely.
 
 ## Later
 

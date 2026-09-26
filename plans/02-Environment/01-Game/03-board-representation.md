@@ -1,6 +1,6 @@
 # Plan 03 — Board Representation: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** `[u32;16]` representation and directional transforms audited; merge-position coverage added.
+> **Status: DONE (2026-09-26).** `[u32;16]` representation and directional transforms audited; merge-position coverage added.
 
 **Goal:** State the current implementation and evidence boundary for board representation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -11,11 +11,11 @@
 
 **This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: `[u32;16]` representation and directional transforms audited; merge-position coverage added.
 
-> **Scope:** This file covers ONLY board layout `[u32;16]` and geometric transforms that implement moves (`slide_left` via `rotate`/`transpose`). Feature engineering is NOT here — see canonical.
+> **Scope:** This file covers only board layout `[u32;16]` and geometric transforms that implement moves. Feature engineering is not here — see the canonical state plans.
 
 ## 1. Authority
 
-- **Canonical Board:** `03-State/01-Board/01-board-state.md` — `RawBoardState { grid:[u32;16], score:u64, move_count:u64, game_over:bool }` — flat array, `0` = empty
+- **Canonical Board:** `03-State/01-Board/01-board-state.md` — `RawBoardState { grid:[u32;16], score:u64, move_count:u64, game_over:bool }` in `src/game_engine/mod.rs`; flat array, `0` = empty
 - **Canonical Features (27-dim):** `03-State/01-Board/02-feature-extraction.md` + `03-State/01-Board/01-board-state.md` §3–4 (16 raw + 11 derived; score at index 21 `/6.0`)
 - **This file:** transforms and memory layout only. **Do not duplicate** `BoardFeatures` 8 derived features — cross-ref above.
 

@@ -107,6 +107,7 @@ impl RawBoardState {
     }
 
     pub fn execute_move(&mut self, direction: Direction) -> Result<MoveResult, GameError> {
+        let score_before = self.score;
         let (grid, gained, merged) = slide_detailed(self.grid, direction)?;
         let changed = grid != self.grid;
         if changed {
@@ -122,17 +123,23 @@ impl RawBoardState {
                 .ok_or(GameError::MoveCountOverflow)?;
             self.game_over = self.is_game_over();
         }
+        let mut cumulative_score = score_before;
         Ok(MoveResult {
             changed,
             score_gained: if changed { gained } else { 0 },
             merges: if changed {
                 merged
                     .into_iter()
-                    .map(|(row, col, tile_value)| MergeEvent {
-                        turn: self.move_count,
-                        tile_value: tile_value as u64,
-                        position: (row, col),
-                        score_gained: tile_value as u64,
+                    .map(|(row, col, tile_value)| {
+                        let score_gained = tile_value as u64;
+                        cumulative_score += score_gained;
+                        MergeEvent {
+                            turn: self.move_count,
+                            tile_value: score_gained,
+                            position: (row, col),
+                            score_gained,
+                            cumulative_score,
+                        }
                     })
                     .collect()
             } else {
@@ -180,19 +187,39 @@ pub struct MergeEvent {
     pub tile_value: u64,
     pub position: (usize, usize),
     pub score_gained: u64,
+    pub cumulative_score: u64,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ScoreTracker {
     pub total_score: u64,
+    pub total_merges: u64,
+    pub max_tile_ever: u64,
     pub merge_history: Vec<MergeEvent>,
     pub turn_scores: Vec<u64>,
 }
 
 impl ScoreTracker {
+    pub fn new(initial_score: u64, initial_max_tile: u32) -> Self {
+        Self {
+            total_score: initial_score,
+            max_tile_ever: initial_max_tile as u64,
+            ..Self::default()
+        }
+    }
+
     pub fn record_move(&mut self, result: &MoveResult) {
         if result.changed {
             self.total_score += result.score_gained;
+            self.total_merges += result.merges.len() as u64;
+            self.max_tile_ever = self.max_tile_ever.max(
+                result
+                    .merges
+                    .iter()
+                    .map(|event| event.tile_value)
+                    .max()
+                    .unwrap_or(0),
+            );
             self.turn_scores.push(result.score_gained);
             self.merge_history.extend_from_slice(&result.merges);
         }
@@ -285,11 +312,12 @@ impl GameSimulator {
         }
         validate_spawn_probability(config.spawn_prob_4)?;
         let (board, rng) = RawBoardState::with_seed(config.seed, config.spawn_prob_4)?;
+        let score_tracker = ScoreTracker::new(board.score, board.max_tile());
         Ok(Self {
             board,
             rng,
             config,
-            score_tracker: ScoreTracker::default(),
+            score_tracker,
             move_history: Vec::new(),
             started_at: Instant::now(),
         })
@@ -390,7 +418,7 @@ pub fn collect_random_game(
         .expect("the configured spawn probability must be valid");
     let mut samples = Vec::new();
     let mut states = Vec::new();
-    let mut score_tracker = ScoreTracker::default();
+    let mut score_tracker = ScoreTracker::new(board.score, board.max_tile());
     let mut move_history = Vec::new();
     while !board.is_game_over() && board.move_count < max_moves {
         let valid = board.get_valid_moves();
@@ -740,6 +768,27 @@ mod tests {
     }
 
     #[test]
+    fn score_tracker_records_cumulative_merge_scores_counts_and_initial_maximum() {
+        let mut board = row_board([2, 2, 4, 4]);
+        board.score = 100;
+        let mut tracker = ScoreTracker::new(board.score, board.max_tile());
+        let result = board.execute_move(Direction::Left).unwrap();
+        assert_eq!(
+            result
+                .merges
+                .iter()
+                .map(|event| event.cumulative_score)
+                .collect::<Vec<_>>(),
+            [104, 112]
+        );
+        tracker.record_move(&result);
+        assert_eq!(tracker.total_score, 112);
+        assert_eq!(tracker.total_merges, 2);
+        assert_eq!(tracker.max_tile_ever, 8);
+        assert_eq!(tracker.turn_scores, [12]);
+    }
+
+    #[test]
     fn merge_history_tracks_result_positions_and_turn_score_for_all_directions() {
         for (direction, expected_position) in [
             (Direction::Left, (0, 0)),
@@ -762,9 +811,12 @@ mod tests {
                 "{direction:?}"
             );
             assert_eq!(result.merges[0].turn, 1);
+            assert_eq!(result.merges[0].cumulative_score, 4);
             let mut tracker = ScoreTracker::default();
             tracker.record_move(&result);
             assert_eq!(tracker.total_score, 4);
+            assert_eq!(tracker.total_merges, 1);
+            assert_eq!(tracker.max_tile_ever, 4);
             assert_eq!(tracker.turn_scores, [4]);
             assert_eq!(tracker.merge_history, result.merges);
         }

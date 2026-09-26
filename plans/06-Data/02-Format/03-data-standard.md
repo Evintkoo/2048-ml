@@ -1,6 +1,6 @@
 # Plan 03 — Data Standard: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** CSV header/range/action checks and game-group splits exist; accepted tile scale and full trainer lifecycle remain unresolved.
 
 **Goal:** State the current implementation and evidence boundary for data standard.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the CSV structural contract and split utility as implemented with limitations.** Validation checks the fixed header, finite/per-feature ranges, and action IDs. The standalone split command creates chronological game-disjoint partitions; the training CLI instead uses a configurable chronological test tail and AutoML internal row validation. Feature ranges above the documented 32768 scale remain unresolved.
 
 ## 1. Purpose
 
@@ -21,15 +21,15 @@ Canonical header (27+action = 28 cols): `grid_0,grid_1,...,grid_15,empty_count,m
 
 ## 3. Quality Contract
 
-- **Validation:** header regex exact match; `NF==28` (or 29 with `score`); `action ∈ {0,1,2,3}` and in `valid_moves`; features `f64` finite, grid/derived in `[0,1]` where defined; **no missing values** — all 27 are deterministically computed.
-- **Splits:** chronological game-level 70/15/15 holdout (14k/3k/3k canonical); keep every `game_id` intact. `GroupKFold` is reserved for group-preserving CV inside training and does not enforce chronological order. Fit preprocessing on train only.
-- **Normalization:** deterministic divisors (`/32768` for grid, `/16` for counts, `log10(score+1)/6.0`, `log2(max)/15`) — see `04-Preprocessing/03-data-normalization.md` for optional `StandardScaler` variant.
+- **Validation:** header regex exact match; `NF==28` (or 29 with `score`); `action ∈ {0,1,2,3}` ; features are finite and checked against current per-feature ranges; score index 21 can exceed one. The validator cannot check source-board legality.
+- **Splits:** chronological game-level 70/15/15 holdout (14k/3k/3k canonical); keep every `game_id` intact. `GroupKFold` is reserved for group-preserving CV inside training and does not enforce chronological order. No fitted preprocessing is currently applied.
+- **Normalization:** deterministic divisors are used; fitted `StandardScaler` is not in the root training path. Tiles above 32768 can violate declared feature ranges.
 - Versioning: see `03-Storage/02-data-versioning.md`. Storage paths: see `03-Storage/01-dataset-storage.md`.
 
 ## Implementation Record
 
-- The canonical 28-column header, action range, per-feature finiteness/range checks, metadata sidecar alignment, and chronological game-level 70/15/15 split are implemented. The splitter requires at least three games and keeps game groups intact.
-- Training currently performs a chronological final-game holdout then grouped CV on the development partition. Split reproducibility is seed- and row-order-dependent; source commit/hash/seed are recorded in manifests where available.
+- The canonical 28-column header, action ID range, per-feature finite/range checks, metadata alignment, and standalone chronological 70/15/15 game split are implemented. The splitter requires at least three games and keeps groups intact.
+- Training uses a chronological test tail then grouped CV on development games; AutoML also applies a seeded row-level validation split. The CSV validator cannot check action legality without board snapshots. Values above tile scale are a pending contract issue.
 
 ---
 
@@ -46,7 +46,7 @@ Canonical header (27+action = 28 cols): `grid_0,grid_1,...,grid_15,empty_count,m
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Align the training command, data split utility, and experiment protocol before reporting final test results. Resolve tile-range rules and implement classification diagnostics; retain exact data/metadata digests and split assignments.
 
 ## Later
 

@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-data-cleaning](01-data-cleaning.md) | Data Cleaning | PLANNED |
-| [02-feature-engineering](02-feature-engineering.md) | Feature Engineering | PLANNED |
-| [03-data-normalization](03-data-normalization.md) | Data Normalization | PLANNED |
+| [01-data-cleaning](01-data-cleaning.md) | Data Cleaning | PARTIAL — validation only; cleaning absent |
+| [02-feature-engineering](02-feature-engineering.md) | Feature Engineering | PARTIAL — encoder implemented; range contract pending |
+| [03-data-normalization](03-data-normalization.md) | Data Normalization | PARTIAL — deterministic only; tile range pending |
 
 ## Reading paths
 

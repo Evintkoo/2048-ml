@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-benchmarking-framework](01-benchmarking-framework.md) | Benchmarking Framework | PLANNED |
-| [02-evaluation-methodology](02-evaluation-methodology.md) | Evaluation Methodology | PLANNED |
-| [03-performance-testing](03-performance-testing.md) | Performance Testing | PLANNED |
+| [01-benchmarking-framework](01-benchmarking-framework.md) | Benchmarking Framework | PARTIAL — trained-model ranking pending |
+| [02-evaluation-methodology](02-evaluation-methodology.md) | Evaluation Methodology | PARTIAL — holdout/power plan pending |
+| [03-performance-testing](03-performance-testing.md) | Performance Testing | PARTIAL — whole-run time only |
 
 ## Reading paths
 

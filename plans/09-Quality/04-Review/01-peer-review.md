@@ -1,6 +1,6 @@
 # Plan 01 — Peer Review: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL.** Review guidance is present; no independent peer review has been performed or recorded.
 
 **Goal:** State the current implementation and evidence boundary for peer review.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,13 +9,13 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**Peer review is a recorded independent assessment, not a status inferred from internal checks.** No reviewer assignment or decision is present in the repository, so this ticket documents a procedure and remains partial.
 
-## 1. Purpose
+## 1. Reviewers assess evidence and limits, not completion labels
 
 Define peer review procedures for the 2048 ML system code and research.
 
-## 2. Peer Review Framework
+## 2. A review records scope, findings and resolution
 
 ```mermaid
 flowchart TD
@@ -58,17 +58,17 @@ flowchart TD
     end
 ```
 
-## 3. Review Criteria
+## 3. Review criteria follow the claim being assessed
 
-| Criterion | Description | Weight |
-|-----------|-------------|--------|
-| Correctness | Code works as intended | 30% |
-| Readability | Code is clear and documented | 20% |
-| Performance | Efficient execution | 20% |
-| Design | Good architectural choices | 15% |
-| Testing | Adequate test coverage | 15% |
+| Criterion | Review question |
+|-----------|-----------------|
+| Correctness | Are behavior and claims supported by code or retained evidence? |
+| Readability | Can another researcher follow the implementation and protocol? |
+| Performance | Are performance claims backed by reproducible measurements? |
+| Design | Does the design respect the canonical scope and data boundaries? |
+| Testing | Is validation evidence stated with its limits? |
 
-## 4. Review Process
+## 4. Review proceeds from a defined change set to a recorded decision
 
 ```mermaid
 flowchart TD
@@ -83,7 +83,7 @@ flowchart TD
     I --> A
 ```
 
-## 5. Review Checklist
+## 5. The checklist covers implementation and research evidence
 
 ```mermaid
 mindmap
@@ -111,7 +111,7 @@ mindmap
       Proper attribution
 ```
 
-## 6. Review Workflow
+## 6. Revisions return to the same reviewer scope
 
 ```mermaid
 graph TD
@@ -125,22 +125,11 @@ graph TD
     H --> F
 ```
 
-## 7. Review Metrics
+## 7. A durable record carries the review outcome
 
-```rust
-pub struct PeerReviewResult {
-    pub reviewer_name: String,
-    pub review_date: DateTime<Utc>,
-    pub approval_status: ApprovalStatus,
-    pub issues_found: usize,
-    pub issues_resolved: usize,
-    pub overall_score: f64,
-    pub comments: Vec<String>,
-    pub recommendations: Vec<String>,
-}
-```
+When a review is performed, record the reviewer, date, scope, findings, requested changes, resolution, and decision in a durable repository artifact. No result structure or scoring API is implemented by this project.
 
-## 8. Review Types
+## 8. Code, method and design are separate review scopes
 
 ```mermaid
 flowchart TD
@@ -155,51 +144,52 @@ flowchart TD
     FC --> R
 ```
 
-## 9. Review Timeline
+## 9. Dates are set when a reviewer accepts the request
 
 ```mermaid
 gantt
-    title Peer Review Timeline (relative days — replace YYYY-MM-DD with actual dates at run time)
+    title Illustrative review sequence (not scheduled)
     dateFormat  YYYY-MM-DD
     section Review 1
-    Submission      :a1, TBD, 1d
-    Review          :after a1, 2d
-    Feedback        :after a1, 3d
-    Revision        :after a1, 4d
-    Re-review       :after a1, 6d
-    Approval        :after a1, 7d
+    Submission      :a1, 2026-09-26, 1d
+    Review          :after a1, 1d
+    Feedback        :after a1, 1d
+    Revision        :after a1, 1d
+    Re-review       :after a1, 1d
+    Approval        :after a1, 1d
 ```
 
-## 10. Review Approval Criteria
+## 10. Approval requires resolved material issues and supported claims
 
 - All critical issues resolved
 - All major issues addressed
-- Test coverage ≥ 80%
+- Validation evidence and its limitations are documented
 - Documentation complete
 - Research methodology validated
 - Results reproducible
 
 ## Implementation Record
 
-- Review guidance is documented, but no peer/code/experiment review has been requested or recorded. Example approval thresholds and timeline are templates, not completed review evidence.
+- Review guidance is documented, but no peer review has been requested or recorded. The example timeline is illustrative; it is not a scheduled review. No coverage percentage or composite approval score is an established project gate.
 
 ---
 
 ## Verification (definition of done)
 
 1. `test -f plans/09-Quality/04-Review/01-peer-review.md` exits 0.
-2. `grep -q '^# Plan 01 — ' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
-3. `grep -q '^> \\*\\*Status:' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
-4. `grep -q '^\*\*Goal:' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
-5. `grep -q '^## Decision and evidence$' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
-6. `grep -q '^## Open questions$' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
-7. `grep -q '^## Later$' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
-8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/09-Quality/04-Review/01-peer-review.md` exits 0.
+2. `grep -q '^> \\*\\*Status: PARTIAL' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
+3. `grep -q '^\\*\\*Goal:' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
+4. `grep -q '^## 3. Review criteria follow the claim being assessed$' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
+5. `grep -q 'No reviewer assignment or decision is present' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
+6. `! grep -q '80%' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
+7. `grep -q '^## Open questions$' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
+8. `grep -q '^## Later$' plans/09-Quality/04-Review/01-peer-review.md` exits 0.
+9. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/09-Quality/04-Review/01-peer-review.md` exits 0.
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No reviewer or review date is assigned. Assigning one requires an available independent reviewer and a defined change set; until then, no approval claim can be made.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **Independent review remains deferred.** It requires a reviewer who did not author the reviewed change and a scope with retained evidence.

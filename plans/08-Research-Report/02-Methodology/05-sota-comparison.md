@@ -1,6 +1,6 @@
 # Plan 05 — State-of-the-Art Comparison: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Random and heuristic baselines and model runners exist; no trained-policy comparison or verified external-agent reproduction is complete.
 
 **Goal:** State the current implementation and evidence boundary for state-of-the-art comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,11 +9,11 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This is a comparison plan, not a ranking.** Local baseline commands exist, but trained-policy results are absent. Published methods and their quoted score ranges remain unverified and are not measured baselines.
 
 ## 1. Purpose
 
-This section compares the proposed AutoML approach against state-of-the-art methods in game AI, heuristic search, and automated machine learning. The comparison is based on mean game score, statistical significance, and computational efficiency.
+This section compares the proposed AutoML approach against state-of-the-art methods in game AI, heuristic search, and automated machine learning. A fair comparison requires protocol-matched outcomes and resource measurements. No broad superiority claim follows from a game-score comparison.
 
 ## 2. Baseline Methods
 
@@ -21,9 +21,9 @@ This section compares the proposed AutoML approach against state-of-the-art meth
 
 **Description:** Selects actions uniformly at random from available moves.
 
-**Expected Performance:** Mean score ≈ 128 (based on prior literature).
+**Performance:** Measure under the same simulator and declared seed protocol; no assumed score is used.
 
-**Role in Comparison:** Provides the lower bound for model evaluation. Any model significantly outperforming the random agent demonstrates basic competence.
+**Role in Comparison:** Reference policy; a measured difference supports only the tested application conditions.
 
 ### 2.2 Heuristic Agent
 
@@ -33,9 +33,9 @@ score = w1 × empty_count + w2 × monotonicity + w3 × smoothness + w4 × merge_
 ```
 where weights are tuned empirically (Björk, 2014; Kishore et al., 2014).
 
-**Expected Performance:** Mean score ≈ 512 (based on prior literature).
+**Performance:** Measure locally; prior score estimates and source attribution are not verified.
 
-**Role in Comparison:** Provides the practical baseline. The AutoML model must significantly exceed this score to demonstrate its value.
+**Role in Comparison:** Candidate practical baseline, with rule, action, and evaluation protocol fully recorded.
 
 ### 2.3 Expectimax Search — Case-Study Comparison Candidate
 
@@ -53,13 +53,7 @@ MCTS+NN (Gelly et al. 2016). Not part of the core AutoML architecture. Include o
 
 ### 3.1 Ranking Methodology
 
-Models are ranked by mean score across ≥10,000 benchmark games. The ranking is determined as follows:
-
-1. **Compute mean score** for each model across all games
-2. **Rank by mean score** (highest = rank 1)
-3. **Statistical significance**: The #1 ranked model must be significantly better than #2 (Mann-Whitney U, p < 0.05 after Bonferroni correction)
-4. **Bootstrap 95% CI** on mean difference must not include zero
-5. **Effect size** (Cohen's d) must be ≥ 0.5 (medium effect)
+Rank only after declaring the evaluation sample, seed roles, trained-model repetitions, experimental unit, and comparison family. Report mean and distributional summaries with uncertainty. Pairwise helpers are available, but their assumptions and dependence limits must be addressed. No universal game-count or effect-size winner threshold is established.
 
 ### 3.2 Comparison Metrics
 
@@ -67,65 +61,38 @@ Models are ranked by mean score across ≥10,000 benchmark games. The ranking is
 |--------|-------------|----------|
 | Mean Score | Average across all games | Primary ranking |
 | Median Score | Median performance | Robustness check |
-| Score Distribution | Percentiles (50th, 90th, 95th, 99th) | Performance analysis |
-| Win Rate vs Heuristic | % of games exceeding heuristic | Practical significance |
-| Score > Heuristic Rate | % of games exceeding heuristic (~512) | Model quality |
+| Score Distribution | Available summary fields include median, p90, p99, min, max | Descriptive analysis |
+| Threshold Counts | Counts above configured score thresholds | Descriptive analysis; no validated heuristic threshold |
 | Training Time | Time to train model | Efficiency comparison |
 | Inference Speed | Games per second | Practical applicability |
 
-### 3.3 Expected Results (Hypothesis, Consistent Baselines)
+### 3.3 Candidate Comparison Matrix (No Expected Scores)
 
-**Note:** Hypotheses, not results. Random and heuristic agents are minimum baselines. At least one non-AutoML search or learning baseline should be declared for the case study when technically feasible. Literature-only scores are never presented as measured results.
+**Note:** These rows define possible comparisons, not results. Local random/heuristic agents are measurable candidates. External search/learning methods require verified implementations, source pins, comparable budgets, and a declared protocol.
 
-| Rank | Method | Expected Mean | Status |
-|------|--------|---------------|--------|
-| 1 | Best automl ModelType (RF/GB/XGB/LGBM/ET/SVM/KNN) | TBD | **Ranked #1 by mean over 10k — gate decides** |
-| 2 | Heuristic (weighted empty+mono+smooth+merge, Björk) | **~512** | **Practical baseline — must beat with MWU+CI+d** |
-| 3 | Random | **~128** | Lower bound |
-| — | Expectimax / DQN / MCTS+NN (gold optional) | hypotheses ~2000–10000+ | **Appendix optional only** — not core ranking |
-
-*These are hypotheses based on prior literature. Actual values will be determined after experimentation. The AutoML model's actual performance is unknown and could be anywhere on the scale, including below the heuristic baseline.*
+| Candidate | Status |
+|-----------|--------|
+| Supported AutoML model candidates | Training runners exist; plan-scale scores pending |
+| Local heuristic and random policies | Baseline runners exist; measurement artifacts exist for action-frequency work; full score comparison protocol pending |
+| Expectimax, DQN, MCTS | Not reproduced; retain as literature context only until verified and implemented |
 
 ## 4. Detailed Comparison Tables
 
-### 4.1 Model Performance Comparison (Pinned Baselines)
+### 4.1 Model Performance Comparison (Template Only)
 
-| Model Type | Mean | Median | SD | 95% CI (bootstrap) | Rank | Gate (MWU+CI+d) |
-|------------|------|--------|----|--------------------|------|-----------------|
-| RandomForest | TBD | TBD | TBD | [TBD,TBD] | TBD | vs heuristic TBD |
-| GradientBoosting | TBD | TBD | TBD | [TBD,TBD] | TBD | — |
-| XGBoost | TBD | TBD | TBD | [TBD,TBD] | TBD | — |
-| LightGBM | TBD | TBD | TBD | [TBD,TBD] | TBD | — |
-| ExtraTrees | TBD | TBD | TBD | [TBD,TBD] | TBD | — |
-| SVM | TBD | TBD | TBD | [TBD,TBD] | TBD | — |
-| KNN | TBD | TBD | TBD | [TBD,TBD] | TBD | — |
-| **Heuristic** | **~512** | — | — | bootstrap from 10k | — | — |
-| **Random** | **~128** | — | — | bootstrap from 10k | — | — |
+| Candidate | Mean | Median | SD | CI | Rank | Evidence |
+|------------|------|--------|----|----|------|----------|
+| Populate from measured runs | TBD | TBD | TBD | TBD | TBD | Manifest and protocol required |
 
-> SD/CI are measured from 10k runs, not literature. Do not quote 4000–8000 as heuristic.
+The supported four-class integration candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. Do not list unsupported models as runnable candidates.
 
 ### 4.2 Computational Efficiency Comparison
 
-| Method | Training Time | Inference Speed | Memory Usage | Setup Complexity |
-|--------|--------------|-----------------|--------------|-----------------|
-| Random Forest | TBD | TBD games/s | TBD MB | Low |
-| Gradient Boosting | TBD | TBD games/s | TBD MB | Medium |
-| XGBoost | TBD | TBD games/s | TBD MB | Medium |
-| LightGBM | TBD | TBD games/s | TBD MB | Low |
-| Expectimax Search | None | TBD games/s | Low | Medium |
-| MCTS + NN | High | TBD games/s | High | High |
-| Heuristic Agent | None | TBD games/s | Low | Low |
+Record runtime, hardware, memory method, model configuration, and evaluation throughput for each measured candidate. No efficiency values are available for this comparison.
 
-### 4.3 Statistical Significance Comparison
+### 4.3 Statistical Comparison
 
-| Comparison | Mann-Whitney U | p-value | Cohen's d | Significant? |
-|------------|----------------|---------|-----------|-------------|
-| Best AutoML vs Random | TBD | TBD | TBD | TBD |
-| Best AutoML vs Heuristic | TBD | TBD | TBD | TBD |
-| Best AutoML vs Expectimax | TBD | TBD | TBD | TBD |
-| Heuristic vs Random | TBD | TBD | TBD | TBD |
-
-*All comparisons use Bonferroni correction for multiple comparisons.*
+Use the comparison CLI only after selecting a valid experimental unit and considering paired seed/game dependence. It emits pairwise p-values, Holm adjustment, bootstrap mean-difference intervals, and Cohen's d. No global multi-group test is implemented.
 
 ## 5. Analysis of Results
 
@@ -151,19 +118,13 @@ The ranking provides insight into:
 3. **Training data asymmetry**: AutoML requires labeled training data; search methods do not
 4. **Generalization gap**: Methods trained on one seed may not generalize to other seeds
 
-## 6. Benchmarks (Pinned — No Inconsistency)
+## 6. Baseline Evidence
 
-| Benchmark | Score | Status |
-|-----------|-------|--------|
-| Random | **~128** | Verified lower bound |
-| Heuristic (Björk) | **~512** | **Core gate** — must beat with MWU+CI+d |
-| Expectimax / DQN / MCTS+NN | ~2000–10000+ | **Gold optional — Appendix only, not required** |
-
-**Tiering (hypothesis):** Minimum acceptable = beat ~512 with gate. Competitive/strong/state-of-art tiers are **informational only**; no claim that automl should reach 4000–8000 on 4×4 supervised.
+No literature score estimate in this document is verified as a compatible baseline. Generate local baseline measurements under the same simulator rules and retain their CSV files and JSON manifests. Do not use an external score tier as an acceptance gate.
 
 ## 7. Conclusion
 
-The state-of-the-art comparison provides a rigorous framework for evaluating the AutoML approach against established methods. The comparison is not merely about achieving high scores but about understanding:
+A future comparison can describe the tested methods and conditions. Until those experiments are complete, it provides no ranking or evidence of state-of-the-art performance. Relevant questions include:
 1. **Where AutoML stands** relative to alternative approaches
 2. **What AutoML can and cannot do** compared to search-based methods
 3. **The trade-offs** between different paradigms (supervised learning vs. planning vs. RL)
@@ -173,7 +134,7 @@ This comparison sets the methodological standard for the entire research and pro
 
 ## Implementation Record
 
-- Random, heuristic, and model benchmark commands exist; no 10k comparison has been run. Literature agent implementations and score estimates in this plan are not reproduced results and should be treated as unverified context until sourced and implemented.
+- Random, heuristic, and model benchmark commands exist; no trained-policy model comparison has been completed. Quoted external score estimates and agent implementations are unverified and excluded from empirical claims.
 
 ---
 
@@ -190,7 +151,7 @@ This comparison sets the methodological standard for the entire research and pro
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **A comparison result remains pending.** Declare matched conditions, candidate support, budget, seeds, and analysis before running; retain raw outputs and manifests.
 
 ## Later
 

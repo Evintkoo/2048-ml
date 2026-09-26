@@ -1,6 +1,6 @@
 # Plan 03 — Results: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Result templates are documented, but neither the named-dataset framework study nor plan-scale policy results are populated.
 
 **Goal:** State the current implementation and evidence boundary for results.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan is an output specification, not a results report.** Framework validation is partial and no trained-model ranking is available. Example schemas and procedures below must not be mistaken for implemented output contracts.
 
-> **Status: PENDING.** No results claimed. This file defines the concrete interfaces for the primary Rust-native AutoML framework evaluation and the downstream 2048 case-study outputs.
+> No empirical result or winner is claimed in this document.
 
 ## 1. Primary Framework Results
 
@@ -26,9 +26,7 @@ Framework results must report, for each named dataset and configuration:
 - Model serialization and reload equivalence.
 - CLI/library/API output equivalence.
 
-| Dataset | Configuration | Metric | Time | Memory | Failures | Reproducibility | Reload Equivalent |
-|---------|---------------|--------|------|--------|----------|-----------------|-------------------|
-| TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
+Named-dataset results, matched external baselines, and resource measurements are pending.
 
 No 2048 game score can substitute for this table.
 
@@ -38,86 +36,69 @@ No 2048 game score can substitute for this table.
 
 ## 2. 2048 Case-Study Winner Protocol (Canonical: `07-Benchmarking/01-Evaluation/01-benchmarking-framework.md`)
 
-Winner = highest **mean score** over **≥10,000 games** at **seed 42**. The primary comparison uses the pre-registered Mann-Whitney U test with Holm correction; bootstrap CIs and effect sizes are reported alongside the ranking:
-
-1. **Mann-Whitney U p < 0.05 after Holm correction** for the pre-registered baseline comparisons,
-2. **Bootstrap 95% CI on mean difference** (10,000 resamples),
-3. **Effect size** reported for practical interpretation.
-
-Random baseline `~128` is lower bound only.
+Winner protocol, sample size, seed roles, and inferential unit must be declared before confirmatory evaluation. The current comparison CLI supports pairwise sign/Mann–Whitney tests, Holm adjustment, bootstrap intervals, and Cohen's d; it does not implement the previously proposed Kruskal–Wallis ranking gate. Baseline scores must be measured locally or supported by verified literature.
 
 ## 3. Concrete Schemas
 
-### 2.1 Parquet Schema (polars 0.46) — `ScoreMetrics`
-
-Produced by `src/evaluation/benchmark_runner.rs` → `data/evaluation_data/evaluation_v1.parquet`:
+### Illustrative Result Fields (Not an Implemented Schema)
 
 ```rust
-pub struct ScoreMetrics {
-    pub model: String,          // e.g., "RandomForest" | "Heuristic" | "Random"
-    pub seed: u64,              // 42 primary
-    pub game_id: u64,           // 0..9999 — GroupKFold key
-    pub score: u32,             // sum of merges, overflow-checked u32
-    pub max_tile: u32,          // 2..32768
-    pub moves: u16,             // game length
-    pub action: u8,             // 0=Up 1=Down 2=Left 3=Right (for per-step logs)
-    pub valid_move: bool,       // did action change board?
-    pub duration_ms: u32,
+pub struct IllustrativeGameResult {
+    pub model: String,
+    pub seed: u64,
+    pub game_id: u64,
+    pub score: u64,
+    pub max_tile: u32,
 }
-// + run metadata sidecar: { automl: "v1.0.0", rust: "1.75", task: "MultiClassification", dim: 27 }
 ```
 
-GroupKFold MUST keep all rows from the same `game_id` in one fold. Do not claim that rows or games are independent merely because they use different IDs or the same seed. The analysis must declare whether the inferential unit is a row, game, seed, or trained-model run. See `02-Methodology/01-experimental-design.md` §5 and `03-Findings/06-cross-validation.md`.
+Actual game CSVs and JSON manifests are the current benchmark artifacts. A future schema must be based on those outputs, and analysis must declare whether its inferential unit is a game, evaluation seed, or trained-model run.
 
-### 2.2 Statistical API — `src/evaluation/statistical_tests.rs`
+### Statistical Helpers (Actual Location: `src/evaluation.rs`)
 
 ```rust
-pub fn mann_whitney(a: &[u32], b: &[u32]) -> (f64 /*U*/, f64 /*p*/);
-pub fn bootstrap_ci(a: &[u32], b: &[u32], resamples: usize, alpha: f64) -> (f64, f64); // (lo, hi) on mean diff
-pub fn cohens_d(a: &[u32], b: &[u32]) -> f64;
-pub fn kruskal_wallis(groups: &[&[u32]]) -> (f64 /*H*/, f64 /*p*/);
-pub fn bonferroni(p: f64, k: usize) -> f64; // min(p*k, 1.0)
+pub fn mann_whitney_u_pvalue(a: &[u64], b: &[u64]) -> Option<f64>;
+pub fn paired_sign_test_pvalue(a: &[u64], b: &[u64]) -> Option<f64>;
+pub fn holm_adjust(p: &[f64]) -> Vec<f64>;
 ```
 
-All tests use raw scores; no normality assumption. Report exact U/H, exact p, d, and CI.
+The helper inventory and its limitations are summarized in the benchmarking analysis tickets.
 
 ## 4. Table Shells (Populated by Pipeline, Not Hand-Edited)
 
-### 3.1 Primary Ranking (output of `ranking_analysis.py`)
+### Ranking Table Shell (No Output Pipeline Exists)
 
 | Model | Mean | Median | SD | 95% CI (bootstrap) | Rank | Training time | MWU vs #2 |
 |-------|------|--------|----|---------------------|------|---------------|-----------|
 | TBD | TBD | TBD | TBD | [TBD, TBD] | TBD | TBD | p=TBD, d=TBD |
 
-Heuristic row pinned at `~512` and Random at `~128` for reference only; still computed from same 10k games.
+Populate only with measured scores and manifests from a declared protocol.
 
 ### 3.2 Gate Table
 
 | Comparison | U | p (Bonf.) | d | Bootstrap CI on diff | Gate pass? |
 |------------|---|-----------|---|----------------------|------------|
-| Best vs Heuristic (~512) | TBD | TBD | TBD | [TBD, TBD] | TBD |
-| Best vs 2nd best | TBD | TBD | TBD | [TBD, TBD] | TBD |
-| Kruskal-Wallis (7 models) | H=TBD | TBD | — | — | — |
+| Best vs measured baseline | TBD | TBD | TBD | [TBD, TBD] | TBD |
+| Best vs runner-up | TBD | TBD | TBD | [TBD, TBD] | TBD |
 
 ### 3.3 Learning-Curve Hooks
 
-Per-epoch: `epoch, train_loss, val_accuracy_4class, val_mean_score_100games`. Used by `03-Findings/01-key-findings.md`.
+Learning-curve metrics are not currently emitted by the training pipeline.
 
 ## 5. Visualization Spec (Generated, Not Mocked)
 
-1. Histogram of `score` per model (10k points, bin 128). 2. Bar chart mean ± bootstrap CI. 3. Ranked bar. 4. Box plot. 5. Learning curve (score vs epoch). All from `evaluation_v1.parquet`.
+Charts are future outputs; the current CLI writes CSV summaries and JSON manifests.
 
 ## 6. Data-Quality Checklist (Automated)
 
-- [ ] `game_id` unique, GroupKFold used
-- [ ] No NaN scores, `score` monotonic via `ScoreTracker`
-- [ ] `valid_move` rate logged (invalid-move audit in `02-insights.md`)
-- [ ] Seed 42 recorded in sidecar; secondary seeds separate files
-- [ ] 27-dim vector length asserted per row
+- [ ] Result schema matches actual CSV and manifest
+- [ ] Protocol and seed roles are recorded
+- [ ] Experimental unit and dependence assumptions are stated
+- [ ] Inputs, code revision, dependency versions, and analysis outputs are retained
 
 ## 7. Honest Reporting
 
-TBD cells remain TBD until pipeline runs. Null (no model beats `~512`) reported as primary finding if gate fails.
+Do not fill template cells or state null findings until the corresponding protocol has run. Report inconclusive and failed runs with retained evidence.
 
 ---
 
@@ -134,7 +115,7 @@ TBD cells remain TBD until pipeline runs. Null (no model beats `~512`) reported 
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** Larger studies need a declared resource budget and retained artifacts.
 
 ## Later
 

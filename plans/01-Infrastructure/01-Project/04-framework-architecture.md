@@ -1,13 +1,13 @@
 # Plan 04 — AutoML architecture audit: observed module boundaries and API limitations are explicit
 
-> **Status: DONE (2026-09-24).** Source audit supporting ticket 005; it is not a separate execution ticket.
+> **Status: COMPLETE (2026-09-26).** The source-backed architecture audit was verified as a standalone supporting record for ticket #005.
 
 **Goal:** Record the framework architecture and integration contracts verified in source.
 **Builds on:** [04-framework-contribution](04-framework-contribution.md) — architecture evidence supports this ticket's implementation record.
 
 ## Decision and evidence
 
-This document records architecture observed in the pinned AutoML submodule and root integration. It is a source map, not a framework performance result.
+This document records architecture observed in the pinned AutoML submodule and root integration. It is a source map, not a framework performance result. Its architecture audit is complete; empirical framework claims remain outside this ticket and are tracked in #005/#102.
 
 ## Revision and scope
 
@@ -69,7 +69,7 @@ The framework APIs use concrete Rust structs/enums and `Result` errors at their 
 
 ### Follow-up source and repeatability probe
 
-On 2026-09-24, `cargo test framework_validation::tests::planned_multiclass_model_variants_fit_and_predict -- --nocapture` was run 20 times. Nineteen passed and one failed the existing RandomForest prediction equality assertion after save/load. This is intermittent rather than a deterministic JSON-load mismatch. Source inspection found a plausible training nondeterminism: `automl/src/training/decision_tree.rs::compute_leaf_value` counts classes in a randomized `HashMap` and resolves equal counts with `into_iter().max_by_key`, so tied leaf labels can vary across model fits despite the configured seed. This is a source-level diagnosis; an isolated proof/fix and repeated-seed dataset study remain outstanding. Keep RandomForest reproducibility unverified until addressed.
+On 2026-09-24, the focused root RandomForest save/load smoke failed once in 20 runs. Follow-up isolation found three issues in the local AutoML checkout: leaf class ties depended on `HashMap` iteration; default `serde_json` float parsing altered serialized model values; and stratified splitting appended class rows in `HashMap` iteration order, making identical-seed fits differ. Deterministic leaf tie-breaking, `serde_json/float_roundtrip`, and ordered class grouping now address these cases. The tie regression passed; a synthetic same-seed check passed 20/20 process runs with 20 refits per run; and exact save/load model-state and prediction checks passed 20/20 process runs. The broader multi-seed and dataset reproducibility study remains outstanding. These fixes exist in the local submodule worktree and are not part of the pinned upstream commit.
 
 ## Evidence boundary
 

@@ -1,6 +1,6 @@
 # Plan 00 — Literature Review: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Review topics and evidence policy are outlined; citations, bibliographic records, and claim-to-source verification remain incomplete.
 
 **Goal:** State the current implementation and evidence boundary for literature review.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan is partial.** It identifies the review domains and requires primary-source verification. The current draft still contains provisional claims and is not a completed literature review; unsupported 2048 score estimates and Rust performance claims are not treated as facts.
 
 ## 1. Scope and Method
 
@@ -39,23 +39,21 @@ Review dataset leakage, nested validation, random-seed control, benchmark fairne
 
 ### 3.1 History
 
-**Cirulli (2014)** shipped JS 2048; **Björk (2014, unverified source `ashmax.com` – link not verified)** proposed weighted heuristic `w1·empty + w2·mono + w3·smooth + w4·merge`. **Kishore et al. (2014)** compared monotonicity/corner strategies; **Oster et al. (2014, arXiv)** used expectimax depth 4–6. **Makrogiannis et al. (2016, IEEE TG)** formalized MDP + value iteration.
+Source leads concerning the original game, weighted heuristics, expectimax, and formal decision-process treatments require bibliographic verification before inclusion. The current notes do not establish authorship, publication dates, methods, or results.
 
-> **Consistency fix:** Prior draft quoted heuristic `~4000–8000`. That conflates expectimax search on 4×4 with the simple weighted heuristic. **Canonical:** simple heuristic `~512` mean (Björk corner), expectimax is **out-of-scope** for core ranking and noted only as optional extended baseline (Appendix). All §5 baselines now use `~512` (heuristic) and `~128` (random) — see `02-Methodology/05-sota-comparison.md`.
+Prior notes contained unverified score estimates for heuristic and random policies and an unsupported attribution. Those figures are removed as evidence. Any future baseline claim requires a verifiable source or a reproducible local measurement under a declared protocol. Search agents remain optional context under the canonical scope.
 
 ### 3.2 Heuristics (Relevant to 27-dim)
 
-- **Empty tiles** — most predictive per Björk (2014, unverified – heuristic claim, needs empirical check).
-- **Monotonicity** — row/col monotonic build toward corner (Thumsey et al. 2014 – GitHub, unverified).
-- **Smoothness / merge potential** — gradient/adacency, encoded as `smooth_*`, `merge_*`, `adjacency_merge_score`.
+Candidate heuristic concepts include empty-cell count, monotonicity, smoothness, and merge potential. Their sources and empirical predictive value need verification; implementation of similarly named features does not validate a literature claim.
 
 ### 3.3 ML on 2048 (Case-Study Context)
 
-Woltman & Sarakiki (2014, unverified), Hearn & Rexford (2016 – RL), Nair et al. (2015 – DQN), Gelly et al. (2016 – MCTS+NN) are **gold-optional** and not reproduced as required experiments. If referenced, scores (~2000–10000) are **hypotheses**, not verified reproductions, and belong in `02-Methodology/06-published-baseline-comparison.md` appendix (15-line, optional, 30h not required).
+Prior notes named several possible ML and search sources and attached score ranges without verified bibliographic records or reproduced protocols. Do not cite those names or scores until the sources, task setup, and comparability are checked. External reproduction is optional context, not an existing result.
 
 ### 3.4 Theory
 
-**Boppana (1988, unverified – 15-puzzle context, not 2048)** cited historically; do not claim as 2048 max-tile proof. **Berg & Hartke (2014, arXiv, verified)** rigorous max-tile `2^15=32768`; **Sinclair (2016, arXiv, unverified completeness)** conjectured hardness (see theoretical framework – Appendix conjecture only).
+Earlier notes about 15-puzzle complexity, a theoretical maximum tile, and hardness claims are not established by this project. Verify primary sources and mathematical assumptions before retaining any such statement; none is needed for the core framework contribution.
 
 ## 4. AutoML Methods Used by the Framework
 
@@ -93,11 +91,11 @@ The primary contribution is the Rust-native AutoML architecture and its validati
 
 ## 8. References (Verified vs Provisional)
 
-Verified or primary candidates currently include Bergstra & Bengio (2012), Bergstra et al. (2013), Li et al. (2017), Feurer & Hutter (2019), the `automl` repository, and relevant Rust/data-system documentation. 2048 and Rust-ML sources remain provisional until their exact bibliographic records and claims are checked. No provisional citation may be used to establish a central thesis claim. See `04-Appendix/03-references.md` for the final verified bibliography.
+Potential starting points include primary work on random search and Hyperband, AutoML surveys, framework repositories, and official Rust/data-system documentation. Their exact records, versions, and claim support still require checking. No candidate listed here should be treated as verified solely because it appears in this draft. See `04-Appendix/03-references.md` for bibliography curation.
 
 ## Implementation Record
 
-- Literature coverage and a provisional/verified citation policy are outlined. Exact bibliographic records, primary-source verification, and claim-to-source checking remain pending; no unverified 2048 score or Rust performance estimate is established as fact.
+- Review topics and a source-verification policy are outlined. Exact bibliographic records and claim-to-source checks remain pending; historical, theoretical, 2048 score, and Rust performance assertions were demoted to unverified leads or removed as evidence.
 
 ---
 
@@ -114,7 +112,7 @@ Verified or primary candidates currently include Bergstra & Bengio (2012), Bergs
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The review remains bounded by verified sources.** Complete bibliography and claim checks before using literature to support thesis conclusions.
 
 ## Later
 

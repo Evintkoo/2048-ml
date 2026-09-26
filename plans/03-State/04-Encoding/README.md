@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-state-vector](01-state-vector.md) | State Vector | PLANNED |
-| [02-normalization](02-normalization.md) | Normalization | PLANNED |
+| [01-state-vector](01-state-vector.md) | State Vector | PARTIAL: tile-range contract unresolved |
+| [02-normalization](02-normalization.md) | Normalization | PARTIAL: tile-range contract unresolved |
 
 ## Reading paths
 

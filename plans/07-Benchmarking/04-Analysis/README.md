@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-results-analysis](01-results-analysis.md) | Results Analysis | PLANNED |
-| [02-statistical-analysis](02-statistical-analysis.md) | Statistical Analysis | PLANNED |
-| [03-significance-testing](03-significance-testing.md) | Significance Testing | PLANNED |
+| [01-results-analysis](01-results-analysis.md) | Results Analysis | PARTIAL — summaries and pairwise reports exist; plan-scale results/trend analysis pending |
+| [02-statistical-analysis](02-statistical-analysis.md) | Statistical Analysis | PARTIAL — descriptive and limited inference helpers exist; tests/power/report pending |
+| [03-significance-testing](03-significance-testing.md) | Significance Testing | PARTIAL — pairwise helpers are implemented; power and winner protocol pending |
 
 ## Reading paths
 

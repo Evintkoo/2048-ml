@@ -1,6 +1,6 @@
 # Plan 02 — Model Comparison: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Runnable candidates and comparison boundary are documented; matched model results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats candidate compatibility as audited and comparison results as pending.** The root smoke verifies 13 estimator/task combinations; only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes currently produce the four-class probability output used by `ModelPolicy`. No uniform algorithm benchmark or model-game comparison has been run.
 
 > This comparison characterizes AutoML-supported models and the 2048 case study. It does not define the primary framework contribution.
 
@@ -42,7 +42,7 @@ flowchart TD
     end
 ```
 
-> **No NN branch, no regression metrics.** `ModelType` is classical ML only (smartcore/linfa); task is `TaskType::MultiClassification` (4 logits → `argmax`).
+> The task is four-class classification, and the live policy consumes class probabilities. Candidate support is version/task specific; verify it before comparison. No neural-network model is included in this candidate set.
 
 ## 3. Models Under Comparison
 
@@ -80,19 +80,19 @@ flowchart LR
 
 | Model | Mean Game Score (rank) | Valid-Action Accuracy (≥60%) | F1 Macro (≥0.55) | Inference Time (≤1ms) | Notes |
 |-------|------------------------|------------------------------|-----------------|----------------------|-------|
-| Random Forest | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Baseline |
-| Extra Trees | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Fast ensemble |
-| KNN | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Non-parametric |
-| AdaBoost | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Verified four-class output |
-| Naive Bayes | TBD — run after training | TBD — run after training | TBD — run after training | TBD — run after training | Verified four-class output |
+| RandomForest | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
+| ExtraTrees | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
+| KNN | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
+| AdaBoost | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
+| NaiveBayes | Not measured | Not measured | Not measured | Not measured | Four-class output smoke passes |
 
-> **Canonical:** Rank by **Mean Game Score** (≥512 beats heuristic, highest wins). Gates: Valid-Action Accuracy ≥60%, F1 ≥0.55. If proximity reported as optional analysis: `model_mean / heuristic_mean (≈512)` single ratio only, not a gate.
+> Predeclare the case-study ranking rule and uncertainty analysis before running candidates. The canonical scope sets no score or classification thresholds. Game results characterize the 2048 application only.
 >
 > **All metrics use game score as primary metric. Regression metrics (R², RMSE) are not applicable because the task is classification.**
 
 ### 4.1 Benchmark Loop — Actionable automl API
 
-All candidates are benchmarked with the same `TrainingConfig` + `cross_val_score` + `GroupKFold` pattern (verified in `automl/src/training/config.rs:174` and `cross_validation.rs:49`):
+For a valid comparison, use the same game-group splits and protocol for all verified candidates. The root `grouped_cross_validate` wrapper materializes group-safe folds; generic `automl::cross_val_score` does not preserve groups.
 
 ```rust
 use automl::{TrainingConfig, TaskType, ModelType, CVStrategy, cross_val_score};
@@ -102,15 +102,8 @@ use std::collections::HashMap;
 
 // Candidates — scope aligned: benchmark + best algorithm
 let candidates = vec![
-    ModelType::RandomForest,
-    ModelType::GradientBoosting,
-    ModelType::XGBoost,
-    ModelType::LightGBM,
-    ModelType::CatBoost,
-    ModelType::ExtraTrees,
-    ModelType::SVM,
-    ModelType::KNN,
-    ModelType::LogisticRegression,
+    ModelType::RandomForest, ModelType::ExtraTrees, ModelType::AdaBoost,
+    ModelType::KNN, ModelType::NaiveBayes,
 ];
 
 // Optional: group-aware split to prevent game-level leakage (see 04-Evaluation/02-cross-validation.md)
@@ -119,7 +112,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
     .with_random_state(42);
 let splits = cv.split(n_samples, None, Some(&groups))?; // verified: split(n, None, Some(&groups))
 
-// Rank by cross-validated classification accuracy, then confirm by Mean Game Score ≥512
+// Report grouped-CV classification metrics, then compare held-out game outcomes
 let mut ranked: Vec<(ModelType, f64)> = Vec::new();
 for model_type in &candidates {
     let config = TrainingConfig::new(TaskType::MultiClassification, "action")
@@ -137,7 +130,7 @@ for model_type in &candidates {
 ranked.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
 // Top-ranked model proceeds to downstream game-score benchmark (≥10k games):
 // mean_game_score = simulator.run(&inference_engine, n_games: 10000).mean()
-// Gate: mean_game_score ≥ 512 && valid_action_accuracy ≥ 60% && f1_macro ≥ 0.55
+// Report uncertainty and protocol; do not infer general framework quality from game score
 ```
 
 > **Scope:** This file benchmarks candidates; `03-best-algorithm-finding.md` selects the single winner by Mean Game Score.
@@ -164,14 +157,14 @@ flowchart TD
 
 ## 6. Conclusion
 
-Candidate availability is gated by the pinned framework's four-class probability output. The current integration candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The original GradientBoosting, XGBoost, LightGBM, SVM, and LogisticRegression entries are excluded until the framework passes multiclass probability checks. No game-performance comparison has been completed; table values remain TBD.
+Candidate availability is gated by the pinned framework's four-class probability output. The current integration candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The other smoke-tested estimators did not meet that output contract. No common-data algorithm comparison or game-performance comparison has been completed; table values remain unmeasured.
 
 Based on the comparison results, the best model will be selected and documented in `05-Model/01-Algorithm/03-best-algorithm-finding.md`.
 
 ## Implementation Record
 
-- Five supported four-class candidate names are documented, and the root CLI can train a selected candidate and benchmark a saved model. Grouped CV checks game-level integrity.
-- A uniform candidate run on the same adequate dataset has not been performed; all metric cells remain TBD and there is no selected model.
+- Five four-class probability candidates are identified by `src/framework_validation.rs`; group-aware evaluation is available through `src/training.rs`.
+- A uniform candidate run on the same adequate dataset has not been performed; all metric cells remain unmeasured and no model has been selected.
 
 ---
 
@@ -188,7 +181,7 @@ Based on the comparison results, the best model will be selected and documented 
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Declare a dataset, split protocol, candidate configurations, seed matrix, metrics, and resource budget before executing the comparison. Retain raw fold metrics and game-level outcomes.
 
 ## Later
 

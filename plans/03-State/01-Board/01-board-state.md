@@ -1,6 +1,6 @@
 # Plan 01 — Board State Definition: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** The 16-cell board plus score contract is implemented; derived feature range behavior is being reconciled in ticket #034.
 
 **Goal:** State the current implementation and evidence boundary for board state definition.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats its subject as implemented with one dependent feature-range question pending.** `RawBoardState` stores the board cells and score; `BoardStateMl::from_board` emits 27 values without move count or history. The adjacent feature-extraction ticket must resolve the declared 32768 tile scale against larger valid `u32` powers that the board currently accepts.
 
 > **Scope:** The canonical training state is the 16 board cells plus score. No history or move count is included in training features. History may be retained for collection only; see `plans/00-scope-and-traceability.md`.
 > **Canonical dims:** **27** = 16 grid + 11 derived. See `04-Encoding/01-state-vector.md:31` `create_state_vector`.
@@ -23,36 +23,18 @@ The board state is the primary input to the ML model. Must capture all informati
 ```rust
 /// 4×4 grid as flat array, 0 = empty — board cells plus score
 pub struct RawBoardState {
-    pub grid: [u32; 16],          // Tile values (powers of 2, up to 131072 = 2^17)
+    pub grid: [u32; 16],          // Powers of two represented by u32; feature scale assumes max 32768
     pub score: u64,               // Cumulative score — idx 21 after normalization
-    pub game_over: bool,          // Terminal flag — metadata only
-    // NOTE: move_count NOT in 27-dim vector (removed; low predictive value)
+    pub move_count: u64,          // Metadata; excluded from the training vector
+    pub game_over: bool,          // Metadata; excluded from the training vector
 }
 ```
 
 ## 3. Extended Board State (for ML) — Canonical 27-dim
 
 ```rust
-/// Board state with derived features for ML training — 27 dims total (16 + 11)
-pub struct BoardStateML {
-    // Raw grid features (16 dims) — each / 32768.0
-    pub grid_values: [f64; 16],
-
-    // Derived features (11 dims) — canonical order, indices 16..26
-    pub empty_count: f64,              // [16] empty tiles / 16
-    pub max_tile_log: f64,             // [17] log2(max_tile) / 15; zero tile maps to 0
-    pub monotonicity: f64,             // [18] monotonicity score [0,1]
-    pub smoothness: f64,               // [19] 1/(1+diff/100) [0,1]
-    pub merges_available: f64,         // [20] cells participating in an available merge / 16
-    pub score_normalized: f64,         // [21] log10(score+1)/6 — ONLY score feature
-    pub adjacency_merge_score: f64,    // [22] sum adjacent equal / (16 * 32768)
-    pub corner_max: f64,               // [23] corner tile / 32768
-    pub edge_tiles_occupied: f64,      // [24] edge occupied / 12
-    pub col_worst: f64,                // [25] min col sum / 8192
-    pub row_worst: f64,                // [26] min row sum / 8192
-
-    // Total: 27 dims. No move_count_norm, no history.
-}
+/// Actual root representation; formulas and feature ordering are audited in #034.
+pub struct BoardStateMl(pub [f64; 27]);
 ```
 
 ### 3.1 Derived Features Detail
@@ -144,8 +126,8 @@ Deterministic divisors (no fitted scaler). `automl` `ScalerType::Standard` is ap
 
 ## Implementation Record
 
-- `RawBoardState` stores the flat 16-cell grid, cumulative score, move count, and terminal flag. `BoardStateMl::from_board` creates the canonical 27-value feature vector; score and history remain metadata except for the single normalized score feature.
-- Validation checks finiteness and feature ranges, with score index 21 allowed to exceed 1 for scores above one million. Unit coverage includes randomized board feature values.
+- `RawBoardState` stores the flat 16-cell grid, cumulative score, move count, and terminal flag. `BoardStateMl::from_board` creates a 27-value feature vector; move count, terminal state, and history are excluded, with score represented only at index 21.
+- Feature validation checks finiteness and ranges; randomized board and score-index tests exist. `RawBoardState::from_grid` currently accepts powers above 32768 even though other feature values are constrained to `[0,1]`; resolution is assigned to ticket #034 before this state contract is marked complete.
 
 ## 6. State Validation
 

@@ -1,6 +1,6 @@
 # Plan 02 — Cross-Validation: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Root group-aware CV implementation is present; only fold accuracy is reported and adequate-corpus evaluation remains pending.
 
 **Goal:** State the current implementation and evidence boundary for cross-validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats group-aware fold execution as implemented, with results and broader temporal protocols pending.** The root wrapper obtains group folds, verifies no game overlap, fits each fold, and reports accuracy. GroupKFold preserves game membership but does not guarantee chronological ordering.
 
 ## 1. Purpose
 
@@ -214,7 +214,7 @@ When using `TimeSeriesSplit`, every test set contains only later rows. For the c
 
 ### 3.5 Stratified Temporal CV (Recommended)
 
-For best results, combine stratification with temporal ordering:
+No stratified-temporal splitter is implemented. Any future combined strategy needs an explicit algorithm and validation; do not infer it from GroupKFold.
 
 ```mermaid
 flowchart TD
@@ -233,7 +233,7 @@ flowchart TD
     style Fold fill:#fff3e0
 ```
 
-Each stratum (score range) is temporally split independently, ensuring both class balance and temporal consistency.
+The diagram above is a conceptual proposal, not an implemented splitter or validated recommendation.
 
 ## 4. Cross-Validation Configuration
 
@@ -299,19 +299,17 @@ flowchart TD
 ```mermaid
 flowchart TB
     FoldResults[Fold Results<br/>classification — no regression]
-    FoldResults --> Fold1[Fold 1: Acc=0.42, F1=0.38, MeanScore=560]
-    FoldResults --> Fold2[Fold 2: Acc=0.40, F1=0.36, MeanScore=540]
-    FoldResults --> Fold3[Fold 3: Acc=0.44, F1=0.39, MeanScore=580]
-    FoldResults --> Fold4[Fold 4: Acc=0.41, F1=0.37, MeanScore=550]
-    FoldResults --> Fold5[Fold 5: Acc=0.43, F1=0.38, MeanScore=570]
+    FoldResults --> Fold1[Fold 1: measured metrics pending]
+    FoldResults --> Fold2[Fold 2: measured metrics pending]
+    FoldResults --> Fold3[Fold 3: measured metrics pending]
+    FoldResults --> Fold4[Fold 4: measured metrics pending]
+    FoldResults --> Fold5[Fold 5: measured metrics pending]
 
-    Fold1 --> AvgAcc[Mean Acc: 0.42 ± 0.015]
-    Fold2 --> AvgAcc
-    Fold3 --> AvgAcc
-    Fold4 --> AvgAcc
-    Fold5 --> AvgAcc
-    AvgAcc --> AvgF1[Mean F1 macro: 0.376 ± 0.011]
-    AvgF1 --> AvgScore[Mean Game Score: 560 ± 15]
+    Fold1 --> Aggregate[Aggregate reported fold accuracy]
+    Fold2 --> Aggregate
+    Fold3 --> Aggregate
+    Fold4 --> Aggregate
+    Fold5 --> Aggregate
 
     style AvgAcc fill:#e3f2fd
     style AvgF1 fill:#fff3e0
@@ -341,7 +339,7 @@ flowchart LR
 
 ## Implementation Record
 
-- The project wrapper runs seeded group folds, explicitly checks there is no game ID overlap, fits on each training fold, and reports fold and mean accuracy. It does not provide temporal forward chaining, stratified temporal folds, F1, or per-fold game-score metrics.
+- The project wrapper runs seeded group folds, explicitly checks there is no game ID overlap, fits each training fold, and reports fold and mean accuracy. It does not provide chronological forward chaining, stratified-temporal folds, F1, or per-fold game-score metrics.
 - Validation on an adequate plan-scale corpus has not yet been run; the wrapper is implementation plumbing, not experiment results.
 
 ---
@@ -359,7 +357,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Validate fold behavior and metric reporting on an adequate game corpus. Treat chronological holdout as a separate outer split; GroupKFold itself is not temporal.
 
 ## Later
 

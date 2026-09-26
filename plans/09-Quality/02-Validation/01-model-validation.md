@@ -1,6 +1,6 @@
 # Plan 01 — Model Validation: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Model loading/benchmark and score comparison paths exist; classification quality gates and an approval report do not.
 
 **Goal:** State the current implementation and evidence boundary for model validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**No trained model has passed a research validation protocol.** The CLI supports saved-model benchmarking and score summaries; the thresholds below are not supported by measured evidence and are removed as gates.
 
 ## 1. Purpose
 
@@ -63,16 +63,16 @@ flowchart TD
     G --> I[Return to Training]
 ```
 
-## 4. Validation Metrics — Canonical Thresholds
+## 4. Available Evaluation Outputs and Missing Gates
 
-| Metric | Threshold | Method | Gate? |
-|--------|-----------|--------|-------|
-| Mean Game Score | ≥ 512 (beats heuristic ~512) | Statistical evaluation (Mann-Whitney U, Bonferroni) | **Primary gate — rank by mean score** |
-| Valid-Action Accuracy | ≥ 60% | Classification accuracy on valid actions only (0–3) | **Gate** |
-| F1 Macro | ≥ 0.55 | Macro-averaged F1 across 4 action classes | **Gate** |
-| Robustness | Std Dev ≤ 512 | Variance analysis | Informative |
+| Output | Current support | Limitation |
+|--------|-----------------|------------|
+| Game score summary | Mean, standard deviation, median, p90/p99, min/max, thresholds, bootstrap mean interval | Describes supplied games; no project acceptance threshold |
+| Pairwise score comparison | Sign test or Mann–Whitney U, Holm adjustment, bootstrap mean difference, Cohen's d | Assumptions/experimental unit must be declared; no clustered paired interval |
+| Action classification metrics | No confusion matrix, macro-F1, or valid-action accuracy report | Add only if required for the research question |
+| Robustness / approval score | Not implemented | No 0–100 quality score or deployment gate |
 
-> **No proximity gate.** Models are **ranked by Mean Game Score** (highest wins). If proximity is reported as optional analysis, define as **single value** `proximity = model_mean_score / heuristic_baseline_mean (≈512)` (e.g., 768 → 1.5×). Do not use `≥1.5` proximity as pipeline rejection gate; `≥0.3/>0.5` deprecated and removed. No `model/theoretical_max` ratio — theoretical max is open.
+No baseline score threshold, fixed macro-F1 target, or standard-deviation limit is established. Local baseline means are protocol-specific and are not universal quality thresholds. Deployment is outside the current project scope.
 
 ## 5. Cross-Validation
 
@@ -86,7 +86,7 @@ graph TD
     E -->|Yes| F[Average Metrics]
     F --> G[Validate Model]
     
-    style G fill:#9f9,stroke:#333
+    style G fill:#9f9,stroke:#363
 ```
 
 ## 6. Model Validation Tests
@@ -131,11 +131,7 @@ flowchart LR
 
 ## 9. Validation Artifacts
 
-All validation artifacts are stored:
-- Model checkpoints
-- Validation metrics
-- Test configurations
-- Results summaries
+Available saved models, benchmark CSVs, and JSON manifests can be retained per run. A unified model-validation report and approval artifact are not implemented.
 
 ## 10. Continuous Validation
 
@@ -151,7 +147,7 @@ flowchart LR
 
 ## Implementation Record
 
-- Saved-model benchmarking and statistical score comparisons are available, but there is no validation command that computes the specified classification gates or produces an approval report. No model is validated against the plan thresholds yet.
+- Saved-model benchmarking and statistical score comparisons are available. No classification metrics, fixed quality gates, aggregate approval score, deployment path, or validated model report exists.
 
 ---
 
@@ -168,7 +164,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Model validation remains partial.** Declare decision thresholds and statistical units only after measurement design; retain model, data, configuration, and run manifests.
 
 ## Later
 

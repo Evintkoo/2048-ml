@@ -1,6 +1,6 @@
 # Plan 02 — Statistical Analysis: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Descriptive summaries and limited pairwise inference are implemented; categorical metrics, several tests, and power planning are absent.
 
 **Goal:** State the current implementation and evidence boundary for statistical analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan is partial.** Available inference consists of independent Mann–Whitney U or paired exact sign tests, percentile bootstrap intervals, Holm adjustment, and Cohen's d. These helpers do not constitute the broader analysis plan or a completed research report.
 
 > **Distinct focus vs `03-significance-testing.md`:** This file = descriptive foundations (distributions, CIs, test assumptions). `03-significance-testing.md` = winner determination protocol (adjusted α, ranking, power). No duplication — cross-ref there for ranking.
 
@@ -50,9 +50,10 @@ flowchart LR
 | Test | Purpose | Assumption |
 |------|---------|------------|
 | Mann-Whitney U | Compare distributions | Independent samples |
-| Wilcoxon | Paired comparison | Same seed sequence |
-| Kruskal-Wallis | Compare multiple groups | Non-parametric |
-| Chi-squared | Categorical comparison | Expected frequency ≥ 5 |
+| Paired exact sign test | Paired comparison | Same ordered seed sequence; ties omitted |
+| Wilcoxon signed-rank | Not implemented | Planned only |
+| Kruskal-Wallis | Not implemented | Planned only |
+| Chi-squared | Not implemented | Planned only |
 
 ## 5. Hypothesis Testing Pipeline
 
@@ -79,49 +80,16 @@ graph TD
     C --> D[Compute CI]
     D --> E[Report CI]
     
-    style D fill:#9f9,stroke:#333
+    style D fill:#9f9,stroke:#363
 ```
 
-```rust
-pub struct ConfidenceInterval {
-    pub point_estimate: f64,
-    pub lower_bound: f64,
-    pub upper_bound: f64,
-    pub confidence_level: f64,    // e.g., 0.95
-    pub standard_error: f64,
-}
-
-impl ConfidenceInterval {
-    pub fn new(mean: f64, std_err: f64, confidence: f64) -> ConfidenceInterval {
-        let z_critical = match confidence {
-            0.90 => 1.645,
-            0.95 => 1.96,
-            0.99 => 2.576,
-            _ => 1.96,
-        };
-        ConfidenceInterval {
-            point_estimate: mean,
-            lower_bound: mean - z_critical * std_err,
-            upper_bound: mean + z_critical * std_err,
-            confidence_level: confidence,
-            standard_error: std_err,
-        }
-    }
-}
-```
+Current score-summary intervals and pairwise mean-difference intervals use percentile bootstrap resampling. They are implemented helpers, not the illustrative normal-approximation struct above; clustering of paired games is not modeled by the comparison bootstrap.
 
 ## 7. Classification Analysis — No Regression (Actions 0–3 Only)
 
 > **No regression.** Task is `TaskType::MultiClassification` (27-dim → 4 logits → `argmax`). Score is a downstream game-score benchmark, not a regression target. Do not fit `score` as `y` or report R² / RMSE / MSE.
 
-```mermaid
-flowchart TD
-    A[Feature Matrix X<br/>27-dim] --> B[Predict Actions<br/>4 logits → argmax 0..3]
-    B --> C[Confusion Matrix<br/>4x4]
-    C --> D[Per-Class Metrics<br/>Precision / Recall / F1]
-    D --> E[Aggregate<br/>Valid-Action Accuracy + F1 Macro]
-    E --> F[Game-Score Benchmark<br/>Mean score downstream — not R²]
-```
+Action classification metrics such as confusion matrices, per-class precision/recall/F1, and valid-action accuracy are not currently emitted by the evaluation reports. Game score is a downstream outcome, not a regression target for the supervised action classifier.
 
 ## 8. Multiple Comparison Correction
 
@@ -146,7 +114,7 @@ All results must report:
 
 ## Implementation Record
 
-- Implemented helpers provide descriptive score summaries, percentile bootstrap confidence intervals, Mann–Whitney U, paired exact sign test, Holm correction, and Cohen's d. Kruskal–Wallis, Wilcoxon, categorical tests, power analysis, and a completed report are absent.
+- `src/evaluation.rs` and comparison/report paths provide mean, sample standard deviation, median, p90/p99, min/max, threshold counts, bootstrap mean intervals, Mann–Whitney U, paired exact sign test, Holm-adjusted p-values, bootstrap mean-difference intervals, and Cohen's d. Kruskal–Wallis, Wilcoxon, categorical/classification metrics, explicit assumption diagnostics, power analysis, and a populated report are absent.
 
 ## 10. Analysis Validation
 
@@ -175,7 +143,7 @@ graph TD
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 

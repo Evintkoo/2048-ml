@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-peer-review](01-peer-review.md) | Peer Review | PLANNED |
-| [02-code-review](02-code-review.md) | Code Review | PLANNED |
-| [03-experiment-review](03-experiment-review.md) | Experiment Review | PLANNED |
+| [01-peer-review](01-peer-review.md) | Peer Review | PARTIAL — guidance only; no independent review recorded |
+| [02-code-review](02-code-review.md) | Code Review | PARTIAL — redirect/checklist; no independent review recorded |
+| [03-experiment-review](03-experiment-review.md) | Experiment Review | PARTIAL — outputs and independent review pending |
 
 ## Reading paths
 

@@ -1,6 +1,6 @@
 # Plan 03 — Best Algorithm Finding: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** No winner is selected; the comparison depends on a predeclared protocol and adequate evaluation data.
 
 **Goal:** State the current implementation and evidence boundary for best algorithm finding.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan records a pending result, not an inferred winner.** The comparison has not been run on a common adequate dataset or held-out game set. The canonical scope requires separating 2048 case-study evidence from general framework claims; it defines no universal score or classification thresholds.
 
 ## 1. Purpose
 
@@ -17,7 +17,7 @@ Document the model-selection result for the 2048 case study and explain its rela
 
 ## 2. Selection Process
 
-The best algorithm was selected through systematic comparison of all candidate models.
+No best algorithm has been selected. A selection requires matched results from the candidate comparison ticket and a declared 2048 protocol.
 
 ```mermaid
 flowchart TD
@@ -75,7 +75,7 @@ flowchart TD
 | Inference Time | TBD — run after training | Report hardware and distribution | Pending — framework/application efficiency |
 | Training Time | TBD — run after training | Report configuration and budget | Pending — framework efficiency |
 
-> **No R² / RMSE** — task is `TaskType::MultiClassification` (27-dim → 4 logits → `argmax` 0–3). Game score is a downstream benchmark, not a regression target. Values marked TBD will be filled after running the benchmark loop in `02-model-comparison.md:4.1`.
+> **No R² / RMSE** — task is four-class classification; game score is a downstream case-study outcome, not a regression target. Values remain unmeasured until the comparison protocol runs.
 
 ### 5.1 Automl-Compatible Model Candidates
 
@@ -105,21 +105,21 @@ The 2048 game data is **tabular** in nature — each sample consists of a fixed-
 
 ### 5.3 Evaluation Criteria — Canonical: Rank by Mean Game Score + Gates
 
-> **DELETED weighted composite (30/20/15...).** The old multi-criteria weighted score conflicted with the canonical rule in `01-algorithm-research.md:147`: **Rank by Mean Game Score (research.md:147), gates Acc≥60% F1≥0.55.** This section now aligns exactly with that rule.
+> No weighted composite or acceptance thresholds are established by the canonical scope. Define the ranking rule, diagnostics, and uncertainty analysis before evaluating candidates.
 
 **Ranking rule (primary):**
 
 1. Run each candidate's policy in the simulator for ≥10,000 games and compute `mean_score`.
-2. **Rank by mean_score descending — highest wins.** The winner must have `mean_score ≥ 512` (beats heuristic). No weighted sum.
+2. Apply the predeclared ranking rule to held-out game results and report uncertainty. Do not use a threshold absent from the approved protocol.
 3. If two models tie within statistical noise (± 1 std), prefer higher Valid-Action Accuracy, then lower inference time.
 
 **Gates (all must pass; otherwise the model is rejected regardless of rank):**
 
 | Gate | Threshold | Measured on | Fail action |
 |------|-----------|-------------|-------------|
-| Mean Game Score | ≥ 512 | Simulator benchmark (≥10k games) | Reject |
-| Valid-Action Accuracy | ≥ 60% | Held-out classification test set (valid actions only, 0–3) | Reject |
-| F1 Macro | ≥ 0.55 | Same test set, macro-averaged across 4 action classes | Reject |
+| Mean Game Score | Predeclare | Held-out simulator games | Report with uncertainty |
+| Valid-Action Accuracy | Diagnostic | Held-out labeled rows, protocol-defined valid-action handling | Report |
+| F1 Macro | Diagnostic | Held-out labeled rows, four action classes | Report |
 | Inference Time | ≤ 1ms | Mean per-prediction latency (informative, not rejecting unless >5ms) | Warn |
 
 **What is NOT a gate:**

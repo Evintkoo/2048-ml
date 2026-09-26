@@ -1,6 +1,6 @@
 # Plan 02 — Data Versioning: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Collection manifests include seeds, revision, row count, and file hashes; automatic immutable dataset versioning is absent.
 
 **Goal:** State the current implementation and evidence boundary for data versioning.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats run provenance as partially implemented and dataset lifecycle/versioning as pending.** Collection manifests store source revision when available, pinned AutoML commit, seed derivation, configuration, row count, runtime, and CSV/metadata hashes. Outputs are not automatically named, retained, or registered as immutable dataset versions.
 
 ## 1. Purpose
 
@@ -17,20 +17,21 @@ Reproduce any dataset from code + seed. No enterprise VNum/ChangeLog.
 
 ## 2. Scheme
 
-Dataset version = `git rev-parse HEAD` (commit hash) + collection `seed` + row count. Tag data dirs as `data-v<short-hash>-seed<seed>`.
+A reproducibility record should include source revision, dependency revisions, configuration, seeds, output row count, and content hashes. The current manifest records much of this metadata but does not create immutable version tags.
 
 ```bash
 git rev-parse HEAD          # → abc1234… — pin this
 sha256sum 06-Data/03-Storage/*.csv  # verify after fetch
 # reproduce:
-cargo run -- collect --seed 42 --n_games 10000  # same hash + seed → same 20k rows
+cargo run -- data-collector collect --seed 42 --n-games 10000  # exact output also depends on pinned dependencies/configuration
 ```
 
- chronological `GroupKFold` (`shuffle=false`, `groups=game_id`) guarantees the 70/15/15 split is reproducible given the same hash+seed ordering. Store `sha256` of each CSV alongside for integrity.
+The split command partitions whole games chronologically; grouped CV preserves game groups but does not itself impose time order. File hashes are stored in collection manifests.
 
 ## Implementation Record
 
-- Collector manifests include source revision when Git metadata is available, seed derivation/range, row count, and SHA-256 for training and metadata CSVs. Data files are not committed/version-tagged automatically; reproducibility requires retaining the manifest and source revision.
+- Collector manifests include source revision when Git metadata is available, the AutoML pin, configuration, seed derivation/range, row count, runtime, and SHA-256 for training and metadata CSVs.
+- Data files are not committed/version-tagged automatically. Reproduction also depends on retaining the data, manifest, root/submodule revisions, toolchain, and command configuration.
 
 ---
 
@@ -47,7 +48,7 @@ cargo run -- collect --seed 42 --n_games 10000  # same hash + seed → same 20k 
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Add automated toolchain/dependency capture and a stable dataset-version registry only if needed for the reproduction package. Retain artifact bytes alongside manifests.
 
 ## Later
 

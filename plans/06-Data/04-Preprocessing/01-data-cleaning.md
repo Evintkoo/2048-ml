@@ -1,6 +1,6 @@
 # Plan 01 — Data Cleaning: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** CSV validation exists; cleaning, exact-duplicate removal, and board-dependent action legality checks are not implemented.
 
 **Goal:** State the current implementation and evidence boundary for data cleaning.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats schema validation as implemented and data-cleaning operations as pending.** The preprocess command validates a CSV but does not deduplicate, impute, remove malformed rows, or validate action legality against the source board. The canonical table omits board snapshots, so legality checking requires a separate audit source.
 
 ## 1. Purpose
 
@@ -76,7 +76,7 @@ flowchart TD
 ```
 
 > **Duplicate board states are expected, especially early-game** (e.g., initial boards and early random tiles repeat across games). **Do NOT naively drop all rows with duplicate board states** — many distinct games share identical early states and they are valid signal.
-> **Only drop exact duplicate rows** where the entire row (`27 features + action` + optional `score` metadata) is byte-identical *and* represents a true ingest duplication (same `game_id` + `move_idx` ingested twice). If in doubt, keep the row. Deduplication key must include `game_id`/`move_idx` or the full 27+action row, not board state alone. Grouping for CV remains by `game_id` (`GroupKFold`, `shuffle=false`).
+> **Only drop exact duplicate rows** where the entire row (`27 features + action` + optional `score` metadata) is byte-identical *and* represents a true ingest duplication (same `game_id` + `move_idx` ingested twice). If in doubt, keep the row. Deduplication key must include `game_id`/`move_idx` or the full 27+action row, not board state alone. Grouping for CV remains by `game_id`; GroupKFold is group-aware but not chronological.
 
 ### 3.2 Missing Value Handling
 
@@ -103,7 +103,7 @@ flowchart TD
     Invalid --> Check[Validity Checks]
     Check --> NaN[NaN / Inf / Missing]
     Check --> Malformed[Malformed Row<br/>wrong column count / type]
-    Check --> Illegal[Illegal Action<br/>action not in 0..3 or not valid for state]
+    Check --> Illegal[Illegal Action<br/>action not in 0..3]
     
     NaN --> Flag[Flag Invalid Row]
     Malformed --> Flag
@@ -199,7 +199,7 @@ flowchart LR
 
 ## Implementation Record
 
-- Collection validation checks schema, finite values, ranges, and action IDs; the preprocess CLI currently validates rather than cleaning or deduplicating rows. It does not verify state-dependent action legality or remove exact duplicate ingests.
+- Collection validation checks schema, finite values, ranges, and action IDs; the preprocess CLI validates rather than cleaning/deduplicating. It cannot verify board-dependent action legality from the training CSV alone.
 
 ---
 
@@ -216,7 +216,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Implement explicit cleaning only with row provenance preserved. State-dependent legality checks require access to original board states; the canonical model table does not contain them.
 
 ## Later
 

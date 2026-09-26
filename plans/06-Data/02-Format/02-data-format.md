@@ -1,6 +1,6 @@
 # Plan 02 — Data Format: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** CSV is the implemented training format with a separate metadata sidecar; Parquet remains unsupported.
 
 **Goal:** State the current implementation and evidence boundary for data format.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats canonical CSV serialization as implemented and Parquet as unimplemented.** The collector writes feature/action CSV plus a separate row-aligned provenance CSV; the training CLI consumes CSV and metadata paths.
 
 ## 1. Purpose
 
@@ -25,9 +25,9 @@ grid_0,...,row_worst,action
 ```
 Header regex: `^grid_0,grid_1,...,row_worst,action(\,score)?$` (see `03-data-standard.md`). No `done`/`reward`/`next_state`.
 
-## 3. Optional — Parquet via polars DataFrame
+## 3. Parquet (Not Implemented)
 
-For large datasets, Parquet is optional via `polars`:
+The root does not currently write or read Parquet. The following old example is retained only as a possible future format sketch, not a working implementation:
 
 ```rust
 use polars::prelude::*;
@@ -42,11 +42,11 @@ fn write_parquet(states: &[[f64;27]], actions: &[u8], path: &str) -> PolarsResul
 }
 ```
 
-Parquet is **not** a second pipeline — just an alternative serialization of the same 27+action table. No Binary/JSON pipelines (deleted — out of scope).
+CSV is the only supported training-data format. JSON is used for manifests/checkpoints, not as a training table. Parquet support would require a separately implemented and validated ingestion/export path.
 
 ## Implementation Record
 
-- CSV is implemented and validated end-to-end. Parquet serialization is not implemented; it remains optional under this plan.
+- CSV training rows and aligned metadata are implemented and validated end-to-end. Parquet read/write support is absent.
 
 ---
 
@@ -63,7 +63,7 @@ Parquet is **not** a second pipeline — just an alternative serialization of th
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Add Parquet only if scale measurements justify it; any new format must preserve feature order, action typing, and sidecar row alignment.
 
 ## Later
 

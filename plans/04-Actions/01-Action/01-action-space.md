@@ -1,6 +1,6 @@
 # Plan 01 — Action Space Definition: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: COMPLETE (2026-09-26).** Four direction codes and board-dependent validity are implemented and tested.
 
 **Goal:** State the current implementation and evidence boundary for action space definition.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the four-action interface as implemented.** `Direction` in `src/game_engine/mod.rs` defines codes 0 through 3 and rejects other codes. `RawBoardState::get_valid_moves` derives legal actions by checking whether each direction changes the board. `src/actions.rs` masks invalid predictions, preserves action-order tie breaking, and errors when no action is available.
 
 > **Canonical action space — single source.** `04-Actions/02-Space/01-discrete-actions.md` references this file.
 
@@ -45,7 +45,7 @@ graph TD
 
 ## 4. Action Validity
 
-Not all actions are valid at every state:
+Not all actions are valid at every state. The code uses `RawBoardState::get_valid_moves` and `valid_mask`; the snippet below is explanatory pseudocode:
 
 ```rust
 pub fn valid_actions(grid: &[u32; 16]) -> Vec<u8> {
@@ -80,8 +80,8 @@ The action space definition feeds into:
 
 ## Implementation Record
 
-- `Direction` is encoded exactly as `0=Up, 1=Down, 2=Left, 3=Right`; invalid integer actions return an error. `valid_actions` delegates to `RawBoardState::get_valid_moves`.
-- Root tests verify validity masking, tie-breaking, and rejection of terminal-state action selection.
+- `Direction` is encoded exactly as `0=Up, 1=Down, 2=Left, 3=Right`; invalid integer actions return an error. `RawBoardState::get_valid_moves` and `valid_mask` compute state-dependent validity.
+- `src/actions.rs` applies a validity mask to model scores, breaks ties in action order, and reports an error for terminal boards. Root tests cover those behaviors.
 
 ---
 
@@ -98,7 +98,7 @@ The action space definition feeds into:
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No action-space implementation gap remains in this ticket. Action frequency and policy quality are empirical evaluation questions covered by later evaluation tickets.
 
 ## Later
 

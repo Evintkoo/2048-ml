@@ -1,6 +1,6 @@
 # Plan 00 — Theoretical Framework: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** The policy-learning formulation is outlined; several formal claims are unsound or unverified and are excluded pending review.
 
 **Goal:** State the current implementation and evidence boundary for theoretical framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan is partial.** The supervised-policy and framework architecture descriptions are conceptual. The appendix contains incorrect board-bound and information-theory arguments; those are not results and require mathematical review before use.
 
-> **Note:** Core theory concerns AutoML system architecture, reproducible pipeline composition, validation, model selection, and resource-aware optimization. The POMDP and supervised-policy formulation support the 2048 case study. PSPACE, Markov-blanket, and unverified PAC claims are not core contributions.
+> **Note:** Core theory concerns AutoML system architecture, reproducible pipeline composition, validation, model selection, and resource-aware optimization. The fully observed MDP and supervised-policy formulation support the 2048 case study. PSPACE, Markov-blanket, and unverified PAC claims are not core contributions.
 
 ## 1. Rust-Native AutoML Architecture
 
@@ -23,11 +23,11 @@ The theoretical questions are architectural: how pipeline components compose, ho
 
 ### 2.1 Problem as a Stochastic Sequential Decision Process
 
-2048 on 4×4 is finite-horizon POMDP `(S, A, T, R, Ω, O, γ)` with `|A|=4` (0:Up,1:Down,2:Left,3:Right), `S = {0,2,4,...,32768}^16` (16 cells, ≤17 states each), `T` = deterministic slide+merge then stochastic spawn (2 p0.9 /4 p0.1 in uniform empty), `R` = merge score sum, `γ=1`, `Ω=O=S` (board observed; stochasticity is spawn).
+The observed 4×4 board is modeled as a fully observed stochastic decision process (MDP) `(S, A, T, R, γ)`. There are four actions (0: Up, 1: Down, 2: Left, 3: Right); `S` is the set of representable board configurations; `T` applies slide/merge then a random empty-cell spawn; `R` is merge-score increment; and `γ=1` for undiscounted episodic score. The implementation defaults to probability 0.1 for spawning a 4. Source inspection alone does not prove broader mathematical assumptions.
 
-**Maps to code:** `S` → 27-dim `f(s)` row in polars; `A` → `TaskType::MultiClassification` labels 0–3; `T/R` → `game_engine.rs` + `score.rs`; labels `a*` from rollout (100 sims/action) in `label_generation.rs`. No separate 8×8 formalism.
+**Maps to code:** action labels map to `TaskType::MultiClassification`; game transitions and scoring are implemented in `src/game_engine/mod.rs`; feature encoding is in `src/state.rs`. Rollout relabeling defaults to 100 simulations per legal action. This produces heuristic labels from rollout means, not an optimal action `a*`.
 
-**Theorem 1 (Board Capacity, proven).** Max tile = `2^15=32768` (16 cells; `2^16` needs 17). See `04-Appendix/04-mathematical-formulation.md` Theorem 2. **Score bound:** `S_max ≤131072` loose upper bound (same appendix Theorem 1) — not used as gate.
+The board-value domain and theoretical maximum-tile claim are not established by this plan. The appendix proof is invalid and should not be cited. The simulator stores tile values in `u32`, while the feature/CSV contract has a separate 32768 scale and unresolved behavior beyond it.
 
 **Value/Bellman:**
 
@@ -37,7 +37,7 @@ V^π(s)=E_π[Σ R_{t+k}|s_t=s],  V^π(s)=R(s,π(s))+E_{P(s'|s,π(s))}[V^π(s')],
 
 ### 2.2 Learning as Supervised Function Approximation
 
-Model `M_θ: f(s)∈ℝ^27 → Δ^3` (simplex over 4 actions): `π_θ(a|s)=M_θ(f(s))[a]`. Loss `L(θ)=-E_{(s,a*)~D}[log π_θ(a*|s)]` where `a*` is rollout-optimal. Convergence claims (convex `O(1/t)`) **do not apply** to tree ensembles; empirically measured via learning curves (score vs epoch, 100 val games/epoch).
+Model `M_θ: f(s)∈ℝ^27 → Δ^3` (four class probabilities) defines a policy by selecting among legal actions. Training labels are rollout-mean proxies, not proven optimal actions. Convex-optimization convergence rates do not apply to the heterogeneous tree models used here. Learning curves are not yet a completed study.
 
 ## 3. Optional Statistical Learning Context
 
@@ -45,7 +45,7 @@ VC/PAC bounds may be used as general background, but they do not directly establ
 
 ## 4. Optional Information-Theoretic Context
 
-Board entropy `H(board)≤log2(17^16)≈65.4 bits`; spawn `H(spawn)≈0.469 bits` per spawn → ~23.5 bits/game (50 spawns). Justifies stochastic variance in §3 CI width.
+The previous entropy calculation assumed a finite 17-value cell alphabet and a fixed 50-spawn episode. Those assumptions are not justified by the implementation contract; remove the numeric entropy and variance rationale unless a valid state domain and stopping distribution are established.
 
 ## 5. Excluded Speculative Theory
 
@@ -53,11 +53,11 @@ PSPACE-hardness, Markov-blanket sufficiency, and feature-sufficiency claims are 
 
 ## 6. Summary
 
-The core framework claims are supported by architecture documentation, acceptance tests, matched benchmarks, resource measurements, and reproducibility evidence. The 2048 formulation supplies the application context; optional learning-theory bounds do not replace empirical validation.
+Architecture documentation and capability checks exist, but matched framework benchmarks, resource measurements, and broad reproducibility evidence remain pending. The 2048 formulation supplies application context; the theoretical appendix does not establish formal bounds.
 
 ## Implementation Record
 
-- The code and plans implement the stated board/action/spawn/score contracts and the 27-feature supervised formulation. This document is a theory outline, not a verified formal analysis: citations, entropy interpretation, and theorem claims require independent source and assumption review before publication.
+- The code implements board transitions, score tracking, action selection, and a 27-feature supervised representation. This outline is not a verified formal analysis; invalid board-bound proofs and unsupported entropy claims must not be used. The visible-state formulation is an MDP description, not a POMDP claim.
 
 ---
 
@@ -74,7 +74,7 @@ The core framework claims are supported by architecture documentation, acceptanc
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Formal results remain bounded by reviewed assumptions.** Correct the mathematical appendix and verify citations before publication. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 

@@ -1,6 +1,6 @@
 # Plan 01 — Move History: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Group IDs, move indices, actions, and score deltas are retained; raw board-history export remains deferred and Parquet is unsupported.
 
 **Goal:** State the current implementation and evidence boundary for move history.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,20 +9,15 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats grouped provenance as implemented and raw history export as pending.** Training rows retain `game_id` and `move_index` in a sidecar, which is enough for game-group splitting. Per-move pre-state snapshots are used in memory for rollout relabeling but are not persisted as a separate history dataset; history is not a training feature.
 
 > **Not for training.** History is never fed as features. Each row for training is ` (from_state: [f64;27], action: u8)` — see `02-state-transition.md`. This file = grouped raw log for `GroupKFold` leakage prevention.
 
 ## 1. Record — Minimal
 
 ```rust
-pub struct MoveRecord {
-    pub game_id: u64,              // group key for GroupKFold
-    pub move_idx: u32,             // sequential within game
-    pub board_before: [u32; 16],   // raw tiles (0 = empty)
-    pub action: u8,                // 0..3 — the label
-    // board_after/score_after/timestamp/merge_value are not stored here (see state-transition for optional metadata)
-}
+// Current `MoveRecord` stores action and score_delta in each GameResult.
+// Training metadata separately stores row_index, game_id, move_index, score.
 ```
 
 ## 2. Collection — Grouped by `game_id`
@@ -54,12 +49,12 @@ pub fn validate_history(h: &MoveHistory) -> Result<()> {
 
 ## 5. Persistence
 
-Save combined `records` as Parquet grouped by `game_id` — not per-move DataFrames. No `to_dataframe` stub; use canonical `create_supervised_dataset`.
+Raw board-history export is not part of the current CSV training path. If a concrete audit use requires persisted pre-state snapshots, define its storage format in the later state-transition ticket; Parquet support does not exist in the root.
 
 ## Implementation Record
 
 - Each `GameResult` retains action and score-delta move history. Collected supervised rows retain `game_id` and `move_index` in a separate metadata CSV, preserving row grouping for game-level splits.
-- Raw `board_before` per move and Parquet history persistence are not implemented. The current feature-state samples are captured separately during collection.
+- Raw pre-state snapshots are held only while rollout relabeling runs, then discarded. They are not model features and are not persisted; Parquet history persistence is unsupported. The transition plan later in this folder owns any separate audit-log decision.
 
 ---
 

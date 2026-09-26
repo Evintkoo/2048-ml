@@ -1,6 +1,6 @@
 # Plan 01 — Discrete Actions: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: COMPLETE (2026-09-26).** Verified against the canonical action interface.
 
 **Goal:** State the current implementation and evidence boundary for discrete actions.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats its subject as implemented or redirected to the canonical action interface.** This redirect ticket confirms the canonical four-action definition and adds no separate implementation surface.
 
 > **Canonical:** `04-Actions/01-Action/01-action-space.md` — single source for action space. This file is retained for historical reasons; see canonical. No code duplication.
 
@@ -34,7 +34,7 @@ Canonical: `0=Up, 1=Down, 2=Left, 3=Right` — `u8 0..3`, `TaskType::MultiClassi
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No additional action-space implementation is required in this ticket; policy quality remains part of later evaluation.
 
 ## Later
 

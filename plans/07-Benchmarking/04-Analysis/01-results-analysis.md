@@ -1,6 +1,6 @@
 # Plan 01 — Results Analysis: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Score reports and comparison summaries are implemented; no plan-scale model result corpus or trend/anomaly analysis exists.
 
 **Goal:** State the current implementation and evidence boundary for results analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan is partial.** Source inspection confirms score summaries and comparison CSV/manifest output. A populated trained-model result corpus is absent, so no ranking, trend, anomaly, or substantive conclusion is claimed.
 
 ## 1. Purpose
 
@@ -17,68 +17,50 @@ Provide comprehensive analysis of benchmarking results for the 2048 ML system.
 
 ## 2. Pipeline — Raw → Validate (Keep Full Distribution) → Aggregate → Insights
 
-Raw benchmark data → validate (keep full heavy-tailed distribution, no truncation) → compute mean/median/std/percentiles → comparative stats vs baselines (see `01-Evaluation/01-benchmarking-framework.md §6.4`) → conclusions.
+Raw benchmark CSVs → score summaries (mean, sample standard deviation, median, p90, p99, min, max, threshold counts, bootstrap mean CI) and optional pairwise comparison report. Reports summarize supplied inputs; they do not establish a ranking without a declared, populated experiment.
 
 ## 3. Data Processing Pipeline — Keep Full Distribution (No Truncation)
 
 ```mermaid
 flowchart LR
-    A[Raw Scores] --> B[Validate Scores<br/>keep full distribution]
-    B --> C[Normalize Data]
-    C --> D[Aggregate Metrics]
-    D --> E[Generate Insights]
-    E --> F[Visualize Results]
-    
-    A -->|10000 games<br/>canonical 20k: 14k/3k/3k| B
-    B -->|keep full distribution<br/>no truncation| C
-    C -->|log transform| D
-    D -->|mean, median, std, percentiles| E
-    E -->|charts, tables| F
+    A[Supplied score CSVs] --> B[Validate and summarize]
+    B --> C[Optional pairwise comparison]
+    C --> D[CSV and JSON manifest]
 ```
 
-> **Do NOT discard high scores.** Game scores are **heavy-tailed signal** — high scores (top 1%) correspond to rare high-tile achievements and are the primary signal for max score / ceiling estimation. Removing top/bottom 1% discards the most valuable tail. **Keep full distribution**, report **percentiles (p50/p90/p95/p99/max)**, and do **no truncation** or outlier filtering on scores.
+Score analysis retains input observations and reports available quantiles (median, p90, p99, min, max). The implementation does not filter outliers. Do not describe the score distribution as heavy-tailed without analysis establishing that property; p10, p25, p75, and p95 are not currently emitted.
 
 ## 4. Key Analysis Metrics
 
 | Analysis Area | Metric | Method |
 |--------------|--------|--------|
-| Performance | Mean score trend | Time series analysis |
-| Stability | Score variance | Statistical tests |
-| Improvement | Score delta over time | Regression analysis |
-| Consistency | Win rate stability | Confidence intervals |
+| Performance | Mean score for supplied run | Descriptive summary |
+| Uncertainty | Bootstrap mean interval | Percentile bootstrap |
+| Pairwise comparison | Mean difference interval and test result | Comparison CLI; pairing depends on seed sequence |
+| Trend / stability | Not implemented | Requires repeated, ordered runs and analysis |
 
 ## 5. Heavy-Tail §3 & Anomaly §6 — Kept as Core
 
-> **Tail is signal.** Scores are heavy-tailed; keep full distribution, report `p50/p90/p95/p99/max` per §3. Anomaly detection is **investigation only** — log z-scores, never filter (see §6 note). These two sections are the value-add; generic trend/visualization mermaids removed.
+Full scores are retained in source reports; no heavy-tail property or anomaly detector has been established. Any future anomaly investigation must preserve raw values and document its method rather than silently filtering observations.
 
 ## 6. Comparative Analysis
 
-Compare current 10k-game run vs Random (~128) and Heuristic (~512) via Mann-Whitney U + bootstrap CI + Cohen's d (see `01-Evaluation/01-benchmarking-framework.md §6.4`). Identify key factors only post-training.
+The comparison command selects an exact paired sign test when seed sequences match and independent Mann–Whitney U otherwise; it also reports a bootstrap mean-difference interval, Holm-adjusted p-values, and Cohen's d. No plan-scale trained-model comparison is available yet.
 
 ## 7. Analysis Conclusions
 
-```rust
-pub struct AnalysisConclusion {
-    pub best_model: String,
-    pub best_score: f64,
-    pub confidence: f64,
-    pub key_factors: Vec<String>,
-    pub recommendations: Vec<String>,
-    pub next_steps: Vec<String>,
-}
-```
+Conclusions and recommendations require completed, protocol-matched benchmark inputs. The report command does not infer causal factors or declare a best model.
 
 ## 8. Reporting
 
 All analysis results are compiled into:
-- Summary dashboard
-- Detailed statistical report
-- Visual charts and graphs
-- Actionable recommendations
+- Score summary CSV and JSON provenance manifest
+- Pairwise comparison CSV and JSON provenance manifest
+- Dashboard, charts, trend analysis, and evidence-based recommendations remain pending.
 
 ## Implementation Record
 
-- Benchmark outputs and a CSV report can summarize score distributions and corrected comparisons; there is no populated plan-scale results corpus. Trend, anomaly investigation, charts, and evidence-based conclusions remain pending.
+- `src/evaluation.rs` implements the score summary fields and bootstrap intervals; `src/main.rs` writes score reports and comparison CSV/JSON manifests. No populated plan-scale trained-model result corpus, trend analysis, anomaly investigation, plots, or defensible model conclusion exists.
 
 ---
 
@@ -95,7 +77,7 @@ All analysis results are compiled into:
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** A larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 

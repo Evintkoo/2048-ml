@@ -1,6 +1,6 @@
 # Plan 02 — Automation: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Build/test/deploy automation scripts and a CI workflow are absent.
 
 **Goal:** State the current implementation and evidence boundary for automation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This is a target workflow description.** It does not represent automation currently running in the repository.
 
 > **See canonical `09-Quality/03-CI/01-ci-pipeline.md` — this doc is a duplicate stub.** Trimmed repetitive mermaid; see canonical for pipeline diagrams.
 
@@ -29,11 +29,11 @@ Define automation procedures for the 2048 ML system development workflow.
 
 | Category | Tool | Purpose | Frequency |
 |----------|------|---------|-----------|
-| Build | cargo | Compile code | Every commit |
-| Test | cargo test | Verify functionality | Every commit |
-| Lint | cargo clippy | Code quality | Every commit |
-| Deploy | Scripts | Release | Manual trigger |
-| Monitor | Custom | System health | Continuous |
+| Build | Cargo | No CI trigger configured | N/A |
+| Test | Cargo | No test automation workflow configured | N/A |
+| Lint | Cargo fmt/clippy | No CI trigger configured | N/A |
+| Deploy | None | No deployment target in scope | N/A |
+| Monitor | None | No service monitoring target | N/A |
 
 ## 5. Test Automation Framework
 
@@ -49,16 +49,7 @@ Define automation procedures for the 2048 ML system development workflow.
 
 ## 8. Automation Scripts
 
-```rust
-pub struct AutomationConfig {
-    pub build_script: String,
-    pub test_script: String,
-    pub deploy_script: String,
-    pub monitor_script: String,
-    pub alert_script: String,
-    pub schedule: CronExpression,
-}
-```
+No `AutomationConfig` implementation or automation script exists; the struct above was illustrative.
 
 ## 9. Automation Benefits
 
@@ -87,7 +78,7 @@ pub struct AutomationConfig {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Automation remains pending.** Any proposed automation should match actual project workflows and avoid implying deployment or monitoring systems that do not exist.
 
 ## Later
 

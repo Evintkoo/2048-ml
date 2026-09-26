@@ -1,6 +1,6 @@
 # Plan 01 — Hyperparameter Search: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Versioned HyperOptX search is wired for RandomForest/ExtraTrees over grouped-CV accuracy; pruning and broader candidates remain unsupported.
 
 **Goal:** State the current implementation and evidence boundary for hyperparameter search.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats grouped-CV search integration as implemented with bounded scope.** The `train` command reads schema-v1 JSON or `--tune-trials`, searches `n_estimators` and `max_depth` for RandomForest or ExtraTrees, evaluates root grouped-CV accuracy, and saves the study. Trials run serially with pruning disabled. This is exploratory model tuning; no general AutoML claim follows.
 
 ## 1. Purpose
 
@@ -17,7 +17,7 @@ Define the hyperparameter search strategy for optimizing the 2048 game machine l
 
 ## 2. Search Overview
 
-The hyperparameter search explores the parameter space to find optimal configurations for the selected model.
+The search explores two integer parameters for the supported candidates. Its objective is grouped-CV accuracy, and it does not establish a globally optimal configuration.
 
 ```mermaid
 flowchart TD
@@ -144,15 +144,16 @@ flowchart LR
 
 ## 9. Next Steps
 
-The framework TPE optimizer API has a synthetic objective smoke check, but no 2048 trial currently trains a candidate or maps trial parameters into `TrainingConfig`. The pruning plan assumes intermediate scores, while `TrainEngine.fit` does not expose iterative reporting for the supported tree candidates; pruning must not be claimed until such a resource step exists.
+The root integration maps sampled `n_estimators` and `max_depth` into grouped-CV fitting for RandomForest and ExtraTrees. The optimizer objective returns a completed scalar score, so intermediate reporting/pruning is unavailable; broader model-specific parameters are not wired.
 
-1. Map supported, model-specific search parameters into `TrainingConfig`.
-2. Evaluate each trial on fixed game-group folds without touching final test games.
-3. Record trial config, seed, fold scores, elapsed time, and failures; only add pruning when trials provide comparable intermediate metrics.
+1. Preserve the exact search configuration, seed, grouped-CV score, and study artifact for each run.
+2. Expand to other candidates only with supported model-specific parameters and probability contracts.
+3. Add pruning only when trials expose comparable intermediate metrics.
 
 ## Implementation Record
 
-- No 2048 HyperOptX trial currently trains a candidate or maps sampled values to `TrainingConfig`. The existing framework API smoke check is not a model search; no best configuration is claimed.
+- HyperOptX trains grouped-CV objectives for RandomForest/ExtraTrees and applies the selected integer parameters to final fitting. It saves a study artifact and records configuration/seed data in the manifest.
+- Pruning is disabled because there is no intermediate-reporting hook. No best configuration is claimed beyond each exploratory run.
 
 ---
 
@@ -169,7 +170,7 @@ The framework TPE optimizer API has a synthetic objective smoke check, but no 20
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Search is limited to two integer parameters and two candidate families; trial failures currently surface through the command error path. Pruning, broader candidate coverage, and full performance studies remain future work.
 
 ## Later
 

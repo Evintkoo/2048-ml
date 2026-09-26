@@ -1,6 +1,6 @@
 # Plan 02 — Score as Feature: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: COMPLETE (2026-09-26).** Score contributes only the documented normalized input at index 21; action remains the sole target.
 
 **Goal:** State the current implementation and evidence boundary for score as feature.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats score-as-feature as implemented, not as a research finding.** `BoardStateMl::from_board` places `log10(score+1)/6` at index 21. The score is also retained in row metadata, while move count and score history stay out of the model input and `action` remains the target.
 
 ## 1. Concept
 
@@ -29,7 +29,7 @@ Score provides game-progression context as one feature of the canonical training
 // }
 // If history-based score features are ever explored, mark `Future Research — Not MVP, Not in Canonical 27`.
 
-fn normalize_score(score: u64) -> f64 { (score as f64 + 1.0).log10() / 6.0 }
+// Implemented in `src/state.rs` as `features[21]`.
 ```
 
 ## 3. Score in Feature Vector — idx 21 Only
@@ -74,7 +74,9 @@ let mean_game_score = benchmark_mean_score(&model, n_games); // downstream bench
 ## 8. Score Distribution Analysis
 
 ```rust
-pub fn analyze_score_distribution(scores: &[u64]) -> ScoreDistribution { /* mean/median/std/skew */ }
+// The root benchmark reporting path uses `evaluation::summarize_scores` for
+// mean, standard deviation, median, percentiles, threshold counts, and a CI.
+// Skew is not currently computed.
 ```
 
 ---

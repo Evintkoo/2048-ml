@@ -1,6 +1,6 @@
 # Plan 01 — Data Collection Strategy: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Checkpointed random-play collection and rollout relabeling exist; self-play, canonical corpus, post-split relabeling, and cache remain pending.
 
 **Goal:** State the current implementation and evidence boundary for data collection strategy.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the random collection path as implemented with corpus and protocol gaps.** The CLI records random trajectories, relabels each state using seeded rollouts, and writes checkpointed CSV, metadata, and manifest. There is no separate configurable self-play source or persistent label cache; relabeling currently occurs before any train/test split.
 
 ## 1. Purpose
 
@@ -25,11 +25,11 @@ Two supervised sources (no HumanPlay — out of scope) feed the single canonical
 | Random play | `03-random-play-data.md` | 5,000 | Wide state coverage |
 | Heuristic play | Benchmark-only | 0 training games | Separate rule-based baseline |
 
-All sources produce `(state_features[27], action: u8)` rows after mandatory `RolloutLabeler` relabeling (§8.3, 100 sims). Tile spawn is stochastic 90% `2` / 10% `4` per move.
+The implemented random source produces `(state_features[27], action: u8)` rows after `RolloutLabeler` relabeling (default 100 simulations per valid action). Self-play generation is not implemented. Tile spawn is stochastic 90% `2` / 10% `4` per move.
 
 ## 3. Collection Pipeline
 
-Configure → Run simulations (ChaCha8Rng seeded) → Record `(state, original_action)` → Relabel via `RolloutLabeler` (100 sims) → Validate → Store to `06-Data/03-Storage/` (canonical) with `data/` symlink.
+Configure → collect seeded random trajectories → rollout-relabel actions → checkpoint CSV and metadata parts → assemble, validate, and write manifest. The collector does not currently split first or cache labels.
 
 ## 4. Collection Volume
 
@@ -47,7 +47,7 @@ flowchart TB
     style Storage fill:#e8f5e9
 ```
 
-> **Canonical volumes (configurable):** Training data contains **20,000 games**: 15,000 self-play + 5,000 random-play. This yields **14,000 train / 3,000 validation / 3,000 test** after chronological game-level splitting. The heuristic agent is a separate benchmark baseline and contributes no training rows. Volumes are configurable, but the 70/15/15 split and game-level group integrity must be preserved. This section is the source of truth.
+> The 15,000 self-play + 5,000 random-play corpus and chronological split are planned targets, not current artifacts. Preserve whole-game grouping and record seeds, source type, configurations, and manifests for any collected data.
 
 ## 5. Theoretical Limit Estimation
 
@@ -64,7 +64,7 @@ To establish the performance ceiling for each model:
 - Completeness: all 27+action columns present, `NF==28`, no NaN/Inf.
 - Consistency: `game_id` groups intact for `GroupKFold`.
 - Validity: `action` ∈ {0,1,2,3} and in `valid_moves`; header regex `grid_0..row_worst,action`.
-- Balance: no class filter — keep heavy-tailed distribution; report class counts only.
+- Class distribution: retain observed frequencies and report them; do not rebalance without a separate protocol.
 
 ## 7. Data Pipeline Definition
 
@@ -151,7 +151,7 @@ impl RolloutLabeler {
 }
 ```
 
-**Why this matters**: The original agent's action at turn t was chosen by a random or heuristic agent, not by an oracle. Without rollout-based relabeling, the model learns to mimic suboptimal behavior. The rollout label approximates optimal play by evaluating long-term outcomes.
+**Why this matters**: The original agent's action at turn t was chosen by a random or heuristic agent, not by an oracle. Without rollout-based relabeling, the model learns to mimic suboptimal behavior. The rollout label is a stochastic heuristic target; it is not proven optimal play.
 
 ### 8.4 Action as Target Label (After Relabeling)
 
@@ -245,8 +245,8 @@ Files in `06-Data/01-Collection/`: `01-data-collection-strategy.md` (this hub), 
 
 ## Implementation Record
 
-- Random trajectories are rollout-relabeled through a seeded, fixed-thread collection command. The command writes the canonical training CSV, aligned provenance sidecar, and hash-bearing manifest.
-- The required 15k single-agent plus 5k random corpus, post-split rollout-cache protocol, and action distribution report have not been produced. The current collector labels before splitting and has no persistent label cache; the plan requires the split/cache ordering to be resolved before claiming the canonical experiment.
+- Random trajectories are rollout-relabeled through a seeded, fixed-thread, checkpointed command. It writes validated training CSV, aligned provenance sidecar, and hash-bearing manifest.
+- The 15k single-agent plus 5k random corpus, post-split label cache, and class/action distribution report have not been produced. The collector labels before splitting and has no persistent cache.
 
 ---
 
@@ -263,7 +263,7 @@ Files in `06-Data/01-Collection/`: `01-data-collection-strategy.md` (this hub), 
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- A 20k rollout-labeled corpus is estimated at roughly 103 hours under the measured configuration. It remains unscheduled pending explicit compute budget; checkpoint/resume support now exists. Resolve whether labeling must follow the train/test split before describing a canonical run.
 
 ## Later
 

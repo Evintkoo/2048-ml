@@ -1,6 +1,6 @@
 # Plan 03 — Model Architecture: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** The integration uses AutoML classical classifiers; five four-class probability candidates are verified, but performance and final selection remain open.
 
 **Goal:** State the current implementation and evidence boundary for model architecture.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the model interface as implemented and architecture selection as pending evidence.** The root policy requires 27 numeric features and four class probabilities. RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes pass the integration smoke. No model family is established as best.
 
 ## 1. Purpose
 
@@ -17,20 +17,19 @@ Define the architecture of the machine learning model used to predict optimal mo
 
 ## 2. Architecture Overview
 
-The model architecture is designed to consume 27-dimensional board state features and output 4 directional actions using tree-based ensemble methods.
+The classifier consumes the canonical 27-value vector and predicts one of four action labels. The verified candidates include both tree ensembles and non-tree models; no architecture winner has been selected.
 
 ### 2.1 Tree-Based Model Architecture
 
-Tree-based models are the primary architecture for this project. Each model type has a distinct structure optimized for tabular data:
+The root CLI currently exposes five candidates with four-class probability output. The table describes only that compatible set:
 
 | Model Type | Structure | Key Parameters |
 |------------|-----------|----------------|
 | RandomForest | Ensemble of decision trees | n_estimators, max_depth, min_samples_split |
-| GradientBoosting | Sequential additive trees | n_estimators, learning_rate, max_depth, subsample |
-| XGBoost | Regularized gradient boosting | n_estimators, max_depth, learning_rate, reg_lambda |
-| LightGBM | Leaf-wise growing trees | n_estimators, max_depth, num_leaves, learning_rate |
-| CatBoost | Ordered boosting with categorical handling | n_estimators, depth, learning_rate |
-| ExtraTrees | Randomized decision tree ensemble | n_estimators, max_depth, min_samples_split |
+| ExtraTrees | Randomized decision tree ensemble | n_estimators, max_depth |
+| AdaBoost | Boosted estimator | framework-specific parameters |
+| KNN | Nearest-neighbor classifier | neighbors and distance settings |
+| NaiveBayes | Probabilistic classifier | framework-specific parameters |
 
 ### 2.2 Feature Input Layer
 
@@ -89,6 +88,7 @@ flowchart TB
 ### 2.5 Tree-Based Model Architecture Details
 
 ```rust
+// Illustrative only: the root uses AutoML TrainingConfig, not this custom struct.
 pub struct TreeModelArchitecture {
     pub model_type: ModelType,           // GradientBoosting, RandomForest, XGBoost, etc.
     pub n_estimators: usize,             // Number of trees in the ensemble
@@ -141,7 +141,7 @@ let gb_config = TrainingConfig::new(TaskType::MultiClassification, "action")
 // TrainingConfig { early_stopping: true, early_stopping_rounds: 50, ..Default::default() }
 ```
 
-> **Keep §2.1 tree variants table** as the canonical reference for which `ModelType` to pass to `with_model`. The `TrainingConfig` snippet above is the actionable instantiation.
+> The root CLI accepts `random_forest`, `extra_trees`, `adaboost`, `knn`, and `naive_bayes`. The AutoML `TrainingConfig` API is the actual configuration interface; the custom struct is illustrative only.
 
 ## 3. Architecture Files Location
 
@@ -163,8 +163,8 @@ flowchart LR
 
 ## Implementation Record
 
-- The implementation uses pinned AutoML classical models. Candidate API validation found only five candidates that return the required four action probabilities in this integration. Architecture and hyperparameter examples for unsupported candidates remain references and are not live choices.
-- No neural-network architecture is present. Candidate performance has not been compared on the required data.
+- The implementation uses pinned AutoML classical models and the root CLI checks for exactly four probability columns before saving. Supported candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes.
+- HyperOptX search currently supports only RandomForest and ExtraTrees. No neural-network architecture is present; candidate performance remains unmeasured.
 
 ---
 
@@ -181,7 +181,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Compare verified candidates on an adequate game-grouped dataset before choosing the model architecture. Preserve dependency version, configuration, seed, and evaluation outputs.
 
 ## Later
 

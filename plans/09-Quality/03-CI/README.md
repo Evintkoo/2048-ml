@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-ci-pipeline](01-ci-pipeline.md) | CI Pipeline | PLANNED |
-| [02-automation](02-automation.md) | Automation | PLANNED |
-| [03-testing-automation](03-testing-automation.md) | Testing Automation | PLANNED |
+| [01-ci-pipeline](01-ci-pipeline.md) | CI Pipeline | PARTIAL — no workflow configured |
+| [02-automation](02-automation.md) | Automation | PARTIAL — no automation scripts |
+| [03-testing-automation](03-testing-automation.md) | Testing Automation | PARTIAL — manual Cargo tests only |
 
 ## Reading paths
 

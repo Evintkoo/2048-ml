@@ -1,6 +1,6 @@
 # Plan 01 — AutoML Configuration: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Optional HyperOptX tuning now runs grouped CV for RandomForest/ExtraTrees; tracked config artifacts and pruning integration remain pending.
+> **Status: PARTIAL.** Optional HyperOptX tuning runs grouped CV for RandomForest/ExtraTrees with a versioned JSON search contract and training manifest; pruner integration remains pending because the pinned optimizer exposes no intermediate reporting hook.
 
 **Goal:** State the current implementation and evidence boundary for automl configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** Optional TPE tuning is now available through `train --tune-trials N` for RandomForest and ExtraTrees. Each trial evaluates grouped-CV accuracy on development games, and the best trial's parameters are used for the final fit; the study is saved beside the model as `<model-stem>.study.json`. Tuning is opt-in and does not access the reserved chronological test tail. The optimizer runs serially and does not integrate its pruner API. A sibling model manifest now records input digests, AutoML pin, component seeds, selected parameters, and study path; versioned input configuration and full analysis provenance remain pending.
+**This plan treats its subject as partial or pending work, not as a research finding.** Optional TPE tuning is available through `train --tune-trials N` or `train --hyperopt-config config/hyperopt-search.example.json` for RandomForest and ExtraTrees. The JSON input has schema version 1, validates its trial count and supported integer ranges, and is recorded with its digest in a versioned sibling training manifest. Each trial evaluates grouped-CV accuracy on development games, and the best trial's parameters are used for the final fit; the study is saved beside the model as `<model-stem>.study.json`. Tuning does not access the reserved chronological test tail. The optimizer runs serially and does not integrate its standalone pruner API. This wiring is not research evidence; the synthetic smoke and local AutoML reproducibility fixes do not establish general framework performance.
 
 ## 1. Overview
 
@@ -93,6 +93,8 @@ cargo run -- train --data data/raw/random_play.csv \
   --cv-folds 5 --tune-trials 20 --seed 42 --output models/random_forest.json
 ```
 
+Alternatively, use the tracked, versioned search contract with `--hyperopt-config config/hyperopt-search.example.json`; `--tune-trials` and `--hyperopt-config` are mutually exclusive. Search input fields and limits are defined in `src/hyperopt_config.rs`.
+
 Wiring smoke (2026-09-24): two HyperOptX trials on a temporary nine-game synthetic CSV completed, reserved the final two games, saved `policy.study.json`, and fit the selected model. The synthetic score is only a code-path check; it is not model or framework evidence. The existing real-candidate smoke indicates intermittent RandomForest fit reproducibility, so actual tuning results remain exploratory pending resolution.
 
 The trial score is grouped-CV row accuracy, not held-out game score. Results remain exploratory while AutoML repeated-fit reproducibility is unresolved; the current source audit found a plausible nondeterministic decision-tree leaf-tie path documented in [the framework architecture record](../01-Project/04-framework-architecture.md).
@@ -153,8 +155,8 @@ All configuration changes will be tracked via git. Configuration files will incl
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Changed example to a verified model and corrected SearchSpace builder; optimizer/pruner integration and tracked config artifacts remain pending. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** Changed example to a verified model and corrected SearchSpace builder. The tracked search contract and manifest schema are implemented; the pinned optimizer's pruning integration remains unavailable. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 
-- **Add a versioned configuration/experiment manifest and supported pruner wiring after the framework optimizer contract is clarified.** Preserve the recorded trial space, seed, dataset digest, submodule revision, and analysis output for every reportable run.
+- **Add supported pruner wiring after the framework optimizer contract is clarified.** Preserve the recorded trial space, seed, dataset digest, submodule revision, and analysis output for every reportable run.

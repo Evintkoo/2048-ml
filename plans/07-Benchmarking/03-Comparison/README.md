@@ -6,10 +6,10 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-model-comparison](01-model-comparison.md) | Model Comparison | PLANNED |
-| [02-algorithm-comparison](02-algorithm-comparison.md) | Algorithm Comparison | PLANNED |
-| [03-automl-benchmark](03-automl-benchmark.md) | Rust-Native AutoML Benchmark | PLANNED |
-| [04-framework-validation](04-framework-validation.md) | Rust-Native AutoML Framework Validation | PLANNED |
+| [01-model-comparison](01-model-comparison.md) | Model Comparison | PARTIAL — held-out model matrix pending |
+| [02-algorithm-comparison](02-algorithm-comparison.md) | Algorithm Comparison | PARTIAL — three-way evaluation pending |
+| [03-automl-benchmark](03-automl-benchmark.md) | Rust-Native AutoML Benchmark | PARTIAL — standard-dataset study pending |
+| [04-framework-validation](04-framework-validation.md) | Rust-Native AutoML Framework Validation | PARTIAL — named datasets/baselines pending |
 
 ## Reading paths
 

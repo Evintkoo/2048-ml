@@ -1,6 +1,6 @@
 # Plan 03 — Game Testing: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Game-engine unit tests cover core rules and seeded randomness; edge-case matrix is incomplete and was not rerun in this pass.
 
 **Goal:** State the current implementation and evidence boundary for game testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,12 +9,12 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**Existing game tests cover many mechanics but do not implement every row below.** In particular, score-overflow atomicity and formal maximum-tile behavior remain unverified; tests were not run during this pass.
 
 > **Distinct from `02-Validation/02-game-validation.md`:** Testing = automated `cargo test` (this file). Validation = manual audit + property tests (that file).
 
 ## 1. Purpose
-Automated `cargo test` validation of 4×4 rules, spawns, and score tracking on fixed seeds. 15 cases, no manual steps.
+Automated unit coverage for 4×4 rules, spawns, and score tracking. The matrix is a coverage map, not a claim that every row has a test.
 
 ## 2. Matrix (15 Cases)
 
@@ -36,36 +36,23 @@ Automated `cargo test` validation of 4×4 rules, spawns, and score tracking on f
 | 14 | corner slide | `[0,0,0,2]` → Left | `[2,0,0,0]` | 0 | 42 |
 | 15 | multi-row merges | two rows each mergable | both rows merge independently | sum deltas | 42 |
 
-Implemented under `src/game_engine/mod.rs`: slide/no-double-merge cases; all directions; no-op counter/score; terminal and full-with-merge boards; seeded spawn reproducibility; 10,000-spawn 90/10 frequency check; invalid actions/tiles; corner slide; and 500 seeded random boards × 4 directions checking `would_change` against `execute_move`.
+Existing tests in `src/game_engine/mod.rs` cover merge rules, all directions, no-op/terminal cases, seeded spawn behavior, spawn-frequency sampling, invalid actions/tiles, corner coordinates, and randomized `would_change` consistency. The sampling replicate count and exact assertions should be checked in source when rerunning; score-overflow coverage is absent.
 
 ## 3. Assertions
 
-```rust
-#[test] fn double_merge() {
-  let (board, delta) = engine.execute_move(2); // Left
-  assert_eq!(board.row(0), [4,8,0,0]);
-  assert_eq!(delta, 12);
-  assert!(engine.score_tracker().is_monotonic());
-}
-```
+Use existing `RawBoardState`, `GameSimulator`, and `ScoreTracker` APIs; the earlier pseudocode used APIs not present in the current source.
 
 ## 4. Metrics
 
-```rust
-pub struct GameTestMetrics { pub n_games: usize, pub rules_passed: usize, pub score_accuracy: f64 }
-```
+No aggregate `GameTestMetrics` reporter is implemented; test assertions are unit-level.
 
 ## 5. Run
 
-```bash
-cargo test --test game -- --nocapture   # 20+ tests (15 matrix + 5 property) ~5 min
-```
-
-Cross-ref `09-Quality/02-Validation/02-game-validation.md` for manual audit checklist; do not duplicate that content here.
+There is no separate `game` test target; game tests live within the library module. This pass did not execute tests. Cross-ref `09-Quality/02-Validation/02-game-validation.md` for manual audit checklist; do not duplicate that content here.
 
 ## Implementation Record
 
-- Root game tests implement most listed rule cases plus randomized directional validity and 10,000 spawn probability checks. Score overflow/no-partial-update has not been exercised by the current test matrix; the configured integration test target is not separately defined.
+- Game-engine tests cover most core rules and randomness behavior. The separate test target and score-overflow case described in earlier drafts do not exist. This pass did not run tests.
 
 ---
 
@@ -82,7 +69,7 @@ Cross-ref `09-Quality/02-Validation/02-game-validation.md` for manual audit chec
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Current game-test status is unverified in this pass.** Re-run the library suite before release and add explicit overflow/boundary coverage only where the accepted input contract is defined.
 
 ## Later
 

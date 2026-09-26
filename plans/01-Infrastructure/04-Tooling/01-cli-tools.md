@@ -70,16 +70,15 @@ automl serve --port 8080  # out-of-scope per initial-plan
 ### 2.1 Game Simulation
 
 ```bash
-cargo run -- game-engine simulate --seed 42 --model model.bin
-cargo run -- game-engine simulate --n-games 1000 --model model.bin --output results/
+cargo run -- game-engine simulate --seed 42 --n-games 10
 ```
 
 ### 2.2 Data Collection
 
 ```bash
-cargo run -- data-collector collect --n-games 10000 --output data/raw/
-cargo run -- data-collector preprocess --input data/raw/ --output data/processed/
-cargo run -- data-collector validate --input data/processed/
+cargo run -- data-collector collect --n-games 10000 --output data/raw/policy.csv
+cargo run -- data-collector preprocess --input data/raw/policy.csv
+cargo run -- data-collector validate --input data/raw/policy.csv
 ```
 
 The implemented collector takes a CSV output file, not a directory. It writes a metadata sidecar and manifest next to the CSV. `preprocess` currently validates deterministic, already-encoded features; it does not accept an output argument.
@@ -89,6 +88,8 @@ cargo run -- data-collector collect --n-games 20 --rollouts 100 --output data/ra
 cargo run -- data-collector validate --input data/raw/random_play.csv
 cargo run -- data-collector split --input data/raw/random_play.csv --metadata data/raw/random_play.metadata.csv --output-dir data/processed/splits
 cargo run -- train --data data/raw/random_play.csv --metadata data/raw/random_play.metadata.csv --model random_forest --cv-folds 5 --seed 42 --output models/policy.json
+# Optional: supply the versioned HyperOptX search JSON instead of --tune-trials N.
+cargo run -- train --data data/raw/random_play.csv --metadata data/raw/random_play.metadata.csv --model random_forest --cv-folds 5 --hyperopt-config config/hyperopt-search.example.json --seed 42 --output models/policy-tuned.json
 ```
 
 ### 2.3 Benchmark
@@ -104,7 +105,7 @@ cargo run -- benchmark report results/policy.csv results/random.csv --output res
 
 ## 3. CLI Configuration
 
-All CLI tools will use `clap` for argument parsing with structured configuration files.
+The root CLI uses `clap` arguments. General training YAML loading is not implemented; the optional HyperOptX search settings can be supplied with `--hyperopt-config` using the schema-v1 JSON contract. `--tune-trials N` is the shorthand and conflicts with `--hyperopt-config`.
 
 ## 4. CLI Output Formats
 

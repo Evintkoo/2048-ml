@@ -1,6 +1,6 @@
 # Plan 03 — State Encoding: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Canonical CSV and metadata encoding are implemented; Parquet remains unsupported and feature-range policy awaits #034.
 
 **Goal:** State the current implementation and evidence boundary for state encoding.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats CSV encoding as implemented with Parquet and one feature-range contract pending.** Root CSV storage uses the ordered 27-feature header plus `action`, with `row_index,game_id,move_index,score` in a separate aligned metadata file. The documented `/32768` scale can exceed one for larger accepted board tiles; the feature ticket #034 owns that decision.
 
-> **Distinct focus:** This file = **encoding for storage** (Parquet/CSV), `state-vector.md` = creation. Canonical impl in `04-Encoding/01-state-vector.md:31` `create_state_vector` — do not duplicate impl here.
+> **Distinct focus:** This file covers storage encoding; `04-Encoding/01-state-vector.md` covers creation. The current implementation is in `src/data_pipeline.rs` and `src/state.rs`.
 
 ## 1. Canonical Header (27 + action)
 
@@ -25,16 +25,16 @@ grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,gr
 
 | Column | automl dtype | Range | Role |
 |--------|--------------|-------|------|
-| `grid_0..15` + 11 derived | Float64 | [0,1] | feature |
-| `score_normalized` idx21 | Float64 | [0,1] `log10/6` | feature (never target) |
+| `grid_0..15` + 11 derived | Float64 | nominally [0,1] at the documented tile scale | feature |
+| `score_normalized` idx21 | Float64 | nonnegative `log10(score+1)/6`; may exceed 1 | feature (never target) |
 | `action` | UInt8 | 0..3 | **only label** `TaskType::MultiClassification` |
 
 `TrainingConfig::new(TaskType::MultiClassification, "action")` — see `automl/src/training/config.rs:11`.
 
 ## 3. Creation vs Storage
 
-- **Create:** `04-Encoding/01-state-vector.md:31` `create_state_vector(board) -> [f64;27]` (canonical, with batch + validation).
-- **Store:** this file — `polars` DataFrame `27 + 1` → Parquet/CSV. Load with `read_parquet`.
+- **Create:** `BoardStateMl::from_board` in `src/state.rs` → `[f64;27]`.
+- **Store:** root writes the `27 + 1` canonical CSV and row-aligned metadata sidecar. Parquet creation and `read_parquet` are not implemented.
 
 ```rust
 fn create_dataframe(states: &[[f64;27]], actions: &[u8]) -> DataFrame { /* 27 feats + action */ }
@@ -43,15 +43,14 @@ fn create_dataframe(states: &[[f64;27]], actions: &[u8]) -> DataFrame { /* 27 fe
 ## 4. Validation
 
 ```rust
-pub fn validate_encoding(v: &[f64;27]) -> Result<()> {
-    if !v.iter().all(|x| x.is_finite() && (0.0..=1.0).contains(x)) { return Err(..); } Ok(())
-}
+// Current validators require finite, nonnegative values; all features except
+// score index 21 must also be <= 1. The >32768 tile-scale exception is pending #034.
 ```
 
 ## Implementation Record
 
 - The training CSV uses the exact ordered 27-feature header plus `action` (28 columns). Game ID, move index, and raw score are stored in a separate row-aligned metadata CSV to preserve group provenance without adding model features.
-- The CSV reader checks header, width, finite feature values, ranges, and action labels. The plan's Parquet storage path is not implemented; CSV is the current supported format.
+- The CSV reader checks header, width, finite/nonnegative feature values, upper ranges except for feature index 21, and action labels. The plan's Parquet storage path is not implemented; CSV is the current supported format.
 
 ---
 

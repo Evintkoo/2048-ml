@@ -1,6 +1,6 @@
 # Plan 02 — Glossary: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Terms are compiled, but several definitions need qualifiers and baseline scores must be tied to their local protocol.
 
 **Goal:** State the current implementation and evidence boundary for glossary.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This glossary is descriptive documentation.** It does not imply that a concept has been measured, proved, or implemented. Experimental results are protocol-specific.
 
 ## 1. Purpose
 
@@ -43,19 +43,19 @@ mindmap
 | Move | Slide operation (up/down/left/right) |
 | Score | Sum of all merge values during a game |
 | Game Over | Board is full with no valid moves |
-| Heuristic Baseline | Agent using weighted evaluation function (mean score ~512) |
-| Random Baseline | Agent selecting moves uniformly at random (mean score ~128) |
+| Heuristic Baseline | Local policy using heuristic board evaluation; measured mean is protocol-specific (8,056.23 in the recorded 10k action-frequency study) |
+| Random Baseline | Agent selecting a legal move uniformly; measured mean is protocol-specific (1,094.12 in the recorded 10k action-frequency study) |
 | Case-study winner | Model with the highest held-out mean score under the declared 2048 protocol; not a globally optimal policy |
 
 ## 4. ML Terminology
 
 | Term | Definition |
 |------|------------|
-| Model | Trained supervised classifier (e.g., Random Forest, Gradient Boosting, XGBoost) |
+| Model | Trained supervised classifier; root four-action integration supports RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes |
 | Training | Model learning process from labeled data |
 | Inference | Model prediction on new game states |
 | Features | Input data representation (27-dimensional feature vector) |
-| Labels | Target output values (optimal action determined by rollout simulation) |
+| Labels | Target action selected by rollout mean score; a finite-simulation proxy, not a proven optimal action |
 | Loss | Prediction error metric (cross-entropy) |
 | Convergence | Training stabilization (diminishing returns pattern) |
 | Hyperparameters | Configuration parameters tuned by HyperOptX |
@@ -68,23 +68,23 @@ mindmap
 | TrainEngine | Core training component from Evintkoo/automl |
 | HyperOptX | Hyperparameter optimization engine (TPE sampler) |
 | TrainingConfig | Model configuration settings |
-| ModelType | Architecture specification (RF, GB, XGBoost, etc.) |
+| ModelType | AutoML model selector; root integration accepts five tested four-class candidates |
 | SearchSpace | Range of hyperparameters for optimization |
-| CrossValidator | `automl::training::CrossValidator` with `CVStrategy::GroupKFold { n_splits:5 }` on `game_id` (verified in `automl/src/training/cross_validation.rs` — not temporal; TimeSeriesSplit exists but is not canonical for i.i.d. games) |
+| CrossValidator | AutoML splitter used by the project `src/training.rs` helper to keep game groups out of both sides of a fold |
 
 ## 6. Evaluation Terms
 
 | Term | Definition |
 |------|------------|
 | Benchmark | Standard for comparison (heuristic agent, random agent) |
-| Baseline | Reference point for evaluation (random ~128, heuristic ~512) |
+| Baseline | Reference policy measured under a declared, reproducible protocol |
 | Metric | Quantitative measurement (mean score, median score, std dev) |
-| Significance | Statistical importance (p < 0.05 after Bonferroni correction) |
+| Statistical significance | Decision under a declared test, comparison family, and error criterion; no universal project threshold is fixed here |
 | Reproducibility | Consistent results with fixed seed |
-| Winner Determination | Model ranked #1 by mean score across ≥10,000 games |
+| Winner Determination | Protocol-specific comparison; no trained-policy winner has been established |
 | Mean Score | Primary 2048 case-study metric; framework validation uses task-appropriate quality and resource metrics |
 | Bootstrap CI | 95% confidence interval via resampling |
-| Effect Size | Magnitude of difference (Cohen's d ≥ 0.5) |
+| Effect Size | Magnitude of difference; Cohen's d helper exists, with no automatic project cutoff |
 
 ## 7. Statistical Terms
 
@@ -94,19 +94,19 @@ mindmap
 | Confidence Interval | Range of true value estimate (95% bootstrap CI) |
 | Effect Size | Magnitude of difference (Cohen's d) |
 | Standard Deviation | Data spread measure |
-| Wilcoxon | Paired non-parametric significance test |
+| Wilcoxon | Paired rank test; not implemented in current comparison helpers |
 | Mann-Whitney U | Two-group non-parametric comparison |
-| Kruskal-Wallis | Multi-group non-parametric comparison |
+| Kruskal-Wallis | Multi-group rank test; not implemented in current comparison helpers |
 | Bonferroni | Multiple comparison correction |
 | Holm-Bonferroni | Less conservative multiple comparison correction |
-| Power | Probability of detecting a true effect (≥0.8) |
+| Power | Probability of detecting a specified effect under assumptions; no project power analysis has been completed |
 
 ## 8. Theoretical Terms
 
 | Term | Definition |
 |------|------------|
-| POMDP | Partially observable Markov decision process |
-| MDP | Markov decision process |
+| MDP | Markov decision process; the simulator exposes the board state and randomizes spawns |
+| POMDP | Partially observable Markov decision process; not the current 2048 formulation |
 | PSPACE-hard | Computationally intractable problem class |
 | Markov Blanket | Minimal feature subset sufficient for prediction |
 | PAC-learning | Probably approximately correct learning framework |
@@ -132,7 +132,7 @@ mindmap
 
 ```mermaid
 graph TD
-    A[2048 Game] -->|goal: maximize mean score| B[Winner by Ranking]
+    A[2048 case study] -->|measure policy outcomes| B[Protocol-specific comparison]
     B -->|achieved by| C[ML Model]
     C -->|trained by| D[automl]
     D -->|uses| E[TrainEngine]
@@ -141,23 +141,17 @@ graph TD
     G -->|confirmed by| H[Bootstrap CI]
     H -->|ranked by| I[Mean Score]
     
-    style B fill:#9f9,stroke:#333
-    style I fill:#9f9,stroke:#333
+    style B fill:#9f9,stroke:#363
+    style I fill:#9f9,stroke:#363
 ```
 
 ## 11. Reference to Theoretical Framework
 
-For detailed theoretical foundations, see `00-theoretical-framework.md` which includes:
-- POMDP formulation of 2048
-- PSPACE-hardness proof
-- Markov blanket analysis
-- PAC-learning bounds
-- Information-theoretic analysis
-- Game-theoretic framing
+For the current theory outline, see `00-theoretical-framework.md`. Its appendix references are not validated formal results; the game is described as fully observed, and PSPACE, feature-sufficiency, PAC, and entropy claims are excluded pending proof and source review.
 
 ## Implementation Record
 
-- Glossary is a documentation aid only. Terms that imply established PSPACE, Markov-blanket, PAC, or information-theoretic results must remain qualified as conjectural or contextual pending proof/source verification.
+- Glossary is a documentation aid only. Corrected baseline values to the recorded local protocol, described labels as rollout proxies, and marked unimplemented tests and unproven theories as such.
 
 ---
 
@@ -174,7 +168,7 @@ For detailed theoretical foundations, see `00-theoretical-framework.md` which in
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Definitions remain bounded by source and study evidence.** Update terms when the implemented API or protocol changes; do not use glossary shorthand as an empirical claim.
 
 ## Later
 

@@ -1,6 +1,6 @@
 # Plan 02 — Algorithm Comparison: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Random/heuristic/model score runners and comparison statistics exist; the three-way study has not been run.
 
 **Goal:** State the current implementation and evidence boundary for algorithm comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the comparison mechanism as available and outcomes as pending.** Random and heuristic baselines can be run with a common seed derivation, and saved models can be benchmarked. No trained-model three-way held-out result exists; baseline figures below are unverified planning estimates.
 
 ## 1. Purpose
 
@@ -19,15 +19,15 @@ Compare exactly **3 groups** on the same 10k-game benchmark. No Greedy / Search-
 
 | Group | Agent | Expected mean | Source |
 |-------|-------|---------------|--------|
-| Random | `RandomAgent` (ChaCha8Rng) | TBD (plan estimate ~128) | `06-Data/01-Collection/03-random-play-data.md` |
-| Heuristic | Rule-based (monotonicity/corner/empty) | TBD (plan estimate ~512) | Heuristic baseline |
+| Random | uniform legal move policy | Not measured here | seeded baseline runner |
+| Heuristic | rule-based policy | Not measured here | seeded baseline runner |
 
-The ~128/~512 figures are unverified targets in the plans. A 20-game implementation smoke run is not used to replace those with research estimates; populate this comparison only from the declared held-out benchmark protocol.
-| automl-ML | Best `ModelType` from `01-model-comparison.md` | TBD | Supervised 27→action |
+Do not substitute expected values or a small smoke run for retained benchmark results.
+| AutoML model | selected four-class candidate | Not measured | saved-model benchmark runner |
 
 ## 3. Protocol
 
-Each group: **10,000 games, same seed sequence**, same engine. Compare score distributions via the pre-registered Mann-Whitney U protocol with Holm correction. Report mean/median/std/p-value/Cohen's d/CI. Ranking by mean score only.
+The proposed protocol uses the same declared game-seed set and simulator for each policy; the target game count must fit a documented budget. Compare score distributions under a predeclared procedure and report uncertainty. No results are available.
 
 ```rust
 pub struct AlgorithmComparison {
@@ -42,7 +42,7 @@ pub struct AlgorithmComparison {
 
 ## Implementation Record
 
-- Random and heuristic baselines and model benchmark commands exist, with common seeded engine and comparison support. The required 10k-per-group three-way comparison remains pending; target means are not evidence.
+- Random and heuristic baselines and model benchmark commands exist with seedable simulator and comparison support. The proposed 10k-per-group three-way comparison remains pending; target means are not results.
 
 ---
 
@@ -59,7 +59,7 @@ pub struct AlgorithmComparison {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Run after training and model-selection steps produce an eligible policy. Record per-game scores, seed set, simulator settings, manifests, and analysis output.
 
 ## Later
 

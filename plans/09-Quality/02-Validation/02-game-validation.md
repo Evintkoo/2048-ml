@@ -1,6 +1,6 @@
 # Plan 02 — Game Validation: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Source-level game rules and automated tests are present; no independent oracle-based validation report or continuous validation workflow exists.
 
 **Goal:** State the current implementation and evidence boundary for game validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,11 +9,11 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**Implementation tests support the internal rules, but do not constitute independent validation against a separate game oracle.** Edge behavior outside the tested inputs and automated CI execution remain unverified.
 
 ## 1. Purpose
 
-Define game validation procedures to ensure the 2048 game engine and rules are correct.
+Define validation procedures for the implemented game rules and distinguish unit tests from independent oracle checks.
 
 ## 2. Game Validation Framework
 
@@ -64,7 +64,7 @@ graph TD
     E --> F[New Tile Spawns]
     F --> G[Game Over Detected]
     
-    style G fill:#9f9,stroke:#333
+    style G fill:#9f9,stroke:#363
 ```
 
 ## 4. Validation Test Matrix
@@ -124,16 +124,7 @@ flowchart LR
 
 ## 8. Validation Metrics
 
-```rust
-pub struct GameValidationResult {
-    pub rules_passed: usize,
-    pub rules_failed: usize,
-    pub edge_cases_passed: usize,
-    pub edge_cases_failed: usize,
-    pub overall_score: f64,
-    pub validation_date: DateTime<Utc>,
-}
-```
+No aggregate validation score or report schema is implemented. Record concrete fixtures, expected outcomes, source of expected result, and observed result if an independent validation is added.
 
 ## 9. Validation Reporting
 
@@ -148,15 +139,11 @@ graph TD
 
 ## 10. Continuous Validation
 
-Game validation runs automatically:
-- On every code change
-- Before each release
-- After each configuration update
-- As part of CI pipeline
+No CI workflow is configured. Game unit tests can be included in a future CI workflow; automatic execution is not currently established.
 
 ## Implementation Record
 
-The root game engine has automated tests for merge/scoring rules, no-op behavior, game-over detection, tile validation, deterministic spawning and spawn frequency, directional movement, and 500 seeded random boards × all four actions. These are implementation tests, not an independent manual audit. The 90/10 frequency test checks 10,000 spawns against a broad three-sigma interval.
+Root game-engine tests cover merge/scoring rules, no-op and terminal behavior, tile validation, deterministic spawning and a finite spawn-frequency check, directional movement, and randomized `would_change` consistency. Expected results mostly come from internal invariants; no separate reference engine or oracle comparison report exists. Tests were not run during this pass.
 
 ---
 
@@ -173,7 +160,7 @@ The root game engine has automated tests for merge/scoring rules, no-op behavior
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Independent game validation remains pending.** Add a separate oracle or hand-verified fixture source for claims requiring external correctness evidence; retain inputs and outcomes.
 
 ## Later
 

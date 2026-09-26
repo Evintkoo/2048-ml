@@ -1,6 +1,6 @@
 # Plan 01 — Scoring Rules: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** Merge values, positions, per-turn gains, and accumulated score are tracked; root suite passes.
+> **Status: DONE (2026-09-26).** Merge values, positions, per-turn gains, and accumulated score are tracked; root suite passes.
 
 **Goal:** State the current implementation and evidence boundary for scoring rules.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -15,7 +15,7 @@
 
 ## 1. Score Definition
 
-Score = cumulative sum of all tile-merge values in a game. Flat `u64` on `Board { grid:[u32;16], score:u64 }`.
+Score = cumulative sum of all tile-merge values in a game. It is stored as `u64` on `RawBoardState` alongside the grid and game metadata.
 
 ## 2. Calculation
 
@@ -70,16 +70,7 @@ pub struct GameFeatures { // excerpt — full 27-dim in 03-State/01-Board/01-boa
 
 Normalization is for the **feature** `BoardStateML::to_array()[21]`, not a target:
 
-```rust
-/// Canonical: log10(score+1)/6.0 — 6.0 = log10(1_000_000), max ~1M score maps to ~1.0
-/// Stored as BoardStateML::to_array()[21] — see 03-State/01-Board/01-board-state.md §4.1
-pub fn normalize_score(score: u64) -> f64 {
-    (score as f64 + 1.0).log10() / 6.0
-}
-pub fn denormalize_score(n: f64) -> u64 {
-    (10f64.powf(n * 6.0) - 1.0) as u64 // display/analysis only
-}
-```
+Implemented in `src/state.rs` as `(board.score as f64 + 1.0).log10() / 6.0`, stored at feature index 21. No inverse transform is used in the training path.
 
 > Tie-in: 27-dim vector is `[0..16) grid/32768, 16 empty_count, 17 max_tile_log, 18 monotonicity, 19 smoothness, 20 merges_available, **21 score_normalized**, 22 adjacency_merge_score, 23 corner_max, 24 edge_tiles_occupied, 25 col_worst, 26 row_worst]` — canonical in `03-State/01-Board/01-board-state.md`.
 

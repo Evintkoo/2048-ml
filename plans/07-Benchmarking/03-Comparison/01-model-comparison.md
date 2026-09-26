@@ -1,6 +1,6 @@
 # Plan 01 — Model Comparison: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Candidate and comparison tooling are documented; the five-policy held-out game matrix remains unrun.
 
 **Goal:** State the current implementation and evidence boundary for model comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats model compatibility and score comparison support as implemented, with model-ranking evidence pending.** The verified four-class probability candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. Score files can be compared statistically, but no common held-out 10k-game matrix has been produced.
 
 ## 1. Purpose
 
@@ -32,7 +32,7 @@ Add rows only for engines actually exposed by `automl` — no invented architect
 
 ## 3. Protocol — Identical Conditions
 
-The canonical final test is 10,000 held-out game seeds per policy. Training uses the same chronological game-level train/validation/test split and grouped CV protocol. The `benchmark compare` command pairs rows by identical seeds and uses a two-sided exact sign test for matched seed runs; otherwise it uses Mann-Whitney U. It reports Holm-adjusted p-values, bootstrap mean-difference intervals, and Cohen's d. The paired sign test is not Wilcoxon and ignores tied outcomes; the exact test choice and its limitation are recorded in the output manifest. Do not describe held-out benchmark games as the chronological data split itself.
+The proposed final test uses a predeclared held-out game-seed set. The 10,000-game target is a plan choice, not a completed run or power guarantee. Training and test games must remain separate. The `benchmark compare` command pairs rows by identical seeds and uses a two-sided exact sign test for matched seed runs; otherwise it uses Mann-Whitney U. It reports Holm-adjusted p-values, bootstrap mean-difference intervals, and Cohen's d. The paired sign test is not Wilcoxon and ignores tied outcomes; the exact test choice and its limitation are recorded in the output manifest. Do not describe held-out benchmark games as the chronological data split itself.
 
 ## 4. Performance Matrix — To Be Filled Post-Training
 
@@ -52,7 +52,7 @@ Expected baseline figures elsewhere in the plans are targets only. An initial 20
 
 ## Implementation Record
 
-- CLI has the required model/agent score comparison and statistical primitives. The 10k held-out matrix remains unrun and all rows correctly remain TBD.
+- CLI has model/agent score comparison and statistical primitives. The proposed 10k held-out matrix remains unrun; all result rows remain unmeasured.
 
 ---
 
@@ -69,7 +69,7 @@ Expected baseline figures elsewhere in the plans are targets only. An initial 20
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Execute only after a trained model and held-out seed protocol exist. Retain identical environment settings, per-game outcomes, and input manifests for every policy.
 
 ## Later
 

@@ -1,6 +1,6 @@
 # Plan 03 — Multi-Game Simulation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-25).** Fixed-thread collection, metadata, and manifests exist. The 10k random and heuristic baselines and game-cluster frequency intervals are recorded; checkpoint/resume and live progress reporting remain incomplete.
+> **Status: PARTIAL (2026-09-26).** Fixed-thread collection, metadata, manifests, batched checkpoints/resume, and live progress are implemented. Plan-scale rollout collection and report validation remain pending.
 
 **Goal:** State the current implementation and evidence boundary for multi-game simulation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,13 +9,13 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The 10k random and heuristic baselines and whole-game bootstrap frequency intervals are complete for the measured configuration. The rollout-labeled corpus still lacks checkpoint/resume and live progress reporting, so collection is not complete.
+**This plan treats its subject as partial or pending work, not as a research finding.** The 10k random and heuristic baselines and whole-game bootstrap frequency intervals are complete for the measured configuration. Rollout collection now checkpoints bounded game batches and can resume after interruption; no plan-scale rollout corpus has been collected yet.
 
 > **Sample size canonical: 10k games minimum** for benchmarking (per `01-Infrastructure/01-Project/01-project-overview.md` §8 Tiers + `01-simulation-engine.md` §7 `SimulationConfig.n_games:10000`). Supervised only: `GameDataset { states:[f64;27], actions:u8, scores:u64 }` — **no `rewards`**.
 
 ## 1. Purpose
 
-Run N games sequentially/parallel to collect sufficient supervised rows for automl `TaskType::MultiClassification`. Headless only; results feed `06-Data/` Parquet/CSV.
+Run N games sequentially/parallel to collect sufficient supervised rows for automl `TaskType::MultiClassification`. Headless only; the root collector writes CSV plus a metadata sidecar.
 
 ## 2. Game Sequencing
 
@@ -90,7 +90,7 @@ impl GameDataset {
 ## 5. Data Collection Pipeline
 
 ```
-Game(i, seed.wrapping_add(i)) → record [f64;27] + u8 per valid move → GameDataset → Parquet/CSV → automl TrainEngine
+Game(i, seed.wrapping_add(i)) → record [f64;27] + u8 per valid move → checkpointed CSV + metadata → automl TrainEngine
 ```
 
 > Cross-ref loops: `01-simulation-engine.md` §4 (`SimulationBatch`). Do not re-define `GameSimulator` here.
@@ -107,6 +107,8 @@ Game(i, seed.wrapping_add(i)) → record [f64;27] + u8 per valid move → GameDa
 
 ## 7. Progress Tracking
 
+The root collector displays completed games, elapsed time, and estimated time remaining. Updates arrive as each parallel game finishes.
+
 ```rust
 pub struct ProgressTracker {
     pub games_completed: usize,
@@ -116,17 +118,21 @@ pub struct ProgressTracker {
     pub avg_score_so_far: f64,
     pub time_elapsed: std::time::Duration,
 }
-// Display via indicatif — optional, not MVP critical
+// Implemented with indicatif in the root collector.
 ```
 
 ## 8. Checkpointing
 
+The collector writes one CSV/metadata part per configured game batch under
+`<output-stem>.checkpoint/parts/`, then atomically advances a JSON checkpoint.
+Resume with the same seed, game count, rollout count, thread count, and batch
+size using `--resume`. The final CSV and metadata are assembled after all games.
+
 ```rust
-fn checkpoint(results: &[GameResult], game_count: usize) {
-    if game_count % 1000 == 0 {
-        save_results(&results[game_count-1000..game_count]); // Parquet append
-    }
-}
+cargo run --release -- data-collector collect --n-games 20000 --rollouts 100 --threads 4 \
+  --checkpoint-every 1000 --output data/raw/policy.csv
+# After interruption, rerun the same arguments and add --resume.
+# Estimated runtime is approximately 103 hours; run only after compute budget approval.
 ```
 
 ## 9. Cross-References
@@ -142,9 +148,9 @@ fn checkpoint(results: &[GameResult], game_count: usize) {
 ## Implementation Record
 
 - Implemented fixed-thread Rayon collection, per-game `global_seed.wrapping_add(game_id)`, game-group metadata, rollout relabeling, CSV schema validation, and a JSON manifest with seeds, thread count, timing, row counts, and file hashes.
-- A reusable random-game batch API supports deterministic game-ID ranges. The rollout collector still materializes a whole requested batch before writing; it does not checkpoint/resume every 1,000 games or report live progress.
+- The collector now writes per-batch data/metadata parts and an atomic, config-checked JSON checkpoint; `--resume` continues from the next game ID. Indicatif reports live game completion. Final assembly validates both row-aligned files.
 - Baseline evidence: [`reports/action-frequency/README.md`](../../../reports/action-frequency/README.md) records 10,000 random and 10,000 heuristic games, raw score/frequency CSVs, manifests, and 2,000-replicate whole-game bootstrap 95% intervals. These runs establish case-study baselines only; they do not establish framework superiority.
-- Validation: deterministic batch coverage and root suite pass. Prior throughput measurement projects approximately 103 hours for the current 20k rollout-labeled collection configuration. Checkpoint/resume and progress reporting remain pending before the larger rollout collection; this compute estimate is a prerequisite to budget, not a reason to omit those implementation requirements.
+- Validation: deterministic batch coverage and checkpoint/resume tests pass. The Planout checker is part of the ticket verification. Prior throughput measurement projects approximately 103 hours for the current 20k rollout-labeled collection configuration; this compute estimate is a prerequisite to budget, not a reason to omit the collection deliverable.
 
 ---
 
@@ -161,7 +167,7 @@ fn checkpoint(results: &[GameResult], game_count: usize) {
 
 ## Open questions
 
-- **Checkpoint/resume and progress requirements are still open.** Specify compatible checkpoint state and interruption behavior before the 20k rollout-labeled collection. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Plan-scale rollout data collection and independent report validation remain open.** The collector resumes only when all data-generation parameters match its checkpoint. The 20k run remains unscheduled until its estimated compute budget is explicitly approved; retain data, manifests, and analysis artifacts.
 
 ## Later
 

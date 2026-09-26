@@ -1,6 +1,6 @@
 # Plan 04 — Failure Analysis: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Failure categories are prospective; only capability and baseline artifacts provide current observations.
 
 **Goal:** State the current implementation and evidence boundary for failure analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This is a failure-analysis protocol, not a failure log.** No trained-policy failure study has run. The current AutoML capability smokes and baseline reports are documented in their respective evidence records.
 
 > **Note:** This section anticipates potential failures and defines response protocols. Probability estimates are illustrative, not empirically determined. No actual failure data exists yet.
 
@@ -29,9 +29,9 @@
 
 ## 2. Null Results Analysis
 
-### 3.1 Scenario: No Model Beats Heuristic
+### 3.1 Scenario: Policy Does Not Improve on a Measured Baseline
 
-If no automl model significantly beats the heuristic baseline (~512 mean score), the following analysis will be conducted:
+If no automl model significantly beats the locally measured heuristic baseline, the following analysis will be conducted:
 
 **Possible causes:**
 1. Feature engineering insufficient — the 27-dimensional feature vector may not capture enough game information
@@ -42,7 +42,7 @@ If no automl model significantly beats the heuristic baseline (~512 mean score),
 
 **Response:**
 1. Expand feature engineering (add more features)
-2. Try ensemble methods
+2. Revisit the question and scope; do not add excluded methods without a documented scope change
 3. Increase training data
 4. Investigate reinforcement learning as an alternative
 5. Publish null results — this is a valid scientific finding
@@ -57,9 +57,9 @@ If all models produce similar mean scores (no significant differences):
 3. Game ceiling — the game itself limits performance regardless of model
 
 **Response:**
-1. Analyze feature importance (may all be equally important)
+1. Report uncertainty; equal-looking means do not show equal feature importance
 2. Try deeper/more complex models if available
-3. Investigate whether the game ceiling has been reached
+3. Avoid inferring a game ceiling from a finite model comparison
 4. Consider alternative feature engineering approaches
 
 ### 3.3 Scenario: Results Are Not Reproducible
@@ -72,7 +72,7 @@ If results vary significantly across seeds:
 3. Insufficient sample size — 10,000 games may not be enough to stabilize results
 
 **Response:**
-1. Increase games per experiment (50,000+)
+1. Revisit sample size only after a precision/power rationale using the study unit and dependence structure
 2. Use multi-seed validation
 3. Report confidence intervals, not just point estimates
 4. Investigate whether the model generalizes to unseen game states
@@ -83,7 +83,7 @@ If the automl framework lacks required capabilities:
 
 **Response:**
 1. Document all missing capabilities in the verification checklist
-2. Implement local training fallback using `smartcore`/`linfa` directly (bypassing automl's abstraction)
+2. Keep core model training on the AutoML framework; report limitations under canonical scope
 3. Modify the project goal to "what automl CAN do"
 4. Publish the automl capability gap as a separate finding
 
@@ -102,7 +102,7 @@ The following probability estimates are **illustrative and not empirically deter
 | High variance across seeds | Unknown — to be assessed | Medium | Warning |
 | Framework limitations | Unknown — to be assessed | Medium | Warning |
 
-**These probabilities are placeholders. Actual probabilities will be assessed after the capability verification gate and initial experiments.**
+Do not assign probabilities from these categories without observed data and an explicit model. Track concrete failure counts, configurations, and logs instead.
 
 ## 4. Honest Reporting Protocol
 
@@ -143,8 +143,8 @@ For each experiment, the following will be reported:
 - 95% CI: [{ci_lower}, {ci_upper}]
 
 ### Statistical Significance
-- Mann-Whitney U vs heuristic: {u_value}
-- p-value: {p_value}
+- Comparison method and assumptions: {method}
+- adjusted p-value (if applicable): {p_value}
 - Significant? {yes/no}
 - Effect size: {cohens_d}
 
@@ -169,7 +169,7 @@ Null results are valid scientific findings. If automl cannot beat heuristic base
 
 ## Implementation Record
 
-- This file is a prospective failure protocol. No study failure log exists yet; listed probability estimates and scenarios are illustrative rather than observed.
+- This file remains a prospective protocol. No study failure log exists; probability estimates were removed and responses are constrained by project scope.
 
 ---
 
@@ -186,7 +186,7 @@ Null results are valid scientific findings. If automl cannot beat heuristic base
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **No systematic failure log exists yet.** Record failures with configuration, seeds, dependency state, diagnostic output, and recovery decisions when the planned studies run.
 
 ## Later
 

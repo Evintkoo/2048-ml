@@ -1,6 +1,6 @@
 # Plan 04 — Discussion: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Interpretation questions are outlined, but neither framework results nor held-out policy results support conclusions yet.
 
 **Goal:** State the current implementation and evidence boundary for discussion.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan is an interpretation guide, not a findings discussion.** Its outcome branches remain hypothetical. Several listed tests and score thresholds are not implemented or justified and cannot serve as decision gates.
 
 > **Status: PENDING.** No conclusions drawn. This file defines how the primary Rust-native AutoML framework results and the downstream 2048 case-study results will be interpreted.
 
@@ -27,38 +27,35 @@
 
 | Hypothesis | Gate | If Pass | If Fail |
 |------------|------|---------|---------|
-| **H1**: Best automl mean > heuristic ~512 | MWU/Holm; report CI and effect size | automl competitive for 4×4 tabular task | Null: supervised 27-dim insufficient; report as limits of automl for sequential puzzle |
-| **H2**: Alg differences exist | Kruskal-Wallis p<0.05 → Dunn post-hoc | Rank + name winner (RF/GB/XGB/LGBM/ET/SVM/KNN) | No rank claimed; all means equivalent |
-| **H3**: Tuning helps | Wilcoxon signed-rank tuned vs default | Report tuned config; log HyperOptX TPE gain | Defaults sufficient; tuning not cost-effective |
-| **Feature analysis**: 27-dim contributes | Ablation LOO + group removal, GroupKFold, uncertainty intervals | Feature groups ranked by Δmean | 27-dim redundant; smaller subset may be viable |
+| Policy vs measured baseline | Declare unit and pairing; use available comparison helpers with limitations | Report measured difference and uncertainty | Report no evidence or inconclusive result; do not infer feature insufficiency |
+| Multiple model comparison | Pairwise comparisons with multiplicity correction; no global test implemented | Describe supported pairwise evidence | Do not claim all models equivalent from a nonsignificant result |
+| Tuning comparison | Matched study and declared budget; no completed evaluation | Report measured quality/resource trade-off | Do not claim defaults sufficient without evidence |
+| Feature contribution | Ablation runner and protocol pending | Report measured effects and uncertainty | No feature sufficiency or Markov-blanket conclusion |
 
 All framework gates come from the framework-validation protocol. Application gates come from `02-Methodology/03-hypotheses.md`; feature analysis is exploratory and does not establish a Markov blanket.
 
 ## 3. Implications (In-Scope Only)
 
 ### 3.1 For automl Framework
-- If H1 passes: `TaskType::MultiClassification` + `TrainEngine` viable for 4×4 sequential decision via tabular features; `HyperOptX` justified.
-- If H1 fails with narrow CI: automl correctly detects ceiling — supervised tabular ≠ search/RL for 2048; fallback to heuristic documented.
-- HyperOptX sensitivity (H3) decides whether default `TrainingConfig` (max_depth 6, n_estimators 100, lr 0.1) suffices.
+- If policy comparisons show improvement under a valid protocol, limit the conclusion to the tested model, dataset, seeds, and game conditions.
+- If the comparison is inconclusive, report its uncertainty; do not infer a general ceiling or superiority of alternative methods.
+- Tuning claims require a matched quality and resource study; configuration defaults alone establish no result.
 
 ### 3.2 For 27-dim Feature Engineering
-- Ablation (§04-ablation-study.md: 27 LOO + 8 groups: grid/empty/max/mono/smooth/merges/adjacency/corner) quantifies necessity.
-- If empty/max/mono dominate, confirms corner-strategy encoding.
-- If grid_0..15 dominate, suggests raw board suffices; if adjacency/merge groups dominate, confirms tactical signal.
+An ablation study could estimate contribution under its declared training and evaluation setup. It cannot establish feature necessity, sufficiency, or a causal mechanism without appropriate design and assumptions.
 
 ### 3.3 For Evaluation Methodology
-- Validates winner protocol (mean over 10k + pre-registered MWU/Holm + bootstrap CI/effect size) as replacement for single-split accuracy.
-- GroupKFold by `game_id` shows leakage control for game data (not TimeSeries).
+Application evaluation should report game score separately from framework predictive metrics. Game-clustered or seed-level dependence must be considered before interpreting nominal game-level tests.
 
 ## 4. Seed Sensitivity Tie-In (Not Hardware)
 
-Primary seed 42; secondary 123/456/789/1011 (§05-sensitivity-analysis.md). Sensitivity = σ(μ_i)/mean(μ_i), interpreted together with the declared experimental unit and uncertainty. If ranking flips across conditions, the case-study winner is inconclusive; do not automatically resolve this by increasing game count. Hardware and parallelism are framework variables and must be reported where they can affect reproducibility.
+Seed matrix remains to be selected and declared. If rankings vary across training/evaluation seeds, treat that as evidence of sensitivity and report it with the experimental unit and uncertainty. Hardware and parallelism should be recorded when they can affect reproducibility or runtime.
 
 ## 5. Limitations (In-Scope)
 
 - 4×4 only; 27-dim fixed; supervised only; rollout labels noisy (100 sims/action).
 - `automl` model list limited to what `ModelType` actually exposes (verify via `automl/src/training/config.rs`).
-- Bootstrap CI width ~20 at n=10k (σ≈512) — tail events (rare >2000 scores) under-sampled.
+- Precision is unknown until observed variance, dependence, and sample size are measured. Prior numerical interval estimates and tail-rate statements are unsupported.
 
 ## 6. Unexpected Findings Protocol
 
@@ -76,7 +73,7 @@ Will state framework-validation outcomes, application winner (or null), F1–F3 
 
 ## Implementation Record
 
-- Interpretation rules are written, but no hypotheses have been evaluated. Any predicted outcome, threshold, or implication remains conditional until the framework and held-out case-study experiments are complete.
+- Interpretation guidance is written, but no hypotheses have been evaluated. Decision thresholds and predicted outcomes remain unset pending a justified protocol and completed framework and case-study experiments.
 
 ---
 
@@ -93,7 +90,7 @@ Will state framework-validation outcomes, application winner (or null), F1–F3 
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Interpretations remain pending.** Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 

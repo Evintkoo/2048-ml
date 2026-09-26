@@ -1,6 +1,6 @@
 # Plan 01 — Score Metrics: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Implemented summaries include mean, sample SD, median, p90/p99, min/max, threshold counts, and bootstrap mean CI.
 
 **Goal:** State the current implementation and evidence boundary for score metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats score summary helpers as implemented with a narrower output set than the old example.** `src/evaluation.rs` computes mean, sample standard deviation, median, p90/p99, min/max, threshold counts, and bootstrap mean intervals. It does not emit p10/p25/p75/p95 or the proposed normalized-score utility.
 
 ## 1. Purpose
 
@@ -21,9 +21,9 @@ Define the score metrics used to evaluate and compare 2048 ML model performance.
 |--------|---------|---------|
 | Mean Score | Σ score / N | Primary ranking metric |
 | Median Score | Middle value | Robust tiebreaker |
-| Std Dev | √(Σ(x-μ)²/N) | Consistency (lower = tiebreak) |
+| Sample Std Dev | sample standard deviation (`N-1`) | Descriptive variability |
 | Max / Min | max/min(scores) | Ceiling / floor |
-| p10/p25/p50/p75/p90/p95/p99 | percentiles | Tail reporting — keep all scores |
+| p50/p90/p99 | percentiles | Reported by current summary helper |
 | games_above_2048/4096/8192 | counts | Threshold hit rates |
 
 ## 3. Score Metrics Calculation
@@ -89,9 +89,8 @@ impl ScoreMetrics {
 > `normalize_score = log10(score+1)` is the same transform as `score_normalized = log10(score+1)/6.0` in `06-Data/02-Format/01-data-schema.md` and `04-Preprocessing/03-data-normalization.md` — the `/6.0` divisor just maps to [0,1]. Keep consistent.
 
 ```rust
-fn normalize_score(score: u64) -> f64 { (score as f64 + 1.0).log10() }
-fn score_normalized(score: u64) -> f64 { (score as f64 + 1.0).log10() / 6.0 } // canonical feature 21
-fn denormalize_score(normalized: f64) -> u64 { (10f64.powf(normalized) - 1.0) as u64 }
+// The normalized score feature is implemented only in src/state.rs.
+// No score-normalization or inverse-transform report helper exists.
 ```
 
 ## 5. Reporting
@@ -100,7 +99,7 @@ Each report includes: summary table (mean/median/std/p99 etc.), threshold hit ra
 
 ## Implementation Record
 
-- `ScoreSummary` and benchmark reports include count, mean, sample standard deviation, median, p90/p99, min/max, threshold rates, and mean confidence interval. Full p10/p25/p75/p95 and a reusable score-normalization report are not emitted.
+- `ScoreSummary` and benchmark reports include count, mean, sample standard deviation, median, p90/p99, min/max, threshold rates, and bootstrap mean confidence interval. Full p10/p25/p75/p95 and a score-normalization report helper are not present.
 
 ---
 
@@ -117,7 +116,7 @@ Each report includes: summary table (mean/median/std/p99 etc.), threshold hit ra
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Add additional percentiles only if required by the predeclared report. Keep all per-game scores so summaries can be recomputed.
 
 ## Later
 

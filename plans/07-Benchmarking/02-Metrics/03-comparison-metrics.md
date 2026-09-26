@@ -1,6 +1,6 @@
 # Plan 03 — Comparison Metrics: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Score-file comparisons and adjusted statistics are implemented; no multi-model held-out ranking has been produced.
 
 **Goal:** State the current implementation and evidence boundary for comparison metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats pairwise score comparison tooling as implemented with ranking execution pending.** The benchmark compare command ranks inputs by mean score and emits paired sign or independent Mann–Whitney tests, Holm-adjusted p-values, bootstrap mean-difference intervals, and Cohen’s d. It does not establish a winner without comparable held-out game data.
 
 ## 1. Purpose
 
@@ -18,6 +18,7 @@ Rank models by mean score. Statistical tests live in `01-Evaluation/01-benchmark
 ## 2. Ranking — Sort by Mean Score
 
 ```rust
+// Descriptive schema only; root CLI accepts score files rather than ModelRanking.
 pub struct ModelRanking {
     pub model_name: String,
     pub mean_score: f64,
@@ -36,13 +37,14 @@ impl ModelRanking {
 }
 ```
 
-For the 2048 case study, compare held-out `mean_score` with median, distribution, uncertainty, and practical-effect reporting. Significance uses the declared framework in `01-benchmarking-framework.md §6.4`; CV keeps `game_id` groups together and must not be interpreted as automatic independence.
+For the 2048 case study, compare held-out mean score with distribution, uncertainty, and practical-effect reporting. Statistical tests must follow the declared protocol; CV folds are not independent game outcome populations by default.
 
 > Deleted generic Framework A/B/C and duplicated test tables — see `01-benchmarking-framework.md §6.4` and `04-Analysis/03-significance-testing.md`.
 
 ## Implementation Record
 
-- Score input comparison ranks by mean and computes matched sign-test or independent Mann–Whitney, Holm-adjusted p-values, bootstrap mean difference intervals, and Cohen's d. No full multi-model held-out ranking has been produced.
+- The compare command ranks score files by mean and computes matched sign-test or independent Mann–Whitney, Holm-adjusted p-values, bootstrap mean-difference intervals, and Cohen's d.
+- No full multi-model held-out ranking has been produced; metric table inputs must represent comparable runs.
 
 ---
 
@@ -59,7 +61,7 @@ For the 2048 case study, compare held-out `mean_score` with median, distribution
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Run comparisons only after confirming candidate inputs share the declared environment, seed design, game count, and output schema. Retain all raw score files and manifest hashes.
 
 ## Later
 

@@ -1,6 +1,6 @@
 # Plan 06 — Reproducibility Package: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Root source, lockfile, seeded CLI workflows, and run manifests exist; Docker, public datasets, full study artifacts, and independent reproduction remain absent.
 
 **Goal:** State the current implementation and evidence boundary for reproducibility package.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This package describes implemented reproducibility support and missing study artifacts.** A locked dependency graph and JSON manifest support traceability, but the local submodule worktree is modified and no end-to-end research replication package exists.
 
 ## 1. Purpose
 
@@ -19,238 +19,64 @@ This section specifies the reproducibility package required to replicate the Rus
 
 ### 2.1 Repository Structure
 
-```
-2048-ml-research/
-├── automl/                    # Primary Rust-native AutoML framework submodule
-│   ├── Cargo.toml
-│   ├── src/main.rs
-│   └── src/lib.rs
-├── src/                        # Single root MVP crate
-│   ├── game_engine/            # board, rules, score, simulation
-│   ├── data_pipeline.rs        # features, labels, storage and splits
-│   ├── evaluation.rs           # score summaries and statistical comparisons
-│   └── main.rs                 # CLI, training, benchmark and report workflows
-├── framework_benchmarks/      # Standard tabular framework-validation data/configs
-├── data/                      # 2048 data generation and processing
-│   ├── training_data/
-│   ├── evaluation_data/
-│   └── feature_configs/
-├── experiments/               # Framework and 2048 experiment configurations
-│   ├── configs/
-│   │   ├── baseline_experiments.json
-│   │   ├── ablation_experiments.json
-│   │   └── sota_comparison.json
-│   └── seeds/
-│       ├── seed_42.json
-│       ├── seed_123.json
-│       ├── seed_456.json
-│       ├── seed_789.json
-│       └── seed_1011.json
-├── results/                   # Results output
-│   ├── raw/
-│   ├── processed/
-│   └── final/
-├── analysis/                  # Analysis scripts
-│   ├── ablation_analysis.py
-│   ├── statistical_analysis.py
-│   ├── ranking_analysis.py
-│   └── visualization.py
-├── paper/                     # Research paper
-│   ├── draft/
-│   └── references/
-├── Dockerfile
-├── docker-compose.yml
-├── Cargo.lock
-├── requirements.txt
-└── README.md
-```
+The source-audited layout is documented in `01-code-reference.md`. The root is a single Rust crate with an AutoML Git submodule. There are no `framework_benchmarks/`, Python `analysis/`, `paper/`, or generated `results/` trees in the current repository.
 
 ### 2.2 Version Control
 
-- **Git repository:** All code committed to a public repository
-- **Tagging:** Each experimental run tagged with commit hash
-- **Branch naming:** `experiment/{name}/{date}`
-- **Release:** Versioned releases for each paper submission
+Record the root commit, dirty-file state or source hashes, `Cargo.lock` hash, AutoML submodule commit, and any local submodule modifications with every published run. The current manifests include source/dependency metadata when available; the local repository is not itself a published artifact release.
 
-## 3. Data Repository
 
-### 3.1 Training Data
+## 3. Data and Run Artifacts
 
-| Dataset | Description | Size | Format | Location |
-|---------|-------------|------|--------|----------|
-| training_v1 | Training samples for all models | 100,000 samples | Parquet | `data/training_data/training_v1.parquet` |
-| evaluation_v1 | Evaluation game data | 70,000 games (7 models × 10,000) | Parquet | `data/evaluation_data/evaluation_v1.parquet` |
-| features_v1 | Feature configurations | 27 features | JSON | `data/feature_configs/features_v1.json` |
+No canonical training corpus, public data repository, or DOI has been published. The collector writes CSV training rows, row-aligned game metadata, checkpoints, and JSON manifests. Baseline commands write per-game CSV and JSON manifests. Retain these artifacts outside Git as appropriate and record their checksums and source revision.
 
-### 3.2 Data Metadata
+Each run record should capture command/configuration, root revision and dirty state, submodule revision and dirty state, `Cargo.lock` digest, compiler/target, seeds by role, thread count, input and output hashes, elapsed time, row/game counts, and analysis procedure. These fields do not by themselves make a result independently replicated.
 
-Each dataset includes:
-- **Creation date and time**
-- **Seed used** (for reproducibility)
-- **Feature extraction version**
-- **Label generation method** (rollout-based, 100 sims/action)
-- **Data quality checks** passed
-- **Checksum** for integrity verification
+## 4. Environment and Experiment Commands
 
-### 3.3 Data Access
+The root manifest declares Rust 1.75 as its minimum, but the actual compiler must be recorded per run. A Dockerfile/Compose environment and Python requirements file are not present. The root workflow is CSV-based; do not assume the current project pipeline uses Parquet.
 
-All data is available via:
-- **Public repository:** `https://github.com/evintkoo/2048-ml-research`
-- **DOI:** Each dataset assigned a DOI upon publication
-- **Automated download:** `scripts/download_data.sh`
+Implemented CLI entry points can be discovered with `cargo run -- --help`. Relevant commands include data collection, dataset split, training, baseline/model benchmark, comparison, and score report. Exact option sets are defined by the current binary and can change; preserve the command and help/output versions with artifacts.
 
-## 4. Docker Environment
 
-### 4.1 Dockerfile (Fixed — No apt `polars`)
-
-```dockerfile
-FROM rust:1.75-slim
-
-RUN apt-get update && apt-get install -y python3 python3-pip pkg-config libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-COPY . .
-RUN cargo build --release --all
-# polars 0.46, pyarrow etc come from pip, not apt — previous `apt-get install polars` deleted
-RUN pip install --no-cache-dir -r requirements.txt  # requirements.txt pinned: polars==0.46, pyarrow, etc.
-ENV RUST_LOG=info SEED=42 N_GAMES=10000 SEED_SECONDARY="123,456,789,1011"
-CMD ["./target/release/experiment_runner"]
-```
-
-### 4.2 Docker Compose
-
-```yaml
-version: '3.8'
-services:
-  training:
-    build: .
-    volumes:
-      - ./data:/app/data
-      - ./results:/app/results
-    environment:
-      - SEED=42
-      - N_GAMES=10000
-    deploy:
-      cpus: 4
-      memory: 8G
-  
-  evaluation:
-    build: .
-    volumes:
-      - ./data:/app/data
-      - ./results:/app/results
-    environment:
-      - SEED=42
-      - N_GAMES=10000
-    deploy:
-      cpus: 8
-      memory: 16G
-  
-  analysis:
-    build: .
-    volumes:
-      - ./data:/app/data
-      - ./results:/app/results
-    command: python3 analysis/statistical_analysis.py
-    deploy:
-      cpus: 2
-      memory: 4G
-```
-
-### 4.3 Environment Reproducibility
-
-- **Base image:** `rust:1.75-slim` (pinned version)
-- **Rust toolchain:** `1.75.0` (locked in `Cargo.lock`)
-- **Python version:** `3.11.x` (locked in `requirements.txt`)
-- **All dependencies:** Pinned versions in `Cargo.lock` and `requirements.txt`
-- **Build artifacts:** All reproducible from source
-
-## 5. Experiment Scripts
-
-### 5.1 Automated Experiment Runner
-
-```bash
-#!/bin/bash
-# scripts/run_all_experiments.sh
-
-# Run baseline experiments
-for model in RandomForest GradientBoosting XGBoost LightGBM ExtraTrees SVM KNN; do
-    cargo run --experiment baseline --model $model --seed 42 --n-games 10000
-done
-
-# Run ablation experiments
-for feature_set in full minimal empty_only grid_only; do
-    cargo run --experiment ablation --features $feature_set --seed 42 --n-games 10000
-done
-
-# Run SOTA comparison
-for baseline in Cirulli Makrogiannis Kishore Gelly; do
-    cargo run --experiment sota --reference $baseline --n-games 10000
-done
-
-# Run statistical tests
-python3 analysis/statistical_analysis.py
-
-# Generate ranking
-python3 analysis/ranking_analysis.py
-```
-
-### 5.2 Seed Management
-
-```rust
-// All experiments use deterministic seeds
-pub struct ExperimentConfig {
-    pub primary_seed: u64,      // 42
-    pub secondary_seeds: Vec<u64>,  // [123, 456, 789, 1011]
-    pub n_games: usize,         // 10,000
-    pub n_experiments: usize,   // 3 per seed
-}
-```
-
-## 6. Reproducibility Checklist
+## 5. Reproducibility Checklist
 
 Verification checklist — mark an item complete only after the corresponding artifact and independent check exist:
-- [ ] Code is publicly available
+- [ ] A versioned public source release is available
 - [x] Rust dependencies are locked in `Cargo.lock` (this does not pin toolchain distribution)
 - [ ] Docker environment is provided
 - [ ] Framework benchmark data/configuration is available
 - [x] 2048 data-generation procedure is available in `cargo run -- data-collector collect --help`
-- [x] Seeds are fixed and documented per dataset/run manifest
+- [x] Run manifests record configured seeds; no complete study seed matrix is established
 - [ ] All scripts are executable
 - [ ] Determinism is verified across repeated runs
-- [x] Statistical analysis is reproducible from benchmark CSVs via `benchmark compare` and `benchmark report`; verify manifests alongside outputs
+- [x] Comparison and report commands can reproduce summaries from supplied CSV inputs; verify manifests and limitations
 - [ ] Figures are generated from raw data
 - [ ] Paper references match code versions
 - [ ] Framework artifacts can be reloaded with equivalent predictions
 
-The checked items describe implemented procedures, not a completed research replication. Committed run artifacts, published data, standard-dataset framework validation, and independent artifact reproduction remain outstanding. Dataset and benchmark manifests include SHA-256 checksums of their CSV files, source revision when available, protocol, seed sequence, summary, dependency submodule pin where applicable, elapsed time, and result path.
+Checked entries refer only to available local procedures. Plan-scale dataset artifacts, standard-dataset framework validation, versioned releases, and independent replication remain outstanding. Manifests record checksums, protocol details, seeds, dependency pin when available, elapsed time, summaries, and result paths; record dirty source state separately.
 
 ## Implementation Record
 
-- Root source is one Rust crate with a pinned AutoML submodule; collector and benchmark CLIs emit manifests. Docker, public dataset/DOI, external framework dataset configs, complete experiment scripts, figures, and independent reproduction are absent. Several sample paths and Python requirements in this package do not match the actual Rust-only source tree and require correction.
+- Root source is one Rust crate with a pinned but locally modified AutoML submodule. Collector and benchmark CLIs emit CSV/JSON artifacts. Docker, public datasets/DOI, standard-dataset configs, figures, and independent reproduction are absent; nonexistent sample paths were removed.
 
-## 7. Reproducibility Failure Modes
+## 6. Reproducibility Failure Modes
 
 | Failure Mode | Detection | Mitigation |
 |-------------|-----------|------------|
 | Dependency version mismatch | CI pipeline | Pinned versions in Cargo.lock |
-| Seed incompatibility | Cross-platform test | Fixed seed, cross-platform testing |
+| Seed/environment differences | Record actual compiler, target, and seed roles; cross-platform equivalence is unverified |
 | Data corruption | Checksum verification | Automated integrity checks |
-| Hardware differences | Floating point variance | Fixed precision, cross-platform validation |
+| Hardware differences | Resource and output variation across machines is unmeasured | Record hardware and runtime conditions |
 | Non-deterministic behavior | Re-run with same seed | Seed-based determinism verification |
 | Code changes between runs | Git tagging | Commit hash embedded in results |
 
-## 8. Publication Requirements
+## 7. Publication Artifacts
 
-For publication, the following must be provided:
-- All source code (public repository)
-- All data (public repository or DOI)
-- Docker image (published to Docker Hub)
-- Experiment scripts (executable)
-- Results (raw and processed)
-- Figures (generated from raw data)
-- Statistical analysis (reproducible scripts)
+Before making a reproducibility claim, provide the exact source revision, clean/dirty source state, submodule state, lockfile and toolchain versions, protocol/configuration, raw data or access instructions, generated manifests, analysis commands, outputs, and known limitations. Docker and public datasets are optional packaging choices, not current artifacts.
+
+When generated, include raw and processed results, figures generated from retained data, and executable statistical analysis.
 
 ---
 
@@ -267,7 +93,7 @@ For publication, the following must be provided:
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Independent reproduction remains pending.** Retain versioned code/data/configuration and analysis artifacts, and document access and resource requirements for each study.
 
 ## Later
 

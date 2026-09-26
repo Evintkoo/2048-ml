@@ -1,6 +1,6 @@
 # Plan 03 — Experiment Review: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL.** Review guidance exists; no confirmatory experiment output or review decision is recorded.
 
 **Goal:** State the current implementation and evidence boundary for experiment review.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,41 +9,41 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**Experiment review evaluates a retained protocol and its outputs, not a proposed threshold table.** The repository has protocol-specific random and heuristic baselines, while confirmatory trained-policy outputs and an independent review decision are absent.
 
-> **See canonical `09-Quality/04-Review/01-peer-review.md` (and `09-Quality/03-CI/01-ci-pipeline.md` for CI pipeline) — duplicate stub.** Trimmed repetitive mermaid; see canonical for review framework.
+The reviewer checks the question, protocol, seeds, data, implementation, analysis, and conclusion as one evidence chain. A baseline run is interpreted only within its protocol; it cannot establish a trained-policy result or general AutoML performance.
 
-## 1. Purpose
+## 1. Review scope binds claims to the experiment that produced them
 
 Define experiment review procedures for validating the 2048 ML research experiments.
 
-## 2. Experiment Review Framework
+## 2. Protocol and outputs form one review unit
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §2 for review framework mermaid.**
+The review records the hypothesis, experimental unit, comparison, seed plan, data split, software versions, analysis method, outputs, deviations, and limitations. Missing items are reported as gaps, not assumed satisfied.
 
-## 3. Experiment Review Checklist
+## 3. Review checks provenance before interpreting a result
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §5 for review checklist mermaid.**
+The reviewer verifies that seed, dataset digest, configuration, and dependency provenance match the retained run; checks that train/development/test boundaries were respected; and confirms that conclusions do not exceed measured outcomes.
 
-## 4. Review Process
+## 4. Independent review records findings and resolutions
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §4 and `09-Quality/03-CI/01-ci-pipeline.md` for review/CI pipeline mermaid.**
+The reviewer records scope, methods, findings, requested changes, resolution, and decision. The repository has no automated experiment-review workflow; a local analysis command is not an approval.
 
-## 5. Experiment Quality Metrics
+## 5. Review criteria have no universal numeric pass threshold
 
-| Metric | Threshold | Assessment |
-|--------|-----------|------------|
-| Reproducibility | Seed verified | ✓ / ✗ |
-| Statistical significance | p < 0.05 | ✓ / ✗ |
-| Effect size | d ≥ 0.5 | ✓ / ✗ |
-| Sample adequacy | N ≥ 1000 | ✓ / ✗ |
-| Confounds | No uncontrolled variables | ✓ / ✗ |
+| Review item | Evidence to inspect |
+|-------------|---------------------|
+| Reproducibility | Recorded seeds, data, configuration, and dependency provenance |
+| Statistical analysis | Methods appropriate to the design, with assumptions and uncertainty reported |
+| Effect size | Estimate and uncertainty interpreted in the study context |
+| Sample adequacy | Design justification, not a universal fixed game-count threshold |
+| Confounds | Known sources of bias and limits documented |
 
-## 6. Experiment Validation Map
+## 6. Validation evidence is distinct from independent replication
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §6 for validation map mermaid.**
+Internal tests, seed checks, and manifests support specific reproducibility claims. They do not constitute independent replication by another operator or implementation.
 
-## 7. Review Criteria
+## 7. Conclusions stay within the design and evidence
 
 ### 7.1 Methodology Review
 
@@ -54,11 +54,11 @@ Define experiment review procedures for validating the 2048 ML research experime
 
 ### 7.2 Reproducibility Review
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` for reproducibility mermaid; and `09-Quality/03-CI/01-ci-pipeline.md` for CI.**
+The reviewer asks whether another operator can reconstruct the protocol from retained artifacts. This ticket does not claim that replication has occurred.
 
 ### 7.3 Statistical Review
 
-- Are appropriate tests used?
+- Are any statistical procedures appropriate to the design and supported by the implementation?
 - Are assumptions verified?
 - Are confidence intervals reported?
 - Is effect size meaningful?
@@ -70,15 +70,15 @@ Define experiment review procedures for validating the 2048 ML research experime
 - Are future directions suggested?
 - Are implications discussed?
 
-## 8. Review Output
+## 8. Review output names evidence gaps as well as findings
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §8 for review output mermaid.**
+The output contains reviewed run identifiers, claims assessed, supporting artifacts, unresolved issues, and the review decision.
 
-## 9. Review Decision
+## 9. The decision is reasoned, not calculated from a score
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §9 for review decision mermaid.**
+Approval requires material methodological and reporting issues to be resolved. No single p-value, effect-size estimate, or game count automatically determines approval.
 
-## 10. Review Documentation
+## 10. The review record stays with the reported experiment
 
 All experiment reviews are documented with:
 - Reviewer comments
@@ -89,25 +89,26 @@ All experiment reviews are documented with:
 
 ## Implementation Record
 
-- Experiment review procedure is documented, but the required experiment outputs do not exist and no review decision has been recorded.
+- Experiment review procedure is documented. Existing random/heuristic action-frequency results are limited to their recorded protocol; trained-policy study outputs and an independent review decision are absent. No fixed p-value, effect-size, or sample-count gate is an approved project rule.
 
 ---
 
 ## Verification (definition of done)
 
 1. `test -f plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
-2. `grep -q '^# Plan 03 — ' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
-3. `grep -q '^> \\*\\*Status:' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
-4. `grep -q '^\*\*Goal:' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
-5. `grep -q '^## Decision and evidence$' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
-6. `grep -q '^## Open questions$' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
-7. `grep -q '^## Later$' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
-8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
+2. `grep -q '^> \\*\\*Status: PARTIAL' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
+3. `grep -q '^\\*\\*Goal:' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
+4. `grep -q '^## 5. Review criteria have no universal numeric pass threshold$' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
+5. `grep -q 'protocol-specific random and heuristic baselines' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
+6. `! grep -q 'p < 0.05\|d ≥ 0.5\|N ≥ 1000' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
+7. `grep -q '^## Open questions$' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
+8. `grep -q '^## Later$' plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
+9. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/09-Quality/04-Review/03-experiment-review.md` exits 0.
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Confirmatory model outputs and an independent reviewer are absent. Running the study costs substantial compute; review remains deferred until an approved resource budget and retained outputs exist.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **Independent experiment review remains deferred.** It depends on a completed reproducible experiment package and an independent reviewer.

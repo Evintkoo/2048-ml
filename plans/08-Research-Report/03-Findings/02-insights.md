@@ -1,6 +1,6 @@
 # Plan 02 — Insights: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Insights are proposed analyses; only baseline action-frequency outputs currently provide measured behavioral summaries.
 
 **Goal:** State the current implementation and evidence boundary for insights.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,18 +9,18 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**No model-policy insight is claimed.** Baseline action-frequency reports cover random and heuristic agents; no trained policy or step-level model outcome corpus is available.
 
-> **No generic Early Overfitting table.** Each analysis below is executable on `evaluation_v1.parquet` + per-step logs (`action, valid_move, score_delta`).
+> The following are candidate analyses. The proposed Parquet file and general per-step model-log export do not exist.
 
 ## Concrete Analyses (Measured, Not Hypothesized)
 
-1. **Invalid-move rate** — `invalid_rate = mean(!valid_move)` per model. Hypothesis to measure: ~60–80% of random moves are invalid; learned policy should be <5%. Flag if >10%.
-2. **Corner-stuck frequency** — `corner_stuck = fraction of games where max_tile in corner for >80% of moves` (encoded via `max_tile_log` + `grid_0..15`). Measure correlation with score.
-3. **Feature–score monotonicity** — Spearman ρ between each 27-dim group (`empty_count`, `mono_*`, `smooth_*`, `merge_*`) and per-game score. Report top-3 |ρ| with bootstrap CI.
-4. **Move distribution** — `P(action)` over `0..3`. Hypothesis to *measure* (not claim): corner strategy predicts ~60–80% mass on one direction (e.g., Left). Report actual distribution with CI.
-5. **Score tail & bimodality** — Histogram + Hartigan dip test for bimodal low/high scores; percentile table (50/90/95/99) — not mean-only.
-6. **Early-game vs late-game** — Split games at median `moves`; compare feature correlations and invalid rates across halves.
+1. **Action validity** — measure invalid chosen moves only if the benchmark records them. Do not assume invalid moves are attempted, since the policy masks illegal actions.
+2. **Board-position patterns** — require a per-move board/action timeline export; current final-score reports cannot support this analysis.
+3. **Feature association** — requires aligned state/feature and outcome artifacts plus an analysis plan; association would not establish feature importance or causality.
+4. **Action distribution** — measured random and heuristic action-frequency artifacts exist. No trained-policy frequency is available; see `reports/action-frequency/README.md`.
+5. **Score distribution** — report implemented summary fields for supplied benchmark inputs. Bimodality tests are not implemented.
+6. **Within-game phase analysis** — requires per-move timelines and a declared clustered analysis; not supported by current aggregate files.
 
 ## Deleted Generic Content
 
@@ -28,11 +28,11 @@
 
 ## Output
 
-`analysis/insights.md` auto-generated; each insight line cites `ScoreMetrics` aggregation, not prose. Unexpected findings (e.g., Up dominates not Left, or empty_count negatively correlated) flagged for Discussion §5.
+No insights generator exists. Preserve input manifests and analysis code for any future measured insight; describe unexpected patterns without selecting post hoc thresholds.
 
 ## Implementation Record
 
-- No step-level benchmark artifact, action/board timeline export, insights generator, or empirical tail analysis is implemented. Listed patterns are analyses to run, not findings.
+- Baseline action-frequency artifacts are available for random and heuristic agents. Model-specific step logs, board-position analyses, correlations, bimodality tests, and report generation remain unimplemented.
 
 ---
 
@@ -49,7 +49,7 @@
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Model-policy insights remain pending.** Additional analysis needs suitable retained raw artifacts and a declared unit/uncertainty method.
 
 ## Later
 

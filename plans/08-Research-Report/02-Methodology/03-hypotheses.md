@@ -1,6 +1,6 @@
 # Plan 03 — Hypotheses: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Hypotheses are provisional and untested; statistical tests, effect thresholds, and study power require a finalized protocol.
 
 **Goal:** State the current implementation and evidence boundary for hypotheses.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan records questions for future testing, not evidence.** The study protocol is not finalized; planned sample sizes do not establish power, and several named tests are not implemented.
 
 > **Note:** This section defines hypotheses to be tested. No results are claimed. All answers are pending experimentation.
 
@@ -50,9 +50,9 @@ flowchart TD
 | F1 | Required framework capability or correctness criterion fails | All predeclared capability and correctness criteria pass | — | Acceptance tests and oracle comparisons |
 | F2 | Rust-native implementation does not meet the predeclared quality/efficiency target | It meets the target or demonstrates a documented trade-off | 0.05 where applicable | Matched benchmark and resource analysis |
 | F3 | AutoML search does not improve over fixed configuration at matched budget | Search improves the primary validation metric or resource efficiency | 0.05 | Paired repeated-run comparison |
-| H1 | μ_model ≤ μ_heuristic ≈ 512 | μ_model > μ_heuristic | 0.05 | Mann-Whitney U |
-| H2 | μ_all = μ_max | μ_max > μ_second | 0.05 | Kruskal-Wallis |
-| H3 | μ_tuned = μ_default | μ_tuned > μ_default | 0.05 | Wilcoxon Signed-Rank |
+| H1 | Policy outcome is no better than the measured baseline under the declared estimand | Improvement exceeds a predeclared practical threshold | To be set | Select test after unit/pairing design |
+| H2 | Supported candidate outcomes do not differ materially | At least one pair differs by a predeclared practical amount | To be set | Pairwise helpers only; no global test |
+| H3 | Tuning does not improve the declared quality/resource objective | Tuning improves it under matched budgets | To be set | Matched repeated-run design pending |
 
 ## 3. Hypothesis Test Design
 
@@ -71,31 +71,27 @@ flowchart TD
 
 ## 4. Detailed Hypotheses
 
-### H1: automl Model Performance
+### H1: Policy Comparison
 
-- **H0:** The mean score of the best automl model is equal to or less than the heuristic baseline mean score (μ_model ≤ μ_baseline ≈ 512)
-- **H1:** The mean score of the best automl model is greater than the heuristic baseline (μ_model > μ_baseline ≈ 512)
-- **Test:** Mann-Whitney U test (non-parametric, does not assume normality)
-- **Correction:** Bonferroni correction for multiple comparisons (number of models tested)
+- Define the estimand and practical improvement threshold after measuring a reproducible baseline.
+- Choose paired or independent inference based on the evaluation design. Available helpers include Mann–Whitney U for unmatched samples and an exact sign test for matching seed sequences; dependence between games still needs consideration.
+- Declare the multiplicity family before confirmatory analysis.
 - **Effect size:** Cohen's d is reported to quantify practical magnitude; no universal 0.5 cutoff is used as an automatic exclusion rule.
-- **Status:** TBD (pending experimentation)
+- **Status:** Not tested; baseline and protocol pending
 
 ### H2: Algorithm Comparison
 
-- **H0:** All tested algorithms produce equal game scores (μ_RF = μ_GB = μ_XGB = μ_LGBM = μ_ET = μ_SVM = μ_KNN)
-- **H1:** At least one algorithm produces a significantly different game score
-- **Test:** Kruskal-Wallis test (non-parametric ANOVA equivalent)
-- **Post-hoc:** Dunn's test with Bonferroni correction for pairwise comparisons
-- **Power:** ≥ 0.8 (probability of detecting a true difference)
-- **Status:** TBD (pending experimentation)
+- Candidates must be limited to the actual integration-supported models.
+- The comparison CLI can emit pairwise results and Holm-adjusted p-values; no global multi-group or post-hoc Dunn test is implemented.
+- No sample-size/power analysis or outcome comparison has been completed.
+- **Status:** Not tested; candidate matrix and protocol pending
 
 ### H3: Hyperparameter Tuning Effect
 
 - **H0:** Hyperparameter tuning has no significant effect on model game score (μ_tuned = μ_default)
 - **H1:** Hyperparameter tuning significantly improves game score (μ_tuned > μ_default)
-- **Test:** Wilcoxon Signed-Rank test (paired, non-parametric)
-- **Correction:** Bonferroni correction across model types
-- **Status:** TBD (pending experimentation)
+- Wilcoxon signed-rank is not implemented. Select a paired method only after defining the independent replication unit and matched configuration design.
+- **Status:** Not tested; matched tuning study pending
 
 ### Exploratory Feature Analysis
 
@@ -122,7 +118,7 @@ flowchart TD
 
 ## 6. Effect Size and Power
 
-**Power analysis:** With n=10,000 per group and expected effect size d=0.8, the statistical power is expected to be high. This will be verified after data collection.
+**Power analysis:** None has been performed. Define a meaningful effect, variance, experimental unit, dependence structure, and multiplicity family before selecting a sample size. Game count alone does not determine power.
 
 ## 7. Results Summary
 
@@ -138,10 +134,10 @@ flowchart TD
 ## 8. Hypothesis Testing Conclusions
 
 All hypothesis and framework-validation results will be reported after experimentation with proper statistical rigor:
-1. framework capabilities will be reported through acceptance tests, matched benchmarks, resource measurements, and reproducibility results
-2. Algorithm differences will be validated through Kruskal-Wallis test + Dunn post-hoc
-3. Hyperparameter tuning effect will be validated through Wilcoxon Signed-Rank test
-4. Feature groups will be evaluated through ablation and sensitivity analysis; no Markov-blanket claim is made by default
+1. Framework capabilities will be reported through acceptance tests, matched benchmarks, resource measurements, and reproducibility results.
+2. Model comparisons will use supported pairwise helpers unless a validated global method is implemented.
+3. Tuning and feature claims require matched studies and recorded budgets.
+4. Feature analysis does not establish a Markov blanket or sufficiency claim.
 
 ## 9. Reporting Standards
 
@@ -156,13 +152,7 @@ All hypothesis test results will be reported with:
 
 ## 10. Multiple Comparison Correction
 
-All hypothesis tests will use Bonferroni correction:
-```
-α_corrected = α / n_comparisons
-```
-where `n_comparisons` is the number of simultaneous tests.
-
-For example, if testing 7 models pairwise (21 comparisons), `α_corrected = 0.05 / 21 ≈ 0.0024`.
+Declare the comparison family and correction before analysis. The CLI currently applies Holm adjustment to its pairwise p-values. A fixed Bonferroni family of 21 comparisons assumes seven candidates and is not applicable until the actual candidate set and confirmatory comparisons are specified.
 
 ## 11. Assumptions and Limitations
 
@@ -170,11 +160,11 @@ For example, if testing 7 models pairwise (21 comparisons), `α_corrected = 0.05
 2. **Identical distribution:** All models are tested on the same declared game-instance protocol.
 3. **Fixed seed:** Seed = 42 is a reproducibility condition, not evidence of generalization.
 4. **Sample size:** Sample size is justified using a predeclared minimum practical effect and the experimental unit, not only the number of games.
-5. **Non-parametric tests:** No normality assumption required
+5. **Test assumptions:** Non-parametric does not mean assumption-free; tie handling, exchangeability, dependence, and sampling design must be addressed.
 
 ## Implementation Record
 
-- Framework and application hypotheses are predeclared; all outcomes remain pending because standard-dataset validation, model comparison, tuning, and ablation have not been run.
+- Framework and application hypotheses remain provisional and untested. Standard-dataset validation, model comparison, tuning, and ablation have not been run; no power analysis or confirmatory test family is established.
 
 ---
 
@@ -191,7 +181,7 @@ For example, if testing 7 models pairwise (21 comparisons), `α_corrected = 0.05
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Hypotheses remain untested.** Finalize estimands, thresholds, experimental units, candidate set, multiplicity family, and resource budget before confirmatory data collection.
 
 ## Later
 

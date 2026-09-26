@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-board-state](01-board-state.md) | Board State Definition | PLANNED |
-| [02-feature-extraction](02-feature-extraction.md) | Feature Extraction | PLANNED |
-| [03-state-encoding](03-state-encoding.md) | State Encoding | PLANNED |
+| [01-board-state](01-board-state.md) | Board State Definition | PARTIAL — tile-range contract pending |
+| [02-feature-extraction](02-feature-extraction.md) | Feature Extraction | PARTIAL — accepted tile range unresolved |
+| [03-state-encoding](03-state-encoding.md) | State Encoding | PARTIAL — CSV implemented; range contract pending |
 
 ## Reading paths
 

@@ -1,6 +1,6 @@
 # Plan 03 — Action Mapping: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: COMPLETE (2026-09-26).** Direction conversion and validity-masked model selection are implemented.
 
 **Goal:** State the current implementation and evidence boundary for action mapping.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats action mapping as implemented.** `Direction` discriminants provide the stable integer mapping and `try_from_action` is fallible. `ModelPolicy` converts a 27-feature row to four class probabilities, masks invalid moves with `masked_argmax`, then decodes the selected ID. The selector errors on terminal boards and rejects invalid IDs or non-finite scores.
 
 ## 1. Overview
 
@@ -60,11 +60,11 @@ impl Direction {
 
 > **Canonical:** `04-Actions/03-Mapping/01-model-output-to-action.md` — `masked_argmax` — see there. This section is a reference stub.
 
-The automl model outputs raw predictions that must be mapped to valid actions — use canonical `masked_argmax(&logits, valid)` (filters invalid moves before argmax). Minimal illustration only:
+The current AutoML inference path returns four class probabilities, not logits. It maps them to a legal direction with `masked_argmax`; scores are compared directly, so softmax probabilities preserve the same argmax. Minimal illustration only:
 
 ```rust
-// Reference only — use canonical masked_argmax from 04-Actions/03-Mapping/01-model-output-to-action.md
-pub fn map_model_output(outputs: &[f64; 4], valid: &[u8]) -> u8 {
+// Current selector returns Result<u8, ActionError>.
+pub fn map_model_output(outputs: &[f64; 4], valid: &[u8]) -> Result<u8, ActionError> {
     masked_argmax(outputs, valid)
 }
 ```
@@ -88,7 +88,7 @@ pub fn validate_mapping(action: u8) -> Result<()> {
 
 ## Implementation Record
 
-- Enum-to-integer mapping uses the `Direction` discriminants, and decoding is fallible through `try_from_action`. Model scores are selected through the shared validity-masked action helper.
+- Enum-to-integer mapping uses `Direction` discriminants, and decoding is fallible through `try_from_action`. `ModelPolicy` gets four class probabilities from `predict_proba_array`, masks invalid directions through `masked_argmax`, and decodes the selected class.
 
 ---
 
@@ -105,7 +105,7 @@ pub fn validate_mapping(action: u8) -> Result<()> {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- This ticket covers deterministic action mapping. Policy quality and action frequency are measured by the later evaluation tickets.
 
 ## Later
 

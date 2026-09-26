@@ -1,6 +1,6 @@
 # Plan 01 — Data Schema: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Canonical CSV columns and sidecar are validated; Parquet is unsupported and tile-range contract remains unresolved.
 
 **Goal:** State the current implementation and evidence boundary for data schema.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the CSV schema as implemented with a tile-range gap.** The training CSV has 27 feature columns and integer `action`; per-game/move/score provenance is written to an aligned metadata sidecar. Root validation checks header, width, finite/range constraints, and action range, but cannot revalidate action legality without the source board. Parquet is not supported.
 
 ## 1. Purpose
 
@@ -30,7 +30,7 @@ flowchart TD
         end
 
         subgraph "Game Record"
-            GameID[Game ID: UUID]
+            GameID[Game ID: integer]
             AgentType[Agent Type]
             MoveCount[Move Count]
             FinalScore[Final Score<br/>benchmark only]
@@ -132,7 +132,7 @@ flowchart TD
     Validate[Schema Validation]
     Validate --> Check1[Check Dimensions: 27]
     Validate --> Check2[Check Types: f64]
-    Validate --> Check3[Check Ranges: 0-1]
+    Validate --> Check3[Check finite and per-feature ranges]
     Validate --> Check4[Check Action: 0-3]
     Validate --> Check5[Check Score: u64]
     
@@ -203,7 +203,7 @@ The automl framework consumes data in CSV format. The following defines the exac
 
 Supported formats for training data:
 - **CSV** (`.csv`) — Primary format for automl ingestion
-- **Parquet** (`.parquet`) — Optional, for large-scale datasets
+- Parquet — not implemented in the root data pipeline
 
 ### 8.3 Example Row
 
@@ -223,7 +223,7 @@ Each CSV row represents a single **state-action pair** extracted from a game tra
 3. The action taken at that step is recorded as the target label (`action` column).
 4. The resulting row is added to the training dataset.
 5. Multiple games are concatenated into a single CSV file.
-6. Each row is independent — there is no sequence dependency between rows in the CSV.
+6. Rows are stored as a flat table; game and move identifiers remain aligned in the sidecar for group splits and provenance.
 
 ```
 Game 1:
@@ -253,8 +253,8 @@ Game 2:
 
 ## Implementation Record
 
-- Exact 27-feature plus integer-action schema is implemented, with separate score/game/move metadata. Root validation rejects wrong header/width, nonfinite or out-of-range features, and invalid actions.
-- Parquet ingestion is not implemented; CSV is the only live training source. State-dependent checking that each action is legal is ensured by collector labeling/masking but is not revalidated from the CSV alone.
+- Exact 27-feature plus integer-action CSV schema is implemented, with separate score/game/move metadata. Validation rejects wrong header/width, nonfinite or out-of-range features, and invalid action IDs.
+- Parquet is not implemented. CSV labels are not rechecked for legality against source boards because boards are not in the canonical training table. Tiles above 32768 remain a range-contract issue.
 
 ---
 
@@ -271,7 +271,7 @@ Game 2:
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Resolve the tile-range contract shared with the state encoder. If legality must be revalidated during ingestion, add a board-bearing audit format separately from canonical training features.
 
 ## Later
 

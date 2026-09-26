@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-score-tracking](01-score-tracking.md) | Score Tracking | PLANNED |
-| [02-score-as-feature](02-score-as-feature.md) | Score as Feature | PLANNED |
+| [01-score-tracking](01-score-tracking.md) | Score Tracking | COMPLETE |
+| [02-score-as-feature](02-score-as-feature.md) | Score as Feature | COMPLETE |
 
 ## Reading paths
 

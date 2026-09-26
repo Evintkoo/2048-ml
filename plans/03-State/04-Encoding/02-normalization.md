@@ -1,6 +1,6 @@
 # Plan 02 — Normalization: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Deterministic feature formulas and validation are implemented; accepted board tiles above the documented 32768 scale can exceed the declared feature ranges.
 
 **Goal:** State the current implementation and evidence boundary for normalization.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,24 +9,24 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats deterministic encoding as implemented with an input-range contract gap.** `BoardStateMl::from_board` applies fixed divisors in `src/state.rs`, and `BoardStateMl::validate` allows score index 21 to exceed one while requiring the other features to remain in `[0,1]`. The scope document does not decide whether accepted game tiles should be capped or the feature range expanded, so that protocol question remains open under #034.
 
-> **Cross-ref:** creation canonical in `01-state-vector.md:31` `create_state_vector`; see `01-state-vector.md §4` for preprocessor. This file = normalization rules.
+> **Cross-ref:** canonical creation is `BoardStateMl::from_board` in `src/state.rs`; see `01-state-vector.md` for vector order. This file records deterministic scaling and preprocessing status.
 > **No `move_count_norm`.** Deleted — not in 27, not predictive. Do not reintroduce.
 
 ## 1. Deterministic Divisors (Canonical — No Fitting)
 
-All 27 features are already [0,1] via fixed divisors:
+The formulas below use fixed divisors; this does not guarantee every feature is in `[0,1]` for all values accepted by `RawBoardState`. Score index 21 is intentionally uncapped, and board tiles above 32768 can push several tile-derived features above one:
 
 | Feature | Signature | Formula |
 |---------|-----------|---------|
 | grid `0..15` | `fn(v: u32) -> f64` | `v as f64 / 32768.0` |
 | empty_count |  | `empty as f64 / 16.0` |
-| max_tile_log |  | `0 if max==0 else log2(max) / 15.0` |
+| max_tile_log |  | `0 if max==0 else log2(max) / 15.0` | [0,1] through 32768; larger tiles exceed 1 |
 | monotonicity/smoothness |  | already [0,1] |
 | merges_available |  | `merges as f64 / 16.0` |
 | score_normalized idx21 |  | `(score as f64 + 1.0).log10() / 6.0` |
-| adjacency_merge_score |  | `sum / 16.0` |
+| adjacency_merge_score |  | `sum / (16.0 * 32768.0)` | [0,1] through documented tile scale |
 | corner_max |  | `corner as f64 / 32768.0` |
 | edge_tiles_occupied |  | `occupied as f64 / 12.0` |
 | col_worst / row_worst |  | `min_sum as f64 / 8192.0` |
@@ -40,7 +40,7 @@ Correct signatures: `fn(value: u32) -> f64` (not `u8`). Max tile 32768 = 2^15.
 | Deterministic divisors | always (creation) | — (fixed math) |
 | `DataPreprocessor` fitted | optional, after divisors | `Standard` for linear/SVM/KNN; `None` for trees (scale-invariant) |
 
-Deterministic divisors are **not** a `ScalerType`; fitted `StandardScaler` is fitted on training `DataFrame` after divisors.
+Deterministic divisors are **not** a fitted `ScalerType`. The current root trainer loads stored feature values directly and does not fit or persist an AutoML `DataPreprocessor`; model-specific scaler suggestions below are not implemented training behavior.
 
 ## 3. automl Pipeline — Correct APIs
 
@@ -56,14 +56,14 @@ let df_norm = preprocessor.fit_transform(&df, &feature_cols)?;
 
 Tree models: `ScalerType::None` is acceptable — skip scaling entirely, rely on deterministic divisors only.
 
-## 4. Model-Specific Guidance
+## 4. Model-Specific Guidance (Future Integration)
 
 | Model | Scaler |
 |-------|--------|
 | Linear/Logistic, SVM, KNN, MLP | `Standard` (or `MinMax`) |
 | RandomForest, GradientBoosting, XGBoost, LightGBM, CatBoost | `None` (optional) |
 
-## 5. Persistence
+## 5. Persistence (Not Implemented)
 
 ```rust
 pub fn save_preprocessor(p: &DataPreprocessor, path: &str) -> Result<()> {
@@ -77,7 +77,7 @@ pub fn load_preprocessor(path: &str) -> Result<DataPreprocessor> {
 
 ## 6. Validation
 
-Deterministic divisors guarantee [0,1] before scaler. After any scaler, check finite:
+Under the documented tile scale, deterministic divisors produce the listed bounded features; score index 21 may exceed one. The current validator rejects non-finite and negative values and rejects values above one for every feature except index 21. The trainer does not apply a fitted scaler:
 
 ```rust
 fn validate_normalization(v: &[f64;27]) -> Result<()> {
@@ -90,8 +90,9 @@ fn validate_normalization(v: &[f64;27]) -> Result<()> {
 
 ## Implementation Record
 
-- Deterministic scaling is implemented before storage. Feature and CSV validators apply the declared per-feature range rule, including the uncapped score feature.
-- The current trainer does not fit or persist a `DataPreprocessor`; preprocessing integration remains pending. Tree-based training currently consumes the deterministic feature values directly.
+- Deterministic scaling is implemented before storage. Feature and CSV validators apply the per-feature range rule, including the uncapped score feature.
+- `RawBoardState` accepts powers of two above 32768, while fixed divisors and validation bounds assume the documented scale. No cap or expanded range is specified by canonical scope.
+- The current trainer does not fit or persist a `DataPreprocessor`; it consumes stored values directly. The examples below describe possible future integration, not current behavior.
 
 ---
 
@@ -108,7 +109,9 @@ fn validate_normalization(v: &[f64;27]) -> Result<()> {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Tile-range contract:** `RawBoardState` accepts powers of two above 32768, while fixed divisors and validation bounds assume the documented scale. The scope does not specify capping tiles or expanding feature ranges; settle and document this before changing the data contract.
+- **Preprocessing integration:** the current trainer consumes stored values directly. If fitted scaling is added, define fold-local fitting and persistence before applying it to evaluation data.
+- Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 

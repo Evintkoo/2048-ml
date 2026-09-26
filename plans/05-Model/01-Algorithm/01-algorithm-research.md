@@ -1,6 +1,6 @@
 # Plan 01 — Algorithm Research: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Framework API smoke checks and candidate boundaries are recorded; comparative research remains pending.
 
 **Goal:** State the current implementation and evidence boundary for algorithm research.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats algorithm capability inspection as implemented with empirical evaluation pending.** The smoke suite exercises 13 model/task combinations, but only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes produce four-class probability output in the pinned integration. This does not rank them or establish performance on standard datasets or 2048.
 
 > This is a secondary model-capability and case-study plan. The primary contribution is the Rust-native AutoML architecture defined in `plans/01-Infrastructure/01-Project/04-framework-contribution.md`.
 
@@ -94,7 +94,7 @@ flowchart TD
 
 ### 3.2 Tree-Based Models
 
-Tree-based models are the strongest candidates due to their ability to handle non-linear relationships in board state features and their inherent capacity to capture interaction effects between features (e.g., monotonicity × empty tiles).
+Tree-based models are plausible candidates for nonlinear board interactions, but no model family is assumed to perform best. Capability compatibility and empirical quality are separate questions.
 
 ```mermaid
 flowchart LR
@@ -157,11 +157,11 @@ flowchart TD
 | Inference Speed | Informative (≤1ms) | Time to predict a move (ms) | — |
 | Score Consistency | Informative | Standard deviation of game scores (lower = better) | — |
 
-> **No proximity ratio gate.** If reported as optional analysis, proximity = `model_mean / heuristic_mean (≈512)` as a single informative ratio (e.g., 1.5×). Do not use `max_score / theoretical_limit` — theoretical limit is open/unproven. Canonical thresholds: **Mean ≥512, Valid-Action Accuracy ≥60%, F1 ≥0.55, Rank by Mean Score**.
+> No score/accuracy thresholds are established by the canonical scope. Predeclare a case-study protocol before ranking. Do not interpret a 2048 score as AutoML framework evidence.
 
 **Note**: The task is supervised multi-class classification. The model predicts an action given a board state. R², RMSE, and MAE are NOT applicable because the model does not predict scores — it predicts discrete actions. Score is a downstream consequence of action quality.
 
-**Note on automl capabilities**: automl provides supervised classification and regression models. It does not include RL algorithms (Q-Learning, DQN, PPO). All model selection is done via automl's `ModelType` enum which includes DecisionTree, RandomForest, GradientBoosting, XGBoost, LightGBM, SVM, KNN, LogisticRegression, SGD, AdaBoost, ExtraTrees, and others.
+**Note on automl capabilities**: AutoML provides supervised estimators, not reinforcement-learning methods. The source smoke exercises DecisionTree, RandomForest, ExtraTrees, AdaBoost, KNN, NaiveBayes, LogisticRegression, SGD, SVM, GradientBoosting, XGBoost, LightGBM, and CatBoost; supported prediction and probability shapes differ. Only five currently satisfy the root four-class probability policy contract.
 
 ## 5. Research References
 
@@ -184,8 +184,8 @@ flowchart TD
 
 ## Implementation Record
 
-- Framework capability inspection narrowed the runnable four-class probability candidates to RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. The working integration also contains grouped CV, model training, inference, and benchmark commands.
-- No standard-tabular framework evaluation, common-data algorithm comparison, or 10k-game model ranking has been completed. No winner or threshold pass is claimed.
+- `src/framework_validation.rs` smoke-checks 13 model/task combinations and confirms the four-class probability subset: RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes.
+- No standard-tabular framework evaluation, common-data algorithm comparison, or 10k-game trained-model ranking has been completed. No winner or threshold pass is claimed.
 
 ---
 
@@ -202,7 +202,8 @@ flowchart TD
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Run matched standard-dataset framework evaluation under #079 before making general algorithm-quality claims.
+- Run a predeclared 2048 case-study comparison only after an adequate labeled corpus and compute budget are available.
 
 ## Later
 

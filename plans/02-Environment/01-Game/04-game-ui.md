@@ -1,6 +1,6 @@
 # Plan 04 — Game UI: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** Headless-only MVP excludes the debug UI; optional static inspection work is tracked by ticket 022.
+> **Status: NOT APPLICABLE (2026-09-26).** This is a deprecated UI stub; the headless MVP has no renderer, and static inspection remains optional under ticket 022.
 
 **Goal:** State the current implementation and evidence boundary for game ui.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Headless-only MVP excludes the debug UI; optional static inspection work is tracked by ticket 022.
+**This plan is explicitly deprecated and out of scope for the headless MVP.** No renderer is implemented or required. The proposed terminal helper is retained here as historical design text; the optional static inspection work is tracked by ticket 022.
 
 > **Status: DEPRECATED STUB — Out of scope (headless simulation only).**
 > UI is **not MVP**. This file exists only to document the one debug-only helper.

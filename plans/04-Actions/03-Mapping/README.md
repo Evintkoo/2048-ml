@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-model-output-to-action](01-model-output-to-action.md) | Model Output to Action Mapping | PLANNED |
-| [02-action-decision-policy](02-action-decision-policy.md) | Action Decision Policy | PLANNED |
+| [01-model-output-to-action](01-model-output-to-action.md) | Model Output to Action Mapping | COMPLETE |
+| [02-action-decision-policy](02-action-decision-policy.md) | Action Decision Policy | COMPLETE |
 
 ## Reading paths
 

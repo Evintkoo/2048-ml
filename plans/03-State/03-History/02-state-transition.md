@@ -1,6 +1,6 @@
 # Plan 02 — State Transition: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: NOT APPLICABLE (2026-09-26).** The supervised `(from_state, action)` row is implemented; separate post-state/reward/done transition metadata is outside the canonical training protocol.
 
 **Goal:** State the current implementation and evidence boundary for state transition.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,26 +9,15 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**Scope-based disposition:** the canonical supervised example is the pre-action state and chosen action. The root stores that as `TrainingSample` plus sidecar metadata. It does not build a separate transition object with post-state, reward, or done fields; those fields are not used for training and are not needed for the supervised 2048 policy task.
 
 > **Canonical row:** `(from_state: [f64;27], action: u8)` with `TaskType::MultiClassification`. No RL.
 
 ## 1. Structure — Training Fields vs Metadata
 
-```rust
-pub struct StateTransition {
-    // ── training (only these feed automl) ──
-    pub from_state: [f64; 27],  // X — canonical 27
-    pub action: u8,             // y — 0..3 ONLY label
-    // ── metadata only (logged, never as y) ──
-    pub metadata: Option<TransitionMetadata>,
-}
-pub struct TransitionMetadata {
-    pub to_state: [f64; 27],  // state after move
-    pub reward: f64,            // score delta
-    pub done: bool,             // terminal
-}
-```
+The implemented `TrainingSample` contains `state_features:[f64;27]`,
+`action:u8`, raw score metadata, `game_id`, and `move_index`. Only state
+features and action enter AutoML; the sidecar carries provenance and score.
 
 ## 2. Recording
 
@@ -83,7 +72,7 @@ Save combined dataset via canonical DataFrame → Parquet. See `01-move-history.
 ## Implementation Record
 
 - Collection records the pre-action 27-value state and chosen action; score and game/move identifiers remain metadata. Invalid moves do not produce samples because valid actions are selected from `would_change`.
-- A separate `StateTransition` type and post-action metadata tuple are not implemented; current `TrainingSample` provides the supervised row shape without introducing RL fields.
+- `TrainingSample` provides the supervised row shape without introducing RL fields. Post-state/reward/done transitions are deliberately omitted under the supervised-only scope.
 
 ---
 

@@ -1,6 +1,6 @@
 # Plan 03 — Limitations: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Design limitations are documented; empirical trained-policy and full framework limitations remain unknown.
 
 **Goal:** State the current implementation and evidence boundary for limitations.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan combines known scope limits with open empirical limits.** A 10,000-game random/heuristic action-frequency study exists, but there is no trained-policy result or full framework benchmark.
 
-> **Note:** This section documents known limitations of the research design and approach. These limitations are identified before experimentation and will be updated based on actual findings.
+> Limits below distinguish observed implementation boundaries from questions that require the planned studies.
 
 ## 1. Limitations Framework
 
@@ -51,7 +51,7 @@ flowchart TD
 |-----------|--------|------------|--------|
 | Training time | Unknown — to be measured | Parallel training | To be assessed |
 | Memory usage | Unknown — to be measured | Model compression | To be assessed |
-| automl constraints | Verified candidate support is narrower than the original list; 8 model variants return only 2 probability columns | Keep the four-action candidate set to verified variants; record framework limitations | Partly assessed |
+| AutoML constraints | Root four-action integration currently permits RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes; broader framework behavior needs validation | Use only tested integration candidates and report capability limits | Partly assessed |
 | Rust bugs | Potential data corruption | Extensive testing | To be assessed |
 | Feature engineering fixed | Limited to 27 features | Future feature expansion | Acknowledged |
 | No RL methods | Cannot learn from rewards | Future work | Acknowledged |
@@ -61,26 +61,26 @@ flowchart TD
 - **Limited game variants:** Only standard 4×4 2048 tested
 - **No external data:** All data from game simulation
 - **Fixed evaluation criteria:** May not capture all performance aspects
-- **Sample size:** 10,000 games may not cover all edge cases
+- **Sample size:** game count does not establish power or cover rare outcomes; the primary model study has not run
 - **Label quality:** Depends on rollout simulation accuracy
 - **Feature completeness:** 27 features may not capture all relevant information
 - **Supervised learning only:** No reward shaping or policy gradient methods
-- **Single-seed primary experiments:** Multi-seed validation planned but may be resource-intensive
+- **Seed variation:** model robustness across training and evaluation seeds has not been measured
 - **Feature engineering fixed:** The 27-dimensional feature vector is predetermined
 
 ## 4. Framework Limitations
 
-The pinned automl capability gate has been run (see project overview §6.2). It passed for five four-class candidates. Eight other tested variants returned only two probability columns and are excluded pending framework fixes. Group-aware cross-validation is implemented in the integration because the framework scoring helper does not forward groups. Standard dataset validation and resource comparisons are still outstanding.
+Capability and probability-shape smokes pass for five four-class candidates. Broader framework validation remains open: standard datasets, matched external baselines, resource measurements, repeated-seed reliability, and CLI/API equivalence. Group-aware cross-validation is implemented in the integration because the framework scoring helper does not forward groups.
 
-The original gate required:
+The framework-validation ticket further requires:
 
 1. **API completeness:** Verify `TrainEngine`, `HyperOptX`, `ModelType` enum, and `CrossValidator` exist and are functional
 2. **Model coverage:** Confirm at least 4 candidate algorithms are available via `ModelType`
 3. **MultiClassification task:** Verify `TaskType::MultiClassification` is supported
-4. **Hyperparameter optimization:** Confirm `HyperOptX` with TPE sampler and `MedianPruner` are functional
+4. **Hyperparameter optimization:** Exercise implemented HyperOptX configuration; pruning API is not available
 5. **Cross-validation:** Verify `GroupKFold` or equivalent strategy exists
 
-**If verification fails:** The project's goal will be modified to evaluate "what automl CAN do" rather than "what it should have done." A local training fallback using `smartcore`/`linfa` may be implemented.
+Report capability failures as findings. The core 2048 model training path remains on the AutoML framework; external libraries are comparison baselines only under canonical scope.
 
 ## 5. Statistical Limitations
 
@@ -92,29 +92,29 @@ When testing multiple hypotheses simultaneously, the probability of Type I error
 
 **Mitigation:** Report both corrected and uncorrected p-values for transparency.
 
-### 6.2 Effect Size Threshold
+### 6.2 Effect Size
 
-The Cohen's d ≥ 0.5 threshold for practical significance may miss small but meaningful effects. In game AI, even small improvements in mean score can be practically important.
+No minimum practically meaningful effect has been declared. Select one before confirmatory comparisons and report effect sizes without treating a conventional category as an automatic gate.
 
 **Impact:** Models with small but consistent improvements may be overlooked.
 
 **Mitigation:** Report effect sizes for all comparisons, not just those meeting the threshold.
 
-### 6.3 Seed Dependency
+### 6.3 Seed Variation
 
-Results may vary with different random seeds. The primary seed (42) provides a baseline, but multi-seed validation is needed for generalizability.
+Game and training outcomes may vary by seed. The listed study seed matrix has not been executed and does not by itself establish generalizability.
 
 **Impact:** Results may not generalize to different game instances.
 
-**Mitigation:** Multi-seed validation planned (seeds 42, 123, 456, 789, 1011).
+**Mitigation:** Define training and evaluation seed roles and justify repeated runs before data collection.
 
 ### 6.4 Sample Size Limitations
 
-While 10,000 games is expected to be sufficient for most comparisons, rare events (e.g., very high scores) may not be well-represented.
+No power or precision claim can be made from the planned 10,000-game number. Rare-event coverage depends on the observed distribution and study design.
 
 **Impact:** Tail behavior may be underestimated.
 
-**Mitigation:** Report percentiles (50th, 90th, 95th, 99th) alongside mean scores.
+**Mitigation:** Report the summary statistics supported by the analysis code and retain raw score inputs; do not imply unimplemented percentiles.
 
 ## 6. Scope Limitations
 
@@ -142,24 +142,25 @@ While 10,000 games is expected to be sufficient for most comparisons, rare event
 
 These limitations are acknowledged and documented transparently:
 
-1. Results are specific to the 2048 game domain
-2. Generalizability to other games is untested
-3. Computational constraints may affect optimal model selection
-4. The exact maximum score for 2048 remains an open problem
-5. Supervised learning may not capture all aspects of optimal play
-6. All results are preliminary and await full experimentation
-7. The exact feature importance ranking is TBD pending ablation study
-8. Multi-seed validation is planned but not yet completed
-9. standard-dataset framework validation and comparative resource measurements remain incomplete
-10. The PSPACE-hardness claim is conjectured, not proven
+1. The baseline report measured random and heuristic mean scores of 1,094.12 and 8,056.23 respectively across 10,000 games under its recorded local protocol; these do not represent a trained AutoML policy or framework comparison
+2. Results are specific to the 2048 game domain
+3. Generalizability to other games is untested
+4. Computational constraints may affect optimal model selection
+5. The theoretical score bound has not been established in this repository
+6. Supervised learning may not capture all aspects of optimal play
+7. Model results await full experimentation
+8. Feature contribution is unknown; no ablation study has run
+9. Multi-seed validation is planned but not yet completed
+10. Standard-dataset framework validation and comparative resource measurements remain incomplete
+11. PSPACE-hardness is outside core scope and not established here
 
 ## 8. Mitigation Strategies (Trimmed — No Generic Filler)
 
 | Limitation | Mitigation |
 |-----------|------------|
-| Single seed | Multi-seed 42/123/456/789/1011; report σ/mean |
-| Multiple comparison | Bonferroni k≈21 + report uncorrected p for transparency |
-| automl gaps | Verify `ModelType`/`TaskType::MultiClassification`/`CrossValidator`; fallback `smartcore` if missing |
+| Seed variation | Declare separate training/evaluation seeds and replication unit |
+| Multiple comparison | Declare comparison family; current CLI reports Holm-adjusted p-values |
+| AutoML gaps | Report framework capability failures; keep core training on AutoML per scope |
 | 4×4 / supervised / 27-dim fixed | Acknowledged — future n×n/RL is Appendix only |
 
 > Generic rows (training time, PSPACE, 8×8 expansion) deleted — covered in Discussion §7 Future Work (2 lines each) and `07-computational-budget.md`.
@@ -172,7 +173,7 @@ All results will be reported honestly, including null results and failed experim
 
 ## Implementation Record
 
-- Design limitations and reporting commitments are documented. Empirical limitations and the final framework capability report remain pending; this ticket does not contain study results.
+- Measured baseline evidence is summarized in `reports/action-frequency/README.md`; its random/heuristic scores are protocol-specific. Trained-policy, standard-dataset framework, and resource limitations remain unresolved.
 
 ---
 
@@ -189,7 +190,7 @@ All results will be reported honestly, including null results and failed experim
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Open limitations require the pending framework and case-study studies.** Retain raw data, manifests, dependency state, and resource measurements; declare a budget before large collection.
 
 ## Later
 

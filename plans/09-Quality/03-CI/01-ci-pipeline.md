@@ -1,6 +1,6 @@
 # Plan 01 — CI Pipeline: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** No CI workflow exists; this ticket remains an unimplemented infrastructure deliverable.
 
 **Goal:** State the current implementation and evidence boundary for ci pipeline.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**No CI automation is configured.** Historical local build/test/lint runs do not establish continuous integration, and the duration/deployment stages below are only proposals.
 
 ## 1. Purpose
 
@@ -73,11 +73,11 @@ flowchart TD
 
 | Stage | Command | Duration | Failure Action |
 |-------|---------|----------|----------------|
-| Build | cargo build | 2 min | Block pipeline |
-| Test | cargo test | 5 min | Block pipeline |
-| Lint | cargo clippy | 1 min | Warning only |
-| Validate | Custom scripts | 3 min | Block pipeline |
-| Deploy | Automated deploy | 1 min | Manual approval |
+| Build / check | Cargo build/check commands | Not measured in CI | Not configured |
+| Tests | Existing Cargo test targets | Not measured in CI | Not configured |
+| Lint / format | Cargo fmt and clippy | Not measured in CI | Not configured |
+| Research validation | Dataset and benchmark protocols | Not automated | Pending separate evidence |
+| Deploy | No deployment target in current scope | N/A | Out of scope |
 
 ## 5. Build Stage
 
@@ -115,12 +115,12 @@ graph TD
     D --> E[Validate]
     E --> F[Deploy]
     
-    style A fill:#9f9,stroke:#333
-    style F fill:#9f9,stroke:#333
-    style B fill:#9f9,stroke:#333
-    style C fill:#9f9,stroke:#333
-    style D fill:#9f9,stroke:#333
-    style E fill:#9f9,stroke:#333
+    style A fill:#9f9,stroke:#363
+    style F fill:#9f9,stroke:#363
+    style B fill:#9f9,stroke:#363
+    style C fill:#9f9,stroke:#363
+    style D fill:#9f9,stroke:#363
+    style E fill:#9f9,stroke:#363
 ```
 
 ## 8. Pipeline Triggers
@@ -167,7 +167,7 @@ Each pipeline run produces:
 
 ## Current Repository Status
 
-No CI workflow is configured in `.github/workflows/` yet. The local root crate currently passes `cargo fmt -- --check`, `cargo test`, and `cargo clippy -- -D warnings`; clippy emits a pre-existing dead-code warning from the pinned AutoML dependency, while the root crate is clean. CI automation, coverage reporting, performance schedules, and deployment stages remain unimplemented. The illustrative stage tables above are target design, not a live pipeline.
+No CI workflow is configured in `.github/workflows/`. Prior local formatter, test, and clippy results are historical and were not repeated during this pass. Coverage reporting, scheduled performance jobs, and deployment are not configured; deployment is outside current scope.
 
 ---
 
@@ -184,7 +184,7 @@ No CI workflow is configured in `.github/workflows/` yet. The local root crate c
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **CI remains unimplemented.** A future workflow needs submodule initialization, supported Rust toolchain, dependency caching, explicit failure policy, and a CI run artifact before it can be marked complete.
 
 ## Later
 

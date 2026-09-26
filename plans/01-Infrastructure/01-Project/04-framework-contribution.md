@@ -96,10 +96,14 @@ The case study provides application evidence and exposes framework limitations; 
 - [x] Configuration, capability, seed, parallelism, failure, persistence, and API-surface limitations audited.
 - [ ] Named standard tabular datasets with retained versions, hashes, splits, and metrics evaluated.
 - [ ] Fixed-configuration, established-framework, manual-selection, and comparable Rust baselines run under matched budgets.
-- [ ] Runtime, memory, repeated-seed reproducibility, reload, and CLI/library equivalence evidence collected.
+- [x] Focused RandomForest save/load equivalence smoke passes 20/20 repeated process runs on the local AutoML worktree patch.
+- [x] Same-seed synthetic RandomForest refit check passes 20/20 process runs, with 20 refits compared per run.
+- [ ] Runtime, memory, broader multi-seed/dataset reproducibility, and CLI/library equivalence evidence collected.
 - [ ] Independent replication or validation completed.
 
-The existing focused root capability test was run on 2026-09-24 with `cargo test framework_validation -- --nocapture`. The grouped-CV/TPE smoke passed. The model capability/persistence smoke failed once and passed on retry; in 20 repetitions it failed once because RandomForest predictions after save/load differed from the pre-save predictions. Source inspection found a plausible nondeterminism in decision-tree leaf ties: `HashMap::into_iter().max_by_key` has no stable tie order. This is not yet isolated experimentally, so model reproducibility and reload equivalence remain unverified. No test was added or changed as part of this ticket.
+The original 2026-09-24 root smoke failed once in 20 repetitions. Follow-up checks isolated three issues in the pinned AutoML checkout. First, `DecisionTree::compute_leaf_value` used randomized `HashMap` iteration to choose among tied classes; leaf ties now select the lowest class deterministically. Second, a structural comparison showed that JSON load changed serialized RandomForest floats (the first observed difference was `feature_importances[21]`, from `0.11877923958625117` to `0.11877923958625115`); enabling `serde_json/float_roundtrip` restored exact model state. Third, a new same-seed refit check failed before the split fix because `TrainEngine::stratified_split` appended class rows in `HashMap` iteration order; class groups now use a `BTreeMap`, so fixed-seed fits receive a stable row order. The local AutoML worktree patch has not been committed or published to the pinned upstream revision.
+
+Validation after the patch: the leaf-tie regression passed; the same-seed synthetic refit smoke passed in 20/20 process runs with 20 refits compared per run; and the RandomForest save/load smoke passed 20/20 process runs with exact model-state and prediction checks. The full AutoML library suite passed 710/710. This is focused synthetic evidence; standard datasets, matched baselines, resource measurements, broader seed/dataset behavior, API/CLI parity, and independent replication remain outstanding.
 
 ## Open questions
 

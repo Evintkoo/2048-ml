@@ -1,6 +1,6 @@
 # Plan 01 — Experimental Design: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Two-track design is proposed; standard-dataset validation, power rationale, and plan-scale policy experiments remain pending.
 
 **Goal:** State the current implementation and evidence boundary for experimental design.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This is a proposed design, not a preregistered or executed experiment.** Framework validation is partial; plan-scale training/evaluation, sample-size rationale, and analysis assumptions remain open.
 
 ## 1. Purpose
 
@@ -60,26 +60,26 @@ flowchart TD
 
 | Variable | Type | Values | Notes |
 |----------|------|--------|-------|
-| Framework Model Architecture | Independent | RandomForest, GradientBoosting, XGBoost, LightGBM, ExtraTrees, SVM, KNN | Candidate models exposed by AutoML |
-| Framework Configuration | Independent | Defaults, fixed search, TPE/other declared search | Matched search budget |
-| Application Model Architecture | Independent | AutoML-supported model types | 2048 case study |
+| Framework Model Architecture | Independent | Declared supported model types | Confirm current capabilities before selecting candidates |
+| Framework Configuration | Independent | Defaults or declared search configuration | Match budgets and record failures |
+| Application Model Architecture | Independent | Implemented four-class integration candidates | Integration whitelist is narrower than framework enum |
 | Feature Set | Independent | 27-dimensional feature vector | Fixed across all models |
-| Training Algorithm | Independent | automl default, HyperOptX-tuned | Two configurations |
+| Training Algorithm | Independent | Declared training configuration | Tuning comparison not yet run |
 | Hyperparameters | Independent | Search space defined in HyperOptX | TPE sampler |
 | Framework Quality | Dependent | Dataset-appropriate predictive metric | Primary framework metric |
 | Framework Resources | Dependent | Time, memory, failures, search efficiency | Systems evaluation |
 | Score | Dependent | Continuous | Primary 2048 case-study metric |
 | Median Score | Dependent | Continuous | Robustness check |
 | Training Time | Dependent | Continuous | Efficiency metric |
-| Convergence Epoch | Dependent | Discrete | Training dynamics |
+| Training dynamics | Dependent | Only if exposed by selected trainer | Not currently a game-score result |
 | Game Rules | Control | Fixed | Standard 4×4 2048 |
-| Random Seed | Control | Fixed (42) | Reproducibility |
+| Random Seed | Control | Declare training and evaluation seeds separately | One seed does not establish robustness |
 | Game Environment | Control | Fixed | Custom Rust 2048 |
-| Evaluation Games | Control | Fixed (10,000) | Consistent sample size |
+| Evaluation Games | Control | To be justified and declared | No automatic power guarantee |
 
 ## 4. Experimental Procedure
 
-Before generating 2048 training data, complete the AutoML capability gate: verify the required APIs, model types, preprocessing, validation, optimization, serialization, and deterministic behavior. Record failures as framework findings and revise the affected 2048 claim before continuing.
+The framework-validation gate is partial. Complete its standard-dataset, baseline, resource, and repeatability work before making claims that depend on those capabilities. Small capability smokes may continue as engineering checks, clearly separated from confirmatory policy experiments.
 
 ```mermaid
 flowchart TD
@@ -103,7 +103,7 @@ flowchart TD
     A[Single Trial] --> B[Initialize Environment]
     B --> C[Configure Model]
     C --> D[Train Model]
-    D --> E[Evaluate 10,000 Games]
+    D --> E[Evaluate declared game sample]
     E --> F[Record Metrics]
     F --> G[Compute Statistics]
     G --> H[Statistical Testing]
@@ -120,34 +120,34 @@ flowchart LR
     D --> E
     E --> F[Report Confidence Intervals]
     
-    style A fill:#f9f,stroke:#333
-    style C fill:#9f9,stroke:#333
+    style A fill:#f9f,stroke:#363
+    style C fill:#9f9,stroke:#363
 ```
 
-**Primary replication:** Same seed (42), same configuration, run once to verify deterministic reproducibility.
+**Repeatability check:** Repeat an identical configuration and seed; one repeat pair is only a smoke check, not general reproducibility evidence.
 
-**Secondary replication:** Different seeds (42, 123, 456, 789, 1011) to assess robustness and generalizability.
+**Robustness study:** Select training and evaluation seed sets separately and justify their counts before collection. The earlier five-seed list is a proposal, not a completed design.
 
-**Tertiary replication:** Different random game instances to assess generalization to unseen board states.
+**Evaluation instances:** Record per-game outcomes and account for shared trained-model and seed effects; game IDs alone do not establish independent experimental units.
 
 ## 7. Bias Controls
 
 - **Fixed game rules** across all experiments (standard 4×4 board, 0.9/0.1 spawn)
 - **Consistent data pipeline** for all models (same 27-dim extraction, rollout labels 100 sims/action, same `game_id` for GroupKFold)
-- **Same evaluation criteria** for all models (identical 10,000 game sequences, seed 42, same heuristic ~512 / random ~128 reference)
+- **Same evaluation criteria** for all models (same declared instances where pairing is intended; measure baselines under the same protocol)
 - **Same seed** for reproducibility (primary `42`; secondary `123,456,789,1011`)
 - **No blinded analysis** — game scores are objective numeric; blinding adds no value and is removed
-- **Balanced evaluation** all models evaluated on identical game sequences (paired comparison valid for MWU)
+- **Comparison assumptions**: shared sequences induce pairing; select a paired/clustered method rather than treating them as independent observations
 
-## 8. Equipment and Tools (Pinned — No Drift)
+## 8. Equipment and Tools (Record Actual Study Versions)
 
 | Tool | Version | Purpose | Notes |
 |------|---------|---------|-------|
-| automl | `v1.0.0` | ML training | `TrainEngine`, `TaskType::MultiClassification`, `ModelType` enum, `CrossValidator::GroupKFold` |
-| Rust | `1.75` | Game engine + automl | Pinned `Cargo.lock`, no GPU |
-| polars | `0.46` | Data processing | Parquet I/O, pinned `requirements.txt` |
-| HyperOptX | `automl v1.0.0` bundled | Hyperparameter search | TPE + MedianPruner, verify in `automl/src/optimizer` |
-| Seed | `42` | Reproducibility | Primary; secondary seeds recorded in sidecar |
+| automl | Submodule pin plus worktree state | ML training | Record exact commit and local modifications |
+| Rust | Manifest minimum `1.75` | Game engine + automl | Record actual compiler and target |
+| polars | `0.46` dependency | Data processing | Root data workflow uses CSV; do not imply Parquet collection |
+| HyperOptX | Current local integration | Hyperparameter search | Root supports a schema-versioned search config; pruning remains unavailable |
+| Seeds | Per declared protocol | Reproducibility | Separate data, training, and evaluation seed roles |
 
 ## 9. Ethical Considerations
 
@@ -164,11 +164,9 @@ All experiments use simulation only. No human subjects are involved. All data is
 
 ## 11. Sample Size Justification
 
-**2048 application analysis:** 10,000 games is an initial precision target, not an automatic power guarantee. Final sample-size justification must use the declared experimental unit, a minimum practically meaningful score difference, estimated variance, paired/clustered structure, and the number of trained-model repetitions.
+**2048 application analysis:** Any proposed game count is a planning target, not an automatic power guarantee. Final sample-size justification must use the declared experimental unit, a minimum practically meaningful score difference, estimated variance, paired/clustered structure, and the number of trained-model repetitions.
 
-**Convergence analysis:** 100 games per epoch
-- Provides stable learning curve estimates
-- Sufficient for convergence detection
+**Learning curves:** Not currently generated as an epoch-level outcome. If added, justify evaluation precision empirically; no fixed 100-game sufficiency claim is established.
 
 **Framework validation:** Dataset-level repetitions and resource measurements are planned separately from 2048 game counts.
 
@@ -186,7 +184,7 @@ Validation checklist — mark complete only after evidence is produced:
 
 ## 13. Pre-registration
 
-This experimental design is pre-registered to prevent p-hacking and HARKing (Hypothesizing After Results are Known):
+This design has not been externally or timestampedly preregistered. Before confirmatory collection, record:
 - All hypotheses stated before data collection
 - All evaluation criteria defined before analysis
 - All statistical tests specified before results
@@ -194,7 +192,7 @@ This experimental design is pre-registered to prevent p-hacking and HARKing (Hyp
 
 ## Implementation Record
 
-- A two-track framework/case-study protocol and seed/group controls are specified. It is not executed or externally pre-registered. The current collector labels before splitting and current grouped CV is not chronological; the planned split/label ordering and inferential unit need resolution before running the full experiment.
+- The two-track design is proposed, not pre-registered or executed. Current framework validation is partial; policy scale and sample size are undecided. Collector labels are generated before grouped CV, and grouped CV is not chronological. Resolve leakage boundaries, trained-model versus game-level experimental units, pairing, budget, and test choice before confirmatory evaluation.
 
 ---
 
@@ -211,7 +209,7 @@ This experimental design is pre-registered to prevent p-hacking and HARKing (Hyp
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Protocol decisions remain open.** Predeclare datasets, splits, budgets, experimental units, seed roles, practical thresholds, and analysis before confirmatory runs. Large collection requires an explicit compute budget and retained artifacts.
 
 ## Later
 

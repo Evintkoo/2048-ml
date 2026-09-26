@@ -7,7 +7,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-rust-deps](01-rust-deps.md) | Rust Dependencies Specification | DONE (2026-09-24) |
-| [02-submodule-deps](02-submodule-deps.md) | Submodule Dependency Management | DONE (2026-09-24) |
+| [02-submodule-deps](02-submodule-deps.md) | Submodule Dependency Management | PARTIAL — pinned commit is intact; local research patch remains uncommitted |
 
 ## Reading paths
 

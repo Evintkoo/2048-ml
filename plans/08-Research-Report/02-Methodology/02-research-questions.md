@@ -1,6 +1,6 @@
 # Plan 02 — Research Questions: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Research questions are defined but unanswered; experiment designs and capability validation remain incomplete.
 
 **Goal:** State the current implementation and evidence boundary for research questions.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**Research questions are framing, not findings.** Framework validation and plan-scale 2048 comparisons remain incomplete; no baseline superiority, model winner, or robustness result is claimed.
 
 > **Canonical mapping:** 4 RQs, with the Rust-native AutoML architecture as the primary contribution and 2048 as the principal case study. Speculative theory is not treated as a primary research question.
 
@@ -21,10 +21,10 @@ Define the exact RQs for both the independent AutoML framework and the 4×4 supe
 
 | RQ | Question | automl API Mapping | Test (see 03-hypotheses.md) | Status |
 |----|----------|--------------------|-----------------------------|--------|
-| **RQ1** | What Rust-native architecture and data contracts are required to integrate preprocessing, training, validation, optimization, inference, serialization, and reproducibility in one AutoML system? | Architecture and implementation documentation | Architecture analysis and design-trade-off review | TBD |
-| **RQ2** | Does the implemented framework satisfy its correctness, reproducibility, efficiency, and interoperability requirements on standard tabular tasks? | Framework validation protocol in `07-Benchmarking/03-Comparison/04-framework-validation.md` | Capability, correctness, benchmark, and resource tests | TBD |
-| **RQ3** | Can the validated framework train a 4×4 policy whose mean score exceeds the heuristic baseline, and which `ModelType` performs best? | `TrainingConfig { task_type: MultiClassification, target: "action", feature_columns: 27 }` → `TrainEngine::fit` → benchmark framework | H1/H2 statistical protocol | TBD |
-| **RQ4** | What is the magnitude, robustness, and practical significance of the 2048 case-study result? | Same pipeline across training/evaluation seeds and controlled sensitivity conditions | CIs, effect sizes, seed and sensitivity analysis | TBD |
+| **RQ1** | What Rust-native architecture and data contracts integrate the documented AutoML capabilities? | Architecture and source audit | Design-trade-off review | Framed; validation incomplete |
+| **RQ2** | Does the framework satisfy declared correctness and usability criteria on standard tabular tasks? | Framework-validation protocol | Capability tests and matched benchmark study | Partial; dataset study pending |
+| **RQ3** | How does the framework-trained supervised policy compare with locally measured baselines and supported model candidates? | Four-action training and benchmark CLI | Declared pairwise protocol | Unanswered; plan-scale run pending |
+| **RQ4** | What uncertainty and seed sensitivity characterize the 2048 case-study result? | Retained per-game scores and manifests | Declared experimental unit and sensitivity analysis | Unanswered; replication pending |
 
 Secondary diagnostics (not separate RQs): feature-group contribution, label quality, convergence learning curves, and framework search efficiency — answered in ablation, framework validation, and findings.
 
@@ -36,15 +36,13 @@ Document the module boundaries, data contracts, configuration model, model/task 
 
 The framework track verifies the required APIs, preprocessing behavior, validation strategy, model training, hyperparameter search, serialization, and reproducibility on standard tabular tasks. A missing or failing capability is reported as a framework finding and blocks the corresponding 2048 claim.
 
-## 5. RQ3 Detail — Can automl beat ~512 and who wins?
+## 5. RQ3 Detail — How does the policy compare?
 
-**H0 (H1):** μ_best ≤ μ_heuristic (~512). **H1:** μ_best > ~512. **Primary test:** pre-registered one-sided Mann-Whitney U at α=0.05 with Holm correction for the planned baseline comparisons. Report bootstrap 95% CI and effect size as evidence, not additional mandatory gates. **Ranking:** highest held-out mean over 10k games; use uncertainty intervals and repeated seeds to describe close results.
-
-**H0 (H2):** All 7 `ModelType` means equal. **H1:** At least one differs. **Test:** Kruskal-Wallis → Dunn post-hoc Bonferroni.
+Compare only measured baseline distributions and supported model types. Before confirmatory runs, declare pairing, experimental unit, comparison family, sample-size rationale, and practical threshold. Available helpers do not include a global Kruskal–Wallis test.
 
 ## 6. RQ4 Detail — Magnitude and Reproducibility
 
-Report: winner mean, bootstrap 95% CI (~±20 at σ512/10k), d vs heuristic, and seed sensitivity `σ(μ_seeds)/mean(μ_seeds)`. If ranking flips across seeds → winner inconclusive, escalate to 50k.
+Report summary and uncertainty from retained observations. Precision and seed sensitivity cannot be specified from assumed variance; do not escalate sample size automatically without an updated design rationale.
 
 ## 7. What Was Deleted and Why
 
@@ -63,7 +61,7 @@ RQ3 → H1+H2 in 03-hypotheses.md → winner table in 03-results.md → discussi
 RQ4 → CIs, effect sizes, seed sensitivity → 03-Findings/05-sensitivity-analysis.md + discussion
 ```
 
-No result claimed before data; all answers pending `statistical_tests.rs` on `ScoreMetrics`.
+No result is claimed before data; implemented statistics reside in `src/evaluation.rs` and are limited as documented in the benchmarking tickets.
 
 ## Implementation Record
 
@@ -84,7 +82,7 @@ No result claimed before data; all answers pending `statistical_tests.rs` on `Sc
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The questions remain unanswered.** Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 

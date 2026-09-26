@@ -6,12 +6,12 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [00-literature-review](00-literature-review.md) | Literature Review | PLANNED |
-| [00-theoretical-framework](00-theoretical-framework.md) | Theoretical Framework | PLANNED |
-| [01-introduction](01-introduction.md) | Introduction | PLANNED |
-| [02-methodology](02-methodology.md) | Methodology | PLANNED |
-| [03-results](03-results.md) | Results | PLANNED |
-| [04-discussion](04-discussion.md) | Discussion | PLANNED |
+| [00-literature-review](00-literature-review.md) | Literature Review | PARTIAL — source verification pending |
+| [00-theoretical-framework](00-theoretical-framework.md) | Theoretical Framework | PARTIAL — formal claims need review |
+| [01-introduction](01-introduction.md) | Introduction | PARTIAL — experiments and literature verification pending |
+| [02-methodology](02-methodology.md) | Methodology | PARTIAL — redirect; proposed protocol unexecuted |
+| [03-results](03-results.md) | Results | PARTIAL — result templates only |
+| [04-discussion](04-discussion.md) | Discussion | PARTIAL — interpretation guidance only |
 
 ## Reading paths
 

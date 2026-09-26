@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-discrete-actions](01-discrete-actions.md) | Discrete Actions | PLANNED |
-| [02-action-constraints](02-action-constraints.md) | Action Constraints | PLANNED |
+| [01-discrete-actions](01-discrete-actions.md) | Discrete Actions | COMPLETE — canonical redirect verified |
+| [02-action-constraints](02-action-constraints.md) | Action Constraints | COMPLETE |
 
 ## Reading paths
 

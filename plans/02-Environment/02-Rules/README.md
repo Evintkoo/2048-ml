@@ -8,7 +8,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 |---|---|---|
 | [01-scoring-rules](01-scoring-rules.md) | Scoring Rules | DONE (2026-09-24) |
 | [02-win-lose-conditions](02-win-lose-conditions.md) | Win / Lose Conditions | DONE (2026-09-24) |
-| [03-valid-moves](03-valid-moves.md) | Valid Moves | DONE (2026-09-24) |
+| [03-valid-moves](03-valid-moves.md) | Valid Moves | PARTIAL — model-policy frequency remains pending |
 
 ## Reading paths
 

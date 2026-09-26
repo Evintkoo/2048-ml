@@ -1,6 +1,6 @@
 # Plan 05 — Sensitivity Analysis: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Sensitivity analyses are proposed; no model, data-size, or training-seed sweep has run.
 
 **Goal:** State the current implementation and evidence boundary for sensitivity analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,45 +9,43 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**No sensitivity result is claimed.** The proposed 35-run seed matrix and follow-up sweeps are not based on an approved resource budget or power rationale.
 
-> **Hardware GPU table deleted.** Tree models (`RandomForest, GradientBoosting, XGBoost, LightGBM, ExtraTrees, SVM, KNN`) are CPU-only in `automl` (`smartcore`/`linfa`). No GPU path to test; sensitivity is seed + data.
+> Hardware acceleration sensitivity is outside the current protocol. Model/seed/data sensitivity requires the actual supported candidates and a declared budget.
 
 ## 1. Seed Sensitivity (Canonical)
 
-All 7 `ModelType` × seeds `42,123,456,789,1011` → 35 ×10k = 350k games (cap via same 270k rule as ablation: prioritize winner ModelType first). Metric:
+Select supported model candidates and independent training/evaluation seed roles before the study. The previously proposed 7-model, five-seed, 350,000-game matrix and 270,000 cap are not approved. A descriptive coefficient of variation may be reported where defined, with uncertainty and model-training replication considered:
 
 ```
 seed_sensitivity = σ(μ_seed) / mean(μ_seed) ×100%
 ```
 
-- <10% + stable ranking → robust.
-- >20% or flip → inconclusive winner, escalate to 50k games.
-- Report per-model `mean, σ, CI` and overall ranking stability.
+Do not apply universal 10%/20% cutoffs or increase game count automatically. Report measured variation and explain its limits.
 
 ## 2. Data Sensitivity
 
 | Factor | Levels | Gate |
 |--------|--------|------|
-| Train size | 1k,5k,10k,50k,100k | Score vs size; plateau = good |
-| Label noise | 0%,5%,10%,20% flipped `a*` | Δmean with MWU |
-| Sample bias | early-half vs late-half vs balanced | Δmean |
+| Train size | Select after pilot and compute budget | Measure score and uncertainty; a plateau requires a defined criterion |
+| Label perturbation | Only if justified and implementable | Compare under a predeclared perturbation protocol |
+| Sampling variation | Declare data split/design | Measure sensitivity without assuming temporal ordering |
 
 ## 3. Hyperparameter Sensitivity
 
-Grid per winner ModelType: `n_estimators {50,100,200}`, `max_depth {3,6,12}`, `lr {0.05,0.1,0.3}` — report `Sensitivity=(Max-Min)/Max`.
+Hyperparameter sensitivity depends on the selected model adapters and supported search dimensions. The current tuning config supports only RandomForest and ExtraTrees parameters; no broad grid study has run.
 
 ## 4. Evaluation Sensitivity (Already in 03-results.md)
 
-CI width vs n: 10k → ~20 (σ512). No duplication of benchmark CI table.
+Precision versus sample size is unknown until score variance and dependence are measured.
 
 ## 5. Consolidated with Ablation
 
-If ablation shows group redundancy, data-size plateau implies 27-dim over-parameterized — cross-ref `04-ablation-study.md` §1.2.
+Ablation and data-size results answer different questions. Neither alone establishes feature redundancy or sufficiency.
 
 ## Implementation Record
 
-- No multi-seed, data-size, label-noise, feature, or hyperparameter sensitivity sweep has been run. The prescribed game counts and effect thresholds are not results.
+- No model, data-size, label-perturbation, feature, or multi-seed sensitivity sweep has been run; proposed thresholds and sample counts are not evidence.
 
 ---
 
@@ -64,7 +62,7 @@ If ablation shows group redundancy, data-size plateau implies 27-dim over-parame
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Sensitivity work remains pending.** Select conditions, supported parameters, experimental units, and resource budget before running sweeps.
 
 ## Later
 

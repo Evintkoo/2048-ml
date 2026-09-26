@@ -1,30 +1,30 @@
-# Plan 00 — Canonical Scope and Traceability: the repository status is explicit and evidence based
+# Plan 00 — Canonical Scope and Traceability: application results do not establish framework superiority
 
 > **Status: DONE (2026-09-24).** Read fully; governs all lower-level plan files.
 
-**Goal:** State the current implementation and evidence boundary for canonical scope and traceability.
-**Builds on:** [00](00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+**Goal:** Keep framework validation, the 2048 application case study, and their evidence distinct.
+**Builds on:** This is the scope authority; it fixes the 17-value training state and the evidence boundary for every lower-level plan.
 
 ---
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Read fully; governs all lower-level plan files.
+**The 2048 case study cannot establish general AutoML superiority.** The rejected alternative conflates application performance with framework validation; standard tabular benchmark evidence is required for framework claims.
 
 This file is the scope authority for every document under `plans/`.
 
-## Research Hierarchy
+## 1. The 2048 case study supports application claims only
 
 1. **Primary contribution:** design, implementation, and empirical validation of the Rust-native `Evintkoo/automl` architecture.
 2. **Primary implementation:** the `2048-ml` repository, including the framework integration, game environment, data pipeline, and evaluation tooling.
 3. **Principal case study:** supervised four-action policy learning for the 4×4 2048 game.
 4. **Secondary analyses:** model comparison, feature ablation, label sensitivity, resource measurements, and robustness.
 
-## 2048 State Scope
+## 2. The training input contains 17 values
 
 The canonical training state uses the 16 board cells plus the current score (17 values). It excludes move count and game history; history may be retained for data collection and analysis, but not as training features unless a separately documented study changes this scope. State feature ordering and encoding are specified in the state plans.
 
-## Interpretation Rules
+## 3. Framework and case-study evidence answer different questions
 
 - Framework claims require framework-validation evidence on standard tabular tasks.
 - 2048 game score is application evidence, not proof of general AutoML superiority.
@@ -35,7 +35,7 @@ The canonical training state uses the 16 board cells plus the current score (17 
 - No result is considered complete until its data, configuration, seed, dependency version, and analysis artifact are recorded.
 - PSPACE, Markov-blanket, feature-sufficiency, and numerical PAC claims are excluded from the core unless independently proven with valid assumptions.
 
-## Plan Traceability
+## 4. Plan ownership follows the research role
 
 | Plan area | Research role | Authority |
 |---|---|---|
@@ -55,18 +55,19 @@ If a lower-level document conflicts with this file, the lower-level document mus
 ## Verification (definition of done)
 
 1. `test -f plans/00-scope-and-traceability.md` exits 0.
-2. `grep -q '^# Plan 00 — ' plans/00-scope-and-traceability.md` exits 0.
-3. `grep -q '^> \\*\\*Status:' plans/00-scope-and-traceability.md` exits 0.
-4. `grep -q '^\*\*Goal:' plans/00-scope-and-traceability.md` exits 0.
-5. `grep -q '^## Decision and evidence$' plans/00-scope-and-traceability.md` exits 0.
-6. `grep -q '^## Open questions$' plans/00-scope-and-traceability.md` exits 0.
-7. `grep -q '^## Later$' plans/00-scope-and-traceability.md` exits 0.
-8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/00-scope-and-traceability.md` exits 0.
+2. `grep -q '## 2. The training input contains 17 values' plans/00-scope-and-traceability.md` exits 0.
+3. `grep -q '16 board cells plus the current score (17 values)' plans/00-scope-and-traceability.md` exits 0.
+4. `grep -q 'Framework claims require framework-validation evidence on standard tabular tasks' plans/00-scope-and-traceability.md` exits 0.
+5. `grep -q '2048 game score is application evidence, not proof of general AutoML superiority' plans/00-scope-and-traceability.md` exits 0.
+6. `grep -q 'PSPACE, Markov-blanket, feature-sufficiency, and numerical PAC claims are excluded' plans/00-scope-and-traceability.md` exits 0.
+7. `grep -q '^## Open questions$' plans/00-scope-and-traceability.md` exits 0.
+8. `grep -q '^## Later$' plans/00-scope-and-traceability.md` exits 0.
+9. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/00-scope-and-traceability.md` exits 0.
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Read fully; governs all lower-level plan files. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The framework evidence remains incomplete.** Standard tabular benchmarks and retained protocol artifacts are required before making comparative framework claims.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **Framework validation and plan-scale case-study runs remain deferred.** They require explicit protocols, a declared compute budget, and retained data and analysis artifacts.

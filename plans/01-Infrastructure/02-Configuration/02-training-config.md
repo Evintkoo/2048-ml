@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** Preprocessing examples now use the pinned API. The root encoder produces deterministic, documented numeric features, so it does not fit imputation/scaling state; adding fitted preprocessing would change the feature protocol and must be separately justified. The illustrative YAML remains unconsumed by the CLI. The root exposes optional grouped-CV HyperOptX tuning for RandomForest/ExtraTrees and writes a sibling training manifest with data digests and derived seeds. CLI arguments remain the active configuration source.
+**This plan treats its subject as partial or pending work, not as a research finding.** Preprocessing examples now use the pinned API. The root encoder produces deterministic, documented numeric features, so it does not fit imputation/scaling state; adding fitted preprocessing would change the feature protocol and must be separately justified. The illustrative training YAML remains unconsumed by the CLI. The root exposes optional grouped-CV HyperOptX tuning for RandomForest/ExtraTrees through CLI arguments or the dedicated versioned JSON search contract documented in [Plan 01](01-automl-config.md); this is not a general training YAML parser. The sibling training manifest records data digests, configuration, and derived seeds.
 
 ## 1. Pipeline Stages
 
@@ -101,7 +101,7 @@ validation:
   early_stopping_rounds: 50
   
   optimizer:
-  enabled: false # root CLI does not apply HyperOptX trials yet
+  enabled: false # tuning is opted into by CLI argument or the dedicated search JSON
   algorithm: tpe
   n_trials: 100
   pruner: median

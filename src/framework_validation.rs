@@ -22,6 +22,42 @@ mod tests {
         DataFrame::new(columns).expect("smoke dataset should have consistent column lengths")
     }
 
+    fn first_json_difference(
+        left: &serde_json::Value,
+        right: &serde_json::Value,
+        path: &str,
+    ) -> Option<String> {
+        match (left, right) {
+            (serde_json::Value::Object(left), serde_json::Value::Object(right)) => {
+                let keys: std::collections::BTreeSet<_> = left.keys().chain(right.keys()).collect();
+                keys.into_iter()
+                    .find_map(|key| match (left.get(key), right.get(key)) {
+                        (Some(left), Some(right)) => {
+                            first_json_difference(left, right, &format!("{path}.{key}"))
+                        }
+                        _ => Some(format!("{path}.{key}: object key differs")),
+                    })
+            }
+            (serde_json::Value::Array(left), serde_json::Value::Array(right)) => {
+                if left.len() != right.len() {
+                    return Some(format!(
+                        "{path}: array length {} != {}",
+                        left.len(),
+                        right.len()
+                    ));
+                }
+                left.iter()
+                    .zip(right)
+                    .enumerate()
+                    .find_map(|(index, (left, right))| {
+                        first_json_difference(left, right, &format!("{path}[{index}]"))
+                    })
+            }
+            _ if left != right => Some(format!("{path}: {left} != {right}")),
+            _ => None,
+        }
+    }
+
     #[test]
     fn planned_multiclass_model_variants_fit_and_predict() {
         let data = tiny_multiclass_data();
@@ -67,14 +103,49 @@ mod tests {
                 let path =
                     std::env::temp_dir().join(format!("2048-ml-model-{}.json", std::process::id()));
                 engine.save(path.to_str().unwrap()).unwrap();
+                assert_eq!(
+                    engine.predict(&data).unwrap(),
+                    predictions,
+                    "RandomForest predictions changed before serialization"
+                );
                 let loaded = TrainEngine::load(path.to_str().unwrap()).unwrap();
-                assert_eq!(loaded.predict(&data).unwrap(), predictions);
+                let before_state = serde_json::to_value(engine.model()).unwrap();
+                let after_state = serde_json::to_value(loaded.model()).unwrap();
+                if let Some(difference) =
+                    first_json_difference(&before_state, &after_state, "model")
+                {
+                    panic!("RandomForest model state changed after save/load: {difference}");
+                }
+                assert_eq!(
+                    loaded.predict(&data).unwrap(),
+                    predictions,
+                    "RandomForest predictions changed after save/load"
+                );
                 let policy = crate::policy::ModelPolicy::load(path.to_str().unwrap()).unwrap();
                 let (board, _) = crate::game_engine::RawBoardState::with_seed(42, 0.1).unwrap();
                 let selected = policy.select_move(&board).unwrap();
                 assert!(board.get_valid_moves().contains(&selected));
                 std::fs::remove_file(path).unwrap();
             }
+        }
+    }
+
+    #[test]
+    fn identical_seed_random_forest_fits_produce_identical_predictions() {
+        let data = tiny_multiclass_data();
+        let config = TrainingConfig::new(TaskType::MultiClassification, "action")
+            .with_model(ModelType::RandomForest)
+            .with_n_estimators(4)
+            .with_max_depth(3)
+            .with_random_state(42);
+        let mut reference = TrainEngine::new(config.clone());
+        reference.fit(&data).unwrap();
+        let expected = reference.predict(&data).unwrap();
+
+        for _ in 0..20 {
+            let mut repeated = TrainEngine::new(config.clone());
+            repeated.fit(&data).unwrap();
+            assert_eq!(repeated.predict(&data).unwrap(), expected);
         }
     }
 

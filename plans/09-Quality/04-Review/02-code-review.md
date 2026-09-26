@@ -1,6 +1,6 @@
 # Plan 02 — Code Review: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL.** Code-review guidance exists; no independent review record exists.
 
 **Goal:** State the current implementation and evidence boundary for code review.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,59 +9,65 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**Code review is a scoped inspection of a change set, not an automated quality score.** This file is a code-specific checklist; no independent code review is recorded.
 
-> **See canonical `09-Quality/04-Review/01-peer-review.md` (and `09-Quality/03-CI/01-ci-pipeline.md` for CI pipeline) — duplicate stub.** Trimmed repetitive mermaid; see canonical for review framework.
+The code review records a change set, reviewer, findings, resolution, and decision. It considers behavior, maintainability, performance evidence, and security evidence separately; a passing build or test run is not itself reviewer approval.
 
-## 1. Purpose
+## 1. A code review evaluates a bounded change set
 
 Define code review procedures for the 2048 ML system source code.
 
-## 2. Code Review Framework
+## 2. Review procedure follows the shared assessment record
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §2 for review framework mermaid.**
+The reviewer identifies the changed files and intended behavior, inspects relevant source and retained validation, records findings, and checks their resolution before deciding.
 
-## 3. Code Review Checklist
+## 3. The checklist separates correctness from evidence availability
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §5 for review checklist mermaid.**
+| Area | Question | Evidence boundary |
+|------|----------|-------------------|
+| Correctness | Does the change implement its stated behavior? | Source and retained validation |
+| Readability | Can a maintainer follow the data flow? | Changed modules and docs |
+| Performance | Are performance claims measured? | Retained benchmark only |
+| Security | Was a relevant security check performed? | Recorded scan or explicit absence |
+| Scope | Does it preserve the canonical 17-value training state? | Feature construction and manifest |
 
-## 4. Review Categories
+## 4. Review categories do not imply completed checks
 
-| Category | Focus | Tools |
-|----------|-------|-------|
-| Correctness | Logic accuracy | Testing |
-| Readability | Code clarity | Linting |
-| Maintainability | Future changes | Architecture |
-| Performance | Efficiency | Profiling |
-| Security | Vulnerabilities | Scanning |
+| Category | Focus | Available evidence |
+|----------|-------|--------------------|
+| Correctness | Logic accuracy | Source inspection and existing tests; no new test run in this execution |
+| Readability | Code clarity | Source and documentation review |
+| Maintainability | Future changes | Module and dependency structure |
+| Performance | Efficiency | Retained measurements only; no profiling claimed |
+| Security | Vulnerabilities | No security scan result is recorded |
 
-## 5. Code Review Process
+## 5. Tool availability is not execution evidence
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §4 for review process mermaid; and `09-Quality/03-CI/01-ci-pipeline.md` for CI pipeline.**
+`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. No result is claimed for this execution, and no repository CI workflow or coverage report is configured.
 
-## 6. Code Quality Metrics
+## 6. The repository has no approved composite code score
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §3 and `09-Quality/03-CI/01-ci-pipeline.md` for metrics mermaid.**
+Reviewers report findings by severity and cite the changed code or artifact. The project defines no weighted score or coverage percentage as an approval gate.
 
-## 7. Review Automation
+## 7. Review automation is not configured
 
-> **Trimmed — see canonical `09-Quality/03-CI/01-ci-pipeline.md` §7 for automation/quality-gate mermaid.**
+The repository contains no configured pull-request checks or automated review integration.
 
-## 8. Code Review Tools
+## 8. Available commands do not stand in for reviewer judgment
 
 | Tool | Purpose | Stage |
 |------|---------|-------|
 | cargo clippy | Linting | Pre-review |
 | cargo fmt | Formatting | Pre-review |
 | cargo test | Testing | Pre-review |
-| GitHub PR | Collaboration | Review |
-| Coverage | Metrics | Post-review |
+| Pull request system | Collaboration | Not configured as an evidenced review path in this repository |
+| Coverage tooling | Metrics | No coverage report is recorded |
 
-## 9. Code Review Decision Matrix
+## 9. Decisions cite findings and their resolution
 
-> **Trimmed — see canonical `09-Quality/04-Review/01-peer-review.md` §9 for decision matrix mermaid.**
+The reviewer records approval, requested changes, or rejection with reasons. Material unresolved correctness or evidence issues prevent approval; the decision is not derived from a numeric score.
 
-## 10. Review Outcomes
+## 10. Outcomes preserve the distinction between approval and suggestions
 
 All code reviews result in one of:
 1. **Approved** — Merge immediately
@@ -71,25 +77,26 @@ All code reviews result in one of:
 
 ## Implementation Record
 
-- Redirect and code-review checklist audited. No independent reviewer decision or review record exists in the repository.
+- Redirect and code-review checklist audited. `cargo fmt`, `cargo clippy`, and `cargo test` are possible Rust workflows, but no run is claimed here. No independent reviewer decision exists in the repository.
 
 ---
 
 ## Verification (definition of done)
 
 1. `test -f plans/09-Quality/04-Review/02-code-review.md` exits 0.
-2. `grep -q '^# Plan 02 — ' plans/09-Quality/04-Review/02-code-review.md` exits 0.
-3. `grep -q '^> \\*\\*Status:' plans/09-Quality/04-Review/02-code-review.md` exits 0.
-4. `grep -q '^\*\*Goal:' plans/09-Quality/04-Review/02-code-review.md` exits 0.
-5. `grep -q '^## Decision and evidence$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
-6. `grep -q '^## Open questions$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
-7. `grep -q '^## Later$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
-8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/09-Quality/04-Review/02-code-review.md` exits 0.
+2. `grep -q '^> \\*\\*Status: PARTIAL' plans/09-Quality/04-Review/02-code-review.md` exits 0.
+3. `grep -q '^\\*\\*Goal:' plans/09-Quality/04-Review/02-code-review.md` exits 0.
+4. `grep -q '^## 3. The checklist separates correctness from evidence availability$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
+5. `grep -q 'no repository CI workflow or coverage report is configured' plans/09-Quality/04-Review/02-code-review.md` exits 0.
+6. `! grep -q 'See canonical\|Trimmed — see' plans/09-Quality/04-Review/02-code-review.md` exits 0.
+7. `grep -q '^## Open questions$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
+8. `grep -q '^## Later$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
+9. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/09-Quality/04-Review/02-code-review.md` exits 0.
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No reviewer is assigned and no code-review record exists. An independent reviewer and a stable change set are required for approval evidence.
 
 ## Later
 
-- **Complete the remaining research or implementation work recorded above.** It stays deferred until its prerequisites, compute budget, and measurable acceptance evidence are available.
+- **Independent code review remains deferred.** It requires an assigned reviewer and a defined change set; automation cannot supply that judgment.

@@ -15,7 +15,7 @@
 > **Version:** 1.0.0
 > **Author:** Evintkoo
 > **Created:** 2026-09-22
-> **Status:** In progress — initial AutoML capability gate passed for the revised five-model four-class candidate set; full research training/evaluation remains to be executed (2026-09-24).
+> **Status:** In progress — initial API/model capability checks passed for five four-class candidates; framework validation and canonical 2048 training/evaluation remain incomplete (updated 2026-09-26).
 
 ---
 
@@ -85,11 +85,11 @@ flowchart TD
 | Component | Technology |
 |-----------|-----------|
 | AutoML Framework | automl v1.0.0 (Rust) |
-| Language | Rust (primary), Python (scripts) |
+| Language | Rust (primary); external comparison scripts may use Python if adopted |
 | Game Engine | Custom Rust implementation |
-| Data Format | CSV/Parquet (via polars) |
+| Data Format | CSV training data and JSON manifests (Polars CSV loading) |
 | Training | automl TrainEngine |
-| Optimization | HyperOptX (TPE, Bayesian, Grid) |
+| Optimization | HyperOptX; the root CLI currently tunes RandomForest/ExtraTrees `n_estimators` and `max_depth` against grouped-CV accuracy |
 | Evaluation | Custom benchmarking suite |
 
 ## 6. Dependencies
@@ -142,7 +142,13 @@ The root crate now exposes seeded `benchmark baseline --agent random|heuristic`,
 
 A 20-game seed-987 wiring sample yielded random mean 1,046.6 and heuristic mean 7,800.6. This is an implementation smoke measurement, far below the pre-registered 10,000-game protocol, and is not used as a baseline claim or populated in the results matrix.
 
-The framework contribution itself remains partially evaluated: the current repository has capability and API smoke evidence, but no standard-dataset results, matched external-framework comparisons, resource measurements, or independent replication. Do not treat the completed capability gate as completion of the framework contribution.
+The framework contribution itself remains partially evaluated: the current repository has capability and API smoke evidence, but no standard-dataset results, matched external-framework comparisons, resource measurements, or independent replication. A local AutoML worktree patch now makes focused RandomForest save/load and same-seed synthetic refit checks pass 20/20 process runs; broader repeated-fit reproducibility remains unmeasured. Do not treat these smoke results as completion of the framework contribution or as clearance for the main 2048 training milestone.
+
+### 6.6 Main-Study Readiness (2026-09-26)
+
+The root training command requires row-aligned game metadata, excludes the final chronological game groups from fitting, and runs explicit group-preserving CV on the development groups. The final AutoML fit is saved with a manifest containing input digests, dependency pin, seed derivations, and selected settings. This establishes a runnable integration path, not a completed end-to-end research study.
+
+The following prerequisites remain open before main-study claims: the standard-dataset framework-validation gate in [Plan 07-04](../../07-Benchmarking/03-Comparison/04-framework-validation.md), broader repeated-fit reproducibility evidence, canonical rollout-labeled training data, and the pre-registered held-out model evaluation. Existing random/heuristic baseline runs and synthetic training wiring do not substitute for these artifacts. The rollout pilot estimates about 103 hours for 20,000 games at its measured throughput and two-thread setting; obtain a fresh pilot and an explicit resource budget before starting a corpus at that scale.
 
 **This verification is not optional.** Without it, the project cannot distinguish between "automl is incapable" and "our integration is broken."
 

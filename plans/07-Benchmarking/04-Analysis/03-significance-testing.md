@@ -1,6 +1,6 @@
 # Plan 03 — Significance Testing: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Several test and effect-size helpers feed comparison reports; power analysis and a predeclared winner study are pending.
 
 **Goal:** State the current implementation and evidence boundary for significance testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan is partial.** Implemented comparisons choose an independent Mann–Whitney U test or a paired exact sign test based on seed sequence equality, apply Holm adjustment, and report bootstrap mean-difference intervals and Cohen's d. There is no validated winner result or power analysis.
 
 ## 1. Purpose
 
@@ -35,12 +35,9 @@ flowchart TD
 
 ```mermaid
 graph TD
-    A[Data Type] -->|Continuous| B{Non-parametric?}
-    B -->|Yes| C[Mann-Whitney U]
-    B -->|No| D[Wilcoxon Signed-Rank]
-    A -->|Paired| E[Wilcoxon Signed-Rank]
-    A -->|Multiple Groups| F[Kruskal-Wallis]
-    A -->|Categorical| G[Chi-squared Test]
+    A[Declared comparison unit] -->|Independent samples| B[Mann-Whitney U helper]
+    A -->|Matched seed sequences| C[Exact sign test helper]
+    A -->|Multiple groups or categorical| D[No implemented helper]
 ```
 
 ## 4. Detailed Test Procedures
@@ -57,34 +54,24 @@ Used only when the comparison groups are independent at the declared unit of ana
 
 **Significance:** p < α_adjusted (after Bonferroni correction)
 
-**Effect Size:** r = Z / √N (Cliff's delta for non-parametric effect size)
+The comparison report also includes Cohen's d. The implemented test helper returns a p-value; it does not return a U statistic, rank-biserial effect, or Cliff's delta.
 
-### 4.2 Wilcoxon Signed-Rank Test
+### 4.2 Paired Exact Sign Test (Implemented)
 
-Used for paired comparisons (e.g., Tuned vs Default hyperparameters for the same model).
+Used by the comparison command when the ordered seed sequences match. It counts direction of non-tied paired differences and does not use their magnitudes.
 
-**Null Hypothesis (H0):** The median difference between pairs is zero.
+It is not Wilcoxon signed-rank and does not test a rank-sum statistic. Wilcoxon remains unimplemented.
 
-**Alternative Hypothesis (H1):** The median difference is not zero.
+### 4.3 Multi-group Tests (Not Implemented)
 
-**Test Statistic:** W = sum of positive ranks.
-
-### 4.3 Kruskal-Wallis Test
-
-Used for comparing three or more independent groups (e.g., all 7 model types).
-
-**Null Hypothesis (H0):** All groups have identical distributions.
-
-**Alternative Hypothesis (H1):** At least one group differs.
-
-**Post-hoc:** Dunn's test with Bonferroni correction for pairwise comparisons.
+Kruskal–Wallis and post-hoc Dunn tests are not implemented. Multiple model inputs currently produce pairwise rows, not a validated global multi-group test or ranking protocol.
 
 ### 4.4 Bootstrap Confidence Intervals
 
 Used for estimating the uncertainty of mean scores.
 
 **Procedure:**
-1. Resample the data with replacement B times (B = 10,000)
+1. Resample each input independently with replacement for the configured replicate count (the CLI currently uses 5,000)
 2. Compute the mean score for each resample
 3. Take the 2.5th and 97.5th percentiles as the 95% CI
 
@@ -155,58 +142,17 @@ Every significance test report must include:
 
 ```mermaid
 graph TD
-    A[p < α_adjusted AND d ≥ 0.5] -->|Both met| B[Strong Evidence of Improvement]
-    A -->|p < α_adjusted only| C[Statistically Significant]
-    A -->|d ≥ 0.5 only| D[Practically Significant]
-    A -->|Neither| E[No Significant Evidence]
-    
-    style B fill:#9f9,stroke:#333
-    style E fill:#f99,stroke:#333
+    A[Adjusted p-value and interval] --> B[Report uncertainty and effect size]
+    B --> C[Interpret against a predeclared practical threshold]
 ```
 
 ## 9. Winner Determination Protocol
 
-For winner determination in model ranking:
-
-1. **Compute mean score** for each model across ≥10,000 games
-2. **Rank by mean score** (highest = rank 1)
-3. **Statistical significance**: The #1 ranked model must be significantly better than #2 (Mann-Whitney U, p < α_adjusted)
-4. **Bootstrap 95% CI** on mean difference must not include zero
-5. **Effect size** (Cohen's d) must be ≥ 0.5
-6. **Tiebreaker**: If tied on mean score, use median score; if still tied, use lower std dev
+No winner determination is currently supported. A future protocol must specify game-level or seed-level experimental units, model-training repetitions, sample size/precision rationale, matched evaluation seeds, practical threshold, and multiplicity family before collecting confirmatory data. The illustrative 10,000-game and Cohen's d thresholds above are not evidence-based acceptance rules and are removed.
 
 ## 10. Rust Implementation
 
-```rust
-pub struct SignificanceTest {
-    pub sample_a: Vec<u64>,
-    pub sample_b: Vec<u64>,
-    pub test_type: TestType,
-    pub alpha: f64,
-}
-
-pub struct TestResult {
-    pub test_statistic: f64,
-    pub p_value: f64,
-    pub is_significant: bool,
-    pub confidence_interval: (f64, f64),
-    pub effect_size: f64,
-    pub conclusion: String,
-}
-
-impl SignificanceTest {
-    pub fn run(&self) -> TestResult {
-        TestResult {
-            test_statistic: 0.0,
-            p_value: 1.0,
-            is_significant: false,
-            confidence_interval: (0.0, 0.0),
-            effect_size: 0.0,
-            conclusion: String::new(),
-        }
-    }
-}
-```
+`src/evaluation.rs` contains standalone helpers rather than the proposed `SignificanceTest` abstraction. `src/main.rs` chooses a paired exact sign test when seed sequences match, otherwise Mann–Whitney U; it writes raw and Holm-adjusted p-values, a 5,000-replicate bootstrap mean-difference interval, and Cohen's d. The comparison manifest records the test and paired-test limitation.
 
 ## 11. References
 
@@ -218,7 +164,7 @@ impl SignificanceTest {
 
 ## Implementation Record
 
-- Mann–Whitney U, paired exact sign test, bootstrap mean-difference CI, Holm correction, and Cohen's d are implemented. No Kruskal–Wallis/Wilcoxon, permutation test, formal power analysis, or predeclared 10k winner study has been completed. Test choice and limitations are emitted in comparison reports.
+- Mann–Whitney U, paired exact sign test, bootstrap mean-difference CI, Holm adjustment, and Cohen's d helpers are implemented and used by the comparison command. No Kruskal–Wallis/Wilcoxon, permutation test, formal power analysis, clustered paired bootstrap, or predeclared winner study has been completed. Test choice and limitations are emitted in comparison reports.
 
 ---
 
@@ -235,7 +181,7 @@ impl SignificanceTest {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by current results.** Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 

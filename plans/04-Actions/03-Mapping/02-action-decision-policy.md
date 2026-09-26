@@ -1,6 +1,6 @@
 # Plan 02 — Action Decision Policy: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: COMPLETE (2026-09-26).** Greedy validity-masked AutoML inference is implemented; the heuristic remains a separate baseline.
 
 **Goal:** State the current implementation and evidence boundary for action decision policy.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the supervised decision policy as implemented.** `ModelPolicy::select_move` takes the highest AutoML class probability among legal directions. `HeuristicPolicy` is an independently evaluated comparison baseline; neither policy blends outputs or uses exploration.
 
-> **Canonical inference:** `27-dim → 4 logits → masked_argmax` over valid `0..3`. No blending, no exploration.
+> **Canonical inference:** 27 features → four class probabilities → `masked_argmax` over valid directions. No blending or exploration.
 > **Heuristic agent** is a **separate baseline** in `02-Environment/03-Simulation-Engine/` — not blended.
 
 ## 1. Architecture — Canonical

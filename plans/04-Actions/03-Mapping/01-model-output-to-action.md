@@ -1,6 +1,6 @@
 # Plan 01 — Model Output to Action Mapping: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: COMPLETE (2026-09-26).** AutoML probabilities are masked to valid moves and decoded to the action enum.
 
 **Goal:** State the current implementation and evidence boundary for model output to action mapping.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats model-output mapping as implemented.** `ModelPolicy` builds the canonical 27-value input, obtains four class probabilities through AutoML inference, masks invalid actions with `masked_argmax`, and converts the chosen ID to `Direction`. The selector returns errors for terminal boards, invalid IDs, and non-finite scores.
 
 ## 1. Overview
 
@@ -28,7 +28,7 @@ flowchart LR
 
 ## 3. Output Interpretation
 
-The automl model outputs a vector of scores for each action:
+The current inference adapter returns four class probabilities. It does not expose the illustrative `ModelOutput` struct below:
 
 ```rust
 pub struct ModelOutput {
@@ -40,7 +40,7 @@ pub struct ModelOutput {
 
 ## 4. Argmax Selection — Canonical `masked_argmax`
 
-> **Canonical `masked_argmax` — single source.** `04-Actions/01-Action/03-action-mapping.md` references this.
+> **Canonical `masked_argmax` — single source.** The shared implementation lives in `src/actions.rs`; `ModelPolicy` calls it.
 
 ```rust
 pub fn select_action(outputs: &[f64; 4]) -> u8 {
@@ -92,7 +92,7 @@ graph TD
     OL3 -->|Mask invalid| Best["Best Valid Direction"]
 ```
 
-> **No regression head.** Task is `TaskType::MultiClassification` — 27-dim → 4 logits → `argmax`.
+> **No regression head.** Task is `TaskType::MultiClassification` — 27 features produce four class probabilities, then validity-masked selection chooses an action.
 
 ## 7. Integration Path
 
@@ -102,8 +102,8 @@ graph TD
 
 ## Implementation Record
 
-- `masked_argmax` rejects empty valid sets, invalid IDs, and non-finite scores; ties use stable action order. `ModelPolicy` loads AutoML inference, encodes one 27-feature row, checks four output scores, and masks invalid directions.
-- The current inference path uses `predict_proba_array` rather than returning raw logits; it masks invalid actions after inference.
+- `masked_argmax` rejects empty valid sets, invalid IDs, and non-finite scores; ties use stable action order. `ModelPolicy` loads AutoML inference, encodes one 27-feature row, checks the four-class output, and masks invalid directions.
+- The inference path uses `predict_proba_array`, not raw logits; probabilities are compared directly for greedy selection.
 
 ---
 
@@ -120,7 +120,7 @@ graph TD
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- The selector mapping is deterministic for a fixed probability vector and board; game-level policy quality is a separate measured outcome.
 
 ## Later
 

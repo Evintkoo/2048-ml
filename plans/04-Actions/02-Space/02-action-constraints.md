@@ -1,6 +1,6 @@
 # Plan 02 — Action Constraints: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: COMPLETE (2026-09-26).** Verified against the canonical action interface.
 
 **Goal:** State the current implementation and evidence boundary for action constraints.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats its subject as implemented or redirected to the canonical action interface.** The sole validity constraint is whether a move changes the board; the root implementation computes this and masks predictions.
 
 > **Scope:** validity via `board.would_change`. Boundary/Merge invented checks and 3-checker overkill removed.
 
@@ -61,7 +61,7 @@ let action = masked_argmax(&logits, &valid); // canonical — masks invalid
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- No additional action-space implementation is required in this ticket; policy quality remains part of later evaluation.
 
 ## Later
 

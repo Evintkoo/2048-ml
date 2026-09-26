@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-training-pipeline](01-training-pipeline.md) | Training Pipeline | PLANNED |
-| [02-training-loop](02-training-loop.md) | Training Loop | PLANNED |
-| [03-model-architecture](03-model-architecture.md) | Model Architecture | PLANNED |
+| [01-training-pipeline](01-training-pipeline.md) | Training Pipeline | PARTIAL — final test/refit lifecycle pending |
+| [02-training-loop](02-training-loop.md) | Training Loop | PARTIAL — diagnostics pending |
+| [03-model-architecture](03-model-architecture.md) | Model Architecture | PARTIAL — candidate comparison pending |
 
 ## Reading paths
 

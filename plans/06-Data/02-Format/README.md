@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-data-schema](01-data-schema.md) | Data Schema | PLANNED |
-| [02-data-format](02-data-format.md) | Data Format | PLANNED |
-| [03-data-standard](03-data-standard.md) | Data Standard | PLANNED |
+| [01-data-schema](01-data-schema.md) | Data Schema | PARTIAL — tile-range contract pending |
+| [02-data-format](02-data-format.md) | Data Format | PARTIAL — CSV implemented; Parquet absent |
+| [03-data-standard](03-data-standard.md) | Data Standard | PARTIAL — split/trainer protocols differ; tile scale unresolved |
 
 ## Reading paths
 

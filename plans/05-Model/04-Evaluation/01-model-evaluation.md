@@ -1,6 +1,6 @@
 # Plan 01 — Model Evaluation: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Seeded game-score and paired-score evaluation tooling exists; classification diagnostics and held-out model results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model evaluation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats evaluation tooling as partially implemented and outcome claims as pending.** Root tooling can benchmark a saved policy on seeded games and compute score summaries and paired statistics. It does not yet emit the planned classification diagnostics or qualitative analyses, and no trained model has been evaluated on an adequate held-out corpus.
 
 ## 1. Purpose
 
@@ -28,7 +28,7 @@ flowchart TD
         Test --> Predict
         Predict --> Metrics[Calculate Metrics]
         Metrics --> Report[Evaluation Report]
-        Report --> Decision{Pass Threshold?}
+        Report --> Decision{Interpret Results}
         Decision --> |Yes| Deploy[Deploy Model]
         Decision --> |No| Retrain[Retrain Model]
         Retrain --> Model
@@ -72,7 +72,7 @@ flowchart LR
     Q5 --> Report
 ```
 
-> **Canonical metrics:** `TaskType::MultiClassification` (27-dim → 4 logits → `argmax` over actions 0–3). No R² / RMSE / MAE — the model does not predict scores.
+> **Canonical task:** four-action classification from 27 features. The policy consumes four class probabilities and masks illegal moves. Game score is a downstream application outcome. No score regression metrics apply to the action target.
 
 ### 3.2 Qualitative Analysis — Concrete (2048-specific)
 
@@ -80,9 +80,9 @@ flowchart LR
 
 **Analyses to run (with concrete definitions):**
 
-1. **Invalid-move rate** — fraction of predictions where the predicted action does not change the board (no tiles move/merge). Compute on the test set by replaying each state through the 2048 engine: `invalid = predicted ∉ valid_actions(state)`. Target: **<5%** invalid; gates are still Valid-Action Accuracy ≥60% and F1 ≥0.55, but invalid-rate is a hard qualitative fail if >15%.
+1. **Invalid-move rate** — fraction of predictions where the predicted action does not change the board (no tiles move/merge). Compute on the test set by replaying each state through the 2048 engine: `invalid = predicted ∉ valid_actions(state)`. No threshold is predeclared; define this analysis before running it. The live policy masks invalid moves at inference.
 
-2. **Corner-stuck analysis** — heuristic 2048 play keeps the max tile in a corner. Sample 500 mid-game states where `max_tile` is in a corner vs. 500 where it is not. Measure Valid-Action Accuracy separately. If corner-stuck accuracy is >10% lower, the model is not capturing monotonicity — revisit derived features (monotonicity, max-tile position, empty count) per `02-Training/03-model-architecture.md:2.1`.
+2. **Corner-stuck analysis** — heuristic 2048 play keeps the max tile in a corner. A corner-conditioned breakdown could be a future analysis if the held-out sample and metric are defined before inspection; the current feature vector does not include max-tile position.
 
 3. **Confusion matrix inspection (4×4)** — look for systematic confusions (e.g., `up↔down` or `left↔right` swaps) that correlate with vertical/horizontal board symmetry. A uniform error pattern suggests underfitting; a strong off-diagonal (e.g., 30% of `left` misclassified as `right`) suggests feature leakage or label noise from rollout sampling.
 
@@ -101,8 +101,8 @@ flowchart TD
     ConfMat --> Insights
     Binned --> Insights
     Insights --> Action{Fail threshold?}
-    Action -->|invalid &gt;15% or corner Δ &gt;10%| Retrain[Retrain / revisit features]
-    Action -->|pass| Keep[Keep model]
+    Action -->|Predeclared criteria| Retrain[Review model and data]
+    Action -->|Otherwise| Keep[Report outcome]
 ```
 
 ## 4. Evaluation Metrics — Classification + Game-Score Benchmark Only
@@ -180,8 +180,8 @@ flowchart LR
 
 ## Implementation Record
 
-- Root tooling can benchmark a saved model on seeded games, collect score summaries, compare paired results, and compute bootstrap/nonparametric statistics. Classification confusion/F1 plus corner-state, score-binned, and invalid-rate qualitative analyses remain incomplete.
-- No trained model has been evaluated against the declared gates on a plan-scale held-out dataset.
+- Root tooling can benchmark a saved model on seeded games, collect score summaries, compare paired results, and compute bootstrap/nonparametric statistics. Classification confusion/F1, valid-action diagnostics, corner-state, and score-binned analyses are not implemented.
+- No trained model has been evaluated on an adequate held-out dataset. No performance gates are established by canonical scope.
 
 ---
 
@@ -198,7 +198,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Implement and validate held-out classification diagnostics, then run them with a trained model on game-disjoint data. Predeclare any qualitative thresholds and retain analysis artifacts.
 
 ## Later
 

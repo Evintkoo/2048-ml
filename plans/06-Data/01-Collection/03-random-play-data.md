@@ -1,6 +1,6 @@
 # Plan 03 — Random Play Data: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Random legal-action collection and rollout relabeling are implemented; the 5k-game corpus is not produced.
 
 **Goal:** State the current implementation and evidence boundary for random play data.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the random collection mechanism as implemented and the target corpus as pending.** `collect_random_game` selects uniformly from legal directions; the CLI derives per-game seeds, rollout-relabels actions, and writes CSV, aligned metadata, and a manifest through a resumable checkpoint path.
 
 ## 1. Purpose
 
@@ -42,7 +42,7 @@ Same loop as `02-self-play-data.md §3` — record `(state, random_action)` then
 
 ## 4. Volume — Canonical (Configurable)
 
-**5,000 games** (~250k rows at ~50 moves/game) — canonical contribution to 20k total (15k single-agent self-play + 5k random). Heuristic trajectories are benchmark-only. See `01-data-collection-strategy.md §4`. The current CLI collects random trajectories with rollout relabeling; canonical 20k collection is pending because the measured rollout labeling throughput projects to multiple days. Configurable via `n_games` but preserve 70/15/15.
+**5,000 games** (~250k rows at ~50 moves/game) — canonical contribution to 20k total (15k single-agent self-play + 5k random). Heuristic trajectories are benchmark-only. See `01-data-collection-strategy.md §4`. The current CLI collects random trajectories with rollout relabeling. The 5k-game corpus is pending: measured throughput projects the full 20k rollout-labeled target to roughly 103 hours. Configurable via `n_games` but preserve 70/15/15.
 
 ## 5. Storage & Validation
 
@@ -52,8 +52,8 @@ CSV `06-Data/03-Storage/random_play.csv` — 28 cols `grid_0..row_worst,action`;
 
 ## Implementation Record
 
-- The CLI implements uniform valid-action random play and mandatory rollout relabeling, with per-game seeds and group metadata. It supports configured game count and output path.
-- The required 5k-game corpus has not been created because current rollout-labeling throughput is far below the target collection scale; the measured 20k projection is documented in the ledger.
+- The CLI implements uniform valid-action random play and rollout relabeling, with deterministic per-game seeds, checkpoint/resume, group metadata, and manifest output. Game count and output path are configurable.
+- The 5k-game corpus has not been created; the measured 20k projection is roughly 103 hours and awaits a declared compute budget.
 
 - Volumes: `01-data-collection-strategy.md §4`
 - Labeling: `01-data-collection-strategy.md §8.3`
@@ -75,7 +75,7 @@ CSV `06-Data/03-Storage/random_play.csv` — 28 cols `grid_0..row_worst,action`;
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Run the target corpus after setting a compute budget; preserve its checkpoint, CSV, metadata, manifest, seeds, and source revision.
 
 ## Later
 

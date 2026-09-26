@@ -1,6 +1,6 @@
 # Plan 04 — Rust-Native AutoML Framework Validation: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Source/API smokes and a 710-test local framework suite pass; standard datasets, external baselines, resource and CLI/API studies remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats API/capability validation as partial evidence, not full framework validation.** Local tests exercise model/task compatibility, grouped splitting, optimizer API, serialization, and root integration. The named tabular dataset matrix, matched external baselines, resource profiles, multi-seed matrix, and CLI/library equivalence remain unrun.
 
 ## 1. Purpose
 
@@ -76,11 +76,12 @@ The framework validation gate must pass before the main 2048 training milestone.
 
 ## 9. Execution Status
 
-The pinned framework's API, model probability shapes, group splitter, optimizer API, model serialization, and 2048 integration smoke paths have been checked in `src/framework_validation.rs`; the pinned AutoML library suite also passed 709 tests. The standard Iris/Wine/Breast Cancer dataset matrix, external framework comparisons, resource profiling, repeated-seed study, and CLI/API equivalence checks are not yet implemented. Therefore the full framework-validation gate is still pending, and 2048 smoke evidence must not be presented as framework validation.
+The pinned framework's API, model probability shapes, group splitter, optimizer API, model serialization, and 2048 integration smoke paths have been checked in `src/framework_validation.rs`; the local AutoML library suite passed 710 tests on the worktree containing uncommitted research fixes; the submodule revision remains pinned to its declared commit. The standard Iris/Wine/Breast Cancer dataset matrix, external framework comparisons, resource profiling, repeated-seed study, and CLI/API equivalence checks are not yet implemented. Therefore the full framework-validation gate is still pending, and 2048 smoke evidence must not be presented as framework validation.
 
 ## Implementation Record
 
-- The pinned AutoML unit suite and local API/model/serialization smoke validation pass; these are capability checks only. The required named datasets, external baselines, resource study, repeated-seed reproducibility, and CLI/library equivalence study remain pending.
+- The AutoML library suite passed 710/710 on the locally modified submodule worktree, and source/API/model/serialization smoke checks pass. These are capability checks only, not matched dataset results.
+- Named standard datasets, external baselines, resource study, broad repeated-seed reproducibility, and CLI/library equivalence remain pending. The local submodule fixes remain uncommitted and separate from the declared pin.
 
 ---
 
@@ -97,7 +98,7 @@ The pinned framework's API, model probability shapes, group splitter, optimizer 
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Select and version named datasets, declare matched baselines/splits/budgets, and retain raw predictions, timings, memory, seeds, dependency state, and analysis artifacts before making framework conclusions.
 
 ## Later
 

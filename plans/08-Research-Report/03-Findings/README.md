@@ -6,13 +6,13 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-key-findings](01-key-findings.md) | Key Findings | PLANNED |
-| [02-insights](02-insights.md) | Insights | PLANNED |
-| [03-limitations](03-limitations.md) | Limitations | PLANNED |
-| [04-failure-analysis](04-failure-analysis.md) | Failure Analysis | PLANNED |
-| [05-sensitivity-analysis](05-sensitivity-analysis.md) | Sensitivity Analysis | PLANNED |
-| [06-cross-validation](06-cross-validation.md) | Cross-Validation | PLANNED |
-| [07-computational-budget](07-computational-budget.md) | Computational Budget | PLANNED |
+| [01-key-findings](01-key-findings.md) | Key Findings | PARTIAL — reporting template only |
+| [02-insights](02-insights.md) | Insights | PARTIAL — baseline frequencies only |
+| [03-limitations](03-limitations.md) | Limitations | PARTIAL — measured baseline and implementation boundaries |
+| [04-failure-analysis](04-failure-analysis.md) | Failure Analysis | PARTIAL — prospective protocol; no study log |
+| [05-sensitivity-analysis](05-sensitivity-analysis.md) | Sensitivity Analysis | PARTIAL — sweeps not run |
+| [06-cross-validation](06-cross-validation.md) | Cross-Validation | PARTIAL — helper implemented; corpus study pending |
+| [07-computational-budget](07-computational-budget.md) | Computational Budget | PARTIAL — pilot timings/projection only; no approved full budget |
 
 ## Reading paths
 

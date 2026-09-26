@@ -1,6 +1,6 @@
 # Plan 02 — Model Metrics: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Score outcomes are summarized; classification confusion/F1/valid-action accuracy and training curves are not implemented.
 
 **Goal:** State the current implementation and evidence boundary for model metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats game-score summaries as implemented and classifier diagnostics as pending.** The model predicts action labels, but the current root evaluation path does not calculate macro F1, confusion matrices, or valid-action accuracy. Classical `TrainEngine::fit` does not expose an epoch training curve in the root workflow.
 
 ## 1. Purpose
 
@@ -55,7 +55,7 @@ flowchart TD
 
 > **Case-study note**: AutoML models are evaluated by classification quality and resource metrics in framework validation. In the 2048 case study, policies are compared by held-out game-score distributions, uncertainty, practical effect, and the declared statistical protocol. The case-study winner is not a claim of globally optimal play.
 
-> **Note on targets**: These targets are deliberately set as progressive milestones. A score of 45% move accuracy corresponds to significantly better than random (25% for 4 actions). Achieving >60% would be a stretch goal. The targets should be iteratively revised based on initial baseline results.
+> Any classification thresholds must be justified and predeclared for a specific study; canonical project scope does not set universal cutoffs.
 
 ## 4. Decision Quality Metrics
 
@@ -82,7 +82,7 @@ flowchart TD
     end
 ```
 
-## 6. Training Metrics — Classification Only (No RL)
+## 6. Training Metrics — Not Available for the Current Classical Loop
 
 ```rust
 pub struct TrainingMetrics {
@@ -107,7 +107,7 @@ pub struct ModelMetrics {
 }
 ```
 
-## 7. Loss and Convergence Tracking
+## 7. Loss and Convergence Tracking (Not Implemented)
 
 ```mermaid
 graph TD
@@ -135,24 +135,17 @@ graph TD
     E --> F[Deployment Recommendation]
 ```
 
-## 10. Quality Gates — Canonical Thresholds
+## 10. Quality Gates — None Defined by Canonical Scope
 
-**Canonical ranking:** Models are **ranked by Mean Game Score** (highest mean wins, ≥10k games, Mann-Whitney U p<0.05 with Bonferroni). No proximity ratio gate for pipeline rejection.
+No universal quality gates are defined. A case-study comparison should predeclare its ranking and statistical protocol and report uncertainty.
 
-**Acceptance thresholds (all must pass):**
-1. **Mean Game Score ≥ 512** (beats heuristic baseline ~512; primary gate)
-2. **Valid-Action Accuracy ≥ 60%** (on valid actions only, 0–3)
-3. **F1 Macro ≥ 0.55** (weighted/macro across 4 classes)
-4. Loss must converge within reasonable training time
-5. Validation performance must not degrade significantly (no severe overfitting)
-6. All model metrics including mean score must be logged and reproducible
-7. Theoretical limit documented: max tile 32768, max score bound open — ranking is by mean score, not proximity
+Report metrics that are implemented and retain per-game outcomes. Add classification metrics before claiming their results; do not use hypothetical loss-convergence gates for this single-fit tree workflow.
 
-> **Proximity note (optional analysis only):** If reported, proximity = `model_mean_score / heuristic_baseline_mean (≈512)` as a single informative ratio (e.g., 1.5× = 768). Do **not** use as gate (`>0.3/>0.5` deprecated). No `model/theoretical_max` ratio — theoretical max is unknown.
+> If a model/heuristic ratio is reported, treat it as descriptive and include the baseline estimate and uncertainty.
 
 ## Implementation Record
 
-- Downstream game score and its descriptive/statistical summaries are implemented. Classification confusion matrix, macro-F1, valid-action accuracy, training curves, and stated quality-gate automation are not implemented; classical tree fitting has no epoch curve.
+- Downstream game score and descriptive/statistical summaries are implemented. Classification confusion matrix, macro-F1, valid-action accuracy, training curves, and gate automation are not implemented. No gates are defined by canonical scope.
 
 ---
 
@@ -169,7 +162,7 @@ graph TD
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Implement classification diagnostics and verify their definitions on fixed data before reporting any classifier quality. Keep game score as a distinct downstream case-study outcome.
 
 ## Later
 

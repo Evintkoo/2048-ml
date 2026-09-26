@@ -1,6 +1,6 @@
 # Plan 01 — Simulation Engine: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Reusable simulation and 10k random/heuristic score baselines are complete; the rollout-labeled training corpus remains uncollected at plan scale.
+> **Status: PARTIAL (2026-09-26).** Reusable simulation and 10k random/heuristic score baselines are complete; the rollout-labeled training corpus remains uncollected at plan scale.
 
 **Goal:** State the current implementation and evidence boundary for simulation engine.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This plan treats the simulator and baseline protocol as implemented, with large rollout-labeled data collection pending.** The seeded 10,000-game random and heuristic score/frequency baselines are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Those runs evaluate baseline agents; they do not fulfill the separate rollout-labeled supervised corpus requirement. A prior small collection throughput estimate still projects multi-day collection for 20,000 labeled games and must be piloted before scheduling that job.
+**This plan treats the simulator and baseline protocol as implemented, with large rollout-labeled data collection pending.** The seeded 10,000-game random and heuristic score/frequency baselines are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Those runs evaluate baseline agents; they do not fulfill the separate rollout-labeled supervised corpus requirement. A prior small-collection throughput estimate projects about 103 hours for the 20,000-game labeled configuration. That run remains unscheduled pending an explicit compute budget and the collection reliability work tracked by the multi-game ticket.
 
-> **MVP: `Random` / `Model` agents only.** Generates `TrainingSample { [f64;27], action:u8, score:u64 metadata }` for `TaskType::MultiClassification`. Headless only, no UI.
+> **Supervised row:** `TrainingSample { state_features:[f64;27], action:u8, score:u64 metadata }` for `TaskType::MultiClassification`. Headless only, no UI.
 
 ## 1. Purpose
 
@@ -34,9 +34,9 @@ flowchart TD
     Runner --> Collector
 ```
 
-> **MVP:** Only `Random` + `Model`. `Heuristic` / `Human` are **Appendix — reference only** (see §9). Not for automl benchmarking MVP.
+> **Current paths:** Random rollout collection, model-policy benchmark games, and a separate heuristic case-study baseline are implemented. Interactive human play is out of scope; 2048 results do not validate general AutoML performance.
 
-## 3. Agent Types (MVP)
+## 3. Agent Types
 
 ### 3.1 Random Agent (Baseline)
 
@@ -58,8 +58,8 @@ pub struct ModelAgent { model: InferenceEngine } // automl InferenceEngine
 impl Agent for ModelAgent {
     fn select_move(&self, board: &Board) -> Direction {
         let feats = board_features(board); // [f64;27] — see 03-State/01-Board/01-board-state.md
-        let logits = self.model.predict(&feats); // [f64;4]
-        constrained_action(&logits, board) // via would_change — see 02-Rules/03-valid-moves.md
+        let probabilities = self.model.predict_proba(&feats); // four class probabilities
+        constrained_action(&probabilities, board) // via would_change — see 02-Rules/03-valid-moves.md
     }
 }
 ```
@@ -109,7 +109,7 @@ pub struct SimulationMetrics {
     pub avg_score: f64,
     pub max_score: u64,
     pub median_score: u64,
-    pub score_above_heuristic_rate: f64, // % > ~512 — canonical baseline
+    pub score_above_heuristic_rate: f64, // threshold must come from the retained comparator protocol
     pub percentile_50: u64,
     pub percentile_90: u64,
     pub avg_moves_per_game: f64,
@@ -127,7 +127,7 @@ pub struct SimulationConfig {
     pub threads: usize,              // num_cpus; set to 1 for full determinism
     pub seed: u64,                   // → ChaCha8Rng; linked to TrainingConfig::with_random_state(42)
     pub agent: AgentType,            // Random | Model (MVP)
-    pub output_format: OutputFormat, // Parquet | CSV
+    pub output_format: OutputFormat, // root collector writes canonical CSV + metadata sidecar
 }
 ```
 
@@ -153,7 +153,7 @@ pub struct TrainingSample {
 
 > **2-line reference only.** Keep `Random`/`Model` for MVP; do not extend agents before 10k baseline.
 
-- **HeuristicAgent** — baseline heuristic (~512) for comparison only, **not MVP benchmarking**. `HeuristicAgent { strategy: Monotonicity|Corner|Empty }` — reference only, run separately if needed.
+- **HeuristicAgent** — root heuristic policy is a measured case-study baseline. Retained scores are described in the action-frequency report; do not treat them as general AutoML evidence or a fixed threshold.
 - **HumanAgent** — `HumanAgent` interactive input — **debug-only, not for batch/benchmark**; `fn select_move(&self, _: &Board)->Direction { read_direction() }`.
 
 ## 10. Cross-References
@@ -166,9 +166,9 @@ pub struct TrainingSample {
 
 ## Implementation Record
 
-- Implemented reusable seeded `GameSimulator` for random and caller-provided policies, with configuration validation, checked rejection of invalid policy actions, per-game histories, scores, and terminal results.
-- Added `simulate_random_batch` with deterministic global-seed plus game-ID derivation. Existing data collection additionally records feature/action rows and rollout labels.
-- Validation: root unit suite passed. The 10k random/heuristic baseline runs completed with per-game outputs and manifests, and their score summaries and action-frequency analysis are retained. The full 10k-game rollout-labeled corpus remains unrun; current measured collection throughput projects a substantial multi-hour run and is recorded in the project ledger.
+- `src/game_engine/mod.rs` implements the seeded reusable simulator, checked policy moves, game results, deterministic game-ID batch helper, and rollout relabeler.
+- `src/main.rs` collects games through a fixed-size Rayon pool, writes canonical CSV plus row-aligned metadata and a manifest, and exposes random/heuristic baseline and model benchmark paths. The root does not write Parquet and does not yet checkpoint rollout collection.
+- Validation: root tests passed 30/30 during #006. The 10k random/heuristic baseline runs and manifests are retained in the linked report. Rollout-labeled corpus remains unrun at plan scale; the prior 20k configuration estimate is about 103 hours and requires a declared compute budget and checkpoint/progress behavior before scheduling.
 
 ---
 

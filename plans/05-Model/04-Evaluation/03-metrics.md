@@ -1,6 +1,6 @@
 # Plan 03 — Metrics: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Game-score summaries and uncertainty helpers exist; the planned classification metric suite is not implemented.
 
 **Goal:** State the current implementation and evidence boundary for metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats game-score summaries as implemented and classification metrics as pending.** `src/evaluation.rs` summarizes score distributions, bootstrap intervals, action frequencies, and paired/unpaired score comparisons. The root training/evaluation path does not currently calculate macro F1, confusion matrices, or valid-action classification accuracy.
 
 ## 1. Purpose
 
@@ -57,7 +57,7 @@ pub fn masked_accuracy(
 
 ## 3. Regression Metrics — Not Used
 
-> **Deleted.** The task is `TaskType::MultiClassification` (27-dim → 4 logits → `argmax` over actions `0..3`). Regression metrics **R² / RMSE / MAE / MAPE are not applicable** because the model does not predict scores. Score is a downstream game-score benchmark (mean game score in `02-Environment/02-Rules/01-scoring-rules.md`), not a regression target. See **§6 Metric Targets** (mean game score) and `03-State/02-Score/` for score-as-feature vs. score-as-benchmark distinction.
+> The task is four-action classification from 27 features. Regression metrics are not applicable to the action target. Game score is a downstream 2048 outcome and is summarized separately.
 
 ```mermaid
 flowchart TB
@@ -130,20 +130,20 @@ flowchart TD
     style ModelPerf fill:#e3f2fd
 ```
 
-**Canonical: Rank by Mean Game Score; gates are Mean ≥512, Valid-Action Accuracy ≥60%, F1 ≥0.55. No weighted proximity ratio composite. If proximity reported, it's optional single ratio `model/heuristic` (≈512), not a weighted component.**
+No acceptance thresholds or composite ranking rule are defined by the canonical scope. Predeclare them in a case-study protocol before comparing policies.
 
 ## 6. Metric Targets — Canonical (Single Source of Truth)
 
 | Metric | Target | Category | Gate? |
 |--------|--------|----------|-------|
-| **Mean Game Score** | **≥ 512 (beats heuristic ~512)** | **Primary — ranking** | **Gate + ranking: highest mean wins** |
-| Valid-Action Accuracy | ≥ 60% (on valid actions 0–3) | Secondary | **Gate** |
-| F1 Macro | ≥ 0.55 (across 4 classes) | Secondary | **Gate** |
-| Inference Speed | ≤ 1ms | Tertiary | Informative |
+| **Mean Game Score** | Report distribution and uncertainty | 2048 case-study outcome | Protocol-defined |
+| Valid-Action Accuracy | Not currently calculated | Classification diagnostic | Pending implementation |
+| F1 Macro | Not currently calculated | Classification diagnostic | Pending implementation |
+| Inference Speed | Measure on declared hardware | Resource metric | Informative |
 
-> **No proximity gate.** If reported as optional analysis, proximity = `model_mean / heuristic_mean` (≈512) as a single ratio (e.g., 768/512=1.5×). Targets `≥0.05 / ≥1.5 / >0.3/>0.5` are deprecated and removed. Canonical is `Mean ≥512, Valid-Action Accuracy ≥60%, F1 ≥0.55, Rank by Mean Score`.
+> If a model/heuristic ratio is reported, define both evaluation populations and uncertainty; it is descriptive, not a default acceptance threshold.
 
-**Note on targets**: The heuristic agent achieves ~512 mean score. The model must exceed this to be considered useful. R², RMSE, and MAE are NOT used — the model predicts actions, not scores.
+Game-score summaries do not prove general AutoML quality. Classification metrics describe action-label prediction; game outcomes describe the 2048 case study.
 
 ## 7. Metric Calculation Pipeline
 
@@ -183,8 +183,8 @@ flowchart LR
 
 ## Implementation Record
 
-- Score-summary and statistical helpers implement bootstrap mean-difference intervals, Mann–Whitney U, paired sign test, Holm adjustment, and Cohen's d; benchmark CLI writes score records and manifests.
-- Classification metrics (macro F1, confusion matrix, valid-action accuracy), stated gate checks, and results on the required held-out corpus are not yet complete.
+- `src/evaluation.rs` implements descriptive score summaries, bootstrap intervals, action-frequency summaries, paired sign tests, Mann–Whitney U, Holm adjustment, and effect-size helpers.
+- Macro F1, confusion matrix, valid-action accuracy, and held-out trained-model metric results are not implemented. No gates are defined by scope.
 
 ---
 
@@ -201,7 +201,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Implement classification metrics with explicit class and valid-action handling; verify them on fixed examples before reporting results. Retain metric artifacts and predeclared evaluation protocol.
 
 ## Later
 

@@ -1,6 +1,6 @@
 # Plan 01 — Training Pipeline: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** CLI CSV/metadata loading, chronological holdout, grouped CV, fitting, and model export exist; the complete final evaluation/refit workflow remains pending.
 
 **Goal:** State the current implementation and evidence boundary for training pipeline.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,11 +9,11 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This plan treats the executable training path as implemented with evaluation lifecycle gaps.** The root CLI loads canonical CSV and aligned sidecar, holds out later game IDs, runs group-aware CV on development rows, fits an AutoML model, and saves it. The final untouched-test diagnostics and selected-model refit flow are not implemented.
 
 ## 1. Purpose
 
-Define the complete training pipeline that takes collected game data and produces a trained supervised classification model capable of predicting optimal moves in the 2048 game.
+Document the current training path from collected supervised rows to an action classifier. Labels are rollout-derived actions, not proven optimal moves.
 
 ## 2. Pipeline Overview
 
@@ -57,7 +57,7 @@ flowchart LR
 
 ### 3.2 Preprocessing
 
-> **Encoder not needed:** The 27-dim feature vector for 2048 (`§2.2 Feature Input Layer` in `03-model-architecture.md`) is entirely numeric — 16 grid values + 11 derived (empty count, monotonicity, smoothness, max tile, etc.). There are **no categorical columns**, so `OneHotEncoder` is skipped. Trees (RandomForest, GradientBoosting, XGBoost) are also scale-invariant, so `StandardScaler` is optional — only SVM/KNN/LogisticRegression require scaling. Missing-value imputation is a passthrough (game states have no nulls).
+> The canonical feature values are deterministic numeric values. The root training path does not fit an AutoML `DataPreprocessor`; stored CSV features are consumed directly. The 27-value schema and tile-range issue are documented in the state tickets.
 
 ```mermaid
 flowchart TD
@@ -85,8 +85,8 @@ flowchart TD
     subgraph "automl Engine"
         Engine[TrainEngine]
         Engine --> Config[TrainingConfig<br/>TaskType: MultiClassification]
-        Engine --> Optimizer[HyperOptX Optimizer]
-        Engine --> CV[CrossValidator]
+        Engine --> CV[Root Grouped-CV Wrapper]
+        Search[Optional HyperOptX Trials] -. separate CLI search .-> Engine
     end
 ```
 
@@ -106,7 +106,7 @@ flowchart TB
 
 **Configuration Details:**
 - **Task Type**: `MultiClassification` — 4 output classes (0=up, 1=down, 2=left, 3=right)
-- **Model Type**: Specific models from `ModelType` enum — each candidate (RandomForest, GradientBoosting, XGBoost, LightGBM, CatBoost, ExtraTrees, SVM, KNN) trained separately for comparison
+- **Model Type**: The currently verified four-class probability candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes
 - **Purpose**: Each model is trained independently to enable ceiling comparison, NOT auto-selected
 - **Labels**: Integer-encoded actions where 0=up, 1=down, 2=left, 3=right
 
@@ -114,7 +114,7 @@ flowchart TB
 
 The root `train` command requires the canonical data CSV and its aligned metadata sidecar. By default, it reserves the final 15% of distinct chronological game IDs before any grouped CV or fitting (`--development-fraction 0.85`); the holdout rows never enter the training DataFrame. Grouped CV runs only on the earlier development groups. The pinned AutoML `TrainEngine::fit` then makes its own seeded, stratified row-level validation split from that development data and fits the model on the remaining rows. The API has no switch to fit the complete development partition or to pass groups into its internal split. Consequently this is a safe test holdout, but not yet the full plan's chronological 70/15/15 train/validation/test model-selection protocol; final test scoring and refitting after selection still need a dedicated workflow. The generated `data-collector split` outputs provide explicit 70/15/15 game partitions for analysis and diagnostics.
 
-The integration currently allows only the verified four-probability-column models: RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. `cv_folds` is implemented in the root grouped-CV wrapper, not through `TrainEngine`'s internal fit.
+The integration supports four-probability output from RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. `cv_folds` is implemented in the root grouped-CV wrapper, not through `TrainEngine` internal fit.
 
 ## 5. Theoretical Limit Justification
 
@@ -127,10 +127,7 @@ The theoretical maximum score is **not a fixed constant** — it is bounded by 2
 - A perfect game would merge tiles from 2 → 4 → 8 → ... → 32768, with each merge contributing its value to the score
 - The exact maximum score is an open problem (no proven optimal strategy exists)
 
-**Practical approach**: Instead of claiming a specific theoretical limit, models are **ranked by mean game score** across ≥10,000 benchmark games. The winner is the model with the highest mean score, confirmed by statistical significance testing.
-- Heuristic agent achieves ~512 mean score through established strategies (monotonicity, corner placement, empty tile preservation)
-- This serves as the **meaningful benchmark**: the model must exceed heuristic performance to be considered useful
-- Proximity ratio is computed as `model_score / heuristic_baseline_score`, NOT `model_score / theoretical_max`
+**Evidence boundary**: no theoretical maximum score or winning model is asserted here. Any model comparison must declare its case-study protocol, baseline, game count, and uncertainty analysis before evaluation.
 
 ```rust
 pub struct ProximityConfig {
@@ -196,8 +193,8 @@ flowchart LR
 
 ## Implementation Record
 
-- The root CLI validates canonical training data, requires aligned game metadata, reserves chronological test games, runs grouped CV on development games, fits the selected verified candidate, and exports a JSON model. Current CV reports accuracy; the full plan's final untouched-test diagnostics and evaluation gates remain pending.
-- Fitted preprocessing and a complete 70/15/15 training-selection-final-refit lifecycle are not part of the live pipeline. The explicit split command creates game-disjoint CSV partitions for downstream workflows.
+- The root CLI validates canonical training data and aligned metadata, reserves chronological test games, runs grouped CV on development games, fits a selected verified candidate, and exports a JSON model. Current CV reports fold accuracy; final untouched-test diagnostics and refit-after-selection remain pending.
+- Fitted preprocessing and a complete train/validation/test selection-and-refit lifecycle are not part of the live pipeline. The explicit split command creates game-disjoint CSV partitions for downstream workflows.
 
 ---
 
@@ -214,7 +211,7 @@ flowchart LR
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- Final untouched-test scoring, complete classification diagnostics, and refitting after model selection remain to be implemented. Training evidence also depends on an adequate labeled corpus with retained provenance.
 
 ## Later
 

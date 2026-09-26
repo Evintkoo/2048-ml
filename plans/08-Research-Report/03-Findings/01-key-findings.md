@@ -1,6 +1,6 @@
 # Plan 01 — Key Findings: the repository status is explicit and evidence based
 
-> **Status: PLANNED.** Not yet restarted in strict sequence.
+> **Status: PARTIAL (2026-09-26).** Reporting checklist is a template; no research findings or complete result artifacts exist.
 
 **Goal:** State the current implementation and evidence boundary for key findings.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,28 +9,27 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Not yet restarted in strict sequence.
+**This is a reporting protocol only.** Framework validation and trained-policy evaluation remain incomplete. Checklist items are proposed evidence requirements, not acceptance gates already met.
 
-> **Status: PENDING.** This file is a pipeline spec: input = `evaluation_v1.parquet` + `statistical_tests.rs` outputs; output = IMRD §3 tables. No TBD rows; honesty = pipeline produces TBD until run.
+> The result pipeline described below is proposed. Current benchmark artifacts are CSV plus JSON manifests, and statistics live in `src/evaluation.rs`.
 
 ## Input → Output Pipeline
 
 ```
-benchmark-framework (10k games/model, seed 42, ScoreMetrics parquet)
-  → statistical_tests.rs: mann_whitney, bootstrap_ci(10000 resamples), cohens_d, kruskal_wallis
-  → ranking_analysis.py: ranked bar + gate table
+declared benchmark CSVs + JSON manifests
+  → evaluation/comparison CLI summaries and pairwise helpers
   → IMRD §3 Results + this Findings doc
 ```
 
 ## Checklist (All Must Pass to Claim "Findings")
 
-- [ ] `polars 0.46` schema validated (`game_id, score, model, seed`)
-- [ ] `GroupKFold(game_id)` used in training (not TimeSeries)
-- [ ] Bootstrap 95% CI on mean diff **excludes 0** for winner vs heuristic (~512) and vs runner-up
-- [ ] Mann-Whitney U **p<0.05 Bonferroni** (k = #pairwise, ~21 for 7 models)
+- [ ] Result schema and manifests validated against actual outputs
+- [ ] Grouped training/held-out evaluation protocol documented
+- [ ] Uncertainty reported for measured comparisons with dependence addressed
+- [ ] Test family and multiplicity correction declared before analysis
 - [ ] Cohen's **d** reported (not just p; no fixed cutoff)
-- [ ] Seed 42 primary; secondary seeds evaluated for sensitivity
-- [ ] 27-dim ablation Δ reported with same gates
+- [ ] Training/evaluation seed roles recorded; robustness study completed if claimed
+- [ ] Ablation outcomes reported only after matched experiments
 - [ ] No 8×8/ensemble/RL claim in findings
 
 ## Findings-Critical Tables (Shells, Not Fake Rows)
@@ -43,7 +42,7 @@ F1–F3→RQ1/RQ2 framework validation, H1→2048 baseline comparison, H2→appl
 
 ## Implementation Record
 
-- Findings are only a reporting protocol. No results are populated; referenced parquet/statistics artifacts are not available. Checklist items remain pending until evidence artifacts are produced.
+- Findings are only a reporting protocol. No results are populated; the original Parquet/statistics artifacts and ranking script do not exist. Checklist items remain pending until evidence artifacts are produced.
 
 ---
 
@@ -60,7 +59,7 @@ F1–F3→RQ1/RQ2 framework validation, H1→2048 baseline comparison, H2→appl
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Not yet restarted in strict sequence. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Findings remain pending.** Larger studies need a declared resource budget and retained artifacts.
 
 ## Later
 
