@@ -1,6 +1,6 @@
 # Plan 02 — Randomness and Determinism: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** `SeedManager` derives CLI game, training, HyperOptX, data-sampling, CV, and analysis seeds; a 10,000-game fitted-policy CSV repeated exactly on the same machine, while config loading and broad framework/platform reproducibility remain open.
+> **Status: PARTIAL (2026-09-27).** `SeedManager` derives CLI game, training, HyperOptX, data-sampling, CV, and analysis seeds. A 10,000-game fitted-policy CSV repeated exactly on the same machine, and a five-game collector smoke produced identical training and metadata CSVs with 1 and 4 Rayon threads. Config loading and broad framework/platform reproducibility remain open.
 
 **Goal:** State the current implementation and evidence boundary for randomness and determinism.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -118,6 +118,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 ## 8. Rayon Thread Count — Determinism Note
 
 - Collection uses the CLI `--threads` value to build a fixed-size Rayon pool; the value is retained in the collection manifest. The number of threads does not change game seeds or collected ordering.
+- A bounded same-host smoke collected five games (seed 90728, two rollouts per valid action, checkpoint interval 2) with 1 and 4 threads. Both runs produced 668 training rows and identical training and metadata CSV SHA-256 digests; details and manifests are retained in `reports/randomness_smokes/2026-09-27/`. This does not establish cross-platform or cross-version reproducibility.
 - HyperOptX tuning currently runs serially (`n_jobs = 1`). Pinned AutoML `82d848323eed5e2af86d046d529916c448f2442c` fixes the identified seeded-fit, serialization, and KNN/ExtraTrees tie-handling defects. Two fixed-split standard-dataset runs matched 15/15 predictions. The saved-policy benchmark was also run twice on seeds 84024–94023; the 10,000-row per-game action CSV digest and counts matched exactly. These fixed-machine checks do not establish framework-wide determinism across models, datasets, platforms, or versions.
 - Preferred MVP: parallel with per-game seeded RNG (`ChaCha8Rng::seed_from_u64(global.wrapping_add(game_id))`) so order does not matter; still log `threads` in `SimulationMetrics`.
 
@@ -143,6 +144,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 - Games use `ChaCha8Rng::seed_from_u64`; initial tiles, random actions, and spawned tiles share the per-game RNG. Four-tile spawn probability is configurable and defaults to 0.1.
 - `SeedManager` centralizes root CLI seed derivation; final-fit uses the global seed, while HyperOptX, data sampling, CV, and analysis use documented offsets. Game batches use the same manager and do not depend on Rayon scheduling. Collector manifests record seed range and thread count.
 - On 2026-09-24, `cargo check`, `cargo clippy -- -D warnings`, formatting validation, and a temporary synthetic-data `train --tune-trials 2` wiring run passed. The emitted run manifest recorded global seed 42 and derived training/HyperOptX/data/CV seeds 42/44/45/46. Synthetic metrics are not research evidence. Current seed-42 fixed-split framework validation on AutoML `82d8483` matched predictions for 15/15 dataset/model pairs across two runs. A separately fitted pilot policy also produced identical 10,000-game CSV results on a repeated same-machine run; this does not establish cross-platform behavior or model quality.
+- On 2026-09-27, a same-host collector smoke with seed 90728 collected five games using 1 and 4 Rayon threads (two rollouts per valid action, checkpoint interval 2). Each produced 668 rows and identical training CSV digest `63be2377…e9e9d` and metadata CSV digest `a0c51bb4…e45d07`; both manifests verify against their files. See `reports/randomness_smokes/2026-09-27/thread-count-comparison.json`. This bounded comparison does not establish platform or version independence.
 - Validation: deterministic same-seed checks and a 10,000-spawn frequency check pass in the root test suite. Cross-platform/version identity is not claimed beyond the pinned dependency versions.
 
 ---
@@ -160,7 +162,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 
 ## Open questions
 
-- **The evidence remains bounded by current results.** Root CLI seed derivation is centralized, and one policy simulator seed sequence plus one fixed-split dataset matrix have exact same-machine repeats. Config-file loading is absent; broad AutoML behavior across models, datasets, platforms, and versions remains unmeasured. The known defects and pinned fixes are described in the [framework architecture audit](../../01-Infrastructure/01-Project/04-framework-architecture.md).
+- **The evidence remains bounded by current results.** Root CLI seed derivation is centralized, and one policy simulator seed sequence, one fixed-split dataset matrix, and one five-game collector output have exact same-machine repeats. Config-file loading is absent; broad AutoML behavior across models, datasets, platforms, and versions remains unmeasured. The known defects and pinned fixes are described in the [framework architecture audit](../../01-Infrastructure/01-Project/04-framework-architecture.md).
 
 ## Later
 

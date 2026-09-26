@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "protocol": {
+    "games": 5,
+    "global_seed": 90728,
+    "rollouts_per_valid_action": 2,
+    "checkpoint_every": 2,
+    "thread_counts": [
+      1,
+      4
+    ]
+  },
+  "outputs_identical": true,
+  "runs": {
+    "1": {
+      "training_csv_sha256": "63be237757d654a49c97d0784e44841e4e8e57baed03462f468dbc3e23989e9d",
+      "metadata_csv_sha256": "a0c51bb4870eff8a64cc53172c6fc46a7b5a8f49a4825e7fee53c88052e45d07",
+      "training_rows": 668,
+      "elapsed_seconds": 4.18433875,
+      "source_revision": "29c3a668a3e3b750a8b22969f953e598c334060c",
+      "rollout_rows": 668
+    },
+    "4": {
+      "training_csv_sha256": "63be237757d654a49c97d0784e44841e4e8e57baed03462f468dbc3e23989e9d",
+      "metadata_csv_sha256": "a0c51bb4870eff8a64cc53172c6fc46a7b5a8f49a4825e7fee53c88052e45d07",
+      "training_rows": 668,
+      "elapsed_seconds": 2.871908376,
+      "source_revision": "29c3a668a3e3b750a8b22969f953e598c334060c",
+      "rollout_rows": 668
+    }
+  },
+  "limitations": [
+    "Five-game same-host smoke only.",
+    "Does not establish cross-platform or cross-version reproducibility."
+  ]
+}
