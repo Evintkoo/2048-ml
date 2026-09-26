@@ -1,6 +1,6 @@
 # Plan 07 — Computational Budget: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** A small baseline timing report and rollout-collection projection exist; no comprehensive study budget is approved.
+> **Status: PARTIAL (2026-09-27).** Baseline timings and a two-game rollout-collection pilot exist; no comprehensive study budget is approved.
 
 **Goal:** State the current implementation and evidence boundary for computational budget.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -11,7 +11,7 @@
 
 **Budget figures must be tied to measured commands and hardware.** Most former resource tables were speculative and are removed. A rollout-labeled corpus estimate is a planning prerequisite, not an approved run.
 
-> The proposed 20,000-game rollout-labeled collection projects to approximately 103 hours at the recorded pilot throughput. This estimate depends on configuration and machine; the target is unapproved and requires a declared compute budget before collection.
+> A resumed two-game rollout pilot projects to approximately 228 hours for 20,000 games by linear extrapolation. This estimate is highly uncertain, depends on configuration and machine, and is not a runtime promise; a larger pilot and declared compute budget are required before collection.
 
 ## 1. Measured Evidence
 
@@ -21,7 +21,7 @@ The action-frequency baseline report records local sequential development-profil
 |----------|----------|--------|
 | Random baseline | 10,000 games; 27.89 seconds in recorded environment | Measured once under stated protocol |
 | Heuristic baseline | 10,000 games; 201.99 seconds in recorded environment | Measured once under stated protocol |
-| Rollout-labeled collection | ~103 hours projected for 20,000 games at the documented 100-rollout setting | Projection from pilot; budget not approved |
+| Rollout-labeled collection | Two games, 285 rows, 97,300 rollout evaluations, 82.23 seconds; ~228 hours projected for 20,000 games by linear extrapolation | Tiny-sample projection is highly uncertain; larger pilot/budget pending |
 | Model training and inference | No representative plan-scale profile | Pending |
 | Framework datasets and matched baselines | No resource profile | Pending |
 | Ablation / multi-seed studies | No run matrix or budget | Pending |
@@ -44,7 +44,7 @@ The plan-scale collection, framework dataset matrix, model comparison, and ablat
 
 ## Implementation Record
 
-- Baseline timing evidence is available in the action-frequency report; canonical rollout collection is projected at about 103 hours for 20,000 games. No comprehensive budget, Docker workflow, or framework/model resource profile exists.
+- Baseline timing evidence is available in the action-frequency report. The retained collection pilot recorded 82.23 seconds for two games and projects roughly 228 hours for 20,000 games by linear extrapolation; the estimate is highly uncertain. No comprehensive budget, Docker workflow, or framework/model resource profile exists.
 
 ---
 

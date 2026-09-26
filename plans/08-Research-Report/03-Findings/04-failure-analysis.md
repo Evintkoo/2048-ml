@@ -9,9 +9,9 @@
 
 ## Decision and evidence
 
-**This is a failure-analysis protocol, not a failure log.** No trained-policy failure study has run. The current AutoML capability smokes and baseline reports are documented in their respective evidence records.
+**This is primarily a failure-analysis protocol; no trained-policy failure study has run.** A historical framework failure is recorded: AutoML `88a86bf` produced KNN/ExtraTrees nondeterminism and a Wine KNN save/load mismatch. AutoML `82d8483` fixes deterministic tie handling; the repeated matrix then matched 15/15 predictions and save/load outputs. See `reports/framework_validation/README.md`.
 
-> **Note:** This section anticipates potential failures and defines response protocols. Probability estimates are illustrative, not empirically determined. No actual failure data exists yet.
+> **Note:** This section anticipates potential failures and defines response protocols. Probability estimates are illustrative, not empirically determined. No trained-policy failure data exists yet.
 
 ## 1. Categories of Failure
 
@@ -166,7 +166,7 @@ Null results are valid scientific findings. If automl cannot beat heuristic base
 
 ## Implementation Record
 
-- This file remains a prospective protocol. No study failure log exists; probability estimates were removed and responses are constrained by project scope.
+- This file remains a prospective protocol for application failures. The framework nondeterminism defect and its fixed-version rerun are retained in the framework-validation report; no trained-policy failure log exists. Probability estimates were removed and responses are constrained by project scope.
 
 ---
 

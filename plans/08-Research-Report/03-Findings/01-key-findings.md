@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a reporting protocol only.** Framework validation and trained-policy evaluation remain incomplete. Checklist items are proposed evidence requirements, not acceptance gates already met.
+**This remains a reporting protocol for overall findings.** A one-split framework diagnostic is available, but framework validation and trained-policy evaluation remain incomplete. Checklist items are proposed evidence requirements, not acceptance gates already met.
 
 > The result pipeline described below is proposed. Current benchmark artifacts are CSV plus JSON manifests, and statistics live in `src/evaluation.rs`.
 
@@ -42,7 +42,7 @@ F1–F3→RQ1/RQ2 framework validation, H1→2048 baseline comparison, H2→appl
 
 ## Implementation Record
 
-- Findings are only a reporting protocol. No results are populated; the original Parquet/statistics artifacts and ranking script do not exist. Checklist items remain pending until evidence artifacts are produced.
+- The overall findings template remains unpopulated. A standard-dataset diagnostic is retained separately in `reports/framework_validation/`; no trained-policy ranking exists. The original Parquet/statistics artifacts and ranking script do not exist. Checklist items remain pending until the remaining evidence is produced.
 
 ---
 

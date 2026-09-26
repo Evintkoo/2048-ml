@@ -70,7 +70,7 @@ flowchart TD
 
 ## 4. Framework Limitations
 
-Capability and probability-shape smokes pass for five four-class candidates. Broader framework validation remains open: standard datasets, matched external baselines, resource measurements, repeated-seed reliability, and CLI/API equivalence. Group-aware cross-validation is implemented in the integration because the framework scoring helper does not forward groups.
+Capability and probability-shape smokes pass for five four-class candidates. A one-split, two-run standard-dataset diagnostic under AutoML `82d8483` matched 15/15 prediction sets and save/load outputs. Broader framework validation remains open: matched external baselines, resource measurements, broader-seed reliability, and CLI/API equivalence. Group-aware cross-validation is implemented in the integration because the framework scoring helper does not forward groups.
 
 The framework-validation ticket further requires:
 
@@ -151,7 +151,7 @@ Known implementation and evidence limits are recorded explicitly:
 7. Model results await full experimentation
 8. Feature contribution is unknown; no ablation study has run
 9. Multi-seed validation is planned but not yet completed
-10. Standard-dataset framework validation and comparative resource measurements remain incomplete
+10. Standard-dataset framework validation remains partial despite the 15/15 repeatability diagnostic; matched baselines and comparative resource measurements remain incomplete
 11. PSPACE-hardness is outside core scope and not established here
 
 ## 8. Mitigation Strategies (Trimmed — No Generic Filler)
