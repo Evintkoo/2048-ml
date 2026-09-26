@@ -270,6 +270,33 @@ fn sha256_file(path: &std::path::Path) -> anyhow::Result<String> {
     Ok(format!("{:x}", hasher.finalize()))
 }
 
+fn automl_revision() -> Option<String> {
+    std::process::Command::new("git")
+        .args(["-C", "automl", "rev-parse", "HEAD"])
+        .output()
+        .ok()
+        .filter(|result| result.status.success())
+        .map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned())
+}
+
+#[cfg(test)]
+mod provenance_tests {
+    use super::automl_revision;
+
+    #[test]
+    fn reports_the_checked_out_automl_revision() {
+        let expected = std::process::Command::new("git")
+            .args(["-C", "automl", "rev-parse", "HEAD"])
+            .output()
+            .expect("git should report the AutoML checkout revision");
+        assert!(expected.status.success());
+        assert_eq!(
+            automl_revision().as_deref(),
+            Some(String::from_utf8_lossy(&expected.stdout).trim())
+        );
+    }
+}
+
 fn main() {
     let cli = Cli::parse();
     match cli.command {
@@ -340,7 +367,7 @@ fn main() {
                 "created_utc": chrono::Utc::now().to_rfc3339(),
                 "project_version": env!("CARGO_PKG_VERSION"),
                 "dataset_schema": "2048-action-policy-v2",
-                "automl_commit": "88a86bf44a0cb03664931f7ef15201b95fa11255",
+                "automl_commit": automl_revision(),
                 "source_revision": std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|result| result.status.success()).map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned()),
                 "global_seed": seed,
                 "game_seeds": {"derivation": "SeedManager::game_seed(game_id) = global_seed.wrapping_add(game_id)", "first": seeds.game_seed(0), "last": seeds.game_seed((n_games - 1) as u64)},
@@ -577,7 +604,7 @@ fn main() {
                 "manifest_schema_version": 1,
                 "created_utc": chrono::Utc::now().to_rfc3339(),
                 "project_version": env!("CARGO_PKG_VERSION"),
-                "automl_commit": "88a86bf44a0cb03664931f7ef15201b95fa11255",
+                "automl_commit": automl_revision(),
                 "source_revision": std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|result| result.status.success()).map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned()),
                 "model_artifact": output,
                 "model_artifact_sha256": sha256_file(&output).ok(),
@@ -652,7 +679,7 @@ fn main() {
             write_json_manifest(&output, &serde_json::json!({
                 "created_utc": chrono::Utc::now().to_rfc3339(),
                 "project_version": env!("CARGO_PKG_VERSION"),
-                "automl_commit": "88a86bf44a0cb03664931f7ef15201b95fa11255",
+                "automl_commit": automl_revision(),
                 "source_revision": std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|result| result.status.success()).map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned()),
                 "sha256": sha256_file(&output).ok(),
                 "benchmark": "model_policy",
