@@ -1,8 +1,58 @@
 {
+  "action_frequency": [
+    {
+      "action": 0,
+      "count": 267986,
+      "direction": "up",
+      "game_cluster_bootstrap_95_ci": [
+        0.26072521623160544,
+        0.26332567924879524
+      ],
+      "proportion": 0.2620367183466575,
+      "total_moves": 1022704
+    },
+    {
+      "action": 1,
+      "count": 162491,
+      "direction": "down",
+      "game_cluster_bootstrap_95_ci": [
+        0.1582399150783746,
+        0.15952269156587046
+      ],
+      "proportion": 0.1588837043758507,
+      "total_moves": 1022704
+    },
+    {
+      "action": 2,
+      "count": 236763,
+      "direction": "left",
+      "game_cluster_bootstrap_95_ci": [
+        0.23045003952378243,
+        0.23256863746725598
+      ],
+      "proportion": 0.23150686806739781,
+      "total_moves": 1022704
+    },
+    {
+      "action": 3,
+      "count": 355464,
+      "direction": "right",
+      "game_cluster_bootstrap_95_ci": [
+        0.3463856571099578,
+        0.34872848314067284
+      ],
+      "proportion": 0.34757270921009403,
+      "total_moves": 1022704
+    }
+  ],
+  "action_frequency_bootstrap_seed": 84026,
+  "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
+  "action_frequency_unit": "selected moves across all games",
+  "action_total": 1022704,
   "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
   "benchmark": "model_policy",
-  "created_utc": "2026-09-26T21:36:45.512393+00:00",
-  "elapsed_seconds": 118.039364541,
+  "created_utc": "2026-09-26T21:50:48.009259+00:00",
+  "elapsed_seconds": 128.245091333,
   "first_game_seed": 84024,
   "games": 10000,
   "global_seed": 84024,
@@ -29,7 +79,7 @@
   "score_summary_seed": 84025,
   "seed_derivation": "global_seed.wrapping_add(game_id)",
   "sha256": "381311816bd9de360347d48bd998a94788b0ef67a8355a69558e179a44ee4a23",
-  "source_revision": "199dbd2ab9982bd7ec451d4117e262fc3050d338",
+  "source_revision": "72e3b83232b54df653e5635d5c41011625707d19",
   "spawn_probability_for_four": 0.1,
   "summary": {
     "games_above_2048": 223,
