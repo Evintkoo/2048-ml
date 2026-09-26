@@ -1,6 +1,6 @@
 # Plan 01 — Algorithm Research: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Framework API checks and an initial fixed-split dataset diagnostic are recorded; matched framework comparisons and 2048 candidate ranking remain pending.
+> **Status: PARTIAL (2026-09-27).** Framework API checks and repeated fixed-protocol diagnostics across three standard-dataset split seeds are recorded; matched framework comparisons and 2048 candidate ranking remain pending.
 
 **Goal:** State the current implementation and evidence boundary for algorithm research.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -185,7 +185,7 @@ flowchart TD
 ## Implementation Record
 
 - `src/framework_validation.rs` smoke-checks 13 model/task combinations and confirms the four-class probability subset: RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes.
-- A fixed-split diagnostic across three standard datasets and five candidates is retained in `reports/framework_validation/`. Two seed-42 runs on pinned AutoML `82d8483` succeeded in all 15 cases and reproduced metrics and predictions exactly in all 15. AutoML label agreement with the comparison baseline is 8/15; this is not a superiority result. Matched-budget framework comparisons and a trained 2048 candidate ranking remain incomplete. No winner or threshold pass is claimed.
+- Fixed-protocol diagnostics across three standard datasets and five candidates are retained in `reports/framework_validation/`. Seed 42 succeeded in all 15 cases and reproduced predictions exactly in all 15. Seed 2026 has two exact repeated process runs, also 15/15; seed 2027 completed 15/15 once. AutoML label agreement with the seed-42 comparison baseline is 8/15; this is not a superiority result. These are fixed-split diagnostics, not matched-budget framework comparisons. A trained 2048 candidate ranking remains incomplete; no winner or threshold pass is claimed.
 
 ---
 

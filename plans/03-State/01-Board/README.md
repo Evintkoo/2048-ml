@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-board-state](01-board-state.md) | Board State Definition | DONE — canonical 17-value input; 35 root tests pass |
-| [02-feature-extraction](02-feature-extraction.md) | Feature Extraction | NOT APPLICABLE — expanded candidate metrics are outside Plan 00's fixed 17-value core unless separately approved |
+| [01-board-state](01-board-state.md) | Board State Definition | DONE — canonical 17-value input; root suite passes 35/35 tests (2026-09-27) |
+| [02-feature-extraction](02-feature-extraction.md) | Feature Extraction | NOT APPLICABLE — expanded candidate metrics are outside Plan 00's fixed 17-value core unless separately approved; five heuristic measurements are isolated from model inputs |
 | [03-state-encoding](03-state-encoding.md) | State Encoding | COMPLETE — canonical v2 CSV and provenance sidecar implemented; root tests pass; Parquet outside current storage contract |
 
 ## Reading paths

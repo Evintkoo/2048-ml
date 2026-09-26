@@ -1,6 +1,6 @@
 # Plan 02 — State Transition: the repository status is explicit and evidence based
 
-> **Status: NOT APPLICABLE (2026-09-26).** The supervised `(from_state, action)` row is implemented; separate post-state/reward/done transition metadata is outside the canonical training protocol.
+> **Status: NOT APPLICABLE (2026-09-27).** The supervised `(from_state, action)` row is implemented; separate post-state/reward/done transition metadata is outside the canonical training protocol.
 
 **Goal:** State the current implementation and evidence boundary for state transition.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

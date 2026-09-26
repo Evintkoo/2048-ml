@@ -1,6 +1,6 @@
 # Plan 01 — Score Tracking: the repository status is explicit and evidence based
 
-> **Status: COMPLETE (2026-09-26).** Score tracker records merge details, cumulative event score, per-turn gains, merge count, and maximum tile.
+> **Status: COMPLETE (2026-09-27).** Score tracker records merge details, cumulative event score, per-turn gains, merge count, and maximum tile. The root suite passes 35/35 tests.
 
 **Goal:** State the current implementation and evidence boundary for score tracking.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

@@ -1,6 +1,6 @@
 # Plan 01 — Board State Definition: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-26).** The canonical 17-value state is implemented; board tiles above the former 32768 normalization scale remain valid inputs.
+> **Status: DONE (2026-09-27).** The canonical 17-value state is implemented; board tiles above the former 32768 normalization scale remain valid inputs. The root suite passes 35/35 tests.
 
 **Goal:** State the current implementation and evidence boundary for board state definition.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

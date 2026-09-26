@@ -1,6 +1,6 @@
 # Plan 02 — Model Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Runnable candidates and a fixed-split standard-dataset diagnostic are documented; 2048 case-study model results remain pending.
+> **Status: PARTIAL (2026-09-27).** Runnable candidates and fixed-protocol standard-dataset diagnostics across three split seeds are documented; 2048 case-study model results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -164,7 +164,7 @@ Based on the comparison results, the best model will be selected and documented 
 ## Implementation Record
 
 - Five four-class probability candidates are identified by `src/framework_validation.rs`; group-aware evaluation is available through `src/training.rs`.
-- A uniform candidate run on an adequate 2048 training corpus has not been performed. The initial standard-dataset diagnostic is retained separately; case-study metric cells remain unmeasured and no model has been selected.
+- A uniform candidate run on an adequate 2048 training corpus has not been performed. The standard-dataset diagnostics include seed-42 and seed-2026 two-process exact prediction repeats plus one seed-2027 run; they check fixed-split capability and reproducibility, not matched tuning budgets or game outcomes. Case-study metric cells remain unmeasured and no model has been selected.
 
 ---
 
