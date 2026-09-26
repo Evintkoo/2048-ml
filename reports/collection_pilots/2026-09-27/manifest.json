@@ -1,0 +1,33 @@
+{
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "checkpoint_dir": "not-retained; completed checkpoint was in /tmp",
+  "checkpoint_every_games": 1,
+  "created_utc": "2026-09-26T19:39:12.757468+00:00",
+  "data_sampling_seed": 90630,
+  "dataset_schema": "2048-action-policy-v2",
+  "elapsed_seconds": 82.234715334,
+  "game_seeds": {
+    "derivation": "SeedManager::game_seed(game_id) = global_seed.wrapping_add(game_id)",
+    "first": 90627,
+    "last": 90628
+  },
+  "games": 2,
+  "global_seed": 90627,
+  "label_cache_hits": 0,
+  "label_cache_misses": 97300,
+  "labeling": "rollout_mean_final_score_argmax",
+  "labeling_rows_per_second": 3.4656896280659533,
+  "metadata_csv": "reports/collection_pilots/2026-09-27/metadata.csv",
+  "metadata_csv_sha256": "2c857acb56b43764d25ef05ec4ff0e09359c4b78e6a3826c6fa3eb99350c68f3",
+  "project_version": "0.1.0",
+  "resumed": true,
+  "rollouts_evaluated": 97300,
+  "rollouts_per_valid_action": 100,
+  "source_revision": "05066988b5683fa2324b6ee3f0cfd8302ce61934",
+  "spawn_probability_for_four": 0.1,
+  "states_collected": 285,
+  "threads": 2,
+  "training_csv": "reports/collection_pilots/2026-09-27/training.csv",
+  "training_csv_sha256": "5e048620d97b80a30bb5ff111e7f24dc378ff3d2525a7c123a480115a98c7ba2",
+  "training_rows": 285
+}
