@@ -172,7 +172,7 @@ flowchart TD
 **Path B (optional fitted, train only):**
 ```rust
 use automl::preprocessing::{DataPreprocessor, PreprocessingConfig, ScalerType, ImputeStrategy};
-let mut preprocessor = DataPreprocessor::new(
+let mut preprocessor = DataPreprocessor::with_config(
     PreprocessingConfig::default()
         .with_scaler(ScalerType::Standard) // real API: with_scaler
         .with_numeric_impute(ImputeStrategy::Mean)

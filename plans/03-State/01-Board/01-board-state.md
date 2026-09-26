@@ -16,7 +16,9 @@
 
 ## 1. State Representation
 
-The board state is the primary input to the ML model. Must capture all information needed to predict the optimal action `0..3` via `TaskType::MultiClassification`.
+The board state is the primary input to the ML model. The classifier learns
+the action labels defined by the supervised data protocol; this feature
+contract alone does not establish that a label is an optimal action.
 
 ## 2. Raw Board State
 

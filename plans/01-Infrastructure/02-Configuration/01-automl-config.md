@@ -1,6 +1,6 @@
 # Plan 01 — AutoML Configuration: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Optional HyperOptX tuning runs grouped CV for RandomForest/ExtraTrees with a versioned JSON search contract and training manifest; pruner integration remains pending because the pinned optimizer exposes no intermediate reporting hook.
+> **Status: PARTIAL (2026-09-27).** Optional HyperOptX tuning runs grouped CV for RandomForest/ExtraTrees with a versioned JSON search contract and retained repeat smoke; pruner integration remains pending because the pinned optimizer exposes no intermediate reporting hook.
 
 **Goal:** State the current implementation and evidence boundary for automl configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -11,7 +11,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** Optional TPE tuning is available through `train --tune-trials N` or `train --hyperopt-config config/hyperopt-search.example.json` for RandomForest and ExtraTrees. The JSON input has schema version 1, validates its trial count and supported integer ranges, and is recorded with its digest in a versioned sibling training manifest. Collection, training, and model-benchmark manifests resolve the actual checked-out AutoML revision at runtime; a focused regression check verifies this lookup. Each trial evaluates grouped-CV accuracy on development games, and the best trial's parameters are used for the final fit; the study is saved beside the model as `<model-stem>.study.json`. Tuning does not access the reserved chronological test tail. The optimizer runs serially and does not integrate its standalone pruner API. This wiring is not research evidence; the synthetic smoke and local AutoML reproducibility fixes do not establish general framework performance.
+**This plan treats tuning as an implemented optional workflow, not as a research finding.** Optional TPE tuning is available through `train --tune-trials N` or `train --hyperopt-config config/hyperopt-search.example.json` for RandomForest and ExtraTrees. The JSON input has schema version 1, validates its trial count and supported integer ranges, and is recorded with its digest in a versioned sibling training manifest. Collection, training, and model-benchmark manifests resolve the actual checked-out AutoML revision at runtime; a focused regression check verifies this lookup. Each trial evaluates grouped-CV accuracy on development games, and the best trial's parameters are used for the final fit; the study is saved beside the model as `<model-stem>.study.json`. Tuning does not access the reserved chronological test tail. The optimizer runs serially and does not integrate its standalone pruner API. A retained repeated synthetic smoke verifies this path on AutoML `82d8483`, but its scores are fixture behavior only and do not establish model or framework quality.
 
 ## 1. Overview
 
@@ -97,9 +97,9 @@ cargo run -- train --data data/raw/random_play.csv \
 
 Alternatively, use the tracked, versioned search contract with `--hyperopt-config config/hyperopt-search.example.json`; `--tune-trials` and `--hyperopt-config` are mutually exclusive. Search input fields and limits are defined in `src/hyperopt_config.rs`.
 
-Wiring smoke (2026-09-24): two HyperOptX trials on a temporary nine-game synthetic CSV completed, reserved the final two games, saved `policy.study.json`, and fit the selected model. The synthetic score is only a code-path check; it is not model or framework evidence. The existing real-candidate smoke indicates intermittent RandomForest fit reproducibility, so actual tuning results remain exploratory pending resolution.
+Current wiring smoke (2026-09-27): the deterministic fixture generator in `scripts/create_hyperopt_smoke_data.py` selected source states from the retained two-game rollout pilot and reused them across ten synthetic game IDs. The 80-row fixture has eight rows per group and two rows per action in each group; it is explicitly not ten independent trajectories. Two trials on two grouped folds ran twice on pinned AutoML `82d8483`, reserved two synthetic groups as the test tail, selected `n_estimators=2` and `max_depth=1` both times, and reproduced both trial scores (0.28125 and 0.296875). The selected model's semantic JSON was equal after ignoring its elapsed-training-time field; study trial parameters and values were equal after ignoring measured durations. The data, metadata, config, study files, model files, runner hashes, and training manifests are retained under `reports/configuration_smokes/2026-09-27/`. This confirms only the command path and seed/config flow. Reused rows across groups make all fixture scores unsuitable as evaluation evidence.
 
-The trial score is grouped-CV row accuracy, not held-out game score. Results remain exploratory while AutoML repeated-fit reproducibility is unresolved; the current source audit found a plausible nondeterministic decision-tree leaf-tie path documented in [the framework architecture record](../01-Project/04-framework-architecture.md).
+The trial score is grouped-CV row accuracy, not held-out game score. The earlier intermittent RandomForest repeatability defect was found on a prior AutoML revision and is fixed at `82d8483`; the narrow standard-dataset repeat now matches 15/15 predictions. This does not demonstrate broad tuning reproducibility, and the synthetic fixture does not support policy-quality claims. The optimizer's completed-scalar objective still cannot report fold-level intermediate values to a pruner.
 
 ## 4. Inference Configuration
 
@@ -157,7 +157,7 @@ All configuration changes will be tracked via git. Configuration files will incl
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Changed example to a verified model and corrected SearchSpace builder. The tracked search contract and manifest schema are implemented; the pinned optimizer's pruning integration remains unavailable. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The tuning evidence remains bounded by implementation smokes.** The versioned JSON contract, grouped-CV objective, study persistence, runtime AutoML provenance, and repeatable synthetic command path are retained. The fixture reuses states across synthetic groups and cannot support model-quality claims. Matched 2048 tuning on canonical training data is absent, and the pinned optimizer has no intermediate reporting hook for pruner integration.
 
 ## Later
 

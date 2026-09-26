@@ -24,13 +24,13 @@ Verify **wiring** between modules — not unit logic. Distinct from unit (single
 
 | Test | Fixture | Wiring | Assert | Time |
 |------|---------|--------|--------|------|
-| Game+Score | `Board [[2,2,4,0],...]` seed 42 | `GameEngine::execute_move(2)` → `ScoreTracker` | `score_delta==4 && board==[[4,4,0,0]...]` | <10ms |
-| Score+State+Action | full board history | `StateVector(27) → action 0..3 → board` | `action in 0..3 && would_change` checked | <10ms |
+| Game+Score | Current `BoardState` fixture | `Simulator` → score record | Board and score update agree with move result | Focused unit paths exist |
+| Score+State+Action | board and score | `BoardStateMl(17) → action 0..3 → board` | action is in range and legal after masking | Focused unit paths exist |
 | Data→TrainEngine | CSV rows plus game metadata | project preprocessing/training path | predictions are four-class outputs | Not run as suite |
 | Train+Simulator | trained AutoML model | policy inference and game simulator | valid masked actions and per-game outcomes | Not run as suite |
 | Config→CLI | recorded train/search/benchmark arguments | configuration and manifest outputs | declared values match retained metadata | Not audited end-to-end |
 | CSV and manifests | actual benchmark output files | report/compare CLI inputs | summaries and provenance are retained | Focused paths exist; full suite pending |
-| GroupKFold wiring | 100 samples + `game_id` | `CrossValidator::GroupKFold` | no group split across train/test | <1s |
+| GroupKFold wiring | Synthetic rows plus `game_id` | project grouped-CV helper | no game group appears in both fold sides | Focused tests exist |
 
 ## 4. Fixtures
 

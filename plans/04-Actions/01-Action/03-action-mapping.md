@@ -26,35 +26,9 @@ flowchart LR
 
 ## 3. Direction to Action Mapping
 
-```rust
-pub enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
-impl Direction {
-    pub fn to_action(&self) -> u8 {
-        match self {
-            Direction::Up => 0,
-            Direction::Down => 1,
-            Direction::Left => 2,
-            Direction::Right => 3,
-        }
-    }
-
-    pub fn from_action(action: u8) -> Option<Direction> {
-        match action {
-            0 => Some(Direction::Up),
-            1 => Some(Direction::Down),
-            2 => Some(Direction::Left),
-            3 => Some(Direction::Right),
-            _ => None,
-        }
-    }
-}
-```
+`Direction` in `src/game_engine/mod.rs` uses `#[repr(u8)]` with stable
+discriminants. Convert integer labels with the implemented fallible
+`Direction::try_from_action(action)`; avoid duplicating a second mapping API.
 
 ## 4. Model Output to Action
 

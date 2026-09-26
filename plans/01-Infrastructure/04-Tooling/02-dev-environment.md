@@ -1,6 +1,6 @@
 # Plan 02 — Development Environment Setup: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-26).** Rust 1.96.1, 24 GiB RAM, and 62 GiB free disk verified; root format, 35 tests, Clippy, and pinned AutoML 712 library tests pass (2026-09-27).
+> **Status: DONE (2026-09-27).** Rust 1.96.1, 24 GiB RAM, and 61 GiB free disk verified. Root-package formatting and all 35 root tests pass; pinned AutoML 712-test result is prior retained evidence.
 
 **Goal:** State the current implementation and evidence boundary for development environment setup.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Rust 1.96.1 present; root formatting/tests/clippy and pinned AutoML library tests pass; submodule check no longer assumes .git directory.
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** On 2026-09-27, `rustc`/`cargo` 1.96.1, macOS arm64, 24 GiB memory, and 61 GiB free disk were observed. `cargo fmt --check --package game2048-ml` passed and `cargo test --quiet` passed 35/35. A whole-workspace `cargo fmt --all -- --check` reports pre-existing formatting differences inside `automl/`; it changed no files. The clean AutoML pin and its 712/712 library test result are retained from the earlier recorded run, not repeated here.
 
 > **For CLI subcommands see `04-Tooling/01-cli-tools.md`.** This file is setup only.
 
@@ -61,7 +61,7 @@ If `cargo: command not found` → `source "$HOME/.cargo/env"`.
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Rust 1.96.1 present; root formatting/tests/clippy and pinned AutoML library tests pass; submodule check no longer assumes .git directory. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Environment readings are machine-specific snapshots.** Recheck toolchain, memory, and disk before substantial experiments; retain a resource budget and outputs for large runs.
 
 ## Later
 

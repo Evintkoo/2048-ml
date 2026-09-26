@@ -1,6 +1,6 @@
 # Plan 04 — Rust-Native AutoML Framework Contribution: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** A source-backed architecture audit and a repeated three-dataset/five-model diagnostic are recorded; matched comparisons, resource measurements, broader reproducibility, and independent replication remain pending.
+> **Status: PARTIAL (2026-09-27).** A fixed-configuration sklearn comparison and one aggregate resource probe are retained; matched-budget study, per-model profiles, broader reproducibility, and independent replication remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework contribution.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The source architecture and API limitations are recorded in [04-framework-architecture.md](04-framework-architecture.md). Two diagnostic runs on three named standard datasets and five AutoML models succeeded for all 15 cases and matched predictions exactly in all 15 pairs on pinned AutoML `82d848323eed5e2af86d046d529916c448f2442c`. This revision fixes KNN and ExtraTrees nondeterministic tie handling. Matched framework comparisons, resource evidence, and broader reproducibility remain pending.
+**This plan treats its subject as partial evidence, not as a research finding.** The source architecture and API limitations are recorded in [04-framework-architecture.md](04-framework-architecture.md). Two diagnostic runs on three named standard datasets and five AutoML models succeeded for all 15 cases and matched predictions exactly in all 15 pairs on pinned AutoML `82d848323eed5e2af86d046d529916c448f2442c`. Two fixed-configuration scikit-learn runs used the same outer splits and AutoML inner holdback, succeeded in 15/15 cases, and repeated metrics and prediction CSVs exactly; their predicted labels agreed with AutoML in 8/15 cases. One single-thread process-level resource probe per implementation is retained. These observations do not establish framework superiority: model defaults, implementations, and process measurement boundaries differ.
 
 ### Architecture audit result
 
@@ -97,20 +97,22 @@ The case study provides application evidence and exposes framework limitations; 
 - [x] Module/data-flow map and source-backed data/ownership contracts recorded.
 - [x] Configuration, capability, seed, parallelism, failure, persistence, and API-surface limitations audited.
 - [x] Initial diagnostic on named standard tabular datasets with retained sources, hashes, splits, predictions, models, and metrics; broader evaluation remains pending.
-- [ ] Fixed-configuration, established-framework, manual-selection, and comparable Rust baselines run under matched budgets.
+- [x] Fixed-configuration scikit-learn baseline run on the same three dataset splits and five model configurations; two runs succeeded and repeated metrics/predictions for 15/15 cases.
+- [ ] Matched search-budget comparisons against manual selection and comparable Rust ML baselines.
 - [x] Focused RandomForest save/load equivalence smoke passes 20/20 repeated process runs on the published AutoML fix.
 - [x] Same-seed synthetic RandomForest refit check passes 20/20 process runs, with 20 refits compared per run.
 - [x] Repeated fixed-split diagnostic on pinned AutoML `82d8483`: 15/15 successful cases in each of two runs; exact predictions 15/15; save/load equivalence passes for every case.
-- [ ] Runtime, memory, broader multi-seed/dataset reproducibility, and CLI/library equivalence evidence collected.
+- [x] Aggregate single-thread process resource probe retained for the same 15-case fixed-split matrix: AutoML 1.33s/27,426,816-byte max RSS; scikit-learn 1.22s/158,466,048-byte max RSS. The process boundaries differ, so these values are descriptive only.
+- [ ] Per-model resource profiles, broader multi-seed/dataset reproducibility, and CLI/library equivalence evidence collected.
 - [ ] Independent replication or validation completed.
 
 The original 2026-09-24 root smoke failed once in 20 repetitions. Follow-up checks isolated three issues in the earlier AutoML fix: `DecisionTree::compute_leaf_value` used randomized `HashMap` iteration for tied classes; JSON load changed serialized RandomForest floats until `serde_json/float_roundtrip` was enabled; and `TrainEngine::stratified_split` used randomized class grouping before the split. These fixes were published at `88a86bf`. The standard-dataset rerun at that pin exposed two further tie cases: KNN vote ties used randomized `HashMap` iteration, and ExtraTrees selection did not fully specify ties. AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, published on `fix/deterministic-tie-breaking`, adds deterministic tie rules for those paths.
 
-Validation after the fixes: focused tie tests passed; the same-seed synthetic refit smoke passed in 20/20 process runs with 20 refits compared per run; and the RandomForest save/load smoke passed 20/20 process runs with exact model-state and prediction checks. The full AutoML library suite passes 712/712. On the fixed split, both independent runs at `82d8483` passed all 15 model/dataset cases, matched predictions 15/15, and passed save/load equivalence. This remains bounded evidence: matched baselines, resource measurements, broader multi-seed/multi-dataset behavior, API/CLI parity, and independent replication remain outstanding.
+Validation after the fixes: focused tie tests passed; the same-seed synthetic refit smoke passed in 20/20 process runs with 20 refits compared per run; and the RandomForest save/load smoke passed 20/20 process runs with exact model-state and prediction checks. The full AutoML library suite passes 712/712. On the fixed split, both independent AutoML runs at `82d8483` passed all 15 model/dataset cases, matched predictions 15/15, and passed save/load equivalence. Two scikit-learn 1.6.1 runs succeeded and repeated metrics and prediction CSVs in 15/15 cases. The report retains their side-by-side metrics, exact-label agreement of 8/15, fixed dependencies, and the explicit limits of this one-split comparison. A same-host single-thread process probe measured 1.33 seconds and 27,426,816-byte maximum RSS for the prebuilt AutoML matrix, and 1.22 seconds and 158,466,048-byte maximum RSS for the Python matrix. Since process startup and implementations differ, these are not framework performance conclusions. Matched search budgets, per-model resource profiles, broader seeds/datasets, API/CLI parity, and independent replication remain outstanding.
 
 ## Open questions
 
-- **The evidence remains bounded by the repeated diagnostic.** Three standard datasets and five AutoML models have retained fixed-split results with matching predictions and save/load equivalence on two runs at `82d8483`. Matched-baseline, resource, broader seed/dataset, CLI/library equivalence, and replication results remain absent. Further experiments require a declared compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
+- **The evidence remains bounded by fixed-split diagnostics.** Three standard datasets and five AutoML models have retained fixed-split results with exact AutoML repeatability and save/load equivalence; a comparison-only sklearn matrix and aggregate single-thread resource probe are also retained. There is no matched search-budget comparison, per-model resource profile, broad seed/dataset study, CLI/library equivalence, or independent replication. Further experiments require a declared compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
 
 ## Later
 

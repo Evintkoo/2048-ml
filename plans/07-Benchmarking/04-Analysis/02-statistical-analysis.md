@@ -94,13 +94,8 @@ Generic classification helpers now compute confusion matrices, accuracy, per-cla
 
 ```mermaid
 flowchart LR
-    A[Multiple Tests] --> B[Apply Correction]
-    B -->|Bonferroni| C[Conservative]
-    B -->|Holm| D[Slightly Less Conservative]
-    B -->|Benjamini-Hochberg| E[Less Conservative]
-    C --> F[Adjusted p-values]
-    D --> F
-    E --> F
+    A[Declared Comparison Family] --> B[Apply Holm Adjustment]
+    B --> C[Adjusted p-values]
 ```
 
 ## 9. Statistical Significance Reporting

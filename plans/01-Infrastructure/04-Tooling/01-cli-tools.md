@@ -1,6 +1,6 @@
 # Plan 01 — CLI Tools Specification: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** Root CLI subcommands and help checked; corrected file-vs-directory collection example and required metadata flow.
+> **Status: DONE (2026-09-27).** Root and AutoML command help surfaces verified. Root training still requires a game-metadata sidecar and uses a separate versioned JSON tuning configuration.
 
 **Goal:** State the current implementation and evidence boundary for cli tools specification.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Root CLI subcommands and help checked; corrected file-vs-directory collection example and required metadata flow.
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** On 2026-09-27, root top-level and game-engine, data-collector, benchmark, and train help all listed the documented commands/options. AutoML top-level help listed train, predict, preprocess, benchmark, info, and serve. General training YAML remains unimplemented; root supports JSON search config. The metadata sidecar remains required by the training workflow.
 
 > **Single binary with subcommands (MVP).** `Cargo.toml` is a single crate at root (see `03-Dependencies/01-rust-deps.md` §4); the 3-crate split (`game-engine` / `data-collector` / `benchmark`) is conceptual — commands below are **subcommands of one binary** (`cargo run -- <subcommand>`), not separate `[[bin]]` targets. Future optional: split into workspace members post-MVP. Verify via `cargo run -- --help`; `automl serve` is out-of-scope per initial-plan.
 
@@ -130,7 +130,7 @@ The current root CLI uses exit code 2 for several explicit argument/schema valid
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Root CLI subcommands and help checked; corrected file-vs-directory collection example and required metadata flow. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The evidence covers command/help wiring only.** Successful help output does not validate every command's runtime behavior or establish training quality. Training and benchmark executions require their own data, budgets, and retained artifacts.
 
 ## Later
 

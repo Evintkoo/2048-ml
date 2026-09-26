@@ -56,18 +56,16 @@ pub struct MergeEvent {
 
 ## 5. Score as Feature (Not Target)
 
-The canonical input includes current score as its seventeenth value. The implementation encodes it as `score_normalized` at index 16; the raw score remains available in metadata.
+The canonical input includes current score as its seventeenth value. The
+implementation encodes it as `score_normalized` at index 16; the raw score
+remains available in metadata.
 
 ```rust
-pub struct GameFeatures { // excerpt from current implementation; not the canonical input schema
-    pub score: f64,                // raw for display
-    pub score_normalized: f64,     // canonical feature index 21 — see §6
-    pub score_delta: f64,
-    pub avg_score_per_move: f64,
-}
+// The canonical feature is `score_normalized` at index 16. Raw score and
+// score deltas remain game/evaluation metadata, not additional input features.
 ```
 
-## 6. Current Implementation — Normalized Score at Feature Index 21
+## 6. Current Implementation — Normalized Score at Feature Index 16
 
 The 17-value implementation normalizes score at index 16, not as a target:
 

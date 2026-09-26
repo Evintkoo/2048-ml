@@ -43,21 +43,13 @@ pub struct ModelOutput {
 > **Canonical `masked_argmax` — single source.** The shared implementation lives in `src/actions.rs`; `ModelPolicy` calls it.
 
 ```rust
-pub fn select_action(outputs: &[f64; 4]) -> u8 {
-    outputs
-        .iter()
-        .enumerate()
-        .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
-        .map(|(idx, _)| idx as u8)
-        .unwrap_or(0)
-}
-
-/// Canonical: argmax over valid actions only (masks invalid moves)
-pub fn masked_argmax(logits: &[f64; 4], valid: &[u8]) -> u8 {
-    valid.iter()
-        .max_by(|a, b| logits[**a as usize].partial_cmp(&logits[**b as usize]).unwrap())
-        .copied()
-        .unwrap_or(valid[0])
+/// Canonical: checked argmax over valid actions only.
+/// AutoML supplies class probabilities in the current inference adapter.
+pub fn select_action(
+    probabilities: &[f64; 4],
+    valid: &[u8],
+) -> Result<u8, ActionError> {
+    masked_argmax(probabilities, valid)
 }
 ```
 

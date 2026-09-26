@@ -25,7 +25,7 @@ pub struct ModelRanking {
     pub median_score: u64,
     pub rank: usize,
     pub confidence_interval: (f64, f64),
-    pub is_significantly_better: bool, // Mann-Whitney U p<0.05 Bonferroni (see framework §6.4)
+    pub is_significantly_better: bool, // Descriptive schema only; decision rules are study-specific.
 }
 impl ModelRanking {
     pub fn rank_models(models: &[ModelRanking]) -> Vec<ModelRanking> {

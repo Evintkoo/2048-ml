@@ -169,7 +169,7 @@ pub struct TrainingSample {
 ## Implementation Record
 
 - `src/game_engine/mod.rs` implements the seeded reusable simulator, checked policy moves, game results, deterministic game-ID batch helper, and rollout relabeler.
-- `src/main.rs` collects games through a fixed-size Rayon pool, writes canonical CSV plus row-aligned metadata and a manifest, and exposes random/heuristic baseline and model benchmark paths. The root does not write Parquet and does not yet checkpoint rollout collection.
+- `src/main.rs` collects games through a fixed-size Rayon pool, writes canonical CSV plus row-aligned metadata and a manifest, and exposes random/heuristic baseline and model benchmark paths. Rollout collection writes batched CSV/metadata checkpoints and supports validated resume; Parquet is not used.
 - Validation: root tests pass; the 10,000-game random/heuristic baseline runs and manifests are retained in the linked report. A fresh 2026-09-27 pilot used seed 90627, two games, 100 rollouts per valid action, two threads, and checkpoint interval one. It produced 285 rows and 97,300 rollout evaluations in 82.23 seconds; training CSV and metadata are retained under `reports/collection_pilots/2026-09-27/`. The linear 20,000-game estimate is about 228 hours from two games and is highly uncertain. Checkpoint/resume and live progress are implemented. No plan-scale corpus has started.
 
 ---

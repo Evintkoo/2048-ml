@@ -1,0 +1,27 @@
+{
+  "schema": "2048-ml.hyperopt-smoke-repeat-comparison",
+  "schema_version": 1,
+  "scope": "synthetic tuning-wiring smoke only; no model-quality inference",
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "training_data_sha256": "43f3ad7fc287883c0378038d022237810e4cc325a3e012447115467f37990d47",
+  "metadata_sha256": "ffcadb020cdee0299f9f349ef44cc62ba9582de6ddc64c39c2df17e7ec6b1644",
+  "hyperopt_config_sha256": "6b19541012388580bd963d37c67af565ec22227b98c5b7a560e68ba389e71dba",
+  "trial_values": [
+    0.28125,
+    0.296875
+  ],
+  "selected_parameters": {
+    "max_depth": 1,
+    "n_estimators": 2
+  },
+  "run_1_model_sha256": "6a48687ff6fa4e38be4ca80f199e050e4fe5c2d34e8af33c94b3db1df78b6f07",
+  "run_2_model_sha256": "6801ca8bfff63d18274c1c387129fc08161ad00f6715d63537f68be2c78244cb",
+  "semantic_model_equal_ignoring_training_time": true,
+  "semantic_study_equal_ignoring_trial_durations": true,
+  "fixture_generator_sha256": "bd146deffe7580784d1b429136abac71951f9b23521fb9f94e333fc3bdd579ca",
+  "limitations": [
+    "Elapsed training and trial durations are machine-dependent and differ between runs",
+    "The fixture reuses source rows across synthetic game IDs",
+    "The run does not establish model quality, tuning efficacy, or broad reproducibility"
+  ]
+}

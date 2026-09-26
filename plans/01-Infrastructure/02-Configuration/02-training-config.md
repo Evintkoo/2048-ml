@@ -94,21 +94,24 @@ training:
   
 validation:
   cv_folds: 5
-  validation_split: 0.2
-  early_stopping: true
-  early_stopping_rounds: 50
+  validation_split: 0.2 # framework-internal fit split; grouped CV owns evaluation
+  early_stopping: false # unsupported by the current root TrainEngine integration
   
 optimizer:
-  enabled: false # YAML is documentation only; use the separate JSON CLI contract
+  enabled: false # YAML is illustrative only; use the separate JSON CLI contract
   
 seed: 42
 ```
 
 The YAML block is not loaded by the root CLI and is not a runnable experiment
-configuration. The implemented tuning input is `config/hyperopt-search.example.json`;
+configuration. It is a field illustration, not an executable contract; in
+particular, early stopping must remain false because the root does not wire its
+validation semantics. The implemented tuning input is `config/hyperopt-search.example.json`;
 it controls `n_trials`, TPE, and integer ranges for `n_estimators` and
 `max_depth` only. The root currently accepts this search for RandomForest and
 ExtraTrees; other shown training settings are descriptive, not parser-backed.
+Do not infer that `validation_split`, `early_stopping`, or preprocessing
+examples are consumed from this YAML.
 
 ## 6. Reproducibility Configuration
 

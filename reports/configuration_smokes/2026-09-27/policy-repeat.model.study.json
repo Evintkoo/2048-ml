@@ -1,0 +1,37 @@
+{
+  "trials": [
+    {
+      "trial_id": 0,
+      "params": {
+        "max_depth": {
+          "Int": 2
+        },
+        "n_estimators": {
+          "Int": 2
+        }
+      },
+      "value": 0.28125,
+      "duration_secs": 0.002105417,
+      "pruned": false,
+      "metrics": {}
+    },
+    {
+      "trial_id": 1,
+      "params": {
+        "max_depth": {
+          "Int": 1
+        },
+        "n_estimators": {
+          "Int": 2
+        }
+      },
+      "value": 0.296875,
+      "duration_secs": 0.001458458,
+      "pruned": false,
+      "metrics": {}
+    }
+  ],
+  "best_trial_idx": 1,
+  "total_duration_secs": 0.003571458,
+  "direction": "Maximize"
+}

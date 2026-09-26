@@ -1,0 +1,85 @@
+{
+  "schema": "2048-ml.sklearn-framework-baseline",
+  "schema_version": 1,
+  "protocol": "same UCI sources, outer test rows, feature policy, and AutoML inner holdback boundary",
+  "created_utc": "2026-09-26T20:11:37Z",
+  "seed": 42,
+  "automl_reference_run": "reports/framework_validation/pinned-82d8483-run-1",
+  "configuration": {
+    "n_estimators": 32,
+    "max_depth": 8,
+    "validation_fraction": 0.1,
+    "validation_boundary": "per-class trailing rows after source-order outer-train partition, matching AutoML stratified_split",
+    "preprocessing": "none; raw numeric features; WDBC ID excluded",
+    "thread_limit": 1,
+    "model_specific": {
+      "random_forest": "sklearn defaults except n_estimators, max_depth, random_state, and n_jobs",
+      "extra_trees": "sklearn defaults except n_estimators, max_depth, random_state, and n_jobs",
+      "adaboost": "32 depth-1 decision stumps and learning_rate=1.0 (SAMME behavior in pinned sklearn)",
+      "knn": "k=5, uniform weights, Euclidean distance",
+      "naive_bayes": "GaussianNB var_smoothing=1e-9"
+    }
+  },
+  "datasets": {
+    "iris": {
+      "source_sha256": "6f608b71a7317216319b4d27b4d9bc84e6abd734eda7872b71a458569e2656c0",
+      "split_manifest_sha256": "c647408639f61094dea9d8baa60bf7f72863efabd231008d5c856c25885a170b"
+    },
+    "wine": {
+      "source_sha256": "6be6b1203f3d51df0b553a70e57b8a723cd405683958204f96d23d7cd6aea659",
+      "split_manifest_sha256": "f86f47bf0ace8bb4ba4159944fd7d9517794bb89eeed0a1f2ef4a05aa9d4a62d"
+    },
+    "breast_cancer_wisconsin_diagnostic": {
+      "source_sha256": "d606af411f3e5be8a317a5a8b652b425aaf0ff38ca683d5327ffff94c3695f4a",
+      "split_manifest_sha256": "17dd7dbd39a56790d979296e40b715abbe599f5c69d76cefb2fde57afd336ffe"
+    }
+  },
+  "environment": {
+    "python": "3.9.21",
+    "scikit_learn": "1.6.1",
+    "numpy": "2.0.2",
+    "scipy": "1.13.1",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "logical_cpus": 10,
+    "max_rss_bytes_process": 155058176,
+    "thread_limit": 1,
+    "threadpools_during_fit": [
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 1,
+        "prefix": "libopenblas",
+        "filepath": "/Users/evintleovonzko/.pyenv/versions/3.9.21/lib/python3.9/site-packages/scipy/.dylibs/libopenblas.0.dylib",
+        "version": "0.3.27",
+        "threading_layer": "pthreads",
+        "architecture": "neoversen1"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 1,
+        "prefix": "libomp",
+        "filepath": "/Users/evintleovonzko/.pyenv/versions/3.9.21/lib/python3.9/site-packages/sklearn/.dylibs/libomp.dylib",
+        "version": null
+      }
+    ]
+  },
+  "runner_sha256": "38b2cfee1807a53211a5c1949680503edb5f187dede4f26038eb81091bb3f740",
+  "results_file": "sklearn-framework-validation-results.json",
+  "results_sha256": "dc6806265d0ac2ed795a2d927d4795d55f63f533e02334e982b9f8f3574bee4f",
+  "comparison_file": "automl-sklearn-score-differences.json",
+  "comparison_sha256": "e6c5848e3ad3652df98ff322fe06c7b4cc67c7ca915e9c3bf88363a8fc62dc39",
+  "successful_runs": 15,
+  "failed_runs": 0,
+  "matrix_wall_seconds": 0.21312458300000003,
+  "limitations": [
+    "Fixed-configuration comparison only; implementation details and some defaults differ from AutoML",
+    "One dataset split and seed; no superiority inference",
+    "Python process peak RSS is aggregate across the matrix, not a per-model memory profile",
+    "Single-thread sklearn timing is not directly comparable to unpinned AutoML/Rayon parallelism",
+    "No search budget, CLI/library parity, or independent replication comparison"
+  ]
+}

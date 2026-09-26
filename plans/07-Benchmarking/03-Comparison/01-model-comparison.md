@@ -48,7 +48,7 @@ The proposed final test uses a predeclared held-out game-seed set. Choose its si
 
 Expected baseline figures elsewhere in the plans are targets only. An initial 20-game wiring sample is not a research estimate and is intentionally not populated here.
 
-> Matrix is filled **post-training** — no pre-filled winners. Winner = highest held-out mean; use the pre-registered Mann-Whitney U/Holm comparison, bootstrap CI, and effect size to characterize uncertainty and practical magnitude. See `04-Analysis/03-significance-testing.md`.
+> Matrix is filled **post-training** — no pre-filled winners. The descriptive ranking uses held-out mean; use the predeclared paired or unmatched comparison procedure, Holm adjustment, bootstrap CI, and effect size to characterize uncertainty and practical magnitude. See `04-Analysis/03-significance-testing.md`.
 
 ## Implementation Record
 

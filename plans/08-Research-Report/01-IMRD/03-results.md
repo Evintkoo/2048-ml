@@ -36,7 +36,7 @@ No 2048 game score can substitute for this table.
 
 ## 2. 2048 Case-Study Winner Protocol (Canonical: `07-Benchmarking/01-Evaluation/01-benchmarking-framework.md`)
 
-Winner protocol, sample size, seed roles, and inferential unit must be declared before confirmatory evaluation. The current comparison CLI supports pairwise sign/Mann–Whitney tests, Holm adjustment, bootstrap intervals, and Cohen's d; it does not implement the previously proposed Kruskal–Wallis ranking gate. Baseline scores must be measured locally or supported by verified literature.
+Winner protocol, sample size, seed roles, and inferential unit must be declared before confirmatory evaluation. The current comparison CLI supports paired exact sign / unmatched Mann–Whitney tests, Holm adjustment, bootstrap intervals, and Cohen's d; it does not implement a global ranking gate. Baseline scores must be measured locally or supported by verified literature.
 
 ## 3. Concrete Schemas
 
@@ -68,7 +68,7 @@ The helper inventory and its limitations are summarized in the benchmarking anal
 
 ### Ranking Table Shell (No Case-Study Ranking Result)
 
-| Model | Mean | Median | SD | 95% CI (bootstrap) | Rank | Training time | MWU vs #2 |
+| Model | Mean | Median | SD | 95% CI (bootstrap) | Rank | Training time | Declared pairwise result |
 |-------|------|--------|----|---------------------|------|---------------|-----------|
 | TBD | TBD | TBD | TBD | [TBD, TBD] | TBD | TBD | p=TBD, d=TBD |
 
@@ -76,10 +76,10 @@ The CLI can summarize and compare game-score files, but no case-study model rank
 
 ### 3.2 Gate Table
 
-| Comparison | U | p (Bonf.) | d | Bootstrap CI on diff | Gate pass? |
-|------------|---|-----------|---|----------------------|------------|
-| Best vs measured baseline | TBD | TBD | TBD | [TBD, TBD] | TBD |
-| Best vs runner-up | TBD | TBD | TBD | [TBD, TBD] | TBD |
+| Comparison | Procedure | Adjusted p-value | Effect estimate | Bootstrap CI on difference |
+|------------|-----------|------------------|-----------------|-----------------------------|
+| Best vs measured baseline | TBD | TBD | TBD | [TBD, TBD] |
+| Best vs runner-up | TBD | TBD | TBD | [TBD, TBD] |
 
 ### 3.3 Learning-Curve Hooks
 

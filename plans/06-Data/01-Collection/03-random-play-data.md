@@ -1,6 +1,6 @@
 # Plan 03 — Random Play Data: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Random legal-action collection and rollout relabeling are implemented; the 5k-game corpus is not produced.
+> **Status: PARTIAL (2026-09-27).** Random legal-action collection and rollout relabeling are implemented; no corpus size has been approved or collected at scale.
 
 **Goal:** State the current implementation and evidence boundary for random play data.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

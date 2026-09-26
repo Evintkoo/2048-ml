@@ -1,0 +1,40 @@
+{
+  "schema": "2048-ml.synthetic-hyperopt-wiring-fixture",
+  "schema_version": 1,
+  "purpose": "CLI grouped-CV/TPE path smoke only; not a game corpus or research dataset",
+  "source_training_csv": "reports/collection_pilots/2026-09-27/training.csv",
+  "source_metadata_csv": "reports/collection_pilots/2026-09-27/metadata.csv",
+  "source_training_sha256": "5e048620d97b80a30bb5ff111e7f24dc378ff3d2525a7c123a480115a98c7ba2",
+  "source_metadata_sha256": "2c857acb56b43764d25ef05ec4ff0e09359c4b78e6a3826c6fa3eb99350c68f3",
+  "construction": "For each of ten synthetic game IDs, cycle through two source pilot rows for each action; state rows are intentionally reused across IDs.",
+  "synthetic_game_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "rows_per_synthetic_game": 8,
+  "rows_total": 80,
+  "action_counts": {
+    "0": 20,
+    "1": 20,
+    "2": 20,
+    "3": 20
+  },
+  "training_csv": "synthetic-training.csv",
+  "training_csv_sha256": "43f3ad7fc287883c0378038d022237810e4cc325a3e012447115467f37990d47",
+  "metadata_csv": "synthetic-metadata.csv",
+  "metadata_csv_sha256": "ffcadb020cdee0299f9f349ef44cc62ba9582de6ddc64c39c2df17e7ec6b1644",
+  "runner_sha256": "bd146deffe7580784d1b429136abac71951f9b23521fb9f94e333fc3bdd579ca",
+  "limitations": [
+    "Rows are reused across synthetic game IDs and are not independent trajectories",
+    "Any accuracy is fixture behavior only and must not be interpreted as model quality",
+    "No canonical rollout corpus or game evaluation is represented"
+  ]
+}

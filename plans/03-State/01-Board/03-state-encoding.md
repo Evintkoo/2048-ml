@@ -19,8 +19,8 @@
 grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,grid_11,grid_12,grid_13,grid_14,grid_15,score_normalized,action
 0.0,0.00006,0.00012,0.00024,0.00098,0.00195,0.0039,0.0078,0.0156,0.03125,0.0625,0.0,0.0,0.0,0.0,0.0,0.000000,2
 ```
-18 columns: 17 features plus `action: u8 0..3`. Raw `score` stays in the metadata sidecar.
-18 columns: 17 features + `action: u8 0..3`. `score` raw is metadata sidecar, never a column.
+18 columns: 17 features plus `action: u8 0..3`. Raw `score` stays in the
+metadata sidecar and is never a model input or target.
 
 ## 2. Type Mapping — `TaskType::MultiClassification` Only
 

@@ -26,62 +26,26 @@ Define the score metrics used to evaluate and compare 2048 ML model performance.
 | p50/p90/p99 | percentiles | Reported by current summary helper |
 | games_above_2048/4096/8192 | counts | Threshold hit rates |
 
-## 3. Score Metrics Calculation
+## 3. Implemented Score Summary API
 
 ```rust
-pub struct ScoreMetrics {
+pub struct ScoreSummary {
+    pub n: usize,
     pub mean: f64,
-    pub median: u64,
-    pub std_dev: f64,
+    pub sample_std_dev: f64,
+    pub median: f64,
+    pub percentile_90: f64,
+    pub percentile_99: f64,
     pub min: u64,
     pub max: u64,
-    pub percentile_10: u64,
-    pub percentile_25: u64,
-    pub percentile_50: u64,
-    pub percentile_75: u64,
-    pub percentile_90: u64,
-    pub percentile_95: u64,
-    pub percentile_99: u64,
     pub games_above_2048: usize,
     pub games_above_4096: usize,
     pub games_above_8192: usize,
-    pub total_games: usize,
+    pub mean_ci_95: (f64, f64),
 }
 
-impl ScoreMetrics {
-    pub fn calculate(scores: &[u64]) -> ScoreMetrics {
-        let n = scores.len();
-        let sum: u64 = scores.iter().sum();
-        let mean = sum as f64 / n as f64;
-        let sorted = {
-            let mut s = scores.to_vec();
-            s.sort();
-            s
-        };
-        let median = sorted[n / 2];
-        let variance = scores.iter().map(|s| (*s as f64 - mean).powi(2)).sum::<f64>() / n as f64;
-        let std_dev = variance.sqrt();
-        
-        ScoreMetrics {
-            mean,
-            median,
-            std_dev,
-            min: sorted[0],
-            max: sorted[n - 1],
-            percentile_10: sorted[n / 10],
-            percentile_25: sorted[n / 4],
-            percentile_50: sorted[n / 2],
-            percentile_75: sorted[3 * n / 4],
-            percentile_90: sorted[9 * n / 10],
-            percentile_95: sorted[19 * n / 20],
-            percentile_99: sorted[99 * n / 100],
-            games_above_2048: scores.iter().filter(|s| **s >= 2048).count(),
-            games_above_4096: scores.iter().filter(|s| **s >= 4096).count(),
-            games_above_8192: scores.iter().filter(|s| **s >= 8192).count(),
-            total_games: n,
-        }
-    }
-}
+// `summarize_scores(scores, seed, bootstrap_replicates)` returns this summary
+// or `None` for empty input / a zero bootstrap replicate count.
 ```
 
 ## 4. Score Normalization for Comparison (Duplicate Note)

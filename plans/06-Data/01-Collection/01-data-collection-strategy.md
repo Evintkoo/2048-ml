@@ -99,34 +99,13 @@ The action taken at turn t by the agent is NOT the training label. **There is no
 The design proposal calls for labels after game-level train/validation/test assignment and a cache keyed by `(dataset_version, game_id, move_idx, base_seed)`. Current collection relabels before splitting and has no persistent cache. A future implementation should report total states, rollouts, wall time, and cache behavior.
 
 ```rust
-pub struct RolloutLabeler {
-    simulator: GameSimulator,
-    n_rollouts: usize,  // 100
-}
-
-impl RolloutLabeler {
-    /// Returns (best_action, expected_score) for a given board state
-    pub fn label(&self, board: &Board) -> (u8, f64) {
-        let valid = board.get_valid_moves();
-        let mut best_action = valid[0];
-        let mut best_score = 0.0f64;
-        
-        for &action in &valid {
-            let mut total_score = 0.0;
-            for _ in 0..self.n_rollouts {
-                let result = self.simulator.simulate_from(board, action);
-                total_score += result.final_score as f64;
-            }
-            let avg_score = total_score / self.n_rollouts as f64;
-            if avg_score > best_score {
-                best_score = avg_score;
-                best_action = action;
-            }
-        }
-        
-        (best_action, best_score)
-    }
-}
+let labeler = RolloutLabeler {
+    n_rollouts: 100,
+    max_moves: 1000,
+    spawn_prob_4: 0.1,
+};
+let (action, mean_final_score) =
+    labeler.label(&board, base_seed, game_id, move_index)?;
 ```
 
 **Why this matters**: The original agent's action at turn t was chosen by a random or heuristic agent, not by an oracle. Without rollout-based relabeling, the model learns to mimic suboptimal behavior. The rollout label is a stochastic heuristic target; it is not proven optimal play.
@@ -161,12 +140,13 @@ grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,gr
 0.0,0.000061,0.000122,0.000244,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.050172,0
 ```
 
-> `score` (u64) is optional metadata for analysis only — not in training CSV. If stored, add as trailing `,score` column (e.g. `,124`) but never as `y`. No `reward` column.
+> Raw `score` (u64) is stored in the row-aligned metadata sidecar, not appended
+> to the strict 18-column training CSV. It is never the target. No `reward` column.
 
 Example row breakdown:
 - `grid_0..score_normalized` (17 dims): The feature vector at turn t — indices 0–15 `grid_0..grid_15`, 16 `score_normalized` (parseable: exactly 18 comma-separated values per row: 17 floats + 1 u8 action)
 - `action: 2`: The action with the highest rollout score (NOT necessarily the original agent action) — the ONLY label (`u8` 0–3)
-- `score: 124` (if present as trailing metadata): Cumulative game score **metadata** for analysis only (never as `y`)
+- `score: 124` (in the aligned metadata sidecar): cumulative game score for analysis only (never `y`)
 
 Verification: `validate_csv` checks the exact 18-column v2 header and every row.
 
@@ -197,7 +177,7 @@ All training data is stored as CSV files with the following schema (**17 feature
 ```
 columns: grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,grid_11,grid_12,grid_13,grid_14,grid_15,score_normalized,action:u8
 # canonical header (17+1): grid_0,grid_1,grid_2,grid_3,grid_4,grid_5,grid_6,grid_7,grid_8,grid_9,grid_10,grid_11,grid_12,grid_13,grid_14,grid_15,score_normalized,action
-# optional metadata column: score (u64) — for analysis only, never as `y`; no `reward` column
+# raw score (u64) is in the aligned metadata sidecar, not the training CSV; no `reward` column
 encoding: UTF-8
 delimiter: comma
 header: yes

@@ -38,7 +38,7 @@ CSV `06-Data/03-Storage/self_play.csv` — header `grid_0..score_normalized,acti
 ## 6. Next Steps
 
 1. Select and record the policy source; obtain a data-collection compute budget.
-2. Relabel with `RolloutLabeler { n_rollouts: 100 }`.
+2. Relabel with a configured `RolloutLabeler` (100 rollouts, explicit move cap and spawn probability).
 3. Validate `NF==18`, `action ∈ 0..3`, no `done`/`reward` columns; write to `06-Data/03-Storage/`.
 
 The root collector currently supplies only random trajectories. Implement a configurable single-agent policy source and preserve rollout-based labels to fulfill this ticket.

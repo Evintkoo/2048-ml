@@ -1,0 +1,18 @@
+{
+  "schema": "2048-ml.process-resource-measurement",
+  "command": "env RAYON_NUM_THREADS=1 /usr/bin/time -l target/debug/game2048-ml framework-validate --data-dir data/framework_validation --output-dir reports/framework_validation/pinned-82d8483-rayon1-run-1 --seed 42 --test-fraction 0.2",
+  "exit_code": 0,
+  "matrix_cases_succeeded": 15,
+  "wall_seconds": 1.33,
+  "user_seconds": 1.2,
+  "system_seconds": 0.05,
+  "maximum_resident_set_bytes": 27426816,
+  "peak_memory_footprint_bytes": 7651784,
+  "rayon_threads_environment": "1",
+  "tool": "macOS /usr/bin/time -l",
+  "limitations": [
+    "Single matrix process measurement, not per-model profiling",
+    "Prebuilt binary command boundary includes process startup but not cargo compilation",
+    "One host and one fixed split"
+  ]
+}

@@ -56,7 +56,7 @@ mindmap
 | Inference | Model prediction on new game states |
 | Features | Canonical input: 16 row-major cells plus current score (17 values) |
 | Labels | Target action selected by rollout mean score; a finite-simulation proxy, not a proven optimal action |
-| Loss | Prediction error metric (cross-entropy) |
+| Loss | Objective used during fitting; the root tree-training workflow does not expose per-epoch loss curves |
 | Convergence | Training stabilization (diminishing returns pattern) |
 | Hyperparameters | Configuration parameters tuned by HyperOptX |
 | Feature Vector | 17-value representation of board cells and current score |
@@ -80,7 +80,7 @@ mindmap
 | Baseline | Reference policy measured under a declared, reproducible protocol |
 | Metric | Quantitative measurement (mean score, median score, std dev) |
 | Statistical significance | Decision under a declared test, comparison family, and error criterion; no universal project threshold is fixed here |
-| Reproducibility | Consistent results with fixed seed |
+| Repeatability | Consistent results under the same recorded conditions; this alone does not establish independent reproducibility |
 | Winner Determination | Protocol-specific comparison; no trained-policy winner has been established |
 | Mean Score | Primary 2048 case-study metric; framework validation uses task-appropriate quality and resource metrics |
 | Bootstrap CI | Resampling-based interval; confidence interpretation depends on sampling design |

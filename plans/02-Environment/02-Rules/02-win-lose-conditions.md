@@ -1,6 +1,6 @@
 # Plan 02 — Win / Lose Conditions: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** No-valid-move terminal rule, non-terminal 2048 threshold, and result metadata implemented and covered.
+> **Status: DONE (2026-09-27).** Source and current root test suite verify no-valid-move termination, continued play after 2048, and final result metadata. Optional score/stagnation limits remain unimplemented.
 
 **Goal:** State the current implementation and evidence boundary for win / lose conditions.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

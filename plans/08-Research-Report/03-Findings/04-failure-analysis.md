@@ -81,8 +81,8 @@ If the automl framework lacks required capabilities:
 **Response:**
 1. Document all missing capabilities in the verification checklist
 2. Keep core model training on the AutoML framework; report limitations under canonical scope
-3. Modify the project goal to "what automl CAN do"
-4. Publish the automl capability gap as a separate finding
+3. Report the capability gap as a framework finding while retaining the declared research scope
+4. State which downstream 2048 conclusions the missing capability prevents
 
 ## 3. Failure Mode Assessment
 

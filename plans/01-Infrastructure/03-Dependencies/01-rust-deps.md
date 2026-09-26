@@ -1,6 +1,6 @@
 # Plan 01 — Rust Dependencies Specification: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** Added sha2 and clarified single-crate domain module layout; root manifest and lockfile are present. The AutoML submodule pin was updated to `82d848323eed5e2af86d046d529916c448f2442c` after deterministic tie fixes and validation.
+> **Status: DONE (2026-09-27).** Root manifest, lockfile, single-crate layout, and Rust 1.75+ constraint are verified. The dependency tree matches the documented direct crates; AutoML is pinned at `82d848323eed5e2af86d046d529916c448f2442c`.
 
 **Goal:** State the current implementation and evidence boundary for rust dependencies specification.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Added sha2 and clarified single-crate domain module layout; root manifest and lockfile are present. The AutoML submodule pin was updated to `82d848323eed5e2af86d046d529916c448f2442c` after deterministic tie fixes and validation.
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** `Cargo.toml`, `Cargo.lock`, the Rust 1.75+ declaration, and root domain-module layout were inspected. `cargo tree --depth 1` lists the documented direct dependencies, and the AutoML submodule remains pinned at the documented revision. No performance or research claim follows from this dependency audit.
 
 > **Scope:** This file = `Cargo.toml` constraints & workspace layout. For AutoML capability table (TrainingConfig, ModelType, CV) see `01-Project/02-dependencies.md`. Plan 00 defines the canonical 17-value training input; ticket #034 aligns the root implementation with it.
 
@@ -91,7 +91,7 @@ The MVP uses one root crate with cohesive Rust domain modules such as `src/game_
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Added sha2 and clarified single-crate domain module layout; root manifest and lockfile are present. The AutoML submodule pin was updated to `82d848323eed5e2af86d046d529916c448f2442c` after deterministic tie fixes and validation. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The plan-scale evidence remains bounded by a manifest and lockfile audit.** Dependency versions can change; repeat `cargo tree --depth 1` after dependency updates. Performance claims require separate reproducible measurements.
 
 ## Later
 

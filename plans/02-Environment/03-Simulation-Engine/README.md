@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-simulation-engine](01-simulation-engine.md) | Simulation Engine | PARTIAL |
-| [02-randomness](02-randomness.md) | Randomness and Determinism | PARTIAL |
-| [03-multi-game](03-multi-game.md) | Multi-Game Simulation | PARTIAL |
+| [01-simulation-engine](01-simulation-engine.md) | Simulation Engine | PARTIAL — pilot retained; rollout corpus still awaits explicit compute budget |
+| [02-randomness](02-randomness.md) | Randomness and Determinism | PARTIAL — root seed derivation is implemented; broader AutoML repeats/config-file loading remain open |
+| [03-multi-game](03-multi-game.md) | Multi-Game Simulation | PARTIAL — checkpointed collector is implemented; scale corpus and full frequency-artifact validation remain open |
 
 ## Reading paths
 

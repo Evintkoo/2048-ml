@@ -55,15 +55,20 @@ let config = TrainingConfig::new(TaskType::MultiClassification, "action")
 ## 4. Decoding Model Output
 
 ```rust
-// 4 logits → argmax → u8 0..3, masked by valid actions
-pub fn decode_action(logits: &[f64;4], valid: &[u8]) -> u8 { masked_argmax(logits, valid) }
+// Four class probabilities → checked argmax over valid action IDs.
+pub fn decode_action(
+    probabilities: &[f64; 4],
+    valid: &[u8],
+) -> Result<u8, ActionError> {
+    masked_argmax(probabilities, valid)
+}
 ```
 Canonical `masked_argmax` in `03-Mapping/01-model-output-to-action.md`.
 
 ## 5. Path References
 
 - `01-action-space.md` — action definitions.
-- `03-Mapping/01-model-output-to-action.md` — logits → action.
+- `03-Mapping/01-model-output-to-action.md` — class probabilities → action.
 - `automl/src/training/config.rs:11` `TaskType::MultiClassification`.
 
 ## Implementation Record

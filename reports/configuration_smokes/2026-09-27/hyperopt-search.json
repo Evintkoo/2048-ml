@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "n_trials": 2,
+  "sampler": "tpe",
+  "n_estimators": { "low": 2, "high": 3 },
+  "max_depth": { "low": 1, "high": 2 }
+}

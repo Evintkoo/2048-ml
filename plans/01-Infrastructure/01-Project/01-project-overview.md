@@ -115,7 +115,7 @@ Because this project's goal #2 is to benchmark automl's capability, and the proj
 - If a required core capability is missing, stop the training milestone, record the missing capability, and revise the experiment scope. Do **not** add a local `smartcore`/`linfa` fallback: the core constraint is automl-only training.
 - The project's goal #2 then evaluates **what automl CAN do**, not what it should have done
 
-### 6.2 Verification Record (2026-09-24)
+### 6.2 Verification Record (updated 2026-09-27)
 
 The pinned submodule is present at `82d848323eed5e2af86d046d529916c448f2442c`, containing deterministic training/serialization fixes and deterministic tie handling for KNN and ExtraTrees. Source inspection confirms `TrainEngine`, `HyperOptX`, `ModelType`, `TaskType::MultiClassification`, `CVStrategy::GroupKFold`, `CVStrategy::TimeSeriesSplit`, and `MedianPruner::new(minimize: bool)` exist. The full AutoML library suite passes 712/712 on this revision.
 
@@ -124,7 +124,7 @@ The initial capability gate passed for the revised candidate set:
 - `RandomForest`, `ExtraTrees`, `AdaBoost`, `KNN`, and `NaiveBayes` fit the four-action task and return four probability columns on the smoke dataset. `DecisionTree`, `LogisticRegression`, `SGD`, `SVM`, `GradientBoosting`, `XGBoost`, `LightGBM`, and `CatBoost` return two and are excluded from the 2048 candidate set until corrected and revalidated.
 - `CrossValidator::split` supports group arrays, but `cross_val_score` always calls it with `groups=None`; therefore grouped CV cannot currently be used through that helper. `GroupKFold` sorts group IDs and assigns groups round-robin, so it preserves group separation but does not implement the plan's chronological `shuffle=false` behavior.
 - `TrainEngine::fit` uses an internal train/validation split; it does not invoke `CrossValidator` or use `cv_folds`. The planned grouped validation must be performed explicitly through compatible APIs or implemented in the integration.
-- The full pinned AutoML library suite passes: 709 passed, 0 failed. The AutoML CLI help smoke completed successfully.
+- The pinned AutoML library suite currently passes 712/712 tests. The AutoML CLI help smoke completed successfully. The earlier 709-test count is superseded by the current suite result.
 
 Case-study training may use only the five verified multiclass variants above, after the dataset labeling, chronological split, and resource protocols are applied. This gate establishes API capability, not model quality or a winner.
 
@@ -132,9 +132,9 @@ Case-study training may use only the five verified multiclass variants above, af
 
 The first feature encoder and randomized range checks exposed two underspecified formulas. The root implementation uses `max_tile_log = log2(max_tile)/15` for nonzero tiles (zero maps to zero), matching the documented `[0,1]` range through the planned 32768 canonical tile. It normalizes `adjacency_merge_score` as `sum_adjacent_equal_tile_values / (16 * 32768)`, because the listed `/16` alone can exceed 1. The `monotonicity` feature is currently a deterministic fraction of adjacent horizontal/vertical comparisons that are equal or contain an empty cell. This is a provisional operational definition; record it in feature plans and freeze before any training run. `score_normalized` is permitted above 1 when score exceeds one million, per the data schema.
 
-### 6.4 Rollout Labeling Budget (2026-09-24)
+### 6.4 Rollout Labeling Budget (updated 2026-09-27)
 
-A smoke collection with 2 games, 100 rollouts per valid action, and 2 fixed Rayon threads produced 213 rows in 37.24 seconds (5.72 rows/second). The observed mean was 106.5 rows/game. Linear estimates are about 52 hours for 10,000 games and 103 hours for 20,000 games at the same throughput and thread count. These are planning estimates from a small sample, not performance results; actual time depends on trajectory length, hardware, and parallel scaling. Use a pilot and record resource use before a multi-day canonical corpus run.
+The earlier two-game smoke produced 213 rows in 37.24 seconds and implied a 103-hour linear estimate for 20,000 games. A later resumed pilot, retained under `reports/collection_pilots/2026-09-27/`, used seed 90627, 100 rollouts per action, and two threads; it produced 285 rows and 97,300 rollout evaluations in 82.23 seconds. Its linear estimate is about 228 hours for 20,000 games. Both projections use only two games and are highly uncertain; the newer estimate supersedes the earlier one. A larger pilot and declared compute budget are prerequisites to a scale run.
 
 ### 6.5 Baseline and Evaluation Tooling (2026-09-24)
 
@@ -142,13 +142,13 @@ The root crate now exposes seeded `benchmark baseline --agent random|heuristic`,
 
 A 20-game seed-987 wiring sample yielded random mean 1,046.6 and heuristic mean 7,800.6. This is an implementation smoke measurement, far below the pre-registered 10,000-game protocol, and is not used as a baseline claim or populated in the results matrix.
 
-The framework contribution remains partially evaluated. The [framework-validation report](../../../reports/framework_validation/README.md) records a seed-42, stratified 80/20 diagnostic across Iris, Wine, and Wisconsin Diagnostic with RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. On pinned AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, two independent process runs succeeded for all 15 cases, matched predictions for 15/15 pairs, and passed model save/load equivalence. The preceding pinned revision showed a KNN vote tie depending on randomized `HashMap` iteration and ExtraTrees tie behavior; these were fixed with deterministic lowest-label/feature tie rules. The two-run result is narrow evidence, not a broad reproducibility proof. There are no matched external-framework baselines, resource measurements, CLI/library equivalence study, or independent replication. Do not treat this diagnostic as completion of the framework contribution or as clearance for the main 2048 training milestone.
+The framework contribution remains partially evaluated. The [framework-validation report](../../../reports/framework_validation/README.md) records a seed-42, stratified 80/20 diagnostic across Iris, Wine, and Wisconsin Diagnostic with RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. On pinned AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, two independent process runs succeeded for all 15 cases, matched predictions for 15/15 pairs, and passed model save/load equivalence. Two comparison-only scikit-learn 1.6.1 runs used those outer split rows and AutoML's per-class trailing 10% holdback; all 15 cases succeeded and repeated exactly, while predicted labels matched AutoML on 8/15 cases. A one-process resource probe observed AutoML at 1.33 seconds/27,426,816-byte maximum RSS and sklearn at 1.22 seconds/158,466,048 bytes on the same host. Different implementation defaults and process startup boundaries make these descriptive only. Matched search-budget/resource profiling, broader reproducibility, CLI/library equivalence, and independent replication remain open. Neither diagnostic completes framework validation or clears the main 2048 training milestone.
 
 ### 6.6 Main-Study Readiness (2026-09-26)
 
 The root training command requires row-aligned game metadata, excludes the final chronological game groups from fitting, and runs explicit group-preserving CV on the development groups. The final AutoML fit is saved with a manifest containing input digests, dependency pin, seed derivations, and selected settings. This establishes a runnable integration path, not a completed end-to-end research study.
 
-The following prerequisites remain open before main-study claims: the standard-dataset framework-validation gate in [Plan 07-04](../../07-Benchmarking/03-Comparison/04-framework-validation.md), broader repeated-fit reproducibility evidence, canonical rollout-labeled training data, and the pre-registered held-out model evaluation. Existing random/heuristic baseline runs and synthetic training wiring do not substitute for these artifacts. The rollout pilot estimates about 103 hours for 20,000 games at its measured throughput and two-thread setting; obtain a fresh pilot and an explicit resource budget before starting a corpus at that scale.
+The following prerequisites remain open before main-study claims: matched search-budget/resource framework comparisons, broader repeated-fit reproducibility evidence, canonical rollout-labeled training data, and the pre-registered held-out model evaluation. Existing random/heuristic baseline runs and synthetic training wiring do not substitute for these artifacts. The latest two-game pilot estimates about 228 hours for 20,000 games by linear extrapolation; this estimate is highly uncertain. Obtain a larger pilot and explicit resource budget before starting a corpus at that scale.
 
 **This verification is not optional.** Without it, the project cannot distinguish between "automl is incapable" and "our integration is broken."
 
@@ -224,7 +224,7 @@ The theoretical maximum score for 2048 is not used as an optimization target. **
 
 ## Open questions
 
-- **The evidence remains bounded by the current diagnostic.** Two fixed-split runs against pinned AutoML `82d8483` are retained; all 15 cases succeeded, exact predictions matched 15/15, and model save/load equivalence passed. Matched framework baselines, resource measurements, broader repeated-fit evidence, and independent replication are absent. Canonical rollout-labeled 2048 training and held-out evaluation are also pending. Larger runs require a declared resource budget and retained artifacts.
+- **The evidence remains bounded by fixed-split diagnostics.** Two runs against pinned AutoML `82d8483` succeeded on 15 cases, matched predictions 15/15, and passed model save/load equivalence. Two fixed-configuration sklearn runs also succeeded on 15 cases and repeated exactly; corresponding predicted labels matched in 8/15 cases. A single-thread process-level resource probe is retained with its startup and implementation limits. Matched search-budget/per-model profiling, broader repeated-fit evidence, and independent replication remain absent. Canonical rollout-labeled 2048 training and held-out evaluation are also pending. Larger runs require a declared resource budget and retained artifacts.
 
 ## Later
 

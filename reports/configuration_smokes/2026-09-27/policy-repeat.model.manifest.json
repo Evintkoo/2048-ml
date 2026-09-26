@@ -1,0 +1,80 @@
+{
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "component_seeds": {
+    "cross_validation": 90632,
+    "data_sampling": 90631,
+    "game_base": 90628,
+    "hyperopt": 90630,
+    "training": 90628
+  },
+  "created_utc": "2026-09-26T20:18:02.426974+00:00",
+  "cv_folds": 2,
+  "dataset_schema": "2048-action-policy-v2",
+  "development_fraction": 0.85,
+  "global_seed": 90628,
+  "hyperparameter_optimization": {
+    "cv_folds": 2,
+    "cv_strategy": "GroupKFold",
+    "direction": "maximize",
+    "enabled": true,
+    "input_config": "reports/configuration_smokes/2026-09-27/hyperopt-search.json",
+    "input_config_sha256": "6b19541012388580bd963d37c67af565ec22227b98c5b7a560e68ba389e71dba",
+    "n_jobs": 1,
+    "n_trials": 2,
+    "objective": "grouped_cv_accuracy",
+    "optimizer": "HyperOptX",
+    "pruner": {
+      "enabled": false,
+      "reason": "The pinned HyperOptX optimize API has no intermediate reporting or pruner callback"
+    },
+    "sampler": "tpe",
+    "schema_version": 1,
+    "search_space": {
+      "max_depth": {
+        "high": 2,
+        "low": 1
+      },
+      "n_estimators": {
+        "high": 3,
+        "low": 2
+      },
+      "n_trials": 2,
+      "sampler": "tpe",
+      "schema_version": 1
+    },
+    "seed": 90630,
+    "selected_parameters": {
+      "max_depth": 1,
+      "n_estimators": 2
+    }
+  },
+  "manifest_schema": "game2048-ml.training-run",
+  "manifest_schema_version": 1,
+  "metadata": "reports/configuration_smokes/2026-09-27/synthetic-metadata.csv",
+  "metadata_sha256": "ffcadb020cdee0299f9f349ef44cc62ba9582de6ddc64c39c2df17e7ec6b1644",
+  "model": "random_forest",
+  "model_artifact": "reports/configuration_smokes/2026-09-27/policy-repeat.model.json",
+  "model_artifact_sha256": "6801ca8bfff63d18274c1c387129fc08161ad00f6715d63537f68be2c78244cb",
+  "project_version": "0.1.0",
+  "selected_max_depth": 1,
+  "selected_n_estimators": 2,
+  "source_revision": "a8cc9075c2f99b2e1d2264f0073539f52dc19363",
+  "state_feature_count": 17,
+  "study_artifact": "reports/configuration_smokes/2026-09-27/policy-repeat.model.study.json",
+  "training_configuration": {
+    "cv_folds": 2,
+    "cv_strategy": "GroupKFold",
+    "development_fraction": 0.85,
+    "final_fit_seed": 90628,
+    "model": "random_forest",
+    "schema_version": 1,
+    "selected_max_depth": 1,
+    "selected_n_estimators": 2,
+    "state_feature_count": 17,
+    "target_column": "action",
+    "task_type": "MultiClassification"
+  },
+  "training_data": "reports/configuration_smokes/2026-09-27/synthetic-training.csv",
+  "training_data_sha256": "43f3ad7fc287883c0378038d022237810e4cc325a3e012447115467f37990d47",
+  "tune_trials": 2
+}

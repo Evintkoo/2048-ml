@@ -139,8 +139,8 @@ ML models are compared against baselines using the following protocol:
 1. **Same game environment**: All agents run in the identical 2048 environment with the same random seed sequence
 2. **Same number of games**: Each agent plays N games (see 6.3 for sample size requirements)
 3. **Score collection**: Record the final score for each game
-4. **Statistical comparison**: Compare the ML model's score distribution against each baseline using the tests defined in 6.4
-5. **Effect size**: Report Cohen's d alongside p-values to quantify the magnitude of improvement
+4. **Statistical comparison**: Declare the matched or unmatched design before the run and use the corresponding procedure described in 6.4
+5. **Effect size**: Report the implemented effect-size estimate with its definition and uncertainty where available
 
 ### 6.3 Sample Size Planning (Not Empirically Powered)
 
@@ -150,20 +150,19 @@ No prospective power analysis has been completed. Choose a game count using obse
 
 All comparisons must satisfy the following statistical requirements:
 
-| Test | Purpose | Significance Level |
+| Procedure | Purpose | Current implementation |
 |------|---------|-------------------|
-| Mann-Whitney U test | Compare score distributions (non-parametric) | α = 0.05 |
-| Wilcoxon signed-rank test | Paired comparisons (same seed sequence) | α = 0.05 |
-| Bootstrap confidence intervals | Estimate mean score uncertainty | 95% CI |
-| Cohen's d | Effect size measurement | d > 0.8 = large |
-| Permutation test | Validate significance of observed differences | 10,000 permutations |
+| Exact sign test | Compare matched per-seed score outcomes | Implemented for paired comparisons |
+| Mann–Whitney U | Compare unmatched score samples | Implemented with normal approximation and tie correction |
+| Bootstrap confidence intervals | Estimate score mean and mean-difference uncertainty | Implemented; replicate count and seed are run inputs |
+| Effect size | Describe the magnitude of score difference | Implemented by comparison CLI; report the selected estimator and direction |
 
 **Requirements**:
-- Primary test: Mann-Whitney U test (scores are non-normally distributed)
-- Secondary test: Bootstrap 95% CI on the difference in means (must not include zero)
-- Effect size: Cohen's d must be reported; d ≥ 0.5 is considered meaningful
-- Multiple comparison correction: Bonferroni correction when comparing against multiple baselines
-- Reproducibility: All tests must use fixed random seeds
+- Choose the paired exact sign test only when outcomes are genuinely paired by the declared seed design; otherwise use the unmatched Mann–Whitney U procedure.
+- Report the bootstrap interval and effect estimate descriptively; whether an interval excludes zero is not a universal acceptance gate.
+- Apply Holm adjustment when making multiple comparisons in the current CLI. State the family of comparisons and procedure in the report.
+- Predeclare any inferential thresholds and decision rules for each study. This repository does not establish universal alpha, effect-size, or permutation-count cutoffs.
+- Record seeds for stochastic procedures, including bootstrap resampling.
 
 ### 6.5 Baseline Comparison Pipeline — Protocol to Declare Before a Run
 
@@ -181,9 +180,9 @@ flowchart TD
         F --> G
         
         G --> H[Statistical Tests]
-        H --> I[Mann-Whitney U]
+        H --> I[Paired sign test or unmatched Mann-Whitney U]
         H --> J[Bootstrap CI]
-        H --> K[Cohen's d]
+        H --> K[Effect size]
         
         I --> L[Significance Report]
         J --> L
@@ -210,10 +209,10 @@ For the 2048 case study, the provisional winner is the model with the highest he
 5. If tied on mean, use median score as tiebreaker
 6. If still tied, use lower std dev
 
-**Statistical Requirements for Ranking:**
-- The #1 ranked model must be statistically significantly better than #2 (Mann-Whitney U, p < 0.05 after Bonferroni correction)
-- Bootstrap 95% CI on mean difference must not include zero
-- If not statistically significant, the ranking is inconclusive and more games are needed
+**Statistical interpretation:**
+- Report the declared comparison procedure, uncertainty interval, effect estimate, and multiplicity adjustment.
+- Interpret the ranking in light of the study's predeclared decision rules; this repository sets no universal significance or effect-size cutoff.
+- An inconclusive estimate should be reported as such. Collecting more games requires a justified precision goal and compute budget, not an automatic response to a p-value.
 
 **Reporting criteria:** declare the case-study comparison and statistical procedure before evaluation; retain per-game outcomes, seeds, uncertainty, and corrected comparisons. Do not require an invented score ratio or infer framework quality from game results.
 

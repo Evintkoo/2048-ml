@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-rust-deps](01-rust-deps.md) | Rust Dependencies Specification | DONE (2026-09-24) |
-| [02-submodule-deps](02-submodule-deps.md) | Submodule Dependency Management | COMPLETE — published deterministic/tie fixes are pinned at `82d8483`; clean worktree and 712-test library suite verified |
+| [01-rust-deps](01-rust-deps.md) | Rust Dependencies Specification | DONE (2026-09-27) — manifest, lockfile, direct-dependency tree, and Rust 1.75+ constraint verified |
+| [02-submodule-deps](02-submodule-deps.md) | Submodule Dependency Management | COMPLETE — published fixes are pinned at `82d8483`; clean worktree and 712-test library suite previously verified |
 
 ## Reading paths
 

@@ -58,17 +58,17 @@ This illustrates the framework API; the root training pipeline does not call it.
 | Linear/Logistic, SVM, KNN, MLP | `Standard` (or `MinMax`) |
 | RandomForest, GradientBoosting, XGBoost, LightGBM, CatBoost | `None` (optional) |
 
-## 5. Persistence (Not Implemented)
+## 5. Configuration Serialization (Not Implemented in Root)
 
 ```rust
-pub fn save_preprocessor(p: &DataPreprocessor, path: &str) -> Result<()> {
-    std::fs::write(path, serde_json::to_string(&p.get_config())?)?; Ok(())
-}
-pub fn load_preprocessor(path: &str) -> Result<DataPreprocessor> {
-    let cfg: PreprocessingConfig = serde_json::from_str(&std::fs::read_to_string(path)?)?;
-    Ok(DataPreprocessor::new(cfg))
-}
+let json = serde_json::to_string(&config)?; // PreprocessingConfig supports Serde
+let loaded: PreprocessingConfig = serde_json::from_str(&json)?;
+let preprocessor = DataPreprocessor::with_config(loaded);
 ```
+
+This round-trip stores configuration only. The root does not currently save
+fitted transform state; config serialization must not be described as a
+reusable fitted preprocessor artifact.
 
 ## 6. Validation
 

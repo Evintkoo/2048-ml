@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-game-engine](01-game-engine.md) | 2048 Game Engine | DONE (2026-09-24) |
-| [02-game-rules](02-game-rules.md) | 2048 Game Rules | DONE (2026-09-24) |
-| [03-board-representation](03-board-representation.md) | Board Representation | DONE (2026-09-24) |
+| [01-game-engine](01-game-engine.md) | 2048 Game Engine | DONE — implementation and root tests verified (2026-09-27) |
+| [02-game-rules](02-game-rules.md) | 2048 Game Rules | DONE — redirects to canonical rules; source cross-check passed (2026-09-27) |
+| [03-board-representation](03-board-representation.md) | Board Representation | DONE — four-direction merge positions and 17-value encoding verified (2026-09-27) |
 | [04-game-ui](04-game-ui.md) | Game UI | NOT APPLICABLE — explicitly deprecated and out of scope |
 
 ## Reading paths

@@ -21,12 +21,12 @@ Unit tests for 4×4 game engine, feature extraction, and automl wiring. Distinct
 | 1 | `game_engine/mod.rs` | adjacent merges without a second merge per tile | Existing merge regression; board-specific sequence cases vary |
 | 2 | `game_engine/mod.rs` | single merge per tile per move | Existing unit coverage |
 | 3 | `game_engine/mod.rs` | unchanged move does not spawn or score | Existing unit coverage |
-| 4 | `game_engine/mod.rs` | seeded spawn reproducibility and configured probability | Existing deterministic/probability checks; 90/10 distribution test is finite-sample only |
-| 5 | engine.rs | random spawn uniform empty cell | seeded empty choice deterministic |
-| 6 | `game_engine/mod.rs` | score accumulation and overflow behavior | Score uses `u64`; recheck boundary coverage separately |
-| 7 | board.rs | blocked move (all moves would_change==false) | `is_game_over()==true` |
+| 4 | `game_engine/mod.rs` | seeded spawn reproducibility and configured probability | Existing deterministic/probability checks; finite-sample behavior only |
+| 5 | `game_engine/mod.rs` | spawn selects an empty cell | Seeded empty-cell choice is deterministic |
+| 6 | `game_engine/mod.rs` | score accumulation and overflow behavior | Score uses `u64`; overflow boundary coverage is absent |
+| 7 | `game_engine/mod.rs` | blocked move (all moves would_change==false) | `is_game_over()==true` |
 | 8 | `state.rs` | feature vector shape/order and score encoding | Existing tests; game ID is metadata, not a feature |
-| 9 | label_generation.rs | rollout label 0..3 valid | `label in 0..3` |
+| 9 | `game_engine/mod.rs` | rollout label is one of four directions | Existing rollout-label tests |
 | 10 | `framework_validation.rs` | supported four-class model fit/predict and integration APIs | Smoke tests exist and pass; broad framework validation is separate |
 
 Add explicit boundary/error coverage for accepted tile values and score overflow if required; do not assert 32768 as a proven maximum.

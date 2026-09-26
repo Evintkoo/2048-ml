@@ -24,7 +24,7 @@ No external repository reproduction is planned for the core study. If one is lat
 | Heuristic descriptions in prior drafts | Bibliography/protocol not verified | Do not use quoted score as baseline evidence |
 | Expectimax / RL / MCTS papers and implementations | Not independently checked or reproduced | Optional context only |
 
-The local baseline protocol is covered by the benchmark and analysis plans. No external reproduction protocol or statistical test module at `statistical_tests.rs` exists.
+The local baseline protocol is covered by the benchmark and analysis plans. No external reproduction protocol is in scope. Statistical helpers are implemented in `src/evaluation.rs`.
 
 **Relationship to 05:** Core framework claims do not depend on reproducing MCTS or RL. Any reproduced search or learning agent is a case-study comparison and must include source version, hardware, compute budget, seed protocol, and limitations. Unreproduced literature results remain contextual only.
 

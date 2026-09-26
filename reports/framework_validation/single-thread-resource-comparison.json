@@ -1,0 +1,45 @@
+{
+  "schema": "2048-ml.side-by-side-process-resources",
+  "protocol": "Same fixed-split 15-case matrix, same host, one worker thread per framework.",
+  "automl": {
+    "schema": "2048-ml.process-resource-measurement",
+    "command": "env RAYON_NUM_THREADS=1 /usr/bin/time -l target/debug/game2048-ml framework-validate --data-dir data/framework_validation --output-dir reports/framework_validation/pinned-82d8483-rayon1-run-1 --seed 42 --test-fraction 0.2",
+    "exit_code": 0,
+    "matrix_cases_succeeded": 15,
+    "wall_seconds": 1.33,
+    "user_seconds": 1.2,
+    "system_seconds": 0.05,
+    "maximum_resident_set_bytes": 27426816,
+    "peak_memory_footprint_bytes": 7651784,
+    "rayon_threads_environment": "1",
+    "tool": "macOS /usr/bin/time -l",
+    "limitations": [
+      "Single matrix process measurement, not per-model profiling",
+      "Prebuilt binary command boundary includes process startup but not cargo compilation",
+      "One host and one fixed split"
+    ]
+  },
+  "sklearn": {
+    "command": "/usr/bin/time -l python3 scripts/run_sklearn_framework_baseline.py --output-dir reports/framework_validation/sklearn-1.6.1-seed42-resource-run-3",
+    "exit_code": 0,
+    "matrix_cases_succeeded": 15,
+    "wall_seconds": 1.22,
+    "user_seconds": 1.32,
+    "system_seconds": 2.14,
+    "maximum_resident_set_bytes": 158466048,
+    "peak_memory_footprint_bytes": 115507872,
+    "thread_limit": 1,
+    "tool": "macOS /usr/bin/time -l",
+    "runner_matrix_wall_seconds": 0.21312458300000003,
+    "limitations": [
+      "Includes Python interpreter and imports",
+      "Aggregate one-process high-water mark, not per-model profiling",
+      "One host and one fixed split"
+    ]
+  },
+  "limitations": [
+    "Startup and serialization boundaries differ",
+    "Tree algorithms, PRNGs, and implementation defaults differ",
+    "These measurements do not establish framework runtime or memory superiority"
+  ]
+}

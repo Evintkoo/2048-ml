@@ -18,7 +18,7 @@
 
 ```mermaid
 flowchart TB
-    State["Board 17-dim"] --> Model["ML Model 4 logits"]
+    State["Board 17-dim"] --> Model["AutoML 4 class probabilities"]
     Model --> Mask["Mask invalid"]
     Mask --> Argmax["masked_argmax"]
     Argmax --> Execute["Execute Action"]
@@ -29,13 +29,13 @@ flowchart TB
 ```rust
 pub struct GreedyPolicy { pub model: InferenceEngine }
 impl GreedyPolicy {
-    pub fn decide(&self, state: &[f64;17], valid: &[u8]) -> u8 {
-        let logits = self.model.predict(state); // [f64;4]
-        masked_argmax(&logits, valid)           // canonical
+    pub fn decide(&self, state: &[f64;17], valid: &[u8]) -> Result<u8, ActionError> {
+        let probabilities = self.model.predict_proba(state); // [f64;4]
+        masked_argmax(&probabilities, valid)     // checked canonical result
     }
 }
-pub fn decide_action(state: &[f64;17], model: &InferenceEngine, valid: &[u8]) -> u8 {
-    masked_argmax(&model.predict(state), valid)
+pub fn decide_action(state: &[f64;17], model: &InferenceEngine, valid: &[u8]) -> Result<u8, ActionError> {
+    masked_argmax(&model.predict_proba(state), valid)
 }
 ```
 Canonical `masked_argmax` in `01-model-output-to-action.md`.

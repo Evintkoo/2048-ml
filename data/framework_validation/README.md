@@ -26,6 +26,8 @@ Acquisition URLs:
 - `https://archive.ics.uci.edu/static/public/109/wine.zip`
 - `https://archive.ics.uci.edu/static/public/17/breast+cancer+wisconsin+diagnostic.zip`
 
-This directory records acquisition only. Fixed splits, metrics, model runs,
-predictions, timings, memory use, and analysis are not yet present, so no
-framework benchmark results are claimed.
+The acquired source data are used by the fixed-split AutoML diagnostic and its
+comparison-only scikit-learn baseline. Split manifests, metrics, predictions,
+timings, and run provenance live under `reports/framework_validation/`; the
+baseline protocol and limitations are summarized in that report. The results
+are diagnostic evidence, not a framework superiority claim.

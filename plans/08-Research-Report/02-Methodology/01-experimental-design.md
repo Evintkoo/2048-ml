@@ -135,8 +135,8 @@ flowchart LR
 - **Fixed game rules** across all experiments (standard 4×4 board, 0.9/0.1 spawn)
 - **Consistent data pipeline** for all models (same canonical 17-value state, rollout labels 100 sims/action, and game-group boundaries for GroupKFold where applicable)
 - **Same evaluation criteria** for all models (same declared instances where pairing is intended; measure baselines under the same protocol)
-- **Same seed** for reproducibility (primary `42`; secondary `123,456,789,1011`)
-- **No blinded analysis** — game scores are objective numeric; blinding adds no value and is removed
+- **Seed roles** are declared per study; the seed-42 diagnostic is not a canonical primary seed or completed robustness matrix
+- **Analysis transparency** — retain raw outcomes and prespecified analysis choices; use blinding only if it addresses a specific researcher degree of freedom
 - **Comparison assumptions**: shared sequences induce pairing; select a paired/clustered method rather than treating them as independent observations
 
 ## 8. Equipment and Tools (Record Actual Study Versions)
@@ -170,7 +170,7 @@ All experiments use simulation only. No human subjects are involved. All data is
 
 **Framework validation:** Dataset-level repetitions and resource measurements are planned separately from 2048 game counts.
 
-**Ablation study:** Use the same evaluation protocol as the selected 2048 case-study comparison, with uncertainty estimates and an explicit practical-effect threshold. Do not infer validity from game count alone.
+**Ablation study:** Use the same evaluation protocol as the selected 2048 case-study comparison, with uncertainty estimates and any practical-effect threshold declared for that study. Do not infer validity from game count alone.
 
 ## 12. Data Quality Controls
 

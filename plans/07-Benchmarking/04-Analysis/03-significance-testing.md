@@ -100,29 +100,16 @@ graph TD
 
 ## 7. Multiple Testing Correction
 
-### 7.1 Bonferroni Correction
+### 7.1 Holm Adjustment (Implemented)
 
-When comparing against **multiple baselines** AND **multiple models**, the family-wise error rate inflates:
-
-```
-N_comparisons = number of hypotheses in the declared family
-```
-
-The comparison CLI applies Holm adjustment to the actual comparison family; this plan does not prescribe a fixed model/baseline matrix.
-
-### 7.2 Holm-Bonferroni Correction
-
-For less conservative correction (step-down procedure):
-1. Sort all p-values in ascending order
-2. Compare each p-value to α/(k+1-i) where k = total tests, i = rank
-3. Stop at first non-significant result
+The comparison CLI applies Holm adjustment to the declared family of pairwise comparisons. The family is determined by the compared score inputs; this plan does not prescribe a fixed model/baseline matrix or universal alpha threshold.
 
 ### 7.3 Reporting Standards
 
 Every significance test report must include:
-- Whether Bonferroni (or Holm-Bonferroni) was applied
+- Whether Holm adjustment was applied
 - N_comparisons value
-- α_adjusted value
+- Declared decision threshold, if the study uses one
 - Which p-values survived correction
 - Test statistic value
 - p-value with precision

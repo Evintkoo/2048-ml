@@ -35,7 +35,7 @@ The reviewer identifies the changed files and intended behavior, inspects releva
 
 | Category | Focus | Available evidence |
 |----------|-------|--------------------|
-| Correctness | Logic accuracy | Source inspection and existing tests; no new test run in this execution |
+| Correctness | Logic accuracy | Source inspection and existing tests; root test suite result recorded in the execution ledger |
 | Readability | Code clarity | Source and documentation review |
 | Maintainability | Future changes | Module and dependency structure |
 | Performance | Efficiency | Retained measurements only; no profiling claimed |
@@ -43,7 +43,7 @@ The reviewer identifies the changed files and intended behavior, inspects releva
 
 ## 5. Tool availability is not execution evidence
 
-`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. No result is claimed for this execution, and no repository CI workflow or coverage report is configured.
+`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. The root test suite passed 35/35 in this execution; no current clippy result is claimed, and no repository CI workflow or coverage report is configured.
 
 ## 6. The repository has no approved composite code score
 
@@ -77,7 +77,7 @@ All code reviews result in one of:
 
 ## Implementation Record
 
-- Redirect and code-review checklist audited. `cargo fmt`, `cargo clippy`, and `cargo test` are possible Rust workflows, but no run is claimed here. No independent reviewer decision exists in the repository.
+- Code-review checklist audited. The root test suite passed 35/35 during this execution; no current clippy result is claimed. This self-audit is not an independent reviewer decision.
 
 ---
 

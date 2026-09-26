@@ -86,11 +86,11 @@ Report capability failures as findings. The core 2048 model training path remain
 
 ### 6.1 Multiple Comparison Problem
 
-When testing multiple hypotheses simultaneously, the probability of Type I error increases. Bonferroni correction mitigates this but may be overly conservative, reducing statistical power.
+When testing multiple hypotheses simultaneously, the family of comparisons and dependence assumptions matter. The current comparison CLI applies Holm adjustment; do not imply that adjustment resolves design or power limitations.
 
 **Impact:** Some true effects may be missed (Type II error).
 
-**Mitigation:** Report both corrected and uncorrected p-values for transparency.
+**Mitigation:** Report raw and Holm-adjusted p-values with the declared comparison family.
 
 ### 6.2 Effect Size
 

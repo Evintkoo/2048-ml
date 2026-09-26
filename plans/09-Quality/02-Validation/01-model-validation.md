@@ -95,11 +95,11 @@ flowchart TD
 
 ```mermaid
 graph TD
-    A[Data Quality] -->|score| T1[0-100]
-    B[Architecture] -->|score| T1
-    C[Performance] -->|score| T1
-    D[Robustness] -->|score| T1
-    E[Reproducibility] -->|score| T1
+    A[Data Quality] -->|inspect| T1[Evidence by dimension]
+    B[Architecture] --> T1
+    C[Performance] --> T1
+    D[Robustness] --> T1
+    E[Reproducibility] --> T1
     T1 --> F[No Composite Approval Score Defined]
 ```
 

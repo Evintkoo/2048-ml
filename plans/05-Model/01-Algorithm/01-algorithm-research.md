@@ -74,13 +74,13 @@ flowchart TD
 - **Output**: One of 4 actions (up, down, left, right)
 - **Training data**: The intended corpus uses simulator-generated states with rollout-derived action labels; plan-scale data has not yet been collected.
 
-Each board state maps to a single optimal action. By collecting enough state-action pairs, we train a classifier that predicts the best move given any board configuration. This approach does not learn a value function or policy network as in RL — it directly learns the mapping from states to actions.
+Each board state maps to one action label supplied by the supervised data protocol. Current rollout-derived labels are a heuristic target and are not claimed to be globally optimal. The classifier learns this state-to-label mapping; it does not learn a value function or policy network as in RL.
 
 ```mermaid
 flowchart TD
     subgraph "Supervised Classification Pipeline"
         State[Board State<br/>17 Features]
-        Label[Optimal Action<br/>4 Classes]
+        Label[Supervised Action Label<br/>4 Classes]
         
         State --> Model[Classifier]
         Label --> Model
@@ -185,7 +185,7 @@ flowchart TD
 ## Implementation Record
 
 - `src/framework_validation.rs` smoke-checks 13 model/task combinations and confirms the four-class probability subset: RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes.
-- An initial one-split diagnostic across three standard datasets and five candidates is retained in `reports/framework_validation/`; two seed-42 runs matched 14/15 prediction sets, with Wine KNN repeatability/serialization failure on the prior AutoML revision. The pinned determinism fix has not been checked against this matrix. Matched framework baselines and a 10k-game trained-model ranking remain incomplete. No winner or threshold pass is claimed.
+- A fixed-split diagnostic across three standard datasets and five candidates is retained in `reports/framework_validation/`. Two seed-42 runs on pinned AutoML `82d8483` succeeded in all 15 cases and reproduced metrics and predictions exactly in all 15. AutoML label agreement with the comparison baseline is 8/15; this is not a superiority result. Matched-budget framework comparisons and a trained 2048 candidate ranking remain incomplete. No winner or threshold pass is claimed.
 
 ---
 

@@ -37,7 +37,7 @@ flowchart TD
         subgraph "Testing Process"
             T1[Collect Data] --> T2[Select Test Statistic]
             T2 --> T3{Reject H0?}
-            T3 -->|Yes| H[Accept H1]
+            T3 -->|Yes| H[Reject H0; evidence supports H1]
             T3 -->|No| I[Fail to Reject H0]
         end
     end
@@ -48,8 +48,8 @@ flowchart TD
 | Hypothesis | H0 | H1 | α | Test |
 |-----------|----|----|---|------|
 | F1 | Required framework capability or correctness criterion fails | All predeclared capability and correctness criteria pass | — | Acceptance tests and oracle comparisons |
-| F2 | Rust-native implementation does not meet the predeclared quality/efficiency target | It meets the target or demonstrates a documented trade-off | 0.05 where applicable | Matched benchmark and resource analysis |
-| F3 | AutoML search does not improve over fixed configuration at matched budget | Search improves the primary validation metric or resource efficiency | 0.05 | Paired repeated-run comparison |
+| F2 | Rust-native implementation does not meet the predeclared quality/efficiency target | It meets the target or demonstrates a documented trade-off | Declare per study, if applicable | Matched benchmark and resource analysis |
+| F3 | AutoML search does not improve over fixed configuration at matched budget | Search improves the primary validation metric or resource efficiency | Declare per study, if applicable | Repeated-run comparison with declared unit |
 | H1 | Policy outcome is no better than the measured baseline under the declared estimand | Improvement exceeds a predeclared practical threshold | To be set | Select test after unit/pairing design |
 | H2 | Supported candidate outcomes do not differ materially | At least one pair differs by a predeclared practical amount | To be set | Pairwise helpers only; no global test |
 | H3 | Tuning does not improve the declared quality/resource objective | Tuning improves it under matched budgets | To be set | Matched repeated-run design pending |
@@ -65,7 +65,7 @@ flowchart TD
     E --> F[Compute Test Statistic]
     F --> G[Calculate p-value]
     G --> H{p < α?}
-    H -->|Yes| I[Reject H0 → Accept H1]
+    H -->|Yes| I[Reject H0; evidence supports H1]
     H -->|No| J[Fail to Reject H0]
 ```
 
@@ -88,8 +88,8 @@ flowchart TD
 
 ### H3: Hyperparameter Tuning Effect
 
-- **H0:** Hyperparameter tuning has no significant effect on model game score (μ_tuned = μ_default)
-- **H1:** Hyperparameter tuning significantly improves game score (μ_tuned > μ_default)
+- **H0:** Hyperparameter tuning does not improve the declared primary outcome under the selected estimand.
+- **H1:** Hyperparameter tuning improves the declared primary outcome by the predeclared practical threshold.
 - Wilcoxon signed-rank is not implemented. Select a paired method only after defining the independent replication unit and matched configuration design.
 - **Status:** Not tested; matched tuning study pending
 
@@ -106,7 +106,7 @@ flowchart TD
     E[F3 Search Effect] --> F[Paired Repeated Runs]
     G[H1-H3 Application] --> H[Pre-registered Statistical Tests]
     
-    B --> I[Compute p-value + Bonferroni]
+    B --> I[Evaluate declared criteria; Holm-adjust comparisons]
     D --> I
     F --> I
     H --> I
@@ -144,21 +144,21 @@ All hypothesis and framework-validation results will be reported after experimen
 All hypothesis test results will be reported with:
 - Null and alternative statements
 - Test statistic value
-- p-value (exact, not approximate)
+- p-value and whether the method is exact or approximate
 - Effect size (Cohen's d, Cramér's V, or appropriate measure)
 - Confidence interval (bootstrap 95% CI)
 - Practical significance interpretation
-- Bonferroni correction applied for multiple comparisons
+- Declared multiplicity family and correction (the current comparison CLI uses Holm)
 
 ## 10. Multiple Comparison Correction
 
-Declare the comparison family and correction before analysis. The CLI currently applies Holm adjustment to its pairwise p-values. A fixed Bonferroni family of 21 comparisons assumes seven candidates and is not applicable until the actual candidate set and confirmatory comparisons are specified.
+Declare the comparison family and correction before analysis. The CLI currently applies Holm adjustment to its pairwise p-values. No fixed comparison family or alpha is established before the candidate set and confirmatory design are specified.
 
 ## 11. Assumptions and Limitations
 
 1. **Repeated conditions:** Game outcomes are analyzed with respect to shared seeds, paired instances, and trained-model repetitions; independence is not assumed automatically.
 2. **Identical distribution:** All models are tested on the same declared game-instance protocol.
-3. **Fixed seed:** Seed = 42 is a reproducibility condition, not evidence of generalization.
+3. **Seed:** A fixed seed supports repeatability checks, not evidence of generalization.
 4. **Sample size:** Sample size is justified using a predeclared minimum practical effect and the experimental unit, not only the number of games.
 5. **Test assumptions:** Non-parametric does not mean assumption-free; tie handling, exchangeability, dependence, and sampling design must be addressed.
 
