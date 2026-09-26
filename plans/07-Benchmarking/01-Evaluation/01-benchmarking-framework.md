@@ -1,6 +1,6 @@
 # Plan 01 — Benchmarking Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Seeded benchmark/compare commands and score statistics exist; model ranking and performance profiling remain pending.
+> **Status: PARTIAL (2026-09-27).** Seeded benchmark/compare commands and 10,000-game baseline plus pilot-policy score runs exist; a predeclared model ranking and performance profiling remain pending.
 
 **Goal:** State the current implementation and evidence boundary for benchmarking framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the score benchmarking tools as implemented and comparative results as pending.** The CLI runs random, heuristic, or saved-model policies with seeded games; it writes per-game CSV and manifests and provides paired/unpaired score comparisons. No trained-model winner run or per-move performance profile is recorded.
+**This plan treats score benchmarking tools as implemented and winner comparison as pending.** The CLI runs random, heuristic, or saved-model policies with seeded games; it writes per-game CSV and manifests and provides paired/unpaired score comparisons. Retained artifacts include 10,000-game random and heuristic baselines and one 10,000-game run of a small-corpus fitted pilot policy. That pilot is descriptive evidence, not a selected-model or matched-budget comparison. Per-move performance profiling is absent.
 
 ## 1. Purpose
 
@@ -100,37 +100,39 @@ graph TD
 
 #### Random Agent Baseline
 
-The random agent selects moves uniformly at random from available actions. It serves as the absolute minimum performance floor.
+The random agent selects moves uniformly at random from available actions. It is one measured comparison baseline, not an asserted absolute floor.
 
-| Metric | Expected Value |
+| Metric | Measured in retained 10,000-game run |
 |--------|---------------|
-| Mean Score | ~128 |
-| Median Score | ~96 |
-| Max Tile | Typically 64-128 |
-| Games Completed | ~30-50 moves average |
+| Mean Score | 1,094.12 |
+| Median Score | 1,050 |
+| Max Score | 4,892 |
+| Max tile | 512 |
+| Mean moves | 118.29 |
 
-**Rationale**: A random agent has no strategy and will quickly reach a dead state. These values are historical hypotheses, not benchmark results; replace them with retained seeded measurements before citing them.
+**Protocol**: 10,000 games, seeds 84024–94023; see the raw CSV, manifest, and analysis in `reports/action-frequency/README.md`. These local results are descriptive for this protocol.
 
 #### Heuristic Agent Baseline
 
 The heuristic agent uses domain-specific rules to select moves: prioritize maintaining monotonicity, keeping the highest tile in a corner, and maximizing empty tiles. This represents the best non-ML approach.
 
-| Metric | Expected Value |
+| Metric | Measured in retained 10,000-game run |
 |--------|---------------|
-| Mean Score | ~512 |
-| Median Score | ~384 |
-| Max Tile | Typically 512-1024 |
-| Games Completed | ~80-120 moves average |
+| Mean Score | 8,056.23 |
+| Median Score | 7,136 |
+| Max Score | 20,940 |
+| Max tile | 2,048 |
+| Mean moves | 521.52 |
 
-**Rationale**: The implemented heuristic is a rule-based comparison policy; its score distribution must be reported from a seeded run rather than assumed.
+**Protocol**: 10,000 games, seeds 84024–94023; see the raw CSV, manifest, and analysis in `reports/action-frequency/README.md`.
 
 #### Summary Table
 
-| Baseline | Mean Score | Median Score | Max Tile | Notes |
-|----------|-----------|-------------|----------|-------|
-| Random Agent | ~128 | ~96 | 64-128 | Uniform random moves |
-| Heuristic Agent | ~512 | ~384 | 512-1024 | Rule-based strategy |
-| ML Model Agent | TBD | TBD | TBD | To be benchmarked |
+| Agent | Mean Score | Median Score | Max Score | Max Tile | Notes |
+|-------|-----------:|--------------:|----------:|---------:|-------|
+| Random | 1,094.12 | 1,050 | 4,892 | 512 | 10,000 seeded games |
+| Heuristic | 8,056.23 | 7,136 | 20,940 | 2,048 | 10,000 seeded games |
+| Fitted RandomForest pilot | 866.15 | 744 | 3,296 | 256 | One pilot policy, 10,000 games; not a model ranking |
 
 ### 6.2 Comparison Methodology
 
@@ -219,7 +221,7 @@ For the 2048 case study, the provisional winner is the model with the highest he
 ## Implementation Record
 
 - CLI supports seeded random, heuristic, and saved-model score runs; paired comparisons; score summaries; bootstrap intervals; exact sign tests; Mann–Whitney U; Holm adjustment; and effect sizes. Results include manifests and source/file hashes.
-- A model-versus-baseline ranking at the declared scale and efficiency-by-move profiling have not been completed. Random/heuristic values previously shown as expectations are unverified estimates, not results.
+- Seeded 10,000-game runs are retained for random and heuristic baselines and one fitted RandomForest pilot policy. The pilot used a small rollout corpus; these runs do not form a predeclared matched model-selection study and no winner claim is made. Per-move profiling remains unimplemented.
 - The architecture diagram names the implemented per-run CSV and JSON manifest artifacts; no results database is present.
 
 ---

@@ -1,6 +1,6 @@
 # Plan 02 — Evaluation Methodology: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Benchmark CLI records seeds and score summaries; final held-out model protocol and powered sample size remain pending.
+> **Status: PARTIAL (2026-09-27).** Benchmark CLI records seeds and score summaries; final selected-model holdout protocol and prospective sample-size analysis remain pending.
 
 **Goal:** State the current implementation and evidence boundary for evaluation methodology.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats benchmark mechanics as implemented and final evaluation design as pending.** The CLI can record seeded game outcomes and uncertainty summaries. No trained model, selected-model holdout, or prospective power analysis is available.
+**This plan treats benchmark mechanics as implemented and final evaluation design as pending.** The CLI can record seeded game outcomes and uncertainty summaries. A pilot policy has been trained and benchmarked, and a small chronological classifier holdout diagnostic exists; no selected-model confirmatory game holdout or prospective power analysis is available.
 
 > **This is a 30-line supplement, not a duplicate.** Full statistical tests live in `01-benchmarking-framework.md §6.4`; significance protocol lives in `04-Analysis/03-significance-testing.md`. This file adds only the constants and formulas not covered there.
 
@@ -33,7 +33,7 @@ Use the same simulator configuration, candidate data/split, seed design, and dec
 
 ## Implementation Record
 
-- The evaluation CLI records seeded conditions and score summaries. The prior CI-width arithmetic and assumed standard deviation were planning illustrations, not measured results; final protocol requires model selection/holdout separation and completed runs.
+- The evaluation CLI records seeded conditions and score summaries. A 10,000-game fitted pilot-policy run is retained, but the policy was trained on a small corpus and does not satisfy the pending model-selection/holdout protocol. The prior CI-width arithmetic and assumed standard deviation were planning illustrations, not prospective power results.
 
 ---
 

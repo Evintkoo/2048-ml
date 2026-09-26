@@ -1,6 +1,6 @@
 # Plan 03 — Rust-Native AutoML Benchmark: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Focused API/model smoke checks exist and the three named UCI datasets are acquired; fixed-split benchmark runs, matched baselines, and resource comparisons remain pending.
+> **Status: PARTIAL (2026-09-27).** Fixed-protocol diagnostics on three acquired UCI datasets exist; matched-budget baselines, per-model resource comparisons, and search-efficiency results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl benchmark.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats capability smoke checks as implemented and framework benchmarking as pending.** The root tests check selected AutoML APIs, model output shapes, grouped CV, optimization primitives, and model save/load. They do not constitute standard-dataset benchmark evidence or an external comparison.
+**This plan treats capability checks and bounded standard-dataset diagnostics as implemented, with matched framework benchmarking pending.** The root tests check selected AutoML APIs, model output shapes, grouped CV, optimization primitives, and model save/load. Retained fixed-protocol runs cover Iris, Wine, and Wisconsin Diagnostic with five models and split seeds 42, 2026, and 2027; they do not establish matched-budget framework superiority.
 
 ## 1. Purpose
 
@@ -85,7 +85,7 @@ Report framework validation separately from the 2048 application case study. The
 |----------|-------------|
 | Default models | Supported AutoML model types with fixed defaults |
 | Tuned models | Same model types with a fixed search budget |
-| Feature variants | Raw grid, engineered features, and combined representation |
+| Feature variants | Outside the fixed 17-value core; a separate approved study would be required |
 | Robustness | Multiple training and evaluation seeds |
 
 ## 6. Framework Performance Metrics
@@ -162,7 +162,7 @@ Findings are filled post-training only.
 
 ## Implementation Record
 
-- Framework capability smoke validation and 2048 model benchmark path are separate. The Iris, Wine, and Breast Cancer Wisconsin (Diagnostic) source archives are recorded in `data/framework_validation/README.md`; no named-dataset benchmark run, matched framework comparison/resource profile, or independent search-efficiency study has yet produced results. Hypotheses are untested.
+- Framework capability checks, standard-dataset diagnostics, and 2048 model benchmarks are separate. Fixed-protocol diagnostics on the three acquired named datasets and five compatible models are retained for seeds 42, 2026, and 2027. Matched-budget external comparison, per-model resource profiling, and independent search-efficiency results remain absent. Hypotheses are untested.
 
 ## 12. Benchmark Reproducibility
 

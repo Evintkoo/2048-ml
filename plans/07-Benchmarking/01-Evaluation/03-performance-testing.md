@@ -1,6 +1,6 @@
 # Plan 03 — Performance Testing: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Whole-run wall time is recorded; per-move and feature timing have not been measured.
+> **Status: PARTIAL (2026-09-27).** Whole-run wall time is recorded, including a 20-game saved-policy wiring smoke; per-move and feature timing have not been measured.
 
 **Goal:** State the current implementation and evidence boundary for performance testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats whole-run timing as implemented and detailed profiling as pending.** Benchmark manifests record game count and elapsed wall time, allowing games/second. The root does not measure per-move latency or feature extraction separately, and no trained-model performance run is documented.
+**This plan treats whole-run timing as implemented and detailed profiling as pending.** Benchmark manifests record game count and elapsed wall time, allowing games/second. A 20-game saved-policy simulator smoke took 0.22 seconds, but it is an integration smoke rather than a performance study. The root does not measure per-move latency or feature extraction separately.
 
 ## 1. Purpose
 
@@ -31,7 +31,7 @@ No Thread-Group / Batch-Runner / CI regression harness is implemented. No memory
 
 ## Implementation Record
 
-- Benchmark manifests record game count and wall time, supporting games/second. Per-move timing and feature-computation timing are not instrumented. No trained-model efficiency run has been completed.
+- Benchmark manifests record game count and wall time, supporting games/second. The retained fitted-policy simulator smoke covers 20 games and is not a timing comparison. Per-move timing and feature-computation timing are not instrumented; no protocol-scale efficiency study has been completed.
 
 ---
 

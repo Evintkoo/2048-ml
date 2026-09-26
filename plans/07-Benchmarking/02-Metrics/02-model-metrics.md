@@ -1,6 +1,6 @@
 # Plan 02 — Model Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Score summaries and reusable classification diagnostics exist; fixed-split reports, policy legal-action measurements, and training curves remain pending.
+> **Status: PARTIAL (2026-09-27).** Score summaries and reusable classification diagnostics exist, with a 391-row 2048 pilot holdout report; adequate-sample and legal-action analyses remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats score summaries and reusable classification diagnostics as implemented, while evaluation runs remain pending.** `src/evaluation.rs` computes accuracy, per-class F1, macro precision/recall/F1, and a confusion matrix from fixed label arrays; it also computes the fraction of 2048 predictions that choose a legal action. The benchmark CLI does not yet load held-out labels or report these diagnostics. Classical `TrainEngine::fit` does not expose an epoch training curve in the root workflow.
+**This plan treats score summaries and reusable classification diagnostics as implemented, with one bounded 2048 classifier report.** `src/evaluation.rs` computes accuracy, per-class F1, macro precision/recall/F1, and a confusion matrix from fixed label arrays; it also has a separate helper for the fraction of 2048 predictions that choose a legal action. The root training CLI reports raw-label diagnostics on 391 chronological pilot holdout rows, but does not report valid-action behavior or an adequate-sample evaluation. Classical `TrainEngine::fit` does not expose an epoch training curve in the root workflow.
 
 ## 1. Purpose
 
@@ -140,13 +140,13 @@ graph TD
 
 No universal quality gates are defined. A case-study comparison should predeclare its ranking and statistical protocol and report uncertainty.
 
-Report metrics that are implemented and retain per-game outcomes. Add classification metrics before claiming their results; do not use hypothetical loss-convergence gates for this single-fit tree workflow.
+Report metrics that are implemented and retain per-game outcomes. Do not generalize from the small pilot classifier report; do not use hypothetical loss-convergence gates for this single-fit tree workflow.
 
 Any comparative effect should include the baseline estimate and uncertainty under a declared protocol.
 
 ## Implementation Record
 
-- `src/evaluation.rs` provides generic confusion-matrix, accuracy, per-class F1, macro precision/recall/F1, and a separate 4-action legal-prediction-rate helper. The benchmark CLI does not yet generate fixed-split classifier reports; training curves and gate automation are not implemented. No gates are defined by canonical scope.
+- `src/evaluation.rs` provides generic confusion-matrix, accuracy, per-class F1, macro precision/recall/F1, and a separate 4-action legal-prediction-rate helper. The root training CLI retains raw classifier diagnostics for a 391-row chronological pilot holdout; it does not compute legal-action rate. Adequate-sample fixed-split reports, training curves, and gate automation are not implemented. No gates are defined by canonical scope.
 
 ---
 
@@ -163,7 +163,7 @@ Any comparative effect should include the baseline estimate and uncertainty unde
 
 ## Open questions
 
-- Wire the diagnostics to a fixed held-out dataset and retain predictions, labels, class ordering, and report provenance before making classifier-quality claims. Keep game score as a distinct downstream case-study outcome.
+- Expand the pilot diagnostics to an adequate fixed held-out dataset, add legal-action behavior analysis, and independently check predictions, labels, class ordering, and report provenance. Keep game score as a distinct downstream case-study outcome.
 
 ## Later
 

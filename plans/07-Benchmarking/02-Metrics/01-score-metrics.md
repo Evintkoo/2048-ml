@@ -1,6 +1,6 @@
 # Plan 01 — Score Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Implemented summaries include mean, sample SD, median, p90/p99, min/max, threshold counts, and bootstrap mean CI.
+> **Status: PARTIAL (2026-09-27).** Implemented summaries include mean, sample SD, median, p90/p99, min/max, threshold counts, and bootstrap mean CI.
 
 **Goal:** State the current implementation and evidence boundary for score metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -50,7 +50,7 @@ pub struct ScoreSummary {
 
 ## 4. Score Normalization for Comparison (Duplicate Note)
 
-> `normalize_score = log10(score+1)` is the same transform as `score_normalized = log10(score+1)/6.0` in `06-Data/02-Format/01-data-schema.md` and `04-Preprocessing/03-data-normalization.md` — the `/6.0` divisor just maps to [0,1]. Keep consistent.
+> `score_normalized = log10(score+1)/6.0` is the canonical model feature, not a score-comparison helper. The `/6.0` divisor is fixed but does not cap values at one; larger scores may encode above one. See `06-Data/02-Format/01-data-schema.md` and `04-Preprocessing/03-data-normalization.md`.
 
 ```rust
 // The normalized score feature is implemented only in src/state.rs.

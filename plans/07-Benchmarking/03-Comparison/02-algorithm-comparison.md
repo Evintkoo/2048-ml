@@ -1,6 +1,6 @@
 # Plan 02 — Algorithm Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Random/heuristic/model score runners and comparison statistics exist; the three-way study has not been run.
+> **Status: PARTIAL (2026-09-27).** Random/heuristic/model score runners and comparison statistics exist; a same-seed pilot comparison is retained, while the selected-model study remains pending.
 
 **Goal:** State the current implementation and evidence boundary for algorithm comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the comparison mechanism as available and outcomes as pending.** Random and heuristic baselines can be run with a common seed derivation, and saved models can be benchmarked. No trained-model three-way held-out result exists; baseline figures below are unverified planning estimates.
+**This plan treats the comparison mechanism as available, with exploratory results separated from the pending model-selection study.** Random and heuristic baselines and one fitted RandomForest pilot were each scored on seeds 84024–94023. A paired CLI analysis is retained in `reports/action-frequency/pilot-comparison.md`. The model was trained on a small 20-game corpus; it was not selected under a declared candidate comparison, so these outcomes are not a confirmatory three-way study.
 
 ## 1. Purpose
 
@@ -17,17 +17,17 @@ Compare exactly **3 groups** under the same preregistered simulator and seed pro
 
 ## 2. Groups
 
-| Group | Agent | Expected mean | Source |
+| Group | Agent | Observed mean in pilot run | Source |
 |-------|-------|---------------|--------|
-| Random | uniform legal move policy | Not measured here | seeded baseline runner |
-| Heuristic | rule-based policy | Not measured here | seeded baseline runner |
+| Random | uniform legal move policy | 1,094.12 | 10,000-game seeded baseline |
+| Heuristic | rule-based policy | 8,056.23 | 10,000-game seeded baseline |
+| AutoML model | fitted RandomForest pilot | 866.15 | 10,000-game run; not selected candidate |
 
-Do not substitute expected values or a small smoke run for retained benchmark results.
-| AutoML model | selected four-class candidate | Not measured | saved-model benchmark runner |
+These measured summaries describe this retained seed set, not universal targets. The small-corpus pilot is not evidence for selected-model performance.
 
 ## 3. Protocol
 
-The proposed protocol uses the same declared game-seed set and simulator for each policy; the target game count must fit a documented budget. Compare score distributions under a predeclared procedure and report uncertainty. No results are available.
+The confirmatory protocol must use the same declared game-seed set and simulator for each policy; the target game count must fit a documented budget. Compare score distributions under a predeclared procedure and report uncertainty. The retained pilot comparison is exploratory; its CLI uses an independent-sample bootstrap interval and Cohen's d even with paired seed outcomes, so those quantities are not paired-design uncertainty estimates.
 
 ```rust
 pub struct AlgorithmComparison {
@@ -42,7 +42,7 @@ pub struct AlgorithmComparison {
 
 ## Implementation Record
 
-- Random and heuristic baselines and model benchmark commands exist with seedable simulator and comparison support. The three-way comparison remains pending; target means are not results.
+- Random and heuristic baselines and one fitted RandomForest pilot share a 10,000-game seed set. Their paired exploratory analysis is retained separately. A model-selection study with an adequate corpus and a predeclared candidate/protocol remains pending.
 
 ---
 
@@ -59,7 +59,7 @@ pub struct AlgorithmComparison {
 
 ## Open questions
 
-- Run after training and model-selection steps produce an eligible policy. Record per-game scores, seed set, simulator settings, manifests, and analysis output.
+- Run after model selection produces an eligible policy under a predeclared protocol. The existing pilot is exploratory only; retain per-game scores, seed set, simulator settings, manifests, and analysis output for the confirmatory study.
 
 ## Later
 

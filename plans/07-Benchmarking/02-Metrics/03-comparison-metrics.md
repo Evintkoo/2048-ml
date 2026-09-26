@@ -1,6 +1,6 @@
 # Plan 03 — Comparison Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Score-file comparisons and adjusted statistics are implemented; no multi-model held-out ranking has been produced.
+> **Status: PARTIAL (2026-09-27).** Score-file comparisons and adjusted statistics are implemented; no multi-model held-out ranking has been produced.
 
 **Goal:** State the current implementation and evidence boundary for comparison metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

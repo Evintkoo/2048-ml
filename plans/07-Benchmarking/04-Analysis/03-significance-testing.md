@@ -1,6 +1,6 @@
 # Plan 03 — Significance Testing: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Several test and effect-size helpers feed comparison reports; power analysis and a predeclared winner study are pending.
+> **Status: PARTIAL (2026-09-27).** Several test and effect-size helpers feed comparison reports; power analysis and a predeclared winner study are pending.
 
 **Goal:** State the current implementation and evidence boundary for significance testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is partial.** Implemented comparisons choose an independent Mann–Whitney U test or a paired exact sign test based on seed sequence equality, apply Holm adjustment, and report bootstrap mean-difference intervals and Cohen's d. There is no validated winner result or power analysis.
+**This plan is partial.** Implemented comparisons choose an independent Mann–Whitney U test or a paired exact sign test based on seed sequence equality, apply Holm adjustment, and report bootstrap mean-difference intervals and Cohen's d. An exploratory 10,000-seed three-policy analysis is retained in `reports/action-frequency/pilot-comparison.md`: its sign tests are paired, but its intervals and Cohen's d are independent-sample calculations. There is no validated winner result or power analysis.
 
 ## 1. Purpose
 
@@ -143,7 +143,7 @@ No winner determination is currently supported. A future protocol must specify g
 
 ## Implementation Record
 
-- Mann–Whitney U, paired exact sign test, bootstrap mean-difference CI, Holm adjustment, and Cohen's d helpers are implemented and used by the comparison command. No Kruskal–Wallis/Wilcoxon, permutation test, formal power analysis, clustered paired bootstrap, or predeclared winner study has been completed. Test choice and limitations are emitted in comparison reports.
+- Mann–Whitney U, paired exact sign test, bootstrap mean-difference CI, Holm adjustment, and Cohen's d helpers are implemented and used by the comparison command. The retained 2048 pilot comparison is exploratory; independent-sample intervals and Cohen's d do not estimate paired-seed uncertainty. No Kruskal–Wallis/Wilcoxon, permutation test, formal power analysis, clustered paired bootstrap, or predeclared winner study has been completed. Test choice and limitations are emitted in comparison reports.
 - The two seed-42 UCI runs under AutoML `82d8483` are compared only for exact prediction repeatability; no significance test is applied to their one-split model accuracies. The earlier Wine KNN mismatch on `88a86bf` is retained as historical framework reproducibility evidence, not as a model-quality comparison.
 
 ---

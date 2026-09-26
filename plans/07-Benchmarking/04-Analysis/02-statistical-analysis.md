@@ -82,13 +82,13 @@ graph TD
     style D fill:#9f9,stroke:#363
 ```
 
-Current score-summary intervals and pairwise mean-difference intervals use percentile bootstrap resampling. They are implemented helpers, not the illustrative normal-approximation struct above; clustering of paired games is not modeled by the comparison bootstrap.
+Current score-summary intervals and pairwise mean-difference intervals use percentile bootstrap resampling. They are implemented helpers, not the illustrative normal-approximation struct above. The pairwise comparison CLI resamples inputs independently even when it uses a paired sign test; its interval does not model matched game seeds.
 
 ## 7. Classification Analysis — No Regression (Actions 0–3 Only)
 
 > **No regression.** The 2048 task uses `TaskType::MultiClassification` with the canonical 17-value state and four action labels. Score is a downstream game-score benchmark, not a regression target. Do not fit `score` as `y` or report R² / RMSE / MSE.
 
-Generic classification helpers now compute confusion matrices, accuracy, per-class F1, and macro precision/recall/F1. A separate four-action helper reports prediction legality for 2048 policies. These helpers do not yet produce a fixed-split classification report from the application evaluation CLI. Game score is a downstream outcome, not a regression target for the supervised action classifier.
+Generic classification helpers compute confusion matrices, accuracy, per-class F1, and macro precision/recall/F1. The training CLI retains these raw-label diagnostics for a 391-row chronological pilot holdout; the separate four-action legality helper is not wired into that report. Game score is a downstream outcome, not a regression target for the supervised action classifier.
 
 ## 8. Multiple Comparison Correction
 
@@ -108,7 +108,7 @@ For confirmatory comparisons, report:
 
 ## Implementation Record
 
-- `src/evaluation.rs` and comparison/report paths provide score summaries, bootstrap intervals, Mann–Whitney U, paired exact sign test, Holm-adjusted p-values, Cohen's d, and reusable classification summaries. The initial UCI results are descriptive single-split metrics; two-run repeatability is reported separately and is not an inferential comparison. Kruskal–Wallis, Wilcoxon, formal power analysis, explicit assumption diagnostics, and a populated 2048 case-study report remain absent.
+- `src/evaluation.rs` and comparison/report paths provide score summaries, bootstrap intervals, Mann–Whitney U, paired exact sign test, Holm-adjusted p-values, Cohen's d, and reusable classification summaries. The root CLI retains a 391-row pilot classifier report and an exploratory same-seed score comparison across Random, Heuristic, and one fitted RandomForest pilot. The latter uses independent-sample bootstrap intervals/Cohen's d despite pairing for sign tests, so it does not provide paired uncertainty estimates. The initial UCI results are descriptive single-split metrics; two-run repeatability is reported separately and is not an inferential comparison. Kruskal–Wallis, Wilcoxon, formal power analysis, explicit assumption diagnostics, and a confirmatory 2048 case-study report remain absent.
 
 ## 10. Analysis Validation
 

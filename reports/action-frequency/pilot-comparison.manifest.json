@@ -1,0 +1,15 @@
+{
+  "analysis": "matched seed sequences use exact two-sided sign test; unmatched runs use independent Mann-Whitney U; Holm adjustment; independent bootstrap CI of mean score difference and Cohen's d",
+  "comparison_csv": "reports/action-frequency/pilot-comparison.csv",
+  "created_utc": "2026-09-26T22:40:33.652077+00:00",
+  "input_files": [
+    "reports/action-frequency/random_10000.csv",
+    "reports/action-frequency/heuristic_10000.csv",
+    "reports/action-frequency/random_forest_pilot_10000.csv"
+  ],
+  "paired_test_limitation": "sign test uses direction and ignores ties; it is conservative and is not Wilcoxon",
+  "project_version": "0.1.0",
+  "seed_sequences_checked_for_equality": true,
+  "sha256": "89430d7ce2b7a5e60ea4c7250b9b8da8302e6614815610ecc4bbcb6fdeb224d7",
+  "source_revision": "ee7614124751c7f50ae03f1217310f86e414c976"
+}

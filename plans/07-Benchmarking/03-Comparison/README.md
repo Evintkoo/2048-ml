@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-model-comparison](01-model-comparison.md) | Model Comparison | PARTIAL — held-out model matrix pending |
-| [02-algorithm-comparison](02-algorithm-comparison.md) | Algorithm Comparison | PARTIAL — three-way evaluation pending |
+| [01-model-comparison](01-model-comparison.md) | Model Comparison | PARTIAL — exploratory same-seed pilot exists; selected held-out model matrix pending |
+| [02-algorithm-comparison](02-algorithm-comparison.md) | Algorithm Comparison | PARTIAL — three-policy pilot exists; selected-model evaluation pending |
 | [03-automl-benchmark](03-automl-benchmark.md) | Rust-Native AutoML Benchmark | PARTIAL — fixed-split diagnostic runner exists; matched baselines and resource study pending |
 | [04-framework-validation](04-framework-validation.md) | Rust-Native AutoML Framework Validation | PARTIAL — pinned two-run matrix matches 15/15 with save/load equivalence; external baselines, resources, and broader validation pending |
 
