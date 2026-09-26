@@ -1,6 +1,6 @@
 # Plan 02 — Training Pipeline Configuration: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Preprocessing guidance matches the real API; root records training inputs/seeds in model manifests, while illustrative YAML config loading remains unimplemented.
+> **Status: PARTIAL (2026-09-27).** Root policy fitting and grouped CV explicitly disable unsupported tree early stopping and record this in the manifest; illustrative YAML loading and fitted preprocessing remain unimplemented.
 
 **Goal:** State the current implementation and evidence boundary for training pipeline configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -11,7 +11,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** Preprocessing examples use the pinned API, but the root does not call `DataPreprocessor`; the canonical encoder produces deterministic numeric features directly. The illustrative training YAML remains unconsumed by the CLI. Optional tuning is instead a separate versioned JSON search contract for RandomForest/ExtraTrees, with grouped-CV objective, derived seed, selected settings, saved study, and training manifest. The manifest records data digests and the actual checked-out AutoML revision. YAML parsing, fitted preprocessing, and experiments that justify changing the feature protocol remain pending.
+**This plan treats its subject as partial or pending work, not as a research finding.** Preprocessing examples use the pinned API, but the root does not call `DataPreprocessor`; the canonical encoder produces deterministic numeric features directly. The illustrative training YAML remains unconsumed by the CLI. Optional tuning is instead a separate versioned JSON search contract for RandomForest/ExtraTrees, with grouped-CV objective, derived seed, selected settings, saved study, and training manifest. The manifest records data digests, the actual checked-out AutoML revision, and that early stopping is disabled for the classical tree policy. YAML parsing, fitted preprocessing, and experiments that justify changing the feature protocol remain pending.
 
 ## 1. Pipeline Stages
 
@@ -75,9 +75,12 @@ let splits = cv.split(n_samples, None, Some(&groups))?; // groups: Array1<i64> g
 
 ```rust
 let mut config = TrainingConfig::default();
-config.early_stopping = true;          // struct field (no builder)
-config.early_stopping_rounds = 50;     // struct field (no builder)
+config.early_stopping = false; // Classical tree adapters do not implement early stopping.
 ```
+
+The root applies this setting through `training::policy_training_config` for grouped CV and final
+fitting. Enabling early stopping on the current RandomForest/ExtraTrees/AdaBoost/KNN/NaiveBayes policy
+path is unsupported and must not be inferred from the framework config fields.
 
 ## 5. Experiment Configuration Template (illustrative YAML; not consumed)
 
@@ -156,6 +159,7 @@ exporter.export_json(&model, "model.onnx.json")?;
 ## Open questions
 
 - **The plan-scale evidence remains bounded by current results.** The root does not use fitted preprocessing or consume YAML configs. The separate JSON tuning path was rerun twice with two trials over eight synthetic development groups; its 16-row synthetic holdout produced identical predictions (accuracy 0.3125, macro-F1 0.2053). This verifies command repeatability only, not model quality. The AutoML optimizer has no intermediate-reporting hook for its standalone pruner. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **Current root configuration check:** `policy_training_config` disables tree early stopping for both final fits and grouped-CV folds, and the training manifest records `early_stopping_enabled: false`. The targeted configuration regression and root suite pass; no YAML parser or fitted preprocessing is introduced.
 
 ## Later
 

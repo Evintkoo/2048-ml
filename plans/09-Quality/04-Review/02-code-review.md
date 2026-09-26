@@ -43,7 +43,7 @@ The reviewer identifies the changed files and intended behavior, inspects releva
 
 ## 5. Tool availability is not execution evidence
 
-`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. The root test suite passed 37/37; `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings` pass locally. GitHub Actions is configured but no hosted result is retained; a coverage report is not configured.
+`cargo fmt`, `cargo clippy`, and `cargo test` are available Rust commands. The current root suite passed 38/38; `cargo fmt --check` and `cargo clippy --all-targets -- -D warnings` pass locally. GitHub Actions has passed on earlier revisions; the current source change awaits its hosted run. A coverage report is not configured.
 
 ## 6. The repository has no approved composite code score
 
@@ -77,7 +77,7 @@ All code reviews result in one of:
 
 ## Implementation Record
 
-- Code-review checklist audited. The root test suite passed 37/37, formatting and Clippy checks pass locally, and the GitHub workflow is configured. These checks are not an independent reviewer decision. This self-audit is not an independent reviewer decision.
+- Code-review checklist audited. The root test suite passed 38/38, formatting and Clippy checks pass locally, and earlier revisions passed the configured GitHub workflow. These checks are not an independent reviewer decision. No independent reviewer decision is recorded.
 
 ---
 

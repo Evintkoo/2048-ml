@@ -167,7 +167,7 @@ Each pipeline run produces:
 
 ## Current Repository Status
 
-`.github/workflows/ci.yml` runs `scripts/ci-check.sh` on GitHub-hosted Ubuntu with stable Rust. The script passed locally and in hosted run [36278428651](https://github.com/Evintkoo/2048-ml/actions/runs/36278428651) for commit `55f0fec`: format check, 37/37 root tests, and Clippy. Coverage reporting, scheduled research/performance jobs, and deployment are not configured; deployment is outside current scope. The older stage and trigger diagrams above are target descriptions where they include validation, scheduling, notifications, or deployment; the workflow configuration is authoritative for current behavior.
+`.github/workflows/ci.yml` runs `scripts/ci-check.sh` on GitHub-hosted Ubuntu with stable Rust. The latest local script run passed format check, 38/38 root tests, and Clippy. Hosted runs [36279014416](https://github.com/Evintkoo/2048-ml/actions/runs/36279014416) and earlier passed the prior 37-test source; the 38-test configuration change awaits hosted verification. Coverage reporting, scheduled research/performance jobs, and deployment are not configured; deployment is outside current scope. The older stage and trigger diagrams above are target descriptions where they include validation, scheduling, notifications, or deployment; the workflow configuration is authoritative for current behavior.
 
 ---
 

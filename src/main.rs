@@ -544,11 +544,12 @@ fn main() {
                 selected_max_depth,
             ).expect("grouped cross-validation failed");
             println!("grouped_cv_accuracy={:.4} ± {:.4} folds={}", cv.mean_accuracy, cv.std_accuracy, cv.fold_accuracy.len());
-            let config = automl::training::TrainingConfig::new(automl::training::TaskType::MultiClassification, "action")
-                .with_model(model_type)
-                .with_n_estimators(selected_n_estimators)
-                .with_max_depth(selected_max_depth)
-                .with_random_state(seeds.training_seed());
+            let config = training::policy_training_config(
+                model_type,
+                seeds.training_seed(),
+                selected_n_estimators,
+                selected_max_depth,
+            );
             let mut engine = automl::training::TrainEngine::new(config);
             engine.fit(&data_frame).expect("AutoML training failed");
             let probability_check = engine.predict_proba(&data_frame.slice(0, 1))
@@ -644,7 +645,9 @@ fn main() {
                     "development_fraction": development_fraction,
                     "final_fit_seed": seeds.training_seed(),
                     "selected_n_estimators": selected_n_estimators,
-                    "selected_max_depth": selected_max_depth
+                    "selected_max_depth": selected_max_depth,
+                    "early_stopping_enabled": false,
+                    "feature_preprocessing": "canonical state encoder; deterministic scaling"
                 },
                 "hyperparameter_optimization": hyperopt_manifest,
                 "global_seed": seeds.global_seed(),

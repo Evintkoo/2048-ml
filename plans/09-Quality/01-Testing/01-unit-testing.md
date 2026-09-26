@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**The root test suite was revalidated in this pass.** `cargo test` passes all 37 binary tests. `cargo test --lib` is inapplicable because the root package has no library target. No coverage report or Tarpaulin configuration was found; the proposed 80% target is not evidence.
+**The root test suite was revalidated in this pass.** `cargo test` passes all 38 binary tests. `cargo test --lib` is inapplicable because the root package has no library target. No coverage report or Tarpaulin configuration was found; the proposed 80% target is not evidence.
 
 ## 1. Purpose
 Unit tests for 4×4 game engine, feature extraction, and automl wiring. Distinct from integration (pipeline wiring) and game-validation (manual audit).
@@ -44,7 +44,7 @@ Before release, run the agreed test suite and any adopted coverage gate; no cove
 
 ## Implementation Record
 
-- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, framework smokes, and current AutoML revision provenance. `cargo test` passed 37/37 after adding score and move-count overflow atomicity regressions; no Tarpaulin config or coverage report exists.
+- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, framework smokes, current AutoML revision provenance, and the policy configuration contract. `cargo test` passed 38/38 after adding overflow atomicity and tree early-stopping configuration regressions; no Tarpaulin config or coverage report exists.
 
 ---
 

@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is an automation plan, not a test inventory.** Existing tests run through `scripts/ci-check.sh`, which is called by the GitHub Actions workflow. Hosted run [36278428651](https://github.com/Evintkoo/2048-ml/actions/runs/36278428651) passed; no coverage gate or scheduled report is configured.
+**This is an automation plan, not a test inventory.** Existing tests run through `scripts/ci-check.sh`, which is called by the GitHub Actions workflow. The latest local run passed 38/38; hosted runs pass on the prior source revision, and this update awaits a 38-test hosted run. No coverage gate or scheduled report is configured.
 
 > **See canonical `09-Quality/03-CI/01-ci-pipeline.md` — duplicate stub.** Repetitive CI mermaid trimmed; see canonical for pipeline.
 
@@ -29,7 +29,7 @@ Define automated testing procedures for the 2048 ML system.
 
 | Category | Tests | Execution Time | Frequency |
 |----------|-------|---------------|-----------|
-| Unit/root suite | Binary crate tests | 37 tests; last local run 1.46 sec | GitHub Actions on push/PR/manual dispatch and local script |
+| Unit/root suite | Binary crate tests | 38 tests; last local run 1.45 sec | GitHub Actions on push/PR/manual dispatch and local script |
 | Integration | Focused tests; no dedicated suite | Covered by root suite; not a separate target | GitHub Actions workflow and local script |
 | Game | Tests in `game_engine` module | Covered by root suite | GitHub Actions workflow and local script |
 | Research validation | Not automated | N/A | Requires separate experiment design |
@@ -61,7 +61,7 @@ No automated test result dashboards, coverage reports, performance trends, or re
 
 ## Implementation Record
 
-- Redirect/duplicate audited. The CI script passes locally with 37/37 root tests. GitHub Actions invokes it, but hosted execution has not been verified. No coverage dashboard, scheduled performance suite, or historical report artifact exists.
+- Redirect/duplicate audited. The CI script passes locally with 38/38 root tests. GitHub Actions passes on the prior source revision; the current 38-test state awaits a hosted run. No coverage dashboard, scheduled performance suite, or historical report artifact exists.
 
 ---
 

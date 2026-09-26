@@ -25,6 +25,24 @@ pub struct GroupedCvResult {
     pub std_accuracy: f64,
 }
 
+/// Builds the canonical tree-policy training configuration. Classical tree
+/// adapters do not implement early stopping, so keep that framework option
+/// disabled explicitly for both grouped CV and final fitting.
+pub fn policy_training_config(
+    model: ModelType,
+    seed: u64,
+    n_estimators: usize,
+    max_depth: usize,
+) -> TrainingConfig {
+    let mut config = TrainingConfig::new(TaskType::MultiClassification, "action")
+        .with_model(model)
+        .with_n_estimators(n_estimators)
+        .with_max_depth(max_depth)
+        .with_random_state(seed);
+    config.early_stopping = false;
+    config
+}
+
 /// Runs AutoML training independently on game-group folds. The framework's
 /// `cross_val_score` helper does not accept groups, so this wrapper uses its
 /// `CrossValidator` splitter and scores held-out rows directly.
@@ -81,12 +99,8 @@ pub fn grouped_cross_validate_configured(
         let test_indices = to_index_ca(&fold.test_indices)?;
         let train = data.take(&train_indices)?;
         let test = data.take(&test_indices)?;
-        let config = TrainingConfig::new(TaskType::MultiClassification, "action")
-            .with_model(model.clone())
-            .with_n_estimators(n_estimators)
-            .with_max_depth(max_depth)
-            .with_random_state(seed)
-            .with_cv(0);
+        let config =
+            policy_training_config(model.clone(), seed, n_estimators, max_depth).with_cv(0);
         let mut engine = TrainEngine::new(config);
         engine.fit(&train)?;
         let predicted = engine.predict(&test)?;
@@ -125,4 +139,20 @@ fn to_index_ca(indices: &[usize]) -> Result<IdxCa, TrainingError> {
         })
         .collect();
     Ok(IdxCa::from_vec("idx".into(), indices?))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn policy_training_config_disables_unsupported_tree_early_stopping() {
+        let config = policy_training_config(ModelType::RandomForest, 42, 32, 8);
+        assert_eq!(config.task_type, TaskType::MultiClassification);
+        assert_eq!(config.model_type, ModelType::RandomForest);
+        assert_eq!(config.random_seed, Some(42));
+        assert_eq!(config.n_estimators, Some(32));
+        assert_eq!(config.max_depth, Some(8));
+        assert!(!config.early_stopping);
+    }
 }
