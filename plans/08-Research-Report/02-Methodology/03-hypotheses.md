@@ -1,6 +1,6 @@
 # Plan 03 — Hypotheses: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Hypotheses remain provisional and untested. A seed-42 UCI diagnostic informs framework validation only; statistical tests, effect thresholds, and study power require a finalized protocol.
+> **Status: PARTIAL (2026-09-27).** Hypotheses remain provisional and untested. A seed-42 UCI repeatability diagnostic on AutoML `82d8483` matched 15/15 prediction sets and save/load outputs; it informs framework validation only; statistical tests, effect thresholds, and study power require a finalized protocol.
 
 **Goal:** State the current implementation and evidence boundary for hypotheses.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -164,7 +164,7 @@ Declare the comparison family and correction before analysis. The CLI currently 
 
 ## Implementation Record
 
-- Framework and application hypotheses remain provisional and untested. A three-dataset/five-model UCI diagnostic was run, with a Wine KNN rerun disagreement; no matched benchmark, model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
+- Framework and application hypotheses remain provisional and untested. The three-dataset/five-model UCI repeatability diagnostic matches 15/15 predictions and save/load outputs under AutoML `82d8483`; the `88a86bf` Wine KNN disagreement is a historical fixed defect. No matched benchmark, model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
 
 ---
 
