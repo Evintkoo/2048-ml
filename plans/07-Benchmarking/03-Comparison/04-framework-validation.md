@@ -1,8 +1,8 @@
 # Plan 04 — Rust-Native AutoML Framework Validation: the repository status is explicit and evidence based
 
 > **Status: PARTIAL (2026-09-27).** Three planned UCI datasets are acquired; fixed-protocol runs cover
-  three split seeds and a fixed-split sklearn baseline and aggregate resource probe exist.
-  Matched-budget, per-model resource, repeated-fit matrix, and CLI/API comparisons remain pending.
+  three split seeds with independent-process repeats, a fixed-split sklearn baseline, and aggregate resource probes exist.
+  Matched-budget, per-model resource, and CLI/API comparisons remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework
 validation.
@@ -15,11 +15,10 @@ learning, and framework evaluation is a separate research track.
 
 **This plan treats API/capability validation as partial evidence, not full framework validation.** Local
 tests exercise model/task compatibility, grouped splitting, optimizer API, serialization, and root
-integration. Fixed-protocol standard-dataset diagnostics cover seeds 42, 2026, and 2027; two processes
-repeat the seed-42 split, while the additional seeds have one process run each. A fixed-configuration
-sklearn baseline and aggregate resource probes are retained. Matched-budget baselines, per-model resource
-profiles, repeated process runs across multiple split seeds, and CLI/library equivalence remain
-incomplete.
+integration. Fixed-protocol standard-dataset diagnostics cover seeds 42, 2026, and 2027, with two processes
+repeating each same-seed split and exact predictions in all 15 model/dataset pairs per seed. A
+fixed-configuration sklearn baseline and aggregate resource probes are retained. Matched-budget baselines,
+per-model resource profiles, and CLI/library equivalence remain incomplete.
 
 ## 1. Purpose
 
@@ -125,11 +124,10 @@ and 2048 integration smoke paths have been checked in `src/framework_validation.
 recognition, and Breast Cancer Wisconsin (Diagnostic) source archives are stored with hashes and UCI
 source descriptions. `src/framework_validation/benchmark.rs` implements a seeded stratified holdout
 runner for those datasets and five integration candidates. Two independent processes under the fixed
-revision used the same seed-42 splits, succeeded on 15/15 cases each, matched all 15 prediction sets
-exactly, and preserved predictions through save/load. One process each on stratified split seeds 2026 and
-2027 also completed all 15 cases; repeatability across processes at those seeds remains untested. A
-fixed-configuration sklearn comparison and aggregate process resource measurements are retained; matched
-search budgets and per-model resources remain open. CLI/API equivalence also remains open. The full
+revision used the same splits for seeds 42, 2026, and 2027, succeeded on 15/15 cases per run, matched all
+15 prediction sets exactly per split, and preserved predictions through save/load. A fixed-configuration
+sklearn comparison and aggregate process resource measurements are retained; matched search budgets and
+per-model resources remain open. CLI/API equivalence also remains open. The full
 framework-validation gate is therefore partial; 2048 smoke evidence must not be presented as framework
 validation.
 
@@ -138,20 +136,16 @@ validation.
 - The pinned AutoML library suite passes 712/712 on `82d848323eed5e2af86d046d529916c448f2442c`;
   source/API/model/serialization smoke checks pass. These are capability checks only, not matched dataset
   results.
-- Dataset acquisition is complete for the three named UCI datasets. Two independent processes used seed
-  42, stratified 80/20 partitions, no scaling, five declared model types, and retained split manifests,
-  predictions, metrics, and model artifacts against the current pin. Both matrix runs succeeded in all 15
-  dataset/model cases; predictions matched in 15/15 pairs and save/load equivalence passed throughout.
-  This two-process same-split repeat is diagnostic only. The prior `88a86bf` Wine KNN disagreement and
-  save/load failure are historical and fixed in the current `82d8483` pin. Two additional one-process
-  runs at seeds 2026 and 2027 succeeded in all 15 cases each; they broaden split coverage but do not test
-  cross-process repeatability at those seeds. A fixed-configuration scikit-learn baseline and aggregate
+- Dataset acquisition is complete for the three named UCI datasets. Two independent processes used seeds
+  42, 2026, and 2027 with stratified 80/20 partitions, no scaling, five declared model types, and retained
+  split manifests, predictions, metrics, and model artifacts against the current pin. Both matrix runs
+  per seed succeeded in all 15 dataset/model cases; predictions matched in 15/15 pairs and save/load
+  equivalence passed throughout. These two-process same-split repeats are diagnostic only. The prior
+  `88a86bf` Wine KNN disagreement and save/load failure are historical and fixed in the current `82d8483`
+  pin. A fixed-configuration scikit-learn baseline and aggregate
   process resource probes are retained. Matched search budgets, per-model resource measurement, and
   CLI/library equivalence remain pending.
-- Two additional one-process runs used the same configuration with global split seeds 2026 and 2027. Both
-  succeeded in 15/15 cases; manifests, split rows, predictions, models, dependency pin, source revision,
-  and dataset hashes are retained. These broaden observed split coverage, but do not substitute for
-  repeated process fits on each split.
+- Two additional split seeds, 2026 and 2027, each have two independent processes using the same configuration. Both runs per seed succeeded in 15/15 cases and matched prediction CSVs exactly; manifests, split rows, predictions, models, dependency pin, source revision, and dataset hashes are retained. These broaden observed split coverage but do not substitute for independent replication.
 - The comparison-only scikit-learn 1.6.1 baseline succeeds and repeats exactly across two runs on the
   seed-42 outer splits, with 8/15 exact label matches to AutoML. It uses related fixed settings, not a
   matched search budget; it is a diagnostic, not a winner determination.
@@ -176,8 +170,8 @@ validation.
 
 ## Open questions
 
-- Add matched-budget external baselines, per-model resource capture, repeated process runs across
-  multiple split seeds, and CLI/library parity; then compare outcomes under the declared protocol.
+- Add matched-budget external baselines, per-model resource capture, and CLI/library parity;
+  then compare outcomes under the declared protocol.
   Current fixed-configuration comparisons and three split-seed diagnostics do not satisfy the full
   validation gate.
 
