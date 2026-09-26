@@ -1,6 +1,6 @@
 # Plan 01 — Simulation Engine: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Reusable simulation and 10,000-game random/heuristic baselines are complete; a 20-game rollout pilot and AutoML-to-simulator smoke are retained, but the scale corpus remains uncollected.
+> **Status: PARTIAL (2026-09-27).** Reusable simulation and 10,000-game random/heuristic baselines are complete; a 20-game rollout pilot, 391-row chronological classifier diagnostic, and AutoML-to-simulator smoke are retained, but the scale corpus remains uncollected.
 
 **Goal:** State the current implementation and evidence boundary for simulation engine.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -170,7 +170,7 @@ pub struct TrainingSample {
 
 - `src/game_engine/mod.rs` implements the seeded reusable simulator, checked policy moves, game results, deterministic game-ID batch helper, and rollout relabeler.
 - `src/main.rs` collects games through a fixed-size Rayon pool, writes canonical CSV plus row-aligned metadata and a manifest, and exposes random/heuristic baseline and model benchmark paths. Rollout collection writes batched CSV/metadata checkpoints and supports validated resume; Parquet is not used.
-- Validation: root unit suite and the 10,000-game random/heuristic baseline runs passed; source and artifacts are retained. The 20-game 2026-09-27 pilot used seed 90627, 100 rollouts per valid action, two threads, and checkpoint interval one. It produced 2,447 rows and 857,100 rollout evaluations in 857.36 seconds; row and metadata CSVs plus per-game checkpoint chunks are retained under `reports/collection_pilots/2026-09-27-20-game/`. Linear projection gives about 238.16 hours for 20,000 games from this configuration; it is not a runtime guarantee. The pilot was followed by one AutoML RandomForest fit and a 20-game saved-policy simulator smoke. These verify pipeline wiring only. No scale corpus has started.
+- Validation: root unit suite and the 10,000-game random/heuristic baseline runs passed; source and artifacts are retained. The 20-game 2026-09-27 pilot used seed 90627, 100 rollouts per valid action, two threads, and checkpoint interval one. It produced 2,447 rows and 857,100 rollout evaluations in 857.36 seconds; row and metadata CSVs plus per-game checkpoint chunks are retained under `reports/collection_pilots/2026-09-27-20-game/`. Linear projection gives about 238.16 hours for 20,000 games from this configuration; it is not a runtime guarantee. The pilot was followed by one AutoML RandomForest fit, a 391-row classifier diagnostic on the three held-out chronological games, and a 20-game saved-policy simulator smoke. These verify pipeline wiring only; the small classifier holdout does not establish policy quality. No scale corpus has started.
 
 ---
 
