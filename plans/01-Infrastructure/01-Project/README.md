@@ -6,10 +6,10 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-project-overview](01-project-overview.md) | Rust-Native AutoML Framework | PARTIAL — fixed-split AutoML/sklearn diagnostics retained; matched-budget framework study and 2048 case study pending |
+| [01-project-overview](01-project-overview.md) | Rust-Native AutoML Framework | PARTIAL — fixed-configuration diagnostics across three split seeds; matched-budget framework study and 2048 case study pending |
 | [02-dependencies](02-dependencies.md) | Dependencies | DONE (2026-09-24) |
 | [03-tooling](03-tooling.md) | Tooling Configuration | DONE (2026-09-24) |
-| [04-framework-contribution](04-framework-contribution.md) | Rust-Native AutoML Framework Contribution | PARTIAL — baseline and aggregate resource probe retained; broader matched comparison/replication pending |
+| [04-framework-contribution](04-framework-contribution.md) | Rust-Native AutoML Framework Contribution | PARTIAL — fixed-split sklearn baseline, three split seeds, and aggregate resource probe retained; matched comparison/replication pending |
 
 Supporting evidence: [04-framework-architecture](04-framework-architecture.md) records the source-backed architecture and API contract audit for ticket 04; its standalone ledger disposition records that evidence audit as complete.
 

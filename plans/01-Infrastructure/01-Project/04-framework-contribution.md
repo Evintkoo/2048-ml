@@ -1,33 +1,60 @@
 # Plan 04 — Rust-Native AutoML Framework Contribution: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** A fixed-configuration sklearn comparison and one aggregate resource probe are retained; matched-budget study, per-model profiles, broader reproducibility, and independent replication remain pending.
+> **Status: PARTIAL (2026-09-27).** Fixed-configuration sklearn comparisons, three split seeds, and one
+  aggregate resource probe are retained; matched-budget study, per-model profiles, and independent
+  replication remain pending.
 
-**Goal:** State the current implementation and evidence boundary for rust-native automl framework contribution.
-**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
+**Goal:** State the current implementation and evidence boundary for rust-native automl framework
+contribution.
+**Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy
+learning, and framework evaluation is a separate research track.
 
 ---
 
 ## Decision and evidence
 
-**This plan treats its subject as partial evidence, not as a research finding.** The source architecture and API limitations are recorded in [04-framework-architecture.md](04-framework-architecture.md). Two diagnostic runs on three named standard datasets and five AutoML models succeeded for all 15 cases and matched predictions exactly in all 15 pairs on pinned AutoML `82d848323eed5e2af86d046d529916c448f2442c`. Two fixed-configuration scikit-learn runs used the same outer splits and AutoML inner holdback, succeeded in 15/15 cases, and repeated metrics and prediction CSVs exactly; their predicted labels agreed with AutoML in 8/15 cases. One single-thread process-level resource probe per implementation is retained. These observations do not establish framework superiority: model defaults, implementations, and process measurement boundaries differ.
+**This plan treats its subject as partial evidence, not as a research finding.** The source architecture
+and API limitations are recorded in [04-framework-architecture.md](04-framework-architecture.md). On seed
+42, two diagnostic process runs on three named standard datasets and five AutoML models succeeded for all
+15 cases and matched predictions exactly in all 15 pairs. Separate one-process diagnostics using seeds
+2026 and 2027 each succeeded in all 15 cases on their own stratified splits. Two fixed-configuration
+scikit-learn runs used the seed-42 outer splits and AutoML inner holdback, succeeded in 15/15 cases, and
+repeated metrics and prediction CSVs exactly; their predicted labels agreed with AutoML in 8/15 cases.
+One single-thread process-level resource probe per implementation is retained. These observations do not
+establish framework superiority: model defaults, implementations, and process measurement boundaries
+differ.
 
 ### Architecture audit result
 
-The audit found concrete training, preprocessing, optimization, CV, inference, and JSON persistence APIs. It also confirmed that the pieces are not one automatically composed pipeline: root integration loads the CSV into a Polars `DataFrame`, provides game-group split/CV orchestration, and invokes `TrainEngine`; root does not currently use `DataPreprocessor` or `InferenceEngine`, and the `HyperOptX` objective callback is not wired into the training command. `TrainEngine::fit` uses its own seeded row split and does not call cross-validation or consume `cv_folds`. The root therefore performs grouped CV in a wrapper and then separately fits the final model. Seed controls are component-level, and explicit artifact schema migration was not found. Details and source paths are in the architecture record.
+The audit found concrete training, preprocessing, optimization, CV, inference, and JSON persistence APIs.
+It also confirmed that the pieces are not one automatically composed pipeline: root integration loads the
+CSV into a Polars `DataFrame`, provides game-group split/CV orchestration, and invokes `TrainEngine`;
+root does not currently use `DataPreprocessor` or `InferenceEngine`, and the `HyperOptX` objective
+callback is not wired into the training command. `TrainEngine::fit` uses its own seeded row split and
+does not call cross-validation or consume `cv_folds`. The root therefore performs grouped CV in a wrapper
+and then separately fits the final model. Seed controls are component-level, and explicit artifact schema
+migration was not found. Details and source paths are in the architecture record.
 
 ## 1. Primary Contribution
 
-The primary research contribution is the design, implementation, and empirical validation of a Rust-native AutoML architecture. The 2048 ML system is the principal implementation and case study used to exercise the framework in a nontrivial stochastic policy-learning workflow.
+The primary research contribution is the design, implementation, and empirical validation of a
+Rust-native AutoML architecture. The 2048 ML system is the principal implementation and case study used
+to exercise the framework in a nontrivial stochastic policy-learning workflow.
 
-The thesis must distinguish framework novelty from application novelty. Reimplementing known algorithms in Rust is an engineering contribution unless the architecture, optimization procedure, systems integration, reproducibility mechanism, or empirical trade-off is shown to provide a defensible improvement or new insight.
+The thesis must distinguish framework novelty from application novelty. Reimplementing known algorithms
+in Rust is an engineering contribution unless the architecture, optimization procedure, systems
+integration, reproducibility mechanism, or empirical trade-off is shown to provide a defensible
+improvement or new insight.
 
 ## 2. Architecture Questions
 
-1. How are data ingestion, preprocessing, model training, validation, optimization, inference, and persistence composed?
+1. How are data ingestion, preprocessing, model training, validation, optimization, inference, and
+  persistence composed?
 2. Which Rust-native data contracts make the pipeline type-safe and reproducible?
 3. How are model types and task types exposed consistently through the library and CLI?
 4. How does the architecture manage seeds, parallelism, resource budgets, and failure recovery?
-5. What trade-offs exist between Rust-native execution, ecosystem coverage, implementation complexity, and interoperability?
+5. What trade-offs exist between Rust-native execution, ecosystem coverage, implementation complexity,
+  and interoperability?
 
 ## 3. Required Architecture Evidence
 
@@ -63,7 +90,8 @@ Use appropriately matched comparisons with:
 - Established Rust ML libraries where comparable functionality exists.
 - A manual model-selection baseline.
 
-Comparisons must use documented datasets, splits, hardware, dependency versions, and search budgets. The 2048 score is not a substitute for framework evaluation.
+Comparisons must use documented datasets, splits, hardware, dependency versions, and search budgets. The
+2048 score is not a substitute for framework evaluation.
 
 ## 6. Case-Study Role of 2048
 
@@ -75,9 +103,12 @@ Comparisons must use documented datasets, splits, hardware, dependency versions,
 - Four-class action prediction.
 - Repeated simulation and policy evaluation.
 
-Ticket #034 aligned the root encoder, policy input, collector, and CSV schema with Plan 00's canonical 17 values. The former 27-value strategic-feature vector is excluded from core training; any use requires a separately scoped study.
+Ticket #034 aligned the root encoder, policy input, collector, and CSV schema with Plan 00's canonical 17
+values. The former 27-value strategic-feature vector is excluded from core training; any use requires a
+separately scoped study.
 
-The case study provides application evidence and exposes framework limitations; it does not alone establish general AutoML superiority.
+The case study provides application evidence and exposes framework limitations; it does not alone
+establish general AutoML superiority.
 
 ---
 
@@ -87,33 +118,77 @@ The case study provides application evidence and exposes framework limitations; 
 2. `grep -q '^# Plan 04 — ' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
 3. `grep -q '^> \\*\\*Status:' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
 4. `grep -q '^\*\*Goal:' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
-5. `grep -q '^## Decision and evidence$' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
-6. `grep -q '^## Open questions$' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+5. `grep -q '^## Decision and evidence$' plans/01-Infrastructure/01-Project/04-framework-contribution.md`
+  exits 0.
+6. `grep -q '^## Open questions$' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits
+  0.
 7. `grep -q '^## Later$' plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
-8. `bash /Users/evintleovonzko/Documents/works/kolosal/planout2/v2-ai-express/.claude/skills/writing-planout-plans/check-plan.sh plans/01-Infrastructure/01-Project/04-framework-contribution.md` exits 0.
+8. Run the external Planout `check-plan.sh` on this file; it exits 0.
 
 ### Ticket-specific completion checklist
 
 - [x] Module/data-flow map and source-backed data/ownership contracts recorded.
-- [x] Configuration, capability, seed, parallelism, failure, persistence, and API-surface limitations audited.
-- [x] Initial diagnostic on named standard tabular datasets with retained sources, hashes, splits, predictions, models, and metrics; broader evaluation remains pending.
-- [x] Fixed-configuration scikit-learn baseline run on the same three dataset splits and five model configurations; two runs succeeded and repeated metrics/predictions for 15/15 cases.
+- [x] Configuration, capability, seed, parallelism, failure, persistence, and API-surface limitations
+  audited.
+- [x] Fixed-protocol diagnostic on named standard tabular datasets with retained sources, hashes, splits,
+  predictions, models, and metrics; broader matched-budget evaluation remains pending.
+- [x] Fixed-configuration scikit-learn baseline run on the same three dataset splits and five model
+  configurations; two runs succeeded and repeated metrics/predictions for 15/15 cases.
 - [ ] Matched search-budget comparisons against manual selection and comparable Rust ML baselines.
-- [x] Focused RandomForest save/load equivalence smoke passes 20/20 repeated process runs on the published AutoML fix.
-- [x] Same-seed synthetic RandomForest refit check passes 20/20 process runs, with 20 refits compared per run.
-- [x] Repeated fixed-split diagnostic on pinned AutoML `82d8483`: 15/15 successful cases in each of two runs; exact predictions 15/15; save/load equivalence passes for every case.
-- [x] Aggregate single-thread process resource probe retained for the same 15-case fixed-split matrix: AutoML 1.33s/27,426,816-byte max RSS; scikit-learn 1.22s/158,466,048-byte max RSS. The process boundaries differ, so these values are descriptive only.
-- [ ] Per-model resource profiles, broader multi-seed/dataset reproducibility, and CLI/library equivalence evidence collected.
+- [x] Focused RandomForest save/load equivalence smoke passes 20/20 repeated process runs on the
+  published AutoML fix.
+- [x] Same-seed synthetic RandomForest refit check passes 20/20 process runs, with 20 refits compared per
+  run.
+- [x] Repeated fixed-split diagnostic on pinned AutoML `82d8483`: 15/15 successful cases in each of two
+  runs; exact predictions 15/15; save/load equivalence passes for every case.
+- [x] Two additional fixed-protocol stratified split diagnostics on seeds 2026 and 2027: each completed
+  all 15 dataset/model cases once; full split, prediction, model, digest, and provenance artifacts are
+  retained. These checks broaden split coverage but do not establish repeatability across processes at
+  those seeds.
+- [x] Aggregate single-thread process resource probe retained for the same 15-case fixed-split matrix:
+  AutoML 1.33s/27,426,816-byte max RSS; scikit-learn 1.22s/158,466,048-byte max RSS. The process
+  boundaries differ, so these values are descriptive only.
+- [ ] Per-model resource profiles, repeated fits on common splits across processes, and CLI/library
+  equivalence evidence collected.
 - [ ] Independent replication or validation completed.
 
-The original 2026-09-24 root smoke failed once in 20 repetitions. Follow-up checks isolated three issues in the earlier AutoML fix: `DecisionTree::compute_leaf_value` used randomized `HashMap` iteration for tied classes; JSON load changed serialized RandomForest floats until `serde_json/float_roundtrip` was enabled; and `TrainEngine::stratified_split` used randomized class grouping before the split. These fixes were published at `88a86bf`. The standard-dataset rerun at that pin exposed two further tie cases: KNN vote ties used randomized `HashMap` iteration, and ExtraTrees selection did not fully specify ties. AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, published on `fix/deterministic-tie-breaking`, adds deterministic tie rules for those paths.
+The original 2026-09-24 root smoke failed once in 20 repetitions. Follow-up checks isolated three issues
+in the earlier AutoML fix: `DecisionTree::compute_leaf_value` used randomized `HashMap` iteration for
+tied classes; JSON load changed serialized RandomForest floats until `serde_json/float_roundtrip` was
+enabled; and `TrainEngine::stratified_split` used randomized class grouping before the split. These fixes
+were published at `88a86bf`. The standard-dataset rerun at that pin exposed two further tie cases: KNN
+vote ties used randomized `HashMap` iteration, and ExtraTrees selection did not fully specify ties.
+AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, published on `fix/deterministic-tie-breaking`,
+adds deterministic tie rules for those paths.
 
-Validation after the fixes: focused tie tests passed; the same-seed synthetic refit smoke passed in 20/20 process runs with 20 refits compared per run; and the RandomForest save/load smoke passed 20/20 process runs with exact model-state and prediction checks. The full AutoML library suite passes 712/712. On the fixed split, both independent AutoML runs at `82d8483` passed all 15 model/dataset cases, matched predictions 15/15, and passed save/load equivalence. Two scikit-learn 1.6.1 runs succeeded and repeated metrics and prediction CSVs in 15/15 cases. The report retains their side-by-side metrics, exact-label agreement of 8/15, fixed dependencies, and the explicit limits of this one-split comparison. A same-host single-thread process probe measured 1.33 seconds and 27,426,816-byte maximum RSS for the prebuilt AutoML matrix, and 1.22 seconds and 158,466,048-byte maximum RSS for the Python matrix. Since process startup and implementations differ, these are not framework performance conclusions. Matched search budgets, per-model resource profiles, broader seeds/datasets, API/CLI parity, and independent replication remain outstanding.
+Validation after the fixes: focused tie tests passed; the same-seed synthetic refit smoke passed in 20/20
+process runs with 20 refits compared per run; and the RandomForest save/load smoke passed 20/20 process
+runs with exact model-state and prediction checks. The full AutoML library suite passes 712/712. On the
+seed-42 fixed split, both independent AutoML runs at `82d8483` passed all 15 model/dataset cases, matched
+predictions 15/15, and passed save/load equivalence. Seeds 2026 and 2027 each passed all 15 cases in a
+single process on their own stratified splits; these runs broaden split coverage, while exact
+cross-process reproducibility at those seeds remains untested. Two scikit-learn 1.6.1 runs succeeded and
+repeated metrics and prediction CSVs in 15/15 cases. The report retains their side-by-side metrics,
+exact-label agreement of 8/15, fixed dependencies, and the explicit limits of this one-split comparison.
+A same-host single-thread process probe measured 1.33 seconds and 27,426,816-byte maximum RSS for the
+prebuilt AutoML matrix, and 1.22 seconds and 158,466,048-byte maximum RSS for the Python matrix. Since
+process startup and implementations differ, these are not framework performance conclusions. Matched
+search budgets, per-model resource profiles, common-split process repeatability, API/CLI parity, and
+independent replication remain outstanding.
 
 ## Open questions
 
-- **The evidence remains bounded by fixed-split diagnostics.** Three standard datasets and five AutoML models have retained fixed-split results with exact AutoML repeatability and save/load equivalence; a comparison-only sklearn matrix and aggregate single-thread resource probe are also retained. There is no matched search-budget comparison, per-model resource profile, broad seed/dataset study, CLI/library equivalence, or independent replication. Further experiments require a declared compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
+- **The evidence remains bounded by fixed-split diagnostics.** Three standard datasets and five AutoML
+  models have one split each under seeds 42, 2026, and 2027, with two exact-repeat runs and save/load
+  equivalence on seed 42; a comparison-only sklearn matrix and aggregate single-thread resource probe are
+  also retained. There is no matched search-budget comparison, per-model resource profile, broad dataset
+  study, CLI/library equivalence, or independent replication. Further experiments require a declared
+  compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
 
 ## Later
 
-- **Complete the framework-validation program in `plans/07-Benchmarking/03-Comparison/04-framework-validation.md`.** Add matched baselines, resource measurements, broader reproducibility checks, and CLI/library equivalence under a declared budget; return here to update contribution conclusions after that evidence is available.
+- **Complete the framework-validation program in
+  `plans/07-Benchmarking/03-Comparison/04-framework-validation.md`.** Add matched-budget baselines,
+  per-model resource measurements, repeated process runs across multiple split seeds, and CLI/library
+  equivalence under a declared budget; return here to update contribution conclusions after that evidence
+  is available.

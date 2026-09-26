@@ -6,7 +6,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-automl-config](01-automl-config.md) | AutoML Configuration | PARTIAL — grouped-CV HyperOptX wired for RF/ExtraTrees |
+| [01-automl-config](01-automl-config.md) | AutoML Configuration | PARTIAL — grouped-CV HyperOptX wired for RF/ExtraTrees; pinned tie fixes and fixed-protocol split diagnostics refreshed |
 | [02-training-config](02-training-config.md) | Training Pipeline Configuration | PARTIAL — manifest provenance and preprocessing contract verified; YAML is explicitly illustrative and unparsed |
 
 ## Reading paths
