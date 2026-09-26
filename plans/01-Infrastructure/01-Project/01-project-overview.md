@@ -1,6 +1,6 @@
 # Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Capability gate and an initial standard-dataset diagnostic are recorded; comparative framework evaluation, canonical 2048 training/evaluation, and full research results remain pending.
+> **Status: PARTIAL.** Capability gate and a repeated standard-dataset diagnostic are recorded; matched comparative framework evaluation, canonical 2048 training/evaluation, and full research results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,13 +9,13 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. A fixed-split diagnostic now covers three standard datasets and five AutoML candidates, but it exposed a Wine KNN repeatability/serialization failure and lacks matched baselines and resource measurements. The ledger records this bounded disposition; the main 2048 study and full research results remain pending.
+**This plan treats its subject as partial or pending work, not as a research finding.** A fixed-split diagnostic covers three standard datasets and five AutoML candidates. The initial pinned revision exposed nondeterministic tie handling in KNN and ExtraTrees; after a narrow framework fix, two independent runs against pinned AutoML commit `82d848323eed5e2af86d046d529916c448f2442c` succeeded for all 15 cases and matched predictions in 15/15 pairs. Matched external baselines and resource measurements are still absent. The ledger records this bounded disposition; the main 2048 study and full research results remain pending.
 
 > **Project:** 2048 Machine Learning System
 > **Version:** 1.0.0
 > **Author:** Evintkoo
 > **Created:** 2026-09-22
-> **Status:** In progress — initial API/model capability checks passed for five four-class candidates; a three-dataset/five-model framework diagnostic is retained, with Wine KNN repeatability unresolved. Comparative framework validation and canonical 2048 training/evaluation remain incomplete (updated 2026-09-27).
+> **Status:** In progress — initial API/model capability checks passed for five four-class candidates; a three-dataset/five-model framework diagnostic is retained, with repeatability and save/load equality confirmed across two runs after deterministic tie fixes. Matched framework comparisons and canonical 2048 training/evaluation remain incomplete (updated 2026-09-27).
 
 ---
 
@@ -94,7 +94,7 @@ flowchart TD
 
 ## 6. Dependencies
 
-- **automl submodule:** `https://github.com/Evintkoo/automl` pinned at `88a86bf44a0cb03664931f7ef15201b95fa11255` (`v1.0.0-139-g88a86bf`, published on `feature/deterministic-training-serialization`) — verify with `git submodule status automl`
+- **automl submodule:** `https://github.com/Evintkoo/automl` pinned at `82d848323eed5e2af86d046d529916c448f2442c` (`v1.0.0-140-g82d8483`, published on `fix/deterministic-tie-breaking`) — verify with `git submodule status automl`
   - Path: `automl/`
   - Provides: TrainEngine, TrainingConfig, ModelType, HyperOptX, InferenceEngine
 
@@ -117,7 +117,7 @@ Because this project's goal #2 is to benchmark automl's capability, and the proj
 
 ### 6.2 Verification Record (2026-09-24)
 
-The pinned submodule is present at `88a86bf44a0cb03664931f7ef15201b95fa11255`, matching the published deterministic-training/serialization fix. Source inspection confirms `TrainEngine`, `HyperOptX`, `ModelType`, `TaskType::MultiClassification`, `CVStrategy::GroupKFold`, `CVStrategy::TimeSeriesSplit`, and `MedianPruner::new(minimize: bool)` exist. The full AutoML library suite passes 710/710 on this revision.
+The pinned submodule is present at `82d848323eed5e2af86d046d529916c448f2442c`, containing deterministic training/serialization fixes and deterministic tie handling for KNN and ExtraTrees. Source inspection confirms `TrainEngine`, `HyperOptX`, `ModelType`, `TaskType::MultiClassification`, `CVStrategy::GroupKFold`, `CVStrategy::TimeSeriesSplit`, and `MedianPruner::new(minimize: bool)` exist. The full AutoML library suite passes 712/712 on this revision.
 
 The initial capability gate passed for the revised candidate set:
 
@@ -142,7 +142,7 @@ The root crate now exposes seeded `benchmark baseline --agent random|heuristic`,
 
 A 20-game seed-987 wiring sample yielded random mean 1,046.6 and heuristic mean 7,800.6. This is an implementation smoke measurement, far below the pre-registered 10,000-game protocol, and is not used as a baseline claim or populated in the results matrix.
 
-The framework contribution itself remains partially evaluated. The retained [initial framework-validation report](../../../reports/framework_validation/README.md) records a seed-42, stratified 80/20 diagnostic across Iris, Wine, and Wisconsin Diagnostic with RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes, run against the prior submodule revision. Two process runs matched predictions for 14 of 15 dataset/model pairs; Wine KNN differed, and its save/load predictions mismatched in one run. The determinism/serialization fixes are now committed and pinned at `88a86bf`; the diagnostic has not yet been rerun against that revision. There are no matched external-framework baselines, resource measurements, broader repeated-fit study, or independent replication. Focused RandomForest save/load and same-seed synthetic refit checks passed 20/20 process runs on the fix. Do not treat these checks as completion of the framework contribution or as clearance for the main 2048 training milestone.
+The framework contribution remains partially evaluated. The [framework-validation report](../../../reports/framework_validation/README.md) records a seed-42, stratified 80/20 diagnostic across Iris, Wine, and Wisconsin Diagnostic with RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. On pinned AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, two independent process runs succeeded for all 15 cases, matched predictions for 15/15 pairs, and passed model save/load equivalence. The preceding pinned revision showed a KNN vote tie depending on randomized `HashMap` iteration and ExtraTrees tie behavior; these were fixed with deterministic lowest-label/feature tie rules. The two-run result is narrow evidence, not a broad reproducibility proof. There are no matched external-framework baselines, resource measurements, CLI/library equivalence study, or independent replication. Do not treat this diagnostic as completion of the framework contribution or as clearance for the main 2048 training milestone.
 
 ### 6.6 Main-Study Readiness (2026-09-26)
 
@@ -164,7 +164,7 @@ The following prerequisites remain open before main-study claims: the standard-d
 ### Tier 1: Minimum Viable Milestone
 - AutoML capability and correctness gate completed
 - Framework benchmark protocol documented
-- Determine each model's score ceiling through systematic evaluation (10,000+ games)
+- Determine each model's score distribution through systematic evaluation under a declared, budgeted protocol
 - Establish baseline scores for the verified four-class candidates: Random Forest, ExtraTrees, AdaBoost, KNN, and NaiveBayes
 - Full data pipeline from game simulation to trained model works end-to-end
 - Models are ranked by mean score
@@ -180,7 +180,7 @@ The following prerequisites remain open before main-study claims: the standard-d
 ### Tier 3: Advanced Milestone
 - Framework results validated on standard tabular datasets
 - Framework performance and reproducibility compared with established implementations
-- The top-ranked model achieves mean score significantly exceeding heuristic baseline (~512)
+- The top-ranked model is compared with the heuristic baseline using held-out scores and the declared uncertainty protocol
 - Benchmark results demonstrate automl capability on sequential decision-making
 - Statistical tests confirm score superiority over all baselines
 
@@ -193,13 +193,13 @@ The following prerequisites remain open before main-study claims: the standard-d
 ### 2048 Case-Study Winner Determination
 - **Case-study winner** = model with the highest held-out mean score under the declared evaluation protocol
 - Ranking is based on mean score (primary), with median score and score consistency as tiebreakers
-- The primary baseline comparison must use the pre-registered Mann-Whitney U test with Holm correction
+- The primary comparison uses the pre-registered method: exact sign test for matched seeds or Mann-Whitney U for unmatched samples, with Holm correction
 - Bootstrap 95% CIs and effect sizes must be reported for practical interpretation
 - Benchmark results demonstrate meaningful automl capability on sequential games
 - Comprehensive IMRD research report published with validated findings
 
 ### Theoretical Limit Definition
-The theoretical maximum score for 2048 is not used as an optimization target. **Models are ranked by mean game score under the predefined evaluation protocol, not by proximity to a theoretical limit.** The heuristic agent (~512 mean score) serves as a practical baseline reference.
+The theoretical maximum score for 2048 is not used as an optimization target. **Models are ranked by mean game score under the predefined evaluation protocol, not by proximity to a theoretical limit.** The heuristic agent serves as a practical baseline; its measured mean depends on the game protocol and should be taken from retained benchmark artifacts rather than a fixed threshold.
 
 ### Non-Negotiable Criteria (All Tiers)
 - Models are ranked by held-out game score with uncertainty and practical-effect reporting
@@ -224,7 +224,7 @@ The theoretical maximum score for 2048 is not used as an optimization target. **
 
 ## Open questions
 
-- **The evidence remains bounded by the current diagnostic.** The three-dataset/five-model fixed-split run and same-seed rerun are retained, but the Wine KNN reproducibility failure is unresolved; matched framework baselines, resource measurements, and independent replication are absent. Canonical rollout-labeled 2048 training and held-out evaluation are also pending. Larger runs require a declared resource budget and retained artifacts.
+- **The evidence remains bounded by the current diagnostic.** Two fixed-split runs against pinned AutoML `82d8483` are retained; all 15 cases succeeded, exact predictions matched 15/15, and model save/load equivalence passed. Matched framework baselines, resource measurements, broader repeated-fit evidence, and independent replication are absent. Canonical rollout-labeled 2048 training and held-out evaluation are also pending. Larger runs require a declared resource budget and retained artifacts.
 
 ## Later
 

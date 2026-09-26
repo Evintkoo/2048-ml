@@ -1,6 +1,6 @@
 # Plan 04 — Rust-Native AutoML Framework Contribution: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** A source-backed architecture audit and an initial three-dataset/five-model diagnostic are recorded; matched comparisons, resource measurements, broader reproducibility, and independent replication remain pending.
+> **Status: PARTIAL.** A source-backed architecture audit and a repeated three-dataset/five-model diagnostic are recorded; matched comparisons, resource measurements, broader reproducibility, and independent replication remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework contribution.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The source architecture and API limitations are recorded in [04-framework-architecture.md](04-framework-architecture.md). An initial diagnostic now evaluates three named standard datasets and five AutoML models; its retained report documents one unresolved Wine KNN repeatability/serialization failure. Matched framework comparisons, resource evidence, and broader reproducibility remain pending.
+**This plan treats its subject as partial or pending work, not as a research finding.** The source architecture and API limitations are recorded in [04-framework-architecture.md](04-framework-architecture.md). Two diagnostic runs on three named standard datasets and five AutoML models succeeded for all 15 cases and matched predictions exactly in all 15 pairs on pinned AutoML `82d848323eed5e2af86d046d529916c448f2442c`. This revision fixes KNN and ExtraTrees nondeterministic tie handling. Matched framework comparisons, resource evidence, and broader reproducibility remain pending.
 
 ### Architecture audit result
 
@@ -100,16 +100,17 @@ The case study provides application evidence and exposes framework limitations; 
 - [ ] Fixed-configuration, established-framework, manual-selection, and comparable Rust baselines run under matched budgets.
 - [x] Focused RandomForest save/load equivalence smoke passes 20/20 repeated process runs on the published AutoML fix.
 - [x] Same-seed synthetic RandomForest refit check passes 20/20 process runs, with 20 refits compared per run.
+- [x] Repeated fixed-split diagnostic on pinned AutoML `82d8483`: 15/15 successful cases in each of two runs; exact predictions 15/15; save/load equivalence passes for every case.
 - [ ] Runtime, memory, broader multi-seed/dataset reproducibility, and CLI/library equivalence evidence collected.
 - [ ] Independent replication or validation completed.
 
-The original 2026-09-24 root smoke failed once in 20 repetitions. Follow-up checks isolated three issues in the pinned AutoML checkout. First, `DecisionTree::compute_leaf_value` used randomized `HashMap` iteration to choose among tied classes; leaf ties now select the lowest class deterministically. Second, a structural comparison showed that JSON load changed serialized RandomForest floats (the first observed difference was `feature_importances[21]`, from `0.11877923958625117` to `0.11877923958625115`); enabling `serde_json/float_roundtrip` restored exact model state. Third, a new same-seed refit check failed before the split fix because `TrainEngine::stratified_split` appended class rows in `HashMap` iteration order; class groups now use a `BTreeMap`, so fixed-seed fits receive a stable row order. The fixes are published on AutoML branch `feature/deterministic-training-serialization` and pinned by the root at `88a86bf44a0cb03664931f7ef15201b95fa11255`.
+The original 2026-09-24 root smoke failed once in 20 repetitions. Follow-up checks isolated three issues in the earlier AutoML fix: `DecisionTree::compute_leaf_value` used randomized `HashMap` iteration for tied classes; JSON load changed serialized RandomForest floats until `serde_json/float_roundtrip` was enabled; and `TrainEngine::stratified_split` used randomized class grouping before the split. These fixes were published at `88a86bf`. The standard-dataset rerun at that pin exposed two further tie cases: KNN vote ties used randomized `HashMap` iteration, and ExtraTrees selection did not fully specify ties. AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, published on `fix/deterministic-tie-breaking`, adds deterministic tie rules for those paths.
 
-Validation after the patch: the leaf-tie regression passed; the same-seed synthetic refit smoke passed in 20/20 process runs with 20 refits compared per run; and the RandomForest save/load smoke passed 20/20 process runs with exact model-state and prediction checks. The full AutoML library suite passed 710/710. This is focused synthetic evidence; standard datasets, matched baselines, resource measurements, broader seed/dataset behavior, API/CLI parity, and independent replication remain outstanding.
+Validation after the fixes: focused tie tests passed; the same-seed synthetic refit smoke passed in 20/20 process runs with 20 refits compared per run; and the RandomForest save/load smoke passed 20/20 process runs with exact model-state and prediction checks. The full AutoML library suite passes 712/712. On the fixed split, both independent runs at `82d8483` passed all 15 model/dataset cases, matched predictions 15/15, and passed save/load equivalence. This remains bounded evidence: matched baselines, resource measurements, broader multi-seed/multi-dataset behavior, API/CLI parity, and independent replication remain outstanding.
 
 ## Open questions
 
-- **The evidence remains bounded by the initial diagnostic.** Three standard datasets and five AutoML models have retained fixed-split results, but the Wine KNN repeatability failure is unresolved. Matched-baseline, resource, broader seed/dataset, CLI/library equivalence, and replication results remain absent. Further experiments require a declared compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
+- **The evidence remains bounded by the repeated diagnostic.** Three standard datasets and five AutoML models have retained fixed-split results with matching predictions and save/load equivalence on two runs at `82d8483`. Matched-baseline, resource, broader seed/dataset, CLI/library equivalence, and replication results remain absent. Further experiments require a declared compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
 
 ## Later
 
