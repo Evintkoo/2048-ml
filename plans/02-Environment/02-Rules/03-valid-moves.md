@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats move validity and descriptive policy-frequency analysis as implemented.** Seeded 10,000-game random and heuristic baselines and a 10,000-game fitted-policy profile are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Intervals resample whole games to account for within-game dependence. The baseline report records that its root source was locally modified during collection; the model-policy run records its committed source revision and AutoML pin. The fitted policy came from a small development corpus, so its action frequencies do not establish policy quality or select a model winner.
+**This plan treats move validity and descriptive policy-frequency analysis as implemented.** Seeded 10,000-game random and heuristic baselines and a 10,000-game fitted-policy profile are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Intervals resample whole games to account for within-game dependence. Each per-run manifest records its source revision, input digest, seeds, timing, and AutoML pin where applicable. The fitted policy came from a small development corpus, so its action frequencies do not establish policy quality or select a model winner.
 
 > **Canonical validity:** `board.would_change(dir)` — single source. Do not duplicate `get_valid_moves` logic elsewhere.
 
@@ -72,12 +72,12 @@ The retained report summarizes 10,000 games per agent with game-cluster bootstra
 
 | Move | Random proportion (95% CI) | Heuristic proportion (95% CI) | Model pilot proportion (95% CI) |
 |------|----------------------------|------------------------------|-------------------------------|
-| Up | 0.249527 [0.248847, 0.250213] | 0.262476 [0.262011, 0.262956] | 0.262037 [0.260770, 0.263295] |
-| Down | 0.250478 [0.249757, 0.251181] | 0.241385 [0.240928, 0.241848] | 0.158884 [0.158232, 0.159540] |
-| Left | 0.249917 [0.249265, 0.250623] | 0.257937 [0.257469, 0.258413] | 0.231507 [0.230470, 0.232498] |
-| Right | 0.250077 [0.249356, 0.250779] | 0.238202 [0.237747, 0.238662] | 0.347573 [0.346447, 0.348775] |
+| Up | 0.249527 [0.248847, 0.250213] | 0.262476 [0.262011, 0.262956] | 0.262037 [0.260725, 0.263326] |
+| Down | 0.250478 [0.249757, 0.251181] | 0.241385 [0.240928, 0.241848] | 0.158884 [0.158240, 0.159523] |
+| Left | 0.249917 [0.249265, 0.250623] | 0.257937 [0.257469, 0.258413] | 0.231507 [0.230450, 0.232569] |
+| Right | 0.250077 [0.249356, 0.250779] | 0.238202 [0.237747, 0.238662] | 0.347573 [0.346386, 0.348728] |
 
-These are descriptive frequencies, not a training prior or framework result. Random and heuristic baseline raw CSVs/manifests retain aggregate action counts; the fitted-policy CSV retains per-game action counts. All use seed range 84024–94023 and 2,000 whole-game bootstrap replicates with seed 84026. Detailed policy fit provenance and limitations are recorded in the linked report.
+These are descriptive frequencies, not a training prior or framework result. All three agents’ raw per-game CSVs retain action counts, and their manifests and independent JSON summaries retain pooled counts and intervals. The Rust verifier reconstructs each summary exactly from raw rows. All use seed range 84024–94023 and 2,000 whole-game bootstrap replicates with seed 84026. Detailed policy fit provenance and limitations are recorded in the linked report.
 
 ## 8. Deleted — No Sequence / LSTM Hint
 
@@ -107,7 +107,7 @@ pub enum HeuristicStrategy { Monotonicity, Corner, Empty }
 
 - `RawBoardState::would_change`, `get_valid_moves`, and `valid_mask` provide the canonical validity APIs; policy simulation rejects a selected move that would not change the board.
 - Added coverage comparing validity to actual execution across a deterministic family of boards and checking terminal boards have no valid direction.
-- Validation: root unit suite passed. Random and heuristic frequency baselines cover 10,000 games each; a fitted AutoML RandomForest policy was also evaluated on 10,000 distinct game seeds. Per-game direction counts sum to move count for all 10,000 policy rows. The analyzer reproduced the pooled proportions and 2,000-replicate whole-game percentile intervals; raw CSV, run manifest, analysis JSON, and script are retained. The small pilot training corpus limits interpretation to descriptive policy behavior.
+- Validation: root unit suite passed. Random and heuristic frequency baselines cover 10,000 games each; a fitted AutoML RandomForest policy was also evaluated on 10,000 distinct game seeds. Per-game direction counts sum to move count for all 10,000 policy rows. The raw-CSV Rust verifier reproduces the pooled proportions and 2,000-replicate whole-game percentile intervals exactly for all three agents; CSVs, manifests, independent JSON summaries, and verifier are retained. The small pilot training corpus limits interpretation to descriptive policy behavior.
 
 ---
 
@@ -124,7 +124,7 @@ pub enum HeuristicStrategy { Monotonicity, Corner, Empty }
 
 ## Open questions
 
-- **The evidence remains descriptive.** Three agents have retained frequency estimates under one 10,000-game seed sequence; only the fitted-policy output retains per-game action counts for reconstructing cluster intervals. The pilot policy's action frequencies do not establish score superiority, classifier generalization, or an AutoML framework result.
+- **The evidence remains descriptive.** Three agents have retained frequency estimates and per-game action counts under one 10,000-game seed sequence; raw-CSV recomputation matches each manifest exactly. The pilot policy's action frequencies do not establish score superiority, classifier generalization, or an AutoML framework result.
 
 ## Later
 
