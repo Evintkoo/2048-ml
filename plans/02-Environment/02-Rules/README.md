@@ -8,7 +8,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 |---|---|---|
 | [01-scoring-rules](01-scoring-rules.md) | Scoring Rules | DONE — score input at index 16; raw score remains metadata |
 | [02-win-lose-conditions](02-win-lose-conditions.md) | Win / Lose Conditions | DONE — terminal behavior source-checked (2026-09-27); optional stopping limits remain unimplemented |
-| [03-valid-moves](03-valid-moves.md) | Valid Moves | PARTIAL — model-policy action frequency remains pending a trained policy |
+| [03-valid-moves](03-valid-moves.md) | Valid Moves | PARTIAL — policy simulator smoke exists; per-game action history is needed for policy-frequency analysis |
 
 ## Reading paths
 
