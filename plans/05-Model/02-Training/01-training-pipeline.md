@@ -1,6 +1,6 @@
 # Plan 01 — Training Pipeline: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** CLI CSV/metadata loading, chronological holdout, grouped CV, fitting, and model export exist; the complete final evaluation/refit workflow remains pending.
+> **Status: PARTIAL (2026-09-27).** CLI CSV/metadata loading, chronological holdout, grouped CV, fitting, export, and a small retained holdout classifier diagnostic exist; the complete final evaluation/refit workflow remains pending.
 
 **Goal:** State the current implementation and evidence boundary for training pipeline.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the executable training path as implemented with evaluation lifecycle gaps.** The root CLI loads the canonical CSV and aligned sidecar, holds out later game IDs, runs group-aware CV on development rows, fits an AutoML model, and saves it. It consumes the fixed 17 numeric values directly without a fitted preprocessing stage. Final untouched-test diagnostics and selected-model refitting are not implemented.
+**This plan treats the executable training path as implemented with evaluation lifecycle gaps.** The root CLI loads the canonical CSV and aligned sidecar, holds out later game IDs, runs group-aware CV on development rows, fits an AutoML model, and saves it. It consumes the fixed 17 numeric values directly without a fitted preprocessing stage. A 391-row diagnostic on three chronological pilot games now records accuracy, macro metrics, confusion matrix, and row-level predictions; an adequate corpus and selected-model refitting remain pending.
 
 ## 1. Purpose
 
@@ -38,7 +38,7 @@ flowchart TD
     Evaluate --> Select
     Select --> Export
 
-    Evaluate -. final held-out scoring pending .-> Select
+    Evaluate -. pilot holdout diagnostic; final confirmatory scoring pending .-> Select
 ```
 
 ## 3. Pipeline Stages
@@ -107,7 +107,7 @@ flowchart TB
 
 ### Implemented CLI Protocol and Current Limitation
 
-The root `train` command requires the canonical data CSV and its aligned metadata sidecar. By default, it reserves the final 15% of distinct chronological game IDs before any grouped CV or fitting (`--development-fraction 0.85`); the holdout rows never enter the training DataFrame. Grouped CV runs only on the earlier development groups. The pinned AutoML `TrainEngine::fit` then makes its own seeded, stratified row-level validation split from that development data and fits the model on the remaining rows. The API has no switch to fit the complete development partition or to pass groups into its internal split. Consequently this is a safe test holdout, but not yet the full plan's chronological 70/15/15 train/validation/test model-selection protocol; final test scoring and refitting after selection still need a dedicated workflow. The generated `data-collector split` outputs provide explicit 70/15/15 game partitions for analysis and diagnostics.
+The root `train` command requires the canonical data CSV and its aligned metadata sidecar. By default, it reserves the final 15% of distinct chronological game IDs before any grouped CV or fitting (`--development-fraction 0.85`); the holdout rows never enter the training DataFrame. Grouped CV runs only on the earlier development groups. The pinned AutoML `TrainEngine::fit` then makes its own seeded, stratified row-level validation split from that development data and fits the model on the remaining rows. The API has no switch to fit the complete development partition or to pass groups into its internal split. The CLI now predicts the saved final model on the held-out rows after fitting and retains accuracy, macro metrics, confusion matrix, and row-level predictions. This is a safe diagnostic, but not yet the full plan's chronological 70/15/15 train/validation/test model-selection protocol; a dedicated final refit after selection and adequate-corpus evaluation remain pending. The generated `data-collector split` outputs provide explicit 70/15/15 game partitions for analysis and diagnostics.
 
 The integration supports four-probability output from RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. `cv_folds` is implemented in the root grouped-CV wrapper, not through `TrainEngine` internal fit.
 
@@ -156,7 +156,7 @@ sequenceDiagram
     Train->>Eval: Trained classifier
     Eval->>Select: Classification metrics
     Train->>Export: current CLI saves fitted model artifact
-    Eval-->>Select: held-out results (future workflow)
+    Eval-->>Select: pilot held-out labels and metrics; final refit workflow pending
 ```
 
 ## 7. Pipeline Files Location

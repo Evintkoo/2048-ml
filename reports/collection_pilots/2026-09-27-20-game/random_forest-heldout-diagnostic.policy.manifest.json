@@ -1,0 +1,98 @@
+{
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "component_seeds": {
+    "cross_validation": 90631,
+    "data_sampling": 90630,
+    "game_base": 90627,
+    "hyperopt": 90629,
+    "training": 90627
+  },
+  "created_utc": "2026-09-26T21:56:54.702366+00:00",
+  "cv_folds": 5,
+  "dataset_schema": "2048-action-policy-v2",
+  "development_fraction": 0.85,
+  "global_seed": 90627,
+  "held_out_evaluation": {
+    "accuracy": 0.2966751918158568,
+    "actions": [
+      "up",
+      "down",
+      "left",
+      "right"
+    ],
+    "confusion_matrix_actual_rows_predicted_columns": [
+      [
+        35,
+        14,
+        14,
+        55
+      ],
+      [
+        28,
+        19,
+        19,
+        26
+      ],
+      [
+        29,
+        12,
+        23,
+        28
+      ],
+      [
+        20,
+        14,
+        16,
+        39
+      ]
+    ],
+    "game_ids": [
+      17,
+      18,
+      19
+    ],
+    "interpretation": "development diagnostic on chronological held-out games; not a confirmatory policy-quality estimate",
+    "macro_f1": 0.29140129603867776,
+    "macro_precision": 0.30437296406576064,
+    "macro_recall": 0.2978335389532429,
+    "n_rows": 391,
+    "per_action_f1": [
+      0.30434782608695654,
+      0.25165562913907286,
+      0.28048780487804875,
+      0.32911392405063283
+    ],
+    "predictions_csv": "reports/collection_pilots/2026-09-27-20-game/random_forest-heldout-diagnostic.policy.holdout-predictions.csv",
+    "predictions_csv_sha256": "458120e39e2b1154af57650cd26837932bdf15ef8079646da5b8510f053c6e64"
+  },
+  "hyperparameter_optimization": null,
+  "manifest_schema": "game2048-ml.training-run",
+  "manifest_schema_version": 1,
+  "metadata": "reports/collection_pilots/2026-09-27-20-game/training.metadata.csv",
+  "metadata_sha256": "3951d0d6abb3c569736a138e4aa0e19780fd420d1ddb59f80b573afdc31ad41b",
+  "model": "random_forest",
+  "model_artifact": "reports/collection_pilots/2026-09-27-20-game/random_forest-heldout-diagnostic.policy.json",
+  "model_artifact_sha256": "b896b7058945d288392eed5074875e1ed0ee5ae2aeebc19abb6e443e4ae87146",
+  "project_version": "0.1.0",
+  "selected_max_depth": 6,
+  "selected_n_estimators": 100,
+  "source_revision": "31ff9bdc8cd0220ffc7a5cccd61633c951817ff9",
+  "state_feature_count": 17,
+  "study_artifact": null,
+  "training_configuration": {
+    "cv_folds": 5,
+    "cv_strategy": "GroupKFold",
+    "development_fraction": 0.85,
+    "final_fit_seed": 90627,
+    "model": "random_forest",
+    "schema_version": 1,
+    "selected_max_depth": 6,
+    "selected_n_estimators": 100,
+    "state_feature_count": 17,
+    "target_column": "action",
+    "task_type": "MultiClassification"
+  },
+  "training_data": "reports/collection_pilots/2026-09-27-20-game/training.csv",
+  "training_data_sha256": "4b1063b3b5c318e271e7191c77a3d440a3fa912e9a9150fb62ddf0d18abd21b3",
+  "tune_trials": null
+}

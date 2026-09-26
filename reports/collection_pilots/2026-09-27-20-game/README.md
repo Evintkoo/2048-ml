@@ -52,6 +52,20 @@ path on a small labeled sample; it is not a held-out policy-quality estimate.
   `2f0244b320d4c3b91ff2bc548a7987eedd24a802944b489e37fdca873c287bbc`.
 
 The CV accuracy and game-score smoke answer different questions and neither is
-a case-study result. The final 3 games were held out from fitting but the train
-command does not emit classifier diagnostics on them; the 20 simulator seeds
-are a small development smoke and were not compared with matched baselines.
+a case-study result. The separate 20-game simulator seeds are a small development smoke and were not compared with matched baselines.
+
+
+## Chronological holdout classifier diagnostic
+
+After the training CLI began retaining outer-holdout predictions, the same fixed
+protocol was rerun from root revision `31ff9bd`. Games 17–19 (391 rows) remained
+excluded from grouped CV and fitting. The model produced accuracy `0.2967`, macro-F1
+`0.2914`, macro-precision `0.3044`, and macro-recall `0.2978`. The manifest records
+the held-out game IDs, class order, confusion matrix, artifact hashes, model
+configuration, and interpretation; the CSV sidecar retains row-level actual and
+predicted actions.
+
+These labels are rollout-derived action targets from a 20-game development corpus.
+The three-game diagnostic is small and is not a confirmatory estimate of policy
+quality, generalization, or framework performance. The separate game-score smoke
+uses different seeds and remains wiring evidence only.

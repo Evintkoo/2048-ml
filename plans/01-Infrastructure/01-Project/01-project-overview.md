@@ -1,8 +1,6 @@
 # Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Capability checks, standard-dataset diagnostics, a 20-game rollout pilot, and one
-  2048 train-to-simulator smoke are recorded; matched framework evaluation, scale collection, and
-  held-out policy results remain pending.
+> **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 20-game rollout pilot, and a 391-row chronological classifier diagnostic are recorded; matched framework evaluation, scale collection, and confirmatory policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy
@@ -17,8 +15,7 @@ standard-dataset diagnostic covers three stratified split seeds and five AutoML 
 pinned revision exposed nondeterministic tie handling in KNN and ExtraTrees, and the pinned fix produced
 exact prediction agreement in repeated seed-42 runs. A fixed-configuration scikit-learn comparison and
 aggregate same-host resource probe also exist, but search budgets and per-model resource boundaries are
-not matched. A 20-game rollout corpus trained one RandomForest and completed a separate 20-game simulator
-smoke; these verify pipeline wiring only. The main 2048 study and full research results remain pending.
+not matched. A 20-game rollout corpus trained one RandomForest, produced a small chronological held-out classifier diagnostic, and completed a separate 20-game simulator smoke; these verify pipeline wiring only. The main 2048 study and full research results remain pending.
 
 > **Project:** 2048 Machine Learning System
 > **Version:** 1.0.0
@@ -227,21 +224,22 @@ startup boundaries make these descriptive only. Matched search-budget/resource p
 repeated-fit reproducibility, CLI/library equivalence, and independent replication remain open. Neither
 diagnostic completes framework validation or clears the main 2048 training milestone.
 
-### 6.6 Main-Study Readiness (2026-09-26)
+### 6.6 Main-Study Readiness (updated 2026-09-27)
 
 The root training command requires row-aligned game metadata, excludes the final chronological game
 groups from fitting, and runs explicit group-preserving CV on the development groups. On a 20-game pilot,
 it reserved the final 3 groups, ran five-fold grouped CV on the earlier groups (accuracy `0.2828 ±
 0.0285`), and saved a 17-feature AutoML RandomForest with its input digests, dependency pin, seed
-derivations, and selected settings. A separate 20-game simulator smoke completed on seeds 91927–91946
-(mean score 902.40; bootstrap interval `[712.60, 1095.20]`). These checks exercise
+derivations, and selected settings. The training CLI now scores the final model on those 3 groups
+(391 rows; accuracy `0.2967`, macro-F1 `0.2914`) and retains the confusion matrix and row-level
+predictions with hashes and provenance. A separate 20-game simulator smoke completed on seeds
+91927–91946 (mean score 902.40; bootstrap interval `[712.60, 1095.20]`). These checks exercise
 data-to-fit-to-simulator wiring only. The final fit uses AutoML's internal row-level validation on
-development rows, and the chronological 3-game test groups do not yet receive classifier diagnostics.
-This is not a completed end-to-end research study.
+development rows. The three-game classifier diagnostic is too small to support a policy-quality or
+generalization claim, and this is not a completed end-to-end research study.
 
 The following prerequisites remain open before main-study claims: matched search-budget/per-model
-resource framework comparisons, broader repeated-fit reproducibility evidence, a scale-appropriate
-rollout-labeled corpus, diagnostics on held-out 2048 data, and a predeclared policy evaluation. The
+resource framework comparisons, broader repeated-fit reproducibility evidence, a scale-appropriate rollout-labeled corpus, adequate-sample classifier evaluation, and a predeclared policy evaluation. The
 20-game training/simulator smoke does not substitute for those artifacts. Its collection rate linearly
 projects to about 238 hours for 20,000 games, with 62–207 rows per game; both figures are uncertain and
 configuration-specific. Declare a resource envelope and collection protocol before starting a corpus at
@@ -337,9 +335,10 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
   for 15 standard-dataset cases, matched predictions 15/15, and passed save/load equivalence; seeds 2026
   and 2027 each completed the same 15 cases once. Two fixed-configuration sklearn runs repeated
   metrics/predictions exactly for the seed-42 cases, with label agreement on 8/15. A 20-game
-  canonical-schema 2048 pilot trained one policy and completed a separate 20-game simulator smoke, but it
-  does not establish model quality. Matched-budget/per-model framework profiling, broader repeated-fit
-  evidence, independent replication, scale collection, and held-out 2048 diagnostics remain absent.
+  canonical-schema 2048 pilot trained one policy and completed a separate 20-game simulator smoke. A
+  391-row classifier diagnostic on its final three game groups is retained, but it does not establish
+  model or policy quality. Matched-budget/per-model framework profiling, broader repeated-fit
+  evidence, independent replication, scale collection, and adequate-sample held-out diagnostics remain absent.
   Larger runs require a declared resource budget and retained artifacts.
 
 ## Later
