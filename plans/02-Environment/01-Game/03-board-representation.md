@@ -120,7 +120,7 @@ impl Board {
             Direction::Down => self.slide_down(),
         };
         self.score += s;
-        // spawn handled by GameSimulator with ChaCha8Rng — see 01-game-engine.md §4.3
+        // spawn handled by GameSimulator with ChaCha8Rng (see [engine core operations §4](01-game-engine.md))
         MoveResult { changed: true, score_gained: s }
     }
 }
@@ -146,7 +146,7 @@ pub fn raw_features(board: &Board) -> [f64; 16] {
 ## 5. Performance Note
 
 - Store the grid as a flat `[u32;16]`. The plain slide path uses fixed-size arrays; detailed move history allocates merge-event vectors.
-- **Precomputed move tables / bitboard / SIMD are optional, not MVP** — see `01-game-engine.md` §7. Consider only against a declared workload and budget.
+- **Precomputed move tables / bitboard / SIMD are optional, not MVP** — the engine has no measured optimization workload or performance comparison ([engine performance §7](01-game-engine.md)). Consider only against a declared workload and budget.
 
 ## 6. Cross-References
 

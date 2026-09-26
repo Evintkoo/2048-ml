@@ -76,7 +76,7 @@ All answers are **pending experimentation**; methodology for answering them is d
 
 **In scope:** Independent AutoML framework validation, standard tabular tasks, 4×4 2048, supervised four-action learning, grouped validation by game, model comparisons, and reproducibility. Dataset count, game count, and seed matrix are experimental design choices that must be justified and recorded before collection.
 
-**Out of scope → Future/Appendix only:** 8×8 or other board sizes, ensemble/stacking, RL/policy gradients, GPU, web frontend, mobile, and multi-agent settings. Search-based and learning-based agents may be included as explicitly defined comparison baselines, but they are not the primary contribution. See `02-Methodology/01-experimental-design.md` §10 and `04-discussion.md` §7.
+**Out of scope → Future/Appendix only:** 8×8 or other board sizes, ensemble/stacking, RL/policy gradients, GPU, web frontend, mobile, and multi-agent settings. Search-based and learning-based agents may be included as explicitly defined comparison baselines, but they are not the primary contribution. The experimental design excludes larger boards, RL training, and ensembles ([design limitations §10](../02-Methodology/01-experimental-design.md)); the discussion keeps those as future work ([discussion §8](04-discussion.md)).
 
 **Limitations:** A one-split standard-dataset diagnostic exists, but the full framework-validation gate remains pending; the canonical state has 17 values; multi-seed robustness is pending; rollout labels use finite stochastic simulations and are proxies rather than optimal actions. Candidate baseline scores in the draft are unverified.
 

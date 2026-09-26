@@ -42,7 +42,7 @@ Canonical `masked_argmax` in `01-model-output-to-action.md`.
 
 ## 3. Deleted — Out of Scope (RL Hallucination)
 
-> **Deleted for MVP:** `Epsilon-Greedy` (§3.2), `Softmax` (§3.3), `Composite` blending (§5) — all RL/exploration patterns, not supervised automl. Do not reintroduce. If exploration or heuristic comparison is needed, run a separate agent/policy outside the automl pipeline.
+> **Deleted for MVP:** Epsilon-Greedy and Softmax exploration, plus Composite blending, are RL/exploration patterns rather than supervised AutoML policy inference. They have no place in this decision path. A separate comparison policy must remain outside the training pipeline.
 
 ## 4. Path Integration
 

@@ -34,7 +34,7 @@ let probabilities = model.predict_proba(&state); // illustrative [f64;4]
 let action = masked_argmax(&probabilities, &valid)?; // masks invalid or errors on empty set
 ```
 
-> **Deleted:** §4 Boundary, §5 Merge, `ActionConstraints` 3-checker — all redundant with `would_change`. Merges/boundaries are emergent consequences of whether the board changes; no separate checks needed.
+> **Deleted:** The former boundary and merge constraint checks, plus the three-checker `ActionConstraints` type, are redundant with `would_change`. Merges and boundaries are emergent consequences of whether the board changes; no separate checks are needed.
 
 ## 3. Path References
 

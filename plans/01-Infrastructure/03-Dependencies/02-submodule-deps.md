@@ -36,7 +36,7 @@ cargo run -- --help   # verify CLI available per 04-Tooling/01-cli-tools.md
 
 ## 3. Update Cadence (tied to 2048 milestones)
 
-Update **only before a training milestone** (e.g. before data-collection or before training-phase kickoff), never mid-experiment. Monthly at most. Pin hash in `01-Project/01-project-overview.md` §6 on each bump.
+Update **only before a training milestone** (e.g. before data-collection or before training-phase kickoff), never mid-experiment. Monthly at most. Pin the hash in the project's dependency inventory ([project overview §6](../01-Project/01-project-overview.md)) on each bump.
 
 ```bash
 cd automl && git fetch origin && git checkout <new-hash> && cd ..
