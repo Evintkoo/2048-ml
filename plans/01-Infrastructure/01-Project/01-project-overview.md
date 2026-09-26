@@ -1,6 +1,6 @@
 # Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL.** Capability gate and a repeated standard-dataset diagnostic are recorded; matched comparative framework evaluation, canonical 2048 training/evaluation, and full research results remain pending.
+> **Status: PARTIAL.** Capability checks, standard-dataset diagnostics, a 20-game rollout pilot, and one 2048 train-to-simulator smoke are recorded; matched framework evaluation, scale collection, and held-out policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,13 +9,13 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** A fixed-split diagnostic covers three standard datasets and five AutoML candidates. The initial pinned revision exposed nondeterministic tie handling in KNN and ExtraTrees; after a narrow framework fix, two independent runs against pinned AutoML commit `82d848323eed5e2af86d046d529916c448f2442c` succeeded for all 15 cases and matched predictions in 15/15 pairs. Matched external baselines and resource measurements are still absent. The ledger records this bounded disposition; the main 2048 study and full research results remain pending.
+**This plan treats its subject as partial or pending work, not as a research finding.** A fixed-split diagnostic covers three standard datasets and five AutoML candidates. The initial pinned revision exposed nondeterministic tie handling in KNN and ExtraTrees; after a narrow framework fix, two independent runs against pinned AutoML commit `82d848323eed5e2af86d046d529916c448f2442c` succeeded for all 15 cases and matched predictions in 15/15 pairs. A fixed-configuration scikit-learn comparison and aggregate same-host resource probe now exist, but search budgets and per-model resource boundaries are not matched. A 20-game rollout corpus also trained one RandomForest and completed a separate 20-game simulator smoke; these verify pipeline wiring only. The main 2048 study and full research results remain pending.
 
 > **Project:** 2048 Machine Learning System
 > **Version:** 1.0.0
 > **Author:** Evintkoo
 > **Created:** 2026-09-22
-> **Status:** In progress — initial API/model capability checks passed for five four-class candidates; a three-dataset/five-model framework diagnostic is retained, with repeatability and save/load equality confirmed across two runs after deterministic tie fixes. Matched framework comparisons and canonical 2048 training/evaluation remain incomplete (updated 2026-09-27).
+> **Status:** In progress — capability checks passed for five four-class candidates; repeated standard-dataset diagnostics and save/load equality are retained after deterministic tie fixes. A 20-game canonical-schema corpus has one AutoML training and policy-simulation smoke. Matched framework comparisons, scale collection, and held-out 2048 policy evaluation remain incomplete (updated 2026-09-27).
 
 ---
 
@@ -134,7 +134,7 @@ The first feature encoder and randomized range checks exposed two underspecified
 
 ### 6.4 Rollout Labeling Budget (updated 2026-09-27)
 
-The earlier two-game smoke produced 213 rows in 37.24 seconds and implied a 103-hour linear estimate for 20,000 games. A later resumed pilot, retained under `reports/collection_pilots/2026-09-27/`, used seed 90627, 100 rollouts per action, and two threads; it produced 285 rows and 97,300 rollout evaluations in 82.23 seconds. Its linear estimate is about 228 hours for 20,000 games. Both projections use only two games and are highly uncertain; the newer estimate supersedes the earlier one. A larger pilot and declared compute budget are prerequisites to a scale run.
+The first two-game throughput smoke produced 285 rows and 97,300 rollout evaluations in 82.23 seconds; its 228-hour estimate for 20,000 games was based on only two games. A subsequent 20-game pilot, retained under `reports/collection_pilots/2026-09-27-20-game/`, used global seed 90627, 100 rollouts per valid action, two threads, and per-game checkpoints. It produced 2,447 rows and 857,100 rollout evaluations in 857.36 seconds. Per-game rows ranged from 62 to 207 (mean 122.35, sample SD 40.74); mean elapsed time was 42.87 seconds/game. Linear extrapolation is 238.16 hours for 20,000 games and remains a rough, configuration-specific projection, not a commitment. This pilot improves the throughput sample but does not measure machine-to-machine variance or support a large-corpus quality claim. A declared compute envelope and a scale-appropriate collection protocol remain prerequisites.
 
 ### 6.5 Baseline and Evaluation Tooling (2026-09-24)
 
@@ -146,9 +146,9 @@ The framework contribution remains partially evaluated. The [framework-validatio
 
 ### 6.6 Main-Study Readiness (2026-09-26)
 
-The root training command requires row-aligned game metadata, excludes the final chronological game groups from fitting, and runs explicit group-preserving CV on the development groups. The final AutoML fit is saved with a manifest containing input digests, dependency pin, seed derivations, and selected settings. This establishes a runnable integration path, not a completed end-to-end research study.
+The root training command requires row-aligned game metadata, excludes the final chronological game groups from fitting, and runs explicit group-preserving CV on the development groups. On a 20-game pilot, it reserved the final 3 groups, ran five-fold grouped CV on the earlier groups (accuracy `0.2828 ± 0.0285`), and saved a 17-feature AutoML RandomForest with its input digests, dependency pin, seed derivations, and selected settings. A separate 20-game simulator smoke completed on seeds 91927–91946 (mean score 902.40; bootstrap interval `[712.60, 1095.20]`). These checks exercise data-to-fit-to-simulator wiring only. The final fit uses AutoML's internal row-level validation on development rows, and the chronological 3-game test groups do not yet receive classifier diagnostics. This is not a completed end-to-end research study.
 
-The following prerequisites remain open before main-study claims: matched search-budget/resource framework comparisons, broader repeated-fit reproducibility evidence, canonical rollout-labeled training data, and the pre-registered held-out model evaluation. Existing random/heuristic baseline runs and synthetic training wiring do not substitute for these artifacts. The latest two-game pilot estimates about 228 hours for 20,000 games by linear extrapolation; this estimate is highly uncertain. Obtain a larger pilot and explicit resource budget before starting a corpus at that scale.
+The following prerequisites remain open before main-study claims: matched search-budget/per-model resource framework comparisons, broader repeated-fit reproducibility evidence, a scale-appropriate rollout-labeled corpus, diagnostics on held-out 2048 data, and a predeclared policy evaluation. The 20-game training/simulator smoke does not substitute for those artifacts. Its collection rate linearly projects to about 238 hours for 20,000 games, with 62–207 rows per game; both figures are uncertain and configuration-specific. Declare a resource envelope and collection protocol before starting a corpus at that scale.
 
 **This verification is not optional.** Without it, the project cannot distinguish between "automl is incapable" and "our integration is broken."
 
@@ -224,7 +224,7 @@ The theoretical maximum score for 2048 is not used as an optimization target. **
 
 ## Open questions
 
-- **The evidence remains bounded by fixed-split diagnostics.** Two runs against pinned AutoML `82d8483` succeeded on 15 cases, matched predictions 15/15, and passed model save/load equivalence. Two fixed-configuration sklearn runs also succeeded on 15 cases and repeated exactly; corresponding predicted labels matched in 8/15 cases. A single-thread process-level resource probe is retained with its startup and implementation limits. Matched search-budget/per-model profiling, broader repeated-fit evidence, and independent replication remain absent. Canonical rollout-labeled 2048 training and held-out evaluation are also pending. Larger runs require a declared resource budget and retained artifacts.
+- **The evidence remains bounded by diagnostic runs.** Two AutoML runs on pinned `82d8483` succeeded for 15 standard-dataset cases, matched predictions 15/15, and passed save/load equivalence. Two fixed-configuration sklearn runs also repeated all 15 cases, with label agreement on 8/15. A 20-game canonical-schema 2048 pilot trained one policy and completed a separate 20-game simulator smoke, but it does not establish model quality. Matched-budget/per-model framework profiling, broader repeated-fit evidence, independent replication, scale collection, and held-out 2048 diagnostics remain absent. Larger runs require a declared resource budget and retained artifacts.
 
 ## Later
 

@@ -1,0 +1,117 @@
+{
+  "schema_version": 2,
+  "config": {
+    "n_games": 20,
+    "seed": 90627,
+    "rollouts_per_valid_action": 100,
+    "threads": 2,
+    "checkpoint_every": 1
+  },
+  "next_game_id": 20,
+  "rows": 2447,
+  "states_collected": 2447,
+  "rollouts_evaluated": 857100,
+  "elapsed_seconds": 857.3628758739999,
+  "chunks": [
+    {
+      "first_game_id": 0,
+      "end_game_id_exclusive": 1,
+      "rows": 207
+    },
+    {
+      "first_game_id": 1,
+      "end_game_id_exclusive": 2,
+      "rows": 78
+    },
+    {
+      "first_game_id": 2,
+      "end_game_id_exclusive": 3,
+      "rows": 177
+    },
+    {
+      "first_game_id": 3,
+      "end_game_id_exclusive": 4,
+      "rows": 62
+    },
+    {
+      "first_game_id": 4,
+      "end_game_id_exclusive": 5,
+      "rows": 82
+    },
+    {
+      "first_game_id": 5,
+      "end_game_id_exclusive": 6,
+      "rows": 137
+    },
+    {
+      "first_game_id": 6,
+      "end_game_id_exclusive": 7,
+      "rows": 123
+    },
+    {
+      "first_game_id": 7,
+      "end_game_id_exclusive": 8,
+      "rows": 89
+    },
+    {
+      "first_game_id": 8,
+      "end_game_id_exclusive": 9,
+      "rows": 114
+    },
+    {
+      "first_game_id": 9,
+      "end_game_id_exclusive": 10,
+      "rows": 167
+    },
+    {
+      "first_game_id": 10,
+      "end_game_id_exclusive": 11,
+      "rows": 121
+    },
+    {
+      "first_game_id": 11,
+      "end_game_id_exclusive": 12,
+      "rows": 120
+    },
+    {
+      "first_game_id": 12,
+      "end_game_id_exclusive": 13,
+      "rows": 90
+    },
+    {
+      "first_game_id": 13,
+      "end_game_id_exclusive": 14,
+      "rows": 150
+    },
+    {
+      "first_game_id": 14,
+      "end_game_id_exclusive": 15,
+      "rows": 70
+    },
+    {
+      "first_game_id": 15,
+      "end_game_id_exclusive": 16,
+      "rows": 152
+    },
+    {
+      "first_game_id": 16,
+      "end_game_id_exclusive": 17,
+      "rows": 117
+    },
+    {
+      "first_game_id": 17,
+      "end_game_id_exclusive": 18,
+      "rows": 73
+    },
+    {
+      "first_game_id": 18,
+      "end_game_id_exclusive": 19,
+      "rows": 150
+    },
+    {
+      "first_game_id": 19,
+      "end_game_id_exclusive": 20,
+      "rows": 168
+    }
+  ]
+}
