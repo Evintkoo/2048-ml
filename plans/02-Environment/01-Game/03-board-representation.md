@@ -139,21 +139,21 @@ pub fn raw_features(board: &Board) -> [f64; 16] {
     f
 }
 
-/// Current implementation appends 11 derived values; this is not the canonical
-/// model input. See the state/data tickets for the reconciliation protocol.
+/// The canonical model input appends normalized score as value 17; the 16
+/// normalized cell values are not extended with heuristic measurements.
 ```
 
 ## 5. Performance Note
 
-- Store as `[u32;16]` flat; zero-alloc transforms above.
-- **Precomputed move tables / bitboard / SIMD are Optional, not MVP** — see `01-game-engine.md` §7. Do not implement before 10k baseline.
+- Store the grid as a flat `[u32;16]`. The plain slide path uses fixed-size arrays; detailed move history allocates merge-event vectors.
+- **Precomputed move tables / bitboard / SIMD are optional, not MVP** — see `01-game-engine.md` §7. Consider only against a declared workload and budget.
 
 ## 6. Cross-References
 
 - **Engine spawn + SimulatorConfig:** `01-Game/01-game-engine.md`
 - **RNG / seed:** `03-Simulation-Engine/02-randomness.md`
 - **Valid moves `would_change`:** `02-Rules/03-valid-moves.md`
-- **Visualization (headless JSON export):** `04-Visualization/01-visualization.md` (this file is NOT visualization)
+- **Offline inspection:** `04-Visualization/01-visualization.md` (this file is NOT visualization)
 
 ---
 
