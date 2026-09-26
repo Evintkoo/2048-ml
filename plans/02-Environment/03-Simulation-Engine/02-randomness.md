@@ -11,11 +11,11 @@
 
 **This plan treats seed derivation as implemented in root workflows with bounded evidence.** `src/seeds.rs` provides one `SeedManager` constructed from the CLI's global seed. Game IDs use wrapping addition with `game_id`; final AutoML fit uses the global seed, while tuning, data relabeling, CV, and analysis use documented offsets. The HyperOptX search JSON does not configure general seeds. The identified AutoML leaf-tie, class-order, and float-roundtrip defects are fixed in the pinned revision; broader model/dataset reproducibility remains unmeasured.
 
-> **Canonical RNG:** `ChaCha8Rng::seed_from_u64(seed)` per game; global seed linked to **Evintkoo/automl `TrainingConfig::with_random_state(42)`** (see `01-Infrastructure/02-Configuration/02-training-config.md` §6). Spawn 90/10 via `spawn_prob_4:0.1`. Headless only.
+> **Canonical RNG:** `ChaCha8Rng::seed_from_u64(seed)` per game; global seed linked to **Evintkoo/automl `TrainingConfig::with_random_state`** (see `01-Infrastructure/02-Configuration/02-training-config.md` §6). Spawn 90/10 via `spawn_prob_4:0.1`. Headless only.
 
 ## 1. Why Deterministic
 
-Reproducible 10k+ game evaluation, `GroupKFold` group integrity (`game_id`), and automl `TrainingConfig` reproducibility require seeded RNG everywhere — no `thread_rng()`.
+Reproducible evaluation and `GroupKFold` group integrity (`game_id`) require explicit seeds for stochastic components. Root implementation contains no `thread_rng()` call.
 
 ## 2. RNG
 
@@ -60,10 +60,10 @@ impl Board {
 
 | Property | Guarantee |
 |----------|-----------|
-| Same seed → same games | deterministic (`ChaCha8Rng` seeded) |
+| Same seed/configuration → same game | deterministic in the same build/runtime (`ChaCha8Rng` seeded) |
 | Different seed → different games | normally different; collisions are possible |
-| Cross-platform | same `ChaCha8Rng` output if same Rust/rand_chacha version |
-| Cross-version | may vary if `rand_chacha` changes — pin deps |
+| Cross-platform | Not claimed for full game/policy outputs; dependency and floating-point differences may matter |
+| Cross-version | May vary if Rust or RNG/dependency versions change; pin and record the toolchain |
 
 ## 6. Seed Propagation — `wrapping_add` offsets
 
@@ -118,12 +118,12 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 ## 8. Rayon Thread Count — Determinism Note
 
 - Collection uses the CLI `--threads` value to build a fixed-size Rayon pool; the value is retained in the collection manifest. The number of threads does not change game seeds or collected ordering.
-- HyperOptX tuning currently runs serially (`n_jobs = 1`). The pinned AutoML revision fixes the identified seeded-fit and serialization defects; framework-wide determinism across models and datasets has not been established.
+- HyperOptX tuning currently runs serially (`n_jobs = 1`). Pinned AutoML `82d848323eed5e2af86d046d529916c448f2442c` fixes the identified seeded-fit, serialization, and KNN/ExtraTrees tie-handling defects. Two fixed-split standard-dataset runs matched 15/15 predictions, but framework-wide determinism across models, datasets, seeds, platforms, and versions has not been established.
 - Preferred MVP: parallel with per-game seeded RNG (`ChaCha8Rng::seed_from_u64(global.wrapping_add(game_id))`) so order does not matter; still log `threads` in `SimulationMetrics`.
 
 ## 9. Checklist
 
-- [x] Root game randomness uses seeded `ChaCha8Rng`; no `thread_rng()` call exists in root implementation.
+- [x] Root game randomness uses seeded `ChaCha8Rng`; `rg '\bthread_rng\b' src` finds no call in root implementation.
 - [x] `spawn_prob_4` defaults to 0.1 and is validated.
 - [x] `SeedManager::training_seed() == global_seed`, supplied to `TrainingConfig::with_random_state`.
 - [x] Per-game seed is `global.wrapping_add(game_id)`.
@@ -142,7 +142,7 @@ let cv = CrossValidator::new(CVStrategy::GroupKFold { n_splits: 5 })
 
 - Games use `ChaCha8Rng::seed_from_u64`; initial tiles, random actions, and spawned tiles share the per-game RNG. Four-tile spawn probability is configurable and defaults to 0.1.
 - `SeedManager` centralizes root CLI seed derivation; final-fit uses the global seed, while HyperOptX, data sampling, CV, and analysis use documented offsets. Game batches use the same manager and do not depend on Rayon scheduling. Collector manifests record seed range and thread count.
-- On 2026-09-24, `cargo check`, `cargo clippy -- -D warnings`, formatting validation, and a temporary synthetic-data `train --tune-trials 2` wiring run passed. The emitted run manifest recorded global seed 42 and derived training/HyperOptX/data/CV seeds 42/44/45/46. Synthetic metrics are not research evidence.
+- On 2026-09-24, `cargo check`, `cargo clippy -- -D warnings`, formatting validation, and a temporary synthetic-data `train --tune-trials 2` wiring run passed. The emitted run manifest recorded global seed 42 and derived training/HyperOptX/data/CV seeds 42/44/45/46. Synthetic metrics are not research evidence. Current seed-42 fixed-split framework validation on AutoML `82d8483` matched predictions for 15/15 dataset/model pairs across two runs; this is limited evidence, not a general guarantee.
 - Validation: deterministic same-seed checks and a 10,000-spawn frequency check pass in the root test suite. Cross-platform/version identity is not claimed beyond the pinned dependency versions.
 
 ---
