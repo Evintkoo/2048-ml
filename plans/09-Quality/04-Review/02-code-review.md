@@ -49,9 +49,9 @@ The reviewer identifies the changed files and intended behavior, inspects releva
 
 Reviewers report findings by severity and cite the changed code or artifact. The project defines no weighted score or coverage percentage as an approval gate.
 
-## 7. Review automation is not configured
+## 7. Configured checks provide signals but do not conduct review
 
-The repository contains no configured pull-request checks or automated review integration.
+The repository has GitHub Actions pull-request checks for formatting, root tests, and Clippy. These checks do not inspect research claims and do not supply a human reviewer decision.
 
 ## 8. Available commands do not stand in for reviewer judgment
 
@@ -87,7 +87,7 @@ All code reviews result in one of:
 2. `grep -q '^> \\*\\*Status: PARTIAL' plans/09-Quality/04-Review/02-code-review.md` exits 0.
 3. `grep -q '^\\*\\*Goal:' plans/09-Quality/04-Review/02-code-review.md` exits 0.
 4. `grep -q '^## 3. The checklist separates correctness from evidence availability$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
-5. `grep -q 'GitHub Actions is configured' plans/09-Quality/04-Review/02-code-review.md` and `grep -q 'coverage report is not configured' plans/09-Quality/04-Review/02-code-review.md` exit 0.
+5. `grep -q 'GitHub Actions pull-request checks'  plans/09-Quality/04-Review/02-code-review.md` and `grep -q 'coverage report is not configured' plans/09-Quality/04-Review/02-code-review.md` exit 0.
 6. `! grep -q 'See canonical\|Trimmed — see' plans/09-Quality/04-Review/02-code-review.md` exits 0.
 7. `grep -q '^## Open questions$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
 8. `grep -q '^## Later$' plans/09-Quality/04-Review/02-code-review.md` exits 0.
