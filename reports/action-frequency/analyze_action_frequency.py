@@ -25,6 +25,8 @@ def main():
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--expected-games", type=int, default=10_000)
     parser.add_argument("--bootstrap-seed", type=int, required=True)
+    parser.add_argument("--agent-label", default="fitted_policy")
+    parser.add_argument("--benchmark", default="model_policy")
     parser.add_argument("--replicates", type=int, default=2_000)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -77,9 +79,10 @@ def main():
         })
 
     report = {
-        "schema": "2048-ml.model-action-frequency",
+        "schema": "2048-ml.action-frequency-summary",
         "schema_version": 1,
-        "benchmark": "model_policy",
+        "benchmark": args.benchmark,
+        "agent": args.agent_label,
         "games": len(games),
         "global_seed": args.seed,
         "first_game_seed": args.seed,
@@ -93,9 +96,8 @@ def main():
         "input_csv": str(args.csv),
         "input_csv_sha256": hashlib.sha256(args.csv.read_bytes()).hexdigest(),
         "limitations": [
-            "Describes this fitted policy and evaluation seed sequence only",
-            "Does not establish policy superiority or general AutoML performance",
-            "The pilot policy was trained on a small development corpus",
+            "Describes this agent and evaluation seed sequence only",
+            "Action frequency is not a score-quality or framework-superiority measure",
         ],
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

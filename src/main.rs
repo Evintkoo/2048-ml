@@ -715,7 +715,7 @@ fn main() {
             }
             use std::io::Write;
             let mut file = std::fs::File::create(&output).expect("failed to create baseline results");
-            writeln!(file, "game_id,seed,score,max_tile,move_count,game_over,agent").expect("failed to write results header");
+            writeln!(file, "game_id,seed,score,max_tile,move_count,game_over,up_moves,down_moves,left_moves,right_moves,agent").expect("failed to write results header");
             let start = std::time::Instant::now();
             let mut scores = Vec::with_capacity(n_games);
             let mut per_game_action_counts = Vec::with_capacity(n_games);
@@ -728,12 +728,9 @@ fn main() {
                     _ => unreachable!(),
                 };
                 scores.push(result.final_score);
-                let mut game_action_counts = [0_u64; 4];
-                for movement in &result.move_history {
-                    game_action_counts[movement.action as usize] += 1;
-                }
+                let game_action_counts = result.action_counts();
                 per_game_action_counts.push(game_action_counts);
-                writeln!(file, "{game_id},{game_seed},{},{},{},{},{}", result.final_score, result.max_tile, result.move_count, result.board.game_over, agent)
+                writeln!(file, "{game_id},{game_seed},{},{},{},{},{},{},{},{},{}", result.final_score, result.max_tile, result.move_count, result.board.game_over, game_action_counts[0], game_action_counts[1], game_action_counts[2], game_action_counts[3], agent)
                     .expect("failed to write baseline result row");
             }
             file.flush().expect("failed to flush baseline results");
@@ -774,6 +771,7 @@ fn main() {
                 "results_csv": output,
                 "action_frequency_unit": "selected moves across all games",
                 "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
+                "per_game_action_counts": {"columns": ["up_moves", "down_moves", "left_moves", "right_moves"], "action_ids": [0, 1, 2, 3], "source": "GameResult.move_history"},
                 "score_summary_seed": seeds.score_summary_seed(),
                 "action_frequency_bootstrap_seed": seeds.action_frequency_seed(),
                 "action_total": action_total,
