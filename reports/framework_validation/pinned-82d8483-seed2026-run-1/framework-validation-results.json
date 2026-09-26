@@ -1,0 +1,662 @@
+[
+  {
+    "dataset": "iris",
+    "model": "random_forest",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 120,
+    "test_rows": 30,
+    "class_labels": [
+      "Iris-setosa",
+      "Iris-versicolor",
+      "Iris-virginica"
+    ],
+    "accuracy": 0.9666666666666667,
+    "macro_precision": 0.9696969696969697,
+    "macro_recall": 0.9666666666666667,
+    "macro_f1": 0.9665831244778613,
+    "per_class_f1": [
+      1.0,
+      0.9473684210526316,
+      0.9523809523809523
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        9,
+        1
+      ],
+      [
+        0,
+        0,
+        10
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.012359,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__random_forest.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__random_forest.predictions.csv",
+    "model_sha256": "8bfcc2c4dc22100df33528d9cfa2e4e4dd277b25d009104f17084b6af4a5fe86",
+    "predictions_sha256": "b820c695342223ba1e8e3b0ab4a3bc5cb7e816770b1693a75a738a6cebaeadf0"
+  },
+  {
+    "dataset": "iris",
+    "model": "extra_trees",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 120,
+    "test_rows": 30,
+    "class_labels": [
+      "Iris-setosa",
+      "Iris-versicolor",
+      "Iris-virginica"
+    ],
+    "accuracy": 0.9666666666666667,
+    "macro_precision": 0.9696969696969697,
+    "macro_recall": 0.9666666666666667,
+    "macro_f1": 0.9665831244778613,
+    "per_class_f1": [
+      1.0,
+      0.9473684210526316,
+      0.9523809523809523
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        9,
+        1
+      ],
+      [
+        0,
+        0,
+        10
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.003060958,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__extra_trees.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__extra_trees.predictions.csv",
+    "model_sha256": "ab618324546abf37fb204c9628daeaf7123550f231d76a6ad6fc5ac3f613944e",
+    "predictions_sha256": "b820c695342223ba1e8e3b0ab4a3bc5cb7e816770b1693a75a738a6cebaeadf0"
+  },
+  {
+    "dataset": "iris",
+    "model": "adaboost",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 120,
+    "test_rows": 30,
+    "class_labels": [
+      "Iris-setosa",
+      "Iris-versicolor",
+      "Iris-virginica"
+    ],
+    "accuracy": 0.9333333333333333,
+    "macro_precision": 0.9333333333333332,
+    "macro_recall": 0.9333333333333332,
+    "macro_f1": 0.9333333333333332,
+    "per_class_f1": [
+      1.0,
+      0.9,
+      0.9
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        9,
+        1
+      ],
+      [
+        0,
+        1,
+        9
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.012063958,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__adaboost.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__adaboost.predictions.csv",
+    "model_sha256": "f9f0fbb6c6b674e98f4e868c168c00a866221b08304b53c5372554817faa8b0d",
+    "predictions_sha256": "9177415ca2e8e7c7074e99313402cf181298827b99b546be1ce78f44ad95bbf1"
+  },
+  {
+    "dataset": "iris",
+    "model": "knn",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 120,
+    "test_rows": 30,
+    "class_labels": [
+      "Iris-setosa",
+      "Iris-versicolor",
+      "Iris-virginica"
+    ],
+    "accuracy": 0.9333333333333333,
+    "macro_precision": 0.9333333333333332,
+    "macro_recall": 0.9333333333333332,
+    "macro_f1": 0.9333333333333332,
+    "per_class_f1": [
+      1.0,
+      0.9,
+      0.9
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        9,
+        1
+      ],
+      [
+        0,
+        1,
+        9
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.000881209,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__knn.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__knn.predictions.csv",
+    "model_sha256": "79da04014b7fba99eaaee804b27ba3ddae1600543d0eeb7eae6921a320c464e1",
+    "predictions_sha256": "9177415ca2e8e7c7074e99313402cf181298827b99b546be1ce78f44ad95bbf1"
+  },
+  {
+    "dataset": "iris",
+    "model": "naive_bayes",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 120,
+    "test_rows": 30,
+    "class_labels": [
+      "Iris-setosa",
+      "Iris-versicolor",
+      "Iris-virginica"
+    ],
+    "accuracy": 1.0,
+    "macro_precision": 1.0,
+    "macro_recall": 1.0,
+    "macro_f1": 1.0,
+    "per_class_f1": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        10,
+        0
+      ],
+      [
+        0,
+        0,
+        10
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.000688125,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__naive_bayes.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/iris__naive_bayes.predictions.csv",
+    "model_sha256": "c936e62efaeafe4f3f9dba230094acfa889b6eb63cdb69d91d76512afef9ae68",
+    "predictions_sha256": "ed37201d4dd056178e057711387620fd5ec43ed390fcef63d99cad8b854c16ec"
+  },
+  {
+    "dataset": "wine",
+    "model": "random_forest",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 142,
+    "test_rows": 36,
+    "class_labels": [
+      "cultivar_1",
+      "cultivar_2",
+      "cultivar_3"
+    ],
+    "accuracy": 1.0,
+    "macro_precision": 1.0,
+    "macro_recall": 1.0,
+    "macro_f1": 1.0,
+    "per_class_f1": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "confusion_matrix": [
+      [
+        12,
+        0,
+        0
+      ],
+      [
+        0,
+        14,
+        0
+      ],
+      [
+        0,
+        0,
+        10
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.010861292,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__random_forest.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__random_forest.predictions.csv",
+    "model_sha256": "d299748f6fc64e6c1b596f4cba5912f9b4827b6e4dd388a2ea2e5eb80d1b443f",
+    "predictions_sha256": "fdae0bf4a842b9bfb1dfac01ef19b5a574fb8986f7ad1da53a0ea2a37f77c299"
+  },
+  {
+    "dataset": "wine",
+    "model": "extra_trees",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 142,
+    "test_rows": 36,
+    "class_labels": [
+      "cultivar_1",
+      "cultivar_2",
+      "cultivar_3"
+    ],
+    "accuracy": 1.0,
+    "macro_precision": 1.0,
+    "macro_recall": 1.0,
+    "macro_f1": 1.0,
+    "per_class_f1": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "confusion_matrix": [
+      [
+        12,
+        0,
+        0
+      ],
+      [
+        0,
+        14,
+        0
+      ],
+      [
+        0,
+        0,
+        10
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.006082583,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__extra_trees.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__extra_trees.predictions.csv",
+    "model_sha256": "4bc794609cd344449061785e49057c9c7957b559baad08b58b3824c7cec0d644",
+    "predictions_sha256": "fdae0bf4a842b9bfb1dfac01ef19b5a574fb8986f7ad1da53a0ea2a37f77c299"
+  },
+  {
+    "dataset": "wine",
+    "model": "adaboost",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 142,
+    "test_rows": 36,
+    "class_labels": [
+      "cultivar_1",
+      "cultivar_2",
+      "cultivar_3"
+    ],
+    "accuracy": 0.8611111111111112,
+    "macro_precision": 0.8641025641025641,
+    "macro_recall": 0.8674603174603175,
+    "macro_f1": 0.8649382716049382,
+    "per_class_f1": [
+      0.8799999999999999,
+      0.8148148148148148,
+      0.9
+    ],
+    "confusion_matrix": [
+      [
+        11,
+        1,
+        0
+      ],
+      [
+        2,
+        11,
+        1
+      ],
+      [
+        0,
+        1,
+        9
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.044017875,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__adaboost.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__adaboost.predictions.csv",
+    "model_sha256": "94e505a95865faed899b44b37897c9cebb6a9a581c77a4ffbc0d095bac3c70bf",
+    "predictions_sha256": "50bb06c7a7b7fb534b1ea64cf9c90c5f6555ec4fc5cb5d78fe75d7a00e63ce72"
+  },
+  {
+    "dataset": "wine",
+    "model": "knn",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 142,
+    "test_rows": 36,
+    "class_labels": [
+      "cultivar_1",
+      "cultivar_2",
+      "cultivar_3"
+    ],
+    "accuracy": 0.6111111111111112,
+    "macro_precision": 0.5763888888888888,
+    "macro_recall": 0.596031746031746,
+    "macro_f1": 0.5781440781440781,
+    "per_class_f1": [
+      0.7857142857142857,
+      0.6153846153846153,
+      0.33333333333333326
+    ],
+    "confusion_matrix": [
+      [
+        11,
+        0,
+        1
+      ],
+      [
+        2,
+        8,
+        4
+      ],
+      [
+        3,
+        4,
+        3
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.001809875,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__knn.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__knn.predictions.csv",
+    "model_sha256": "bc0d82ba00dd9eec828871aaf72508a4558cfdd86d671e6769c82e7c3a2f2981",
+    "predictions_sha256": "5115bad171af7396d222b3b54ef8d64003cfa94a86797fd473482c4b50a18417"
+  },
+  {
+    "dataset": "wine",
+    "model": "naive_bayes",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 142,
+    "test_rows": 36,
+    "class_labels": [
+      "cultivar_1",
+      "cultivar_2",
+      "cultivar_3"
+    ],
+    "accuracy": 0.9722222222222222,
+    "macro_precision": 0.9743589743589745,
+    "macro_recall": 0.9761904761904763,
+    "macro_f1": 0.9743209876543211,
+    "per_class_f1": [
+      0.9600000000000001,
+      0.962962962962963,
+      1.0
+    ],
+    "confusion_matrix": [
+      [
+        12,
+        0,
+        0
+      ],
+      [
+        1,
+        13,
+        0
+      ],
+      [
+        0,
+        0,
+        10
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.000944875,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__naive_bayes.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/wine__naive_bayes.predictions.csv",
+    "model_sha256": "650dcbb651b7d9d57428d43f5de3986b46182d2b781b70593a29cbb5acdc700a",
+    "predictions_sha256": "b3c72dc9d39d5708263b399c323aa1c309dcff3a9c50e31608a25eb0918bf8fa"
+  },
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "random_forest",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 456,
+    "test_rows": 113,
+    "class_labels": [
+      "B",
+      "M"
+    ],
+    "accuracy": 0.9734513274336283,
+    "macro_precision": 0.9739159891598916,
+    "macro_recall": 0.9691482226693494,
+    "macro_f1": 0.971438200353863,
+    "per_class_f1": [
+      0.979020979020979,
+      0.963855421686747
+    ],
+    "confusion_matrix": [
+      [
+        70,
+        1
+      ],
+      [
+        2,
+        40
+      ]
+    ],
+    "positive_class_roc_auc": 0.9984909456740443,
+    "fit_predict_seconds": 0.075655125,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__random_forest.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__random_forest.predictions.csv",
+    "model_sha256": "ad0340bf1c7328be7f34c286c293e8abfb7186228b21677a5802b4510815bf9c",
+    "predictions_sha256": "6e6d4a73d3d830284c64c3c3d484dc0a79c478971fc859141f8a15dd1c2885ee"
+  },
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "extra_trees",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 456,
+    "test_rows": 113,
+    "class_labels": [
+      "B",
+      "M"
+    ],
+    "accuracy": 0.9734513274336283,
+    "macro_precision": 0.9739159891598916,
+    "macro_recall": 0.9691482226693494,
+    "macro_f1": 0.971438200353863,
+    "per_class_f1": [
+      0.979020979020979,
+      0.963855421686747
+    ],
+    "confusion_matrix": [
+      [
+        70,
+        1
+      ],
+      [
+        2,
+        40
+      ]
+    ],
+    "positive_class_roc_auc": 0.9984909456740443,
+    "fit_predict_seconds": 0.027927416,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__extra_trees.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__extra_trees.predictions.csv",
+    "model_sha256": "1634e12547ae4f2f267385e77944a4a1cde1046c1f03da7e7cb111d43e7a2fb1",
+    "predictions_sha256": "1ce82296e1f0c8daa73c8b9e47f4cc7a59a80ff0a25acd2ba7a5970ca968cdd5"
+  },
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "adaboost",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 456,
+    "test_rows": 113,
+    "class_labels": [
+      "B",
+      "M"
+    ],
+    "accuracy": 0.9469026548672567,
+    "macro_precision": 0.9535087719298245,
+    "macro_recall": 0.9334339369550637,
+    "macro_f1": 0.9419520547945206,
+    "per_class_f1": [
+      0.9589041095890412,
+      0.925
+    ],
+    "confusion_matrix": [
+      [
+        70,
+        1
+      ],
+      [
+        5,
+        37
+      ]
+    ],
+    "positive_class_roc_auc": 0.993963782696177,
+    "fit_predict_seconds": 0.315502125,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__adaboost.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__adaboost.predictions.csv",
+    "model_sha256": "f9ada72a0e15d1d54932fe2b93c0ffe70752ea6ccb48c79bf9de20a07e506783",
+    "predictions_sha256": "ad18befc8c9a14f51c1c47f08d91a9ef91bb22773782684c81a81790fbf2d806"
+  },
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "knn",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 456,
+    "test_rows": 113,
+    "class_labels": [
+      "B",
+      "M"
+    ],
+    "accuracy": 0.9292035398230089,
+    "macro_precision": 0.9336842105263158,
+    "macro_recall": 0.9144869215291751,
+    "macro_f1": 0.9226027397260275,
+    "per_class_f1": [
+      0.9452054794520549,
+      0.9
+    ],
+    "confusion_matrix": [
+      [
+        69,
+        2
+      ],
+      [
+        6,
+        36
+      ]
+    ],
+    "positive_class_roc_auc": 0.9500335345405768,
+    "fit_predict_seconds": 0.027138875,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__knn.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__knn.predictions.csv",
+    "model_sha256": "3d53056b5180411d37e262cf81b76ea869b5eae7f4c2843b25bf75e2db0c85d1",
+    "predictions_sha256": "532c88ae7876ceba3b5c95cfe1d7c3dceb89ed535592de618445f293a80fd08b"
+  },
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "naive_bayes",
+    "status": "success",
+    "error": null,
+    "seed": 2026,
+    "train_rows": 456,
+    "test_rows": 113,
+    "class_labels": [
+      "B",
+      "M"
+    ],
+    "accuracy": 0.9823008849557522,
+    "macro_precision": 0.9863013698630136,
+    "macro_recall": 0.9761904761904762,
+    "macro_f1": 0.9808604336043361,
+    "per_class_f1": [
+      0.9861111111111112,
+      0.975609756097561
+    ],
+    "confusion_matrix": [
+      [
+        71,
+        0
+      ],
+      [
+        2,
+        40
+      ]
+    ],
+    "positive_class_roc_auc": 0.9976525821596244,
+    "fit_predict_seconds": 0.00359925,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__naive_bayes.model.json",
+    "predictions_csv": "reports/framework_validation/pinned-82d8483-seed2026-run-1/breast_cancer_wisconsin_diagnostic__naive_bayes.predictions.csv",
+    "model_sha256": "2554834ff95bb17aef19c4c9a31e577d0d91bd6401e5daf326cad71cc87bfc6e",
+    "predictions_sha256": "18adff62a1f371916e8d282123937dd617345636bcdcd889cc3f07ddc389ab5f"
+  }
+]
