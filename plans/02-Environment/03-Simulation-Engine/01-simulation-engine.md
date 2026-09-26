@@ -1,6 +1,6 @@
 # Plan 01 — Simulation Engine: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Reusable simulation and 10,000-game random/heuristic baselines are complete; the rollout-labeled training corpus remains uncollected at plan scale.
+> **Status: PARTIAL (2026-09-27).** Reusable simulation and 10,000-game random/heuristic baselines are complete; a 20-game rollout pilot and AutoML-to-simulator smoke are retained, but the scale corpus remains uncollected.
 
 **Goal:** State the current implementation and evidence boundary for simulation engine.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the simulator and baseline protocol as implemented, with large rollout-labeled data collection pending.** The seeded 10,000-game random and heuristic score/frequency baselines are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Those runs evaluate baseline agents; they do not fulfill the separate rollout-labeled supervised corpus requirement. The collector supports checkpoint/resume and live progress. A fresh two-game pilot on 2026-09-27 produced 285 rows in 82.23 seconds (3.47 rows/second) using two threads and 100 rollouts per valid action. Linear extrapolation gives about 228 hours for 20,000 games, but this tiny sample is highly uncertain. Collection remains unscheduled pending a larger pilot and explicit compute budget.
+**This plan treats the simulator and baseline protocol as implemented, with scale rollout-labeled data collection pending.** Seeded 10,000-game random and heuristic score/frequency baselines are retained in [the action-frequency report](../../../reports/action-frequency/README.md); those runs do not fulfill the supervised corpus requirement. The collector supports checkpoint/resume and live progress. A 20-game pilot on 2026-09-27 produced 2,447 rows and 857,100 rollout evaluations in 857.36 seconds using two threads and 100 rollouts per valid action. Mean throughput was 42.87 seconds/game, projecting about 238.16 hours for 20,000 games under a linear model. The projection is configuration-specific and uncertain; larger collection remains pending a declared compute budget.
 
 > **Canonical supervised row:** 17 state values (16 board cells plus score) and `action:u8` for `TaskType::MultiClassification`. Ticket #034 aligns the encoder, collector, and policy with this schema. Headless only, no UI.
 
@@ -170,7 +170,7 @@ pub struct TrainingSample {
 
 - `src/game_engine/mod.rs` implements the seeded reusable simulator, checked policy moves, game results, deterministic game-ID batch helper, and rollout relabeler.
 - `src/main.rs` collects games through a fixed-size Rayon pool, writes canonical CSV plus row-aligned metadata and a manifest, and exposes random/heuristic baseline and model benchmark paths. Rollout collection writes batched CSV/metadata checkpoints and supports validated resume; Parquet is not used.
-- Validation: root tests pass; the 10,000-game random/heuristic baseline runs and manifests are retained in the linked report. A fresh 2026-09-27 pilot used seed 90627, two games, 100 rollouts per valid action, two threads, and checkpoint interval one. It produced 285 rows and 97,300 rollout evaluations in 82.23 seconds; training CSV and metadata are retained under `reports/collection_pilots/2026-09-27/`. The linear 20,000-game estimate is about 228 hours from two games and is highly uncertain. Checkpoint/resume and live progress are implemented. No plan-scale corpus has started.
+- Validation: root unit suite and the 10,000-game random/heuristic baseline runs passed; source and artifacts are retained. The 20-game 2026-09-27 pilot used seed 90627, 100 rollouts per valid action, two threads, and checkpoint interval one. It produced 2,447 rows and 857,100 rollout evaluations in 857.36 seconds; row and metadata CSVs plus per-game checkpoint chunks are retained under `reports/collection_pilots/2026-09-27-20-game/`. Linear projection gives about 238.16 hours for 20,000 games from this configuration; it is not a runtime guarantee. The pilot was followed by one AutoML RandomForest fit and a 20-game saved-policy simulator smoke. These verify pipeline wiring only. No scale corpus has started.
 
 ---
 
@@ -187,8 +187,8 @@ pub struct TrainingSample {
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Game-score baselines have 10,000 games per random/heuristic agent. The fresh rollout pilot is only two games and its roughly 228-hour projection for 20,000 games is highly uncertain. A larger pilot and explicit compute budget are still required before starting plan-scale data collection.
+- **The plan-scale evidence remains bounded by current results.** Game-score baselines have 10,000 games per random/heuristic agent. The rollout pilot covers 20 games but comes from one host and seed range; its roughly 238-hour projection for 20,000 games is configuration-specific and uncertain. A declared compute budget is still required before scale data collection.
 
 ## Later
 
-- **Run a larger throughput pilot and collect the rollout-labeled corpus after a compute budget is declared.** The baseline game runs and two-game pilot do not substitute for this data-generation deliverable.
+- **Collect the rollout-labeled corpus after a compute budget is declared.** The baseline game runs and 20-game pilot do not substitute for the scale data-generation deliverable.
