@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-model-validation](01-model-validation.md) | Model Validation | PARTIAL — score/classification helpers exist; fixed-split report and gates absent |
-| [02-game-validation](02-game-validation.md) | Game Validation | PARTIAL — internal tests exist; independent oracle validation pending |
-| [03-reproduction-validation](03-reproduction-validation.md) | Reproduction Validation | PARTIAL — manifests/smokes exist; independent replication pending |
+| [01-model-validation](01-model-validation.md) | Model Validation | PARTIAL — score/classification helpers exist; application fixed-split report and gates absent |
+| [02-game-validation](02-game-validation.md) | Game Validation | PARTIAL — 35 internal tests pass; independent oracle validation pending |
+| [03-reproduction-validation](03-reproduction-validation.md) | Reproduction Validation | PARTIAL — seed checks and a narrow fixed-split repeat exist; independent replication pending |
 
 ## Reading paths
 

@@ -1,6 +1,6 @@
 # Plan 03 — Reproduction Validation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Seeded simulator/collection checks and run manifests exist; independent full-training reproduction has not been demonstrated.
+> **Status: PARTIAL (2026-09-27).** Seeded simulator/collection checks and run manifests exist; independent full-training reproduction has not been demonstrated.
 
 **Goal:** State the current implementation and evidence boundary for reproduction validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -143,7 +143,7 @@ flowchart LR
 
 ## Implementation Record
 
-- Same-seed simulation/batch checks exist, and manifests store configured seeds, protocol, checksums, and provenance. Root `cargo test` passed 34/34, including seed checks. No repeated full-training or independent dataset/model reproduction study has been completed; no fixed 1%/p-value criterion is supported.
+- Same-seed simulation/batch checks exist, and manifests store configured seeds, protocol, checksums, and provenance. Root `cargo test` passed 35/35, including seed checks. The retained AutoML `82d8483` three-dataset/five-model fixed-split matrix also matched 15/15 same-seed predictions and save/load outputs across two runs. This does not constitute independent full-training or dataset replication; no fixed 1%/p-value criterion is supported.
 
 ---
 

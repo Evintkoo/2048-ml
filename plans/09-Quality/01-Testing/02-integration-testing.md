@@ -1,6 +1,6 @@
 # Plan 02 — Integration Testing: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** CLI paths and focused integration smokes exist; the proposed end-to-end suite and Parquet path do not.
+> **Status: PARTIAL (2026-09-27).** CLI paths and focused integration smokes exist; the proposed end-to-end suite and Parquet path do not.
 
 **Goal:** State the current implementation and evidence boundary for integration testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This ticket specifies integration coverage, but the full matrix has not been run as one dedicated suite.** `cargo test` passed all 34 current root tests, including focused collection, split, CV, and model wiring checks. Current data and benchmark workflows use CSV/JSON.
+**This ticket specifies integration coverage, but the full matrix has not been run as one dedicated suite.** `cargo test` passed all 35 current root tests, including focused collection, split, CV, and model wiring checks. Current data and benchmark workflows use CSV/JSON.
 
 ## 1. Purpose
 Verify **wiring** between modules — not unit logic. Distinct from unit (single function) and CI pipeline (stages). Use real fixtures where available; record seed roles. No single canonical integration suite is configured.
@@ -42,7 +42,7 @@ No dedicated `tests/integration` suite or integration JSON reporter was found. T
 
 ## Implementation Record
 
-- Root implementation and focused tests cover CSV collection/splitting, grouped CV, training, inference, and benchmarks. `cargo test` passed 34/34. No dedicated end-to-end test suite, Parquet pipeline, or integration report artifact exists.
+- Root implementation and focused tests cover CSV collection/splitting, grouped CV, training, inference, and benchmarks. `cargo test` passed 35/35. No dedicated end-to-end test suite, Parquet pipeline, or integration report artifact exists.
 
 ---
 

@@ -1,6 +1,6 @@
 # Plan 02 — Game Validation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Source-level game rules and automated tests are present; no independent oracle-based validation report or continuous validation workflow exists.
+> **Status: PARTIAL (2026-09-27).** Source-level game rules and automated tests are present; no independent oracle-based validation report or continuous validation workflow exists.
 
 **Goal:** State the current implementation and evidence boundary for game validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -143,7 +143,7 @@ No CI workflow is configured. Game unit tests can be included in a future CI wor
 
 ## Implementation Record
 
-Root game-engine tests cover merge/scoring rules, no-op and terminal behavior, tile validation, deterministic spawning and a finite spawn-frequency check, directional movement, and randomized `would_change` consistency. `cargo test` passed 34/34. Expected results mostly come from internal invariants; no separate reference engine or oracle comparison report exists.
+Root game-engine tests cover merge/scoring rules, no-op and terminal behavior, tile validation, deterministic spawning and a finite spawn-frequency check, directional movement, and randomized `would_change` consistency. `cargo test` passed 35/35. Expected results mostly come from internal invariants; no separate reference engine or oracle comparison report exists.
 
 ---
 

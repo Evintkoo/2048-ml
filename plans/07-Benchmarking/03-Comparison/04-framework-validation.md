@@ -97,8 +97,8 @@ The pinned framework's API, model probability shapes, group splitter, optimizer 
 
 ## Implementation Record
 
-- The AutoML library suite passes 710/710 on the published `88a86bf` revision, and source/API/model/serialization smoke checks pass. These are capability checks only, not matched dataset results.
-- Dataset acquisition is complete for the three named UCI datasets. Two independent processes used seed 42, stratified 80/20 partitions, no scaling, five declared model types, and retained split manifests, predictions, metrics, and model artifacts against the prior AutoML revision. Fourteen of fifteen prediction sets match; Wine KNN differs and its save/load equivalence failed once. The published determinism fix is now pinned but the dataset/model matrix has not been rerun against it. External baselines, memory profiling, broader repeated-seed reproducibility, and CLI/library equivalence remain pending.
+- The pinned AutoML library suite passes 712/712 on `82d848323eed5e2af86d046d529916c448f2442c`; source/API/model/serialization smoke checks pass. These are capability checks only, not matched dataset results.
+- Dataset acquisition is complete for the three named UCI datasets. Two independent processes used seed 42, stratified 80/20 partitions, no scaling, five declared model types, and retained split manifests, predictions, metrics, and model artifacts against the current pin. Two matrix runs each succeeded in all 15 dataset/model cases; prediction sets matched 15/15 and save/load equivalence passed throughout. This one-split/one-seed repeat is diagnostic only. The prior `88a86bf` Wine KNN disagreement and save/load failure are historical and fixed in the current pin. External baselines, resource measurement, broader repeated-seed reproducibility, and CLI/library equivalence remain pending.
 
 ---
 

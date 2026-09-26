@@ -1,6 +1,6 @@
 # Plan 01 — Unit Testing: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-26).** Core engine/state/data/evaluation tests are present; coverage target and several proposed cases remain unmeasured or incomplete.
+> **Status: PARTIAL (2026-09-27).** Core engine/state/data/evaluation tests are present; coverage target and several proposed cases remain unmeasured or incomplete.
 
 **Goal:** State the current implementation and evidence boundary for unit testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**The root test suite was revalidated in this pass.** `cargo test` passes all 34 binary tests. `cargo test --lib` is inapplicable because the root package has no library target. No coverage report or Tarpaulin configuration was found; the proposed 80% target is not evidence.
+**The root test suite was revalidated in this pass.** `cargo test` passes all 35 binary tests. `cargo test --lib` is inapplicable because the root package has no library target. No coverage report or Tarpaulin configuration was found; the proposed 80% target is not evidence.
 
 ## 1. Purpose
 Unit tests for 4×4 game engine, feature extraction, and automl wiring. Distinct from integration (pipeline wiring) and game-validation (manual audit).
@@ -44,7 +44,7 @@ Before release, run the agreed test suite and any adopted coverage gate; no cove
 
 ## Implementation Record
 
-- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, and framework smokes. `cargo test` passed 34/34; no Tarpaulin config or coverage report exists.
+- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, framework smokes, and current AutoML revision provenance. `cargo test` passed 35/35; no Tarpaulin config or coverage report exists.
 
 ---
 

@@ -48,11 +48,11 @@ No aggregate `GameTestMetrics` reporter is implemented; test assertions are unit
 
 ## 5. Run
 
-There is no separate `game` test target; game tests live within the binary crate modules. `cargo test` passed 34/34. Cross-ref `09-Quality/02-Validation/02-game-validation.md` for independent validation; do not duplicate that content here.
+There is no separate `game` test target; game tests live within the binary crate modules. `cargo test` passed 35/35. Cross-ref `09-Quality/02-Validation/02-game-validation.md` for independent validation; do not duplicate that content here.
 
 ## Implementation Record
 
-- Game-engine tests cover most core rules and randomness behavior and passed within `cargo test` (34/34). The separate test target and score-overflow case described in earlier drafts do not exist.
+- Game-engine tests cover most core rules and randomness behavior and passed within `cargo test` (35/35). The separate test target and score-overflow case described in earlier drafts do not exist.
 
 ---
 
