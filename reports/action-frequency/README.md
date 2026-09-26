@@ -30,7 +30,38 @@ The raw per-game CSVs and generated JSON manifests are retained beside this repo
 | Heuristic | Left | 1,345,191 | 0.257937 | [0.257469, 0.258413] |
 | Heuristic | Right | 1,242,272 | 0.238202 | [0.237747, 0.238662] |
 
-The random agent is effectively uniform over selected directions at this precision. The heuristic selects Up and Left more often than Down and Right. These are descriptive policy frequencies, not a model-training prior or an AutoML result. No trained model was available for the same frequency study.
+The random agent is effectively uniform over selected directions at this precision. The heuristic selects Up and Left more often than Down and Right. These are descriptive policy frequencies, not a model-training prior or an AutoML result.
+
+## Fitted-policy action frequency (development pilot)
+
+A trained AutoML RandomForest policy was run on the same 10,000 game seeds
+(`84024`–`94023`) as the baseline runs. Its per-game action counts are written
+from `GameResult.move_history`; the retained CSV digest is
+`381311816bd9de360347d48bd998a94788b0ef67a8355a69558e179a44ee4a23`. The
+manifest records AutoML `82d848323eed5e2af86d046d529916c448f2442c`, root source
+revision `199dbd2ab9982bd7ec451d4117e262fc3050d338`, and runtime `118.04`
+seconds. All 10,000 rows have action counts that sum to their move count.
+
+| Action | Count | Proportion | 95% whole-game bootstrap CI |
+|---|---:|---:|---:|
+| Up | 267,986 | 0.262037 | [0.260770, 0.263295] |
+| Down | 162,491 | 0.158884 | [0.158232, 0.159540] |
+| Left | 236,763 | 0.231507 | [0.230470, 0.232498] |
+| Right | 355,464 | 0.347573 | [0.346447, 0.348775] |
+
+Intervals use 2,000 whole-game percentile-bootstrap replicates with seed
+`84026`, resampling each game's four action counts together. Raw per-game
+results and the analysis output are `random_forest_pilot_10000.csv` and
+`random_forest_pilot_10000.action-frequency.json`; the reproducible analyzer
+is `analyze_model_action_frequency.py`.
+
+This is a descriptive frequency profile of one pilot policy, not a matched
+policy-quality comparison. It was trained on the small rollout corpus described
+in `reports/collection_pilots/2026-09-27-20-game/README.md`; its 17-game
+development fit reserves the final three corpus games from fitting, but the
+training command does not report classifier diagnostics on those groups. The
+10,000 evaluation seeds are separate from its training game seeds. These
+frequency results do not select a winner or establish AutoML superiority.
 
 | Agent | Games | Selected moves | Mean score | Median score | Runtime |
 |---|---:|---:|---:|---:|---:|

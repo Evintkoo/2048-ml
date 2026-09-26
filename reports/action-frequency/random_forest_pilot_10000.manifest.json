@@ -1,0 +1,50 @@
+{
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "benchmark": "model_policy",
+  "created_utc": "2026-09-26T21:36:45.512393+00:00",
+  "elapsed_seconds": 118.039364541,
+  "first_game_seed": 84024,
+  "games": 10000,
+  "global_seed": 84024,
+  "last_game_seed": 94023,
+  "max_moves": 1000,
+  "model": "reports/collection_pilots/2026-09-27-20-game/random_forest.policy.json",
+  "per_game_action_counts": {
+    "action_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "columns": [
+      "up_moves",
+      "down_moves",
+      "left_moves",
+      "right_moves"
+    ],
+    "source": "GameResult.move_history"
+  },
+  "project_version": "0.1.0",
+  "results_csv": "reports/action-frequency/random_forest_pilot_10000.csv",
+  "score_summary_seed": 84025,
+  "seed_derivation": "global_seed.wrapping_add(game_id)",
+  "sha256": "381311816bd9de360347d48bd998a94788b0ef67a8355a69558e179a44ee4a23",
+  "source_revision": "199dbd2ab9982bd7ec451d4117e262fc3050d338",
+  "spawn_probability_for_four": 0.1,
+  "summary": {
+    "games_above_2048": 223,
+    "games_above_4096": 0,
+    "games_above_8192": 0,
+    "max": 3296,
+    "mean": 866.1532,
+    "mean_ci_95": [
+      857.76587,
+      874.52877
+    ],
+    "median": 744.0,
+    "min": 40,
+    "p90": 1404.0,
+    "p99": 2320.040000000001,
+    "sample_std_dev": 436.4023982920858
+  }
+}

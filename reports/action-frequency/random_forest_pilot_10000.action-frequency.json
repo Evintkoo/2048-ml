@@ -1,0 +1,67 @@
+{
+  "schema": "2048-ml.model-action-frequency",
+  "schema_version": 1,
+  "benchmark": "model_policy",
+  "games": 10000,
+  "global_seed": 84024,
+  "first_game_seed": 84024,
+  "last_game_seed": 94023,
+  "seed_derivation": "global_seed.wrapping_add(game_id)",
+  "action_frequency_unit": "selected moves across all games",
+  "action_frequency_interval": "95% whole-game percentile bootstrap (2000 replicates)",
+  "action_frequency_bootstrap_seed": 84026,
+  "total_moves": 1022704,
+  "action_frequency": [
+    {
+      "action": 0,
+      "direction": "up",
+      "count": 267986,
+      "total_moves": 1022704,
+      "proportion": 0.2620367183466575,
+      "game_cluster_bootstrap_95_ci": [
+        0.26077047387322,
+        0.26329479101466075
+      ]
+    },
+    {
+      "action": 1,
+      "direction": "down",
+      "count": 162491,
+      "total_moves": 1022704,
+      "proportion": 0.1588837043758507,
+      "game_cluster_bootstrap_95_ci": [
+        0.15823241896863915,
+        0.15953994152853299
+      ]
+    },
+    {
+      "action": 2,
+      "direction": "left",
+      "count": 236763,
+      "total_moves": 1022704,
+      "proportion": 0.23150686806739781,
+      "game_cluster_bootstrap_95_ci": [
+        0.23046972705812874,
+        0.2324984768087188
+      ]
+    },
+    {
+      "action": 3,
+      "direction": "right",
+      "count": 355464,
+      "total_moves": 1022704,
+      "proportion": 0.34757270921009403,
+      "game_cluster_bootstrap_95_ci": [
+        0.3464473723721729,
+        0.34877513750194167
+      ]
+    }
+  ],
+  "input_csv": "reports/action-frequency/random_forest_pilot_10000.csv",
+  "input_csv_sha256": "381311816bd9de360347d48bd998a94788b0ef67a8355a69558e179a44ee4a23",
+  "limitations": [
+    "Describes this fitted policy and evaluation seed sequence only",
+    "Does not establish policy superiority or general AutoML performance",
+    "The pilot policy was trained on a small development corpus"
+  ]
+}
