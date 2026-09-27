@@ -38,9 +38,9 @@ and process measurements include overhead.
 The audit found concrete training, preprocessing, optimization, CV, inference, and JSON persistence APIs.
 It also confirmed that the pieces are not one automatically composed pipeline: root integration loads the
 CSV into a Polars `DataFrame`, provides game-group split/CV orchestration, and invokes `TrainEngine`;
-root does not currently use `DataPreprocessor` or `InferenceEngine`, and the `HyperOptX` objective
-callback is wired into the root training command for optional RandomForest/ExtraTrees tuning over a
-grouped-CV accuracy objective. `TrainEngine::fit` uses its own seeded row split and does not call
+`DataPreprocessor` is not used by the root training path, while the `HyperOptX` objective callback is
+wired into the root training command for optional RandomForest/ExtraTrees tuning over a grouped-CV
+accuracy objective. `TrainEngine::fit` uses its own seeded row split and does not call
 cross-validation or consume `cv_folds`. The root therefore performs grouped CV in a wrapper and then
 separately fits the final model. The root policy uses `InferenceEngine` to load the serialized engine and
 predict; `DataPreprocessor` remains unused by the canonical root path. Seed controls are component-level,
