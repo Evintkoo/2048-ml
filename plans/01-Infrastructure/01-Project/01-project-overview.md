@@ -1,6 +1,8 @@
 # Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 20-game rollout pilot, and five-candidate classifier diagnostics on a common 391-row chronological holdout are recorded; matched framework evaluation, scale collection, and confirmatory policy results remain pending.
+> **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 25-game throughput
+> sample, and five-candidate classifier diagnostics on a common 391-row chronological holdout are recorded;
+> matched framework evaluation, scale collection, and confirmatory policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy
@@ -16,7 +18,16 @@ pinned revision exposed nondeterministic tie handling in KNN and ExtraTrees, and
 exact prediction agreement in repeated seed-42 runs. A fixed-configuration scikit-learn comparison,
 aggregate same-host resource probe, and two-repeat isolated per-case process resource matrix also exist.
 The matrix covers all 15 dataset/model combinations in 60 processes; it records process RSS and wall time,
-but search budgets are not matched and measurements do not isolate model allocations. A 20-game rollout corpus now supports five compatible candidate fits on the same grouped development folds and chronological held-out rows, and a separate 20-game simulator smoke; these verify pipeline wiring only. The classifier metrics disagree between grouped CV and the three-game holdout. A disjoint-seed 10,000-game score diagnostic now covers the same five fitted policies and two baselines; its ordering is exploratory and does not establish a general model winner. The main 2048 study and full research results remain pending. Protocol, manifests, models, predictions, and verification are retained in [the classifier pilot report](../../../reports/candidate_classifier_pilot/2026-09-27/README.md), [the score evaluation](../../../reports/action-frequency/disjoint-seeds/README.md), and [the framework-validation report](../../../reports/framework_validation/README.md).
+but search budgets are not matched and measurements do not isolate model allocations. A 20-game rollout
+corpus now supports five compatible candidate fits on the same grouped development folds and chronological
+held-out rows, and a separate 20-game simulator smoke; these verify pipeline wiring only. The classifier
+metrics disagree between grouped CV and the three-game holdout. A disjoint-seed 10,000-game score
+diagnostic now covers the same five fitted policies and two baselines; its ordering is exploratory and
+does not establish a general model winner. The main 2048 study and full research results remain pending.
+Protocol, manifests, models, predictions, and verification are retained in [the classifier pilot
+report](../../../reports/candidate_classifier_pilot/2026-09-27/README.md), [the score
+evaluation](../../../reports/action-frequency/disjoint-seeds/README.md), and [the framework-validation
+report](../../../reports/framework_validation/README.md).
 
 > **Project:** 2048 Machine Learning System
 > **Version:** 1.0.0
@@ -196,10 +207,13 @@ its 228-hour estimate for 20,000 games was based on only two games. A subsequent
 under `reports/collection_pilots/2026-09-27-20-game/`, used global seed 90627, 100 rollouts per valid
 action, two threads, and per-game checkpoints. It produced 2,447 rows and 857,100 rollout evaluations in
 857.36 seconds. Per-game rows ranged from 62 to 207 (mean 122.35, sample SD 40.74); mean elapsed time was
-42.87 seconds/game. Linear extrapolation is 238.16 hours for 20,000 games and remains a rough,
-configuration-specific projection, not a commitment. This pilot improves the throughput sample but does
-not measure machine-to-machine variance or support a large-corpus quality claim. A declared compute
-envelope and a scale-appropriate collection protocol remain prerequisites.
+42.87 seconds/game. An independent five-game continuation on seeds 90647–90651 used the same settings
+and produced 541 rows and 191,500 rollout evaluations in 182.09 seconds (36.42 seconds/game). Across
+both runs, 25 games produced 2,988 rows and 1,048,600 rollout evaluations in 1,039.45 seconds, for a
+combined mean of 41.58 seconds/game and a rough linear 20,000-game projection of 230.99 hours. This is
+still a single-host, configuration-specific estimate, not a runtime guarantee or compute authorization.
+The five-game run does not measure machine-to-machine variance or support a large-corpus quality claim.
+A declared compute envelope and a scale-appropriate collection protocol remain prerequisites.
 
 ### 6.5 Baseline and Evaluation Tooling (2026-09-24)
 
@@ -242,7 +256,7 @@ Observed process peak RSS ranged from 27,410,432–27,443,200 bytes for AutoML a
 154,779,648–157,024,256 bytes for scikit-learn. These include process/runtime startup and dataset handling;
 they are not model-only memory estimates or matched-budget comparisons. One-host, two-repeat measurements
 remain descriptive. Matched search budgets, model-only resource profiling, and broader hardware runs
-remain open; protocol, limitations, and artifacts are in the [framework-validation report](../../../reports/framework_validation/README.md).
+remain open; see the [framework report](../../../reports/framework_validation/README.md).
 
 ### 6.6 Main-Study Readiness (updated 2026-09-27)
 
@@ -266,9 +280,11 @@ prerequisites before main-study claims are matched search-budget/per-model resou
 comparisons, broader repeated-fit reproducibility evidence, a scale-appropriate rollout-labeled corpus,
 adequate-sample classifier evaluation, and a predeclared confirmatory policy evaluation. The 20-game
 training/simulator smoke and exploratory score matrix do not substitute for those artifacts. Pilot
-collection linearly projects to about 238 hours for 20,000 games, with 62–207 rows per game; both figures
-are uncertain and configuration-specific. Declare a resource envelope and collection protocol before
-starting a corpus at that scale.
+collection linearly projects to about 231 hours for 20,000 games using the combined 25-game pilot, with
+62–207 rows per game in the initial 20-game sample. Both figures are uncertain and configuration-specific.
+Declare a resource envelope and collection protocol before starting a corpus at that scale. The independent
+five-game repeat and its integrity evidence are retained in the
+[five-game pilot report](../../../reports/collection_pilots/2026-09-27-5-game-repeat/README.md).
 
 ### 6.7 Five-Candidate Policy Score Diagnostic (2026-09-27)
 
@@ -280,8 +296,8 @@ policies were fitted once using the same 20-game corpus, 17-game development spl
 The observed mean-score order among the five fitted policies was NaiveBayes (914.14), KNN (887.35),
 RandomForest (864.44), ExtraTrees (837.15), and AdaBoost (765.62). Random averaged 1,086.52 and the
 heuristic 8,096.70 on this seed set. All per-game outputs, run manifests, score summaries, and the
-21-comparison paired analysis are retained in
-[`reports/action-frequency/disjoint-seeds/README.md`](../../../reports/action-frequency/disjoint-seeds/README.md).
+21-comparison paired analysis are retained in the
+[score report](../../../reports/action-frequency/disjoint-seeds/README.md).
 This is a descriptive ordering of five fixed fits from one small corpus. It is not confirmatory model
 selection, an estimate across repeated training corpora, or evidence of general AutoML superiority.
 
@@ -387,10 +403,12 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
   standard-dataset split seeds; two processes per seed succeeded for all 15 cases, matched predictions
   15/15, and passed save/load equivalence. Two fixed-configuration sklearn runs repeated
   metrics/predictions exactly for the seed-42 cases, with label agreement on 8/15. A 20-game
-  canonical-schema 2048 pilot trained five compatible classifiers and completed a separate 20-game simulator smoke. A
+  canonical-schema 2048 pilot trained five compatible classifiers and completed a separate 20-game
+  simulator smoke. A
   common 391-row classifier diagnostic on its final three game groups is retained, but it does not establish
-  model or policy quality. Matched-budget/per-model framework profiling, broader repeated-fit
-  evidence, independent replication, scale collection, and adequate-sample held-out diagnostics remain absent.
+  model or policy quality. Matched-budget/model-only framework profiling, broader repeated-fit evidence,
+  independent replication, scale collection, and adequate-sample held-out diagnostics remain absent. A
+  five-game independent throughput repeat complements the earlier 20-game pilot but is not a scale study.
   Larger runs require a declared resource budget and retained artifacts.
 
 ## Later
