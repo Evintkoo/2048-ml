@@ -1,6 +1,6 @@
 # Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 75-game throughput
+> **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 125-game throughput
 > sample, and five-candidate classifier diagnostics on chronological holdouts of 391, 541, and 903 rows,
 > including five fit seeds on the same 541-row holdout, are recorded. A corrected matched-grid diagnostic
 > is recorded across three split seeds; its first version was withdrawn after a validation-leak audit.
@@ -22,11 +22,11 @@ predictions and save/load equality. A fixed-configuration scikit-learn compariso
 behavior or isolate model memory. A corrected three-split-seed pilot matches six grid candidates and one
 validation fit per candidate for AutoML and scikit-learn RandomForest/ExtraTrees on the same three UCI
 datasets. The selected configurations agree in 13/18 case-seed observations; the first implementation
-was withdrawn after a validation-leak audit. This matches candidate counts, not optimizer algorithms. The 2048 labeling
-pilots cover 75 games and support a 50-game chronological
-classifier-label holdout, plus exploratory policy-score comparisons for one 20-game fit and one 50-game
-fit per candidate. The newer policy fits scored below random on the retained 10,000-seed evaluation, and
-four of five had lower paired means than the older fit on common seeds. These are case-study diagnostics,
+was withdrawn after a validation-leak audit. This matches candidate counts, not optimizer algorithms. The
+2048 labeling pilots cover 125 games and support two same-size 50-game corpora with chronological
+classifier-label holdouts. Exploratory policy-score comparisons now cover one fit on each of those corpora
+on common evaluation seeds. Four of five new-corpus means are higher than the prior-corpus fit, while
+AdaBoost is lower; all five new-corpus policy means remain below random. These are case-study diagnostics,
 not framework-superiority findings or confirmatory candidate selection. Scale collection, repeated fits
 across matched independent corpora, broader matched-budget framework evaluation, and a predeclared confirmatory
 policy evaluation remain pending. Data and analyses are retained in [the 50-game classifier
@@ -39,10 +39,10 @@ framework-validation report](../../../reports/framework_validation/README.md).
 > **Author:** Evintkoo
 > **Created:** 2026-09-22
 > **Status:** In progress — fixed-protocol framework diagnostics cover five candidates, three standard
-  datasets, and four split seeds. A 75-game rollout-labeling sample supports a 40/10 chronological
-  classifier-label diagnostic and one fit per candidate on each of two training corpora. Five 50-game-fit
-  policies and both baselines have exploratory 10,000-seed score distributions; earlier and newer fits
-  have paired common-seed comparisons. A six-candidate matched-grid pilot covers two tree models on three
+  datasets, and four split seeds. A 125-game rollout-labeling sample supports three 40/10 chronological
+  classifier-label diagnostics, including two same-size independent 50-game corpora. Policies fit on both
+  50-game corpora and both baselines have exploratory 10,000-seed score distributions on shared seeds;
+  corpus fits have paired common-seed comparisons. A six-candidate matched-grid pilot covers two tree models on three
   standard datasets. Optimizer-algorithm comparisons, scale collection, repeated fits across independent
   corpora, and confirmatory 2048 evaluation remain incomplete (updated 2026-09-27).
 
@@ -225,10 +225,14 @@ one-hour wall-time envelope, with a checkpoint after each game. It produced 5,31
 rollout evaluations in 1,799.88 collector seconds (35.997 seconds/game); rows/game ranged from 54 to 197
 (mean 106.36, sample SD 33.35). Checkpoint chunks sum to the manifest row count, and both CSV hashes,
 row identities, seed range, and manifest/checkpoint counters agree. Across all three contiguous same-host
-runs, 75 games produced 8,306 rows and 2,926,500 evaluations in 2,839.33 seconds. The updated rough
-linear estimate is 210.32 hours for 20,000 games. This bounded follow-up is still a throughput diagnostic,
-not a scale-quality result or authorization for the 20,000-game corpus. Its artifacts are in the
+runs, 75 games produced 8,306 rows and 2,926,500 evaluations in 2,839.33 seconds. A second independent
+50-game corpus on seeds 90702–90751 produced 6,188 rows and 2,179,500 evaluations in 1,977.90 seconds.
+Across all four contiguous same-host runs, 125 games produced 14,494 rows and 5,106,000 evaluations in
+4,817.23 seconds; the rough linear 20,000-game projection is 214.10 hours. This bounded diagnostic is
+still not a scale-quality result or authorization for the 20,000-game corpus. Its artifacts are in the
 [50-game follow-up report](../../../reports/collection_pilots/2026-09-27-50-game-followup/README.md).
+A second-corpus report is in
+[the independent 50-game collection](../../../reports/collection_pilots/2026-09-27-50-game-independent/README.md).
 A larger corpus still needs its own explicit resource envelope, protocol, and quality evaluation plan.
 
 ### 6.5 Baseline and Evaluation Tooling (2026-09-24)
@@ -345,14 +349,28 @@ have one fit per candidate. The score results are descriptive corpus-fit sensiti
 confirmatory ranking or a general AutoML result. Data, manifests, comparisons, and integrity evidence are
 retained in the [50-game score report](../../../reports/action-frequency/50-game-disjoint-seeds/README.md).
 
+A second same-size 50-game corpus was collected on seeds 90702–90751 under the same one-hour envelope,
+rollout settings, and host as the previous 50-game sample. Five AutoML candidates were fit once on its first
+40 game groups and evaluated as classifiers on the final 10 groups (1,137 rows). RandomForest led holdout
+accuracy (0.3008) and macro-F1 (0.3007). The five resulting policies and random/heuristic baselines were
+scored on common seeds 114024–124023. All five policy means were below random; means ranged from 710.54
+(AdaBoost) to 918.63 (KNN), versus 1,087.52 for random and 8,030.51 for heuristic. The earlier 50-game-fit
+policies were evaluated on the same seeds for paired corpus-fit sensitivity: new minus prior means ranged
+from −54.16 (AdaBoost) to +112.83 (ExtraTrees), with one fit per corpus and candidate. These equal-size
+corpus comparisons still confound corpus and fit-seed effects. They are exploratory, not repeated-fit
+estimates or confirmatory policy selection. Data, models, scores, and verification are in the
+[independent classifier report](../../../reports/candidate_classifier_pilot/2026-09-27-independent-50-game/README.md),
+[collection report](../../../reports/collection_pilots/2026-09-27-50-game-independent/README.md), and
+[paired policy-score report](../../../reports/action-frequency/independent-50-game-seeds-2026-09-27/README.md).
+
 The earlier disjoint 10,000-game score matrix also supplies score distributions for the original five
 verified policies and both baselines. Remaining prerequisites before main-study claims are optimizer-
 algorithm comparisons and broader per-model resource framework comparisons, additional independent
 training corpora with repeated fits, a scale-appropriate rollout-labeled corpus, adequate-sample classifier evaluation, and a
 predeclared confirmatory policy evaluation. The small-corpus training/simulator diagnostics and score
 matrices do not substitute for those artifacts. Pilot
-collection linearly projects to about 210 hours for 20,000 games using the combined 75-game sample, with
-54–207 rows per game across the three runs. These figures are uncertain and configuration-specific.
+collection linearly projects to about 214 hours for 20,000 games using the combined 125-game sample, with
+51–251 rows per game across four same-host runs. These figures are uncertain and configuration-specific.
 Declare a resource envelope and collection protocol before starting a corpus at that scale. The independent
 five-game repeat and its integrity evidence are retained in the
 [five-game pilot report](../../../reports/collection_pilots/2026-09-27-5-game-repeat/README.md); the larger
@@ -478,9 +496,9 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
   15/15, and passed save/load equivalence. Two fixed-configuration sklearn runs repeated metrics and
   predictions for the seed-42 cases, with label agreement on 8/15. The isolated resource matrix covers
   all 15 cases and two repeats per implementation, but does not compare search budgets or isolate model
-  memory. The 2048 rollout-labeling sample now spans 75 games. Chronological classifier diagnostics use
-  three- and ten-game holdouts, and one fit on each of two corpus sizes is scored on a common 10,000-seed
-  set. These results do not establish adequate sample size, repeated-fit variability, or a confirmatory
+  memory. The 2048 rollout-labeling samples now span 125 games. Chronological classifier diagnostics use
+  three-, five-, and ten-game holdouts; two equal-size 50-game corpus fits were scored on a common
+  10,000-seed set. These results do not establish adequate sample size, repeated-fit variability, or a confirmatory
   policy winner. The five training-seed classifier fits remain fixed-corpus sensitivity evidence; the two
   policy-fit corpora differ in size and each has only one fit. Larger collection still requires an explicit
   resource envelope and retained artifacts.

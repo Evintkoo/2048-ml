@@ -1,0 +1,100 @@
+{
+  "action_frequency": [
+    {
+      "action": 0,
+      "count": 338536,
+      "direction": "up",
+      "game_cluster_bootstrap_95_ci": [
+        0.3186989859285227,
+        0.32072177857410966
+      ],
+      "proportion": 0.31968935354071426,
+      "total_moves": 1058953
+    },
+    {
+      "action": 1,
+      "count": 314135,
+      "direction": "down",
+      "game_cluster_bootstrap_95_ci": [
+        0.29560877242467065,
+        0.2977033609568278
+      ],
+      "proportion": 0.2966467822462376,
+      "total_moves": 1058953
+    },
+    {
+      "action": 2,
+      "count": 223028,
+      "direction": "left",
+      "game_cluster_bootstrap_95_ci": [
+        0.2096345045082438,
+        0.2115560244173323
+      ],
+      "proportion": 0.2106118024123828,
+      "total_moves": 1058953
+    },
+    {
+      "action": 3,
+      "count": 183254,
+      "direction": "right",
+      "game_cluster_bootstrap_95_ci": [
+        0.17223916128064787,
+        0.17386819124330266
+      ],
+      "proportion": 0.17305206180066537,
+      "total_moves": 1058953
+    }
+  ],
+  "action_frequency_bootstrap_seed": 114026,
+  "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
+  "action_frequency_unit": "selected moves across all games",
+  "action_total": 1058953,
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "benchmark": "model_policy",
+  "created_utc": "2026-09-27T05:27:42.273233+00:00",
+  "elapsed_seconds": 175.857323875,
+  "first_game_seed": 114024,
+  "games": 10000,
+  "global_seed": 114024,
+  "last_game_seed": 124023,
+  "max_moves": 1000,
+  "model": "reports/candidate_classifier_pilot/2026-09-27-independent-50-game/models/knn.policy.json",
+  "per_game_action_counts": {
+    "action_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "columns": [
+      "up_moves",
+      "down_moves",
+      "left_moves",
+      "right_moves"
+    ],
+    "source": "GameResult.move_history"
+  },
+  "project_version": "0.1.0",
+  "results_csv": "reports/action-frequency/independent-50-game-seeds-2026-09-27/knn-10000.csv",
+  "score_summary_seed": 114025,
+  "seed_derivation": "global_seed.wrapping_add(game_id)",
+  "sha256": "bf6cd3269270f5467aac4e98b40c0209a44144a786eaa8a467a4842b3008cc7a",
+  "source_revision": "0f8df9c9def2cd9fb659ae1a3d09df0c17b5f7f5",
+  "spawn_probability_for_four": 0.1,
+  "summary": {
+    "games_above_2048": 278,
+    "games_above_4096": 1,
+    "games_above_8192": 0,
+    "max": 4328,
+    "mean": 918.6252,
+    "mean_ci_95": [
+      909.89365,
+      927.32789
+    ],
+    "median": 824.0,
+    "min": 68,
+    "p90": 1440.0,
+    "p99": 2376.040000000001,
+    "sample_std_dev": 449.3115823287474
+  }
+}

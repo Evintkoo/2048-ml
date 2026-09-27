@@ -1,0 +1,33 @@
+{
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "checkpoint_dir": "reports/collection_pilots/2026-09-27-50-game-independent/training.checkpoint",
+  "checkpoint_every_games": 1,
+  "created_utc": "2026-09-27T05:18:13.359894+00:00",
+  "data_sampling_seed": 90705,
+  "dataset_schema": "2048-action-policy-v2",
+  "elapsed_seconds": 1977.9046582520002,
+  "game_seeds": {
+    "derivation": "SeedManager::game_seed(game_id) = global_seed.wrapping_add(game_id)",
+    "first": 90702,
+    "last": 90751
+  },
+  "games": 50,
+  "global_seed": 90702,
+  "label_cache_hits": 0,
+  "label_cache_misses": 2179500,
+  "labeling": "rollout_mean_final_score_argmax",
+  "labeling_rows_per_second": 3.1285633380674316,
+  "metadata_csv": "reports/collection_pilots/2026-09-27-50-game-independent/training.metadata.csv",
+  "metadata_csv_sha256": "bf7d7f1a794bb062d3e8cf530bac6b66da5615f3eeff7ad99508d03e7899f113",
+  "project_version": "0.1.0",
+  "resumed": false,
+  "rollouts_evaluated": 2179500,
+  "rollouts_per_valid_action": 100,
+  "source_revision": "0f8df9c9def2cd9fb659ae1a3d09df0c17b5f7f5",
+  "spawn_probability_for_four": 0.1,
+  "states_collected": 6188,
+  "threads": 2,
+  "training_csv": "reports/collection_pilots/2026-09-27-50-game-independent/training.csv",
+  "training_csv_sha256": "a477a147ea755ae7b09ebed06cf5202974100e65fb62eb9c37eea7139ba08c3d",
+  "training_rows": 6188
+}

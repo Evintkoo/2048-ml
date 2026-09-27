@@ -1,0 +1,118 @@
+{
+  "status": "pass",
+  "evaluation_seed_first": 114024,
+  "evaluation_seed_last": 124023,
+  "games_per_agent": 10000,
+  "agent_count": 7,
+  "paired_comparisons": 21,
+  "comparison_sha256": "d289bf575d2e7470d56eb9ab2ada6569633d707cb280acb65e37b1d3a22b6cff",
+  "collection_verification_sha256": "bb26f21b64c6e34825e94118b0fd58743fdd9ae3c850c5d68679f84d306475fa",
+  "agents": {
+    "random": {
+      "mean_score": 1087.522,
+      "score_csv_sha256": "476f130d1a1cfbeccce27c997b2c9882f51a184af7bfe0c784eb661d112b15d3"
+    },
+    "heuristic": {
+      "mean_score": 8030.5136,
+      "score_csv_sha256": "db22a1a5cc7634ae822b1476ae31c6a27e4451aa457ac6404648acd070af36f1"
+    },
+    "random_forest": {
+      "mean_score": 858.29,
+      "score_csv_sha256": "d64cd5f2a2c8f7c5b4fe46a8dd8f23becfcb790c582f6b87f8f590d48c963d66",
+      "policy_sha256": "522829ae7ffc94a468e2197cff51b28a44402c4f10dfcc0e53cc066e074ef6ae",
+      "training_manifest_sha256": "bac5a59c22a30892a0dc28ae3296d3baebc3d8d2893aeb535274abe14b20d09a"
+    },
+    "extra_trees": {
+      "mean_score": 814.1236,
+      "score_csv_sha256": "7cafb3b4a8e7ddee3965cb0b48ae111e6ef791d7027bcfd277dc6a798907e03f",
+      "policy_sha256": "16eba6aa2aba228f58b1b627542c840b5f43dd9be6699948be2936abf85a0a83",
+      "training_manifest_sha256": "e21c4fa0a82744695936a7684ed94712dedbcd8124196e8fe47c4daaaee9b07b"
+    },
+    "adaboost": {
+      "mean_score": 710.5412,
+      "score_csv_sha256": "42d5e69e648be3229078a1ff62d814d6bac34e06beea4bfa93755897c6440f72",
+      "policy_sha256": "514c6bfc52c95df127272b85703938d249aead24b6fe7a5388dd20f63c390032",
+      "training_manifest_sha256": "39ab25b72cd9f1db7c9b748763066f86695243e38718dc616e9dfb74c69ac76b"
+    },
+    "knn": {
+      "mean_score": 918.6252,
+      "score_csv_sha256": "bf6cd3269270f5467aac4e98b40c0209a44144a786eaa8a467a4842b3008cc7a",
+      "policy_sha256": "dd7f1b5729bbd01af049d4b0c4b5a13c55d9c1c06b581985a8c3ffc2343da3e3",
+      "training_manifest_sha256": "3a8c7679f2992955189c3c51ee42361a55e105adb537bf4b66bc07789b977065"
+    },
+    "naive_bayes": {
+      "mean_score": 757.8724,
+      "score_csv_sha256": "6a12a7450406f5b26b2e3cc6f79b2dcdd7a41982bba393aa577e695aaa04101c",
+      "policy_sha256": "b8d860d6ac263f7678614ed2011d1ccc52d5f08ac54383afa5c58f78c64ab54a",
+      "training_manifest_sha256": "9a4a90d92f7fcf2b985e65a3771822e47deb6a16fc0196c6d7b711ec44086c59"
+    }
+  },
+  "same_size_corpus_fit_comparisons": {
+    "random_forest": {
+      "mean_difference_new_minus_previous": 38.73000000000002,
+      "paired_ci95": [
+        26.62695,
+        51.2254
+      ],
+      "cohens_dz": 0.061376,
+      "sign_test_p_value_display": "0.00000000",
+      "pairwise_holm_p_display": "0.00000000",
+      "comparison_sha256": "b6a9cefaff02a79006a2984ecddabe702c9399e02e564f74f5c1dd7f21e898ba",
+      "previous_policy_sha256": "b21f48cfd06896b45b4900fb4c5615a7c75539ce49159d6e2af8bf2b2a5123c0",
+      "previous_policy_training_manifest_sha256": "be9d3c337e3e84eb06634b80376deeaf5a8bc27aafb44b845536d4cf1524a274"
+    },
+    "extra_trees": {
+      "mean_difference_new_minus_previous": 112.8252,
+      "paired_ci95": [
+        101.78152,
+        123.81549
+      ],
+      "cohens_dz": 0.201432,
+      "sign_test_p_value_display": "0.00000000",
+      "pairwise_holm_p_display": "0.00000000",
+      "comparison_sha256": "a3bbda68d5df89f81922d798c0919d97654337d27c8beb7b860f12461034d8b2",
+      "previous_policy_sha256": "172222db7ffe827f797c34cc11ff9ef3dfdc7586f013934001fab0b3aeb16497",
+      "previous_policy_training_manifest_sha256": "e64cef33897c4626621be4fe9e0eb14ec2bb130d98c97056f3f1f0fb89df170f"
+    },
+    "adaboost": {
+      "mean_difference_new_minus_previous": -54.16279999999995,
+      "paired_ci95": [
+        -65.27269,
+        -43.17339
+      ],
+      "cohens_dz": -0.096912,
+      "sign_test_p_value_display": "0.00000000",
+      "pairwise_holm_p_display": "0.00000000",
+      "comparison_sha256": "89f778ace2c2c460687b3c1a0897a14e5ad394941022987e1a6c7d5dfc0ea052",
+      "previous_policy_sha256": "d865a4efbce26f6d7e4faf6951ea342206dfbfdd316f8611973ab692bc7ec713",
+      "previous_policy_training_manifest_sha256": "f6b7c95b291039c081302de50d8e253edceb61fd6a6fa53622fda8b60dde3308"
+    },
+    "knn": {
+      "mean_difference_new_minus_previous": 7.1551999999999225,
+      "paired_ci95": [
+        -5.00405,
+        19.53257
+      ],
+      "cohens_dz": 0.011373,
+      "sign_test_p_value_display": "0.00000000",
+      "pairwise_holm_p_display": "0.00000000",
+      "comparison_sha256": "87269e60b529d910fe879344bb373d4fa4498f762f55c97bcd4a6cbce9272b27",
+      "previous_policy_sha256": "60217b7c1cdd5b491869762bdb1910095163cc867bee0f29ddc0fd7c7bd6a03c",
+      "previous_policy_training_manifest_sha256": "25d746a8f730563874e39df5f4a21bc3a9c4d246ac2e7073c396987456ebebca"
+    },
+    "naive_bayes": {
+      "mean_difference_new_minus_previous": -17.584799999999973,
+      "paired_ci95": [
+        -30.52814,
+        -4.94381
+      ],
+      "cohens_dz": -0.027543,
+      "sign_test_p_value_display": "0.00000000",
+      "pairwise_holm_p_display": "0.00000000",
+      "comparison_sha256": "e245bf56de9144fab3617695b6b59ea86da931de503c7be80a75324ad5ad64ea",
+      "previous_policy_sha256": "2a9777fb158af4911b6e10ffdb82351f0c542cb1e9ede14c5f5cb60f3714e530",
+      "previous_policy_training_manifest_sha256": "ac660d15b3286084a7de42bb99750fba1e240c39bf2c5eb8c4498f603b11d30f"
+    }
+  },
+  "corpus_fit_inference_note": "Each candidate's paired comparison was run separately; its reported Holm value is within that one-pair run, not adjusted across the family of five candidates. Treat these fixed-fit contrasts as descriptive sensitivity evidence."
+}

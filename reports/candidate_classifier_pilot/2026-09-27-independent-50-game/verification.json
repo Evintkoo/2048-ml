@@ -1,0 +1,256 @@
+{
+  "status": "pass",
+  "source_revision": "0f8df9c9def2cd9fb659ae1a3d09df0c17b5f7f5",
+  "training_csv": "reports/collection_pilots/2026-09-27-50-game-independent/training.csv",
+  "training_csv_sha256": "a477a147ea755ae7b09ebed06cf5202974100e65fb62eb9c37eea7139ba08c3d",
+  "metadata_csv": "reports/collection_pilots/2026-09-27-50-game-independent/training.metadata.csv",
+  "metadata_csv_sha256": "bf7d7f1a794bb062d3e8cf530bac6b66da5615f3eeff7ad99508d03e7899f113",
+  "training_rows": 5051,
+  "training_games": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+  ],
+  "holdout_rows": 1137,
+  "holdout_games": [
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49
+  ],
+  "models": {
+    "random_forest": {
+      "n_rows": 1137,
+      "accuracy": 0.3007915567282322,
+      "macro_f1": 0.30065260747004197,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          95,
+          57,
+          52,
+          58
+        ],
+        [
+          78,
+          74,
+          78,
+          81
+        ],
+        [
+          72,
+          58,
+          89,
+          58
+        ],
+        [
+          107,
+          49,
+          47,
+          84
+        ]
+      ],
+      "grouped_cv_accuracy_mean": 0.29720504057587827,
+      "grouped_cv_accuracy_sample_sd": 0.016741925282814808,
+      "grouped_cv_macro_f1_mean": 0.29142963505068564,
+      "grouped_cv_macro_f1_sample_sd": 0.020442484365908443,
+      "model_sha256": "522829ae7ffc94a468e2197cff51b28a44402c4f10dfcc0e53cc066e074ef6ae",
+      "model_manifest_sha256": "bac5a59c22a30892a0dc28ae3296d3baebc3d8d2893aeb535274abe14b20d09a",
+      "prediction_sha256": "2b968b0452aa015f47ae82bfe0c4c4945b72960ffed5618de65ec74780ab10dd"
+    },
+    "extra_trees": {
+      "n_rows": 1137,
+      "accuracy": 0.2770448548812665,
+      "macro_f1": 0.2394050730726602,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          15,
+          125,
+          85,
+          37
+        ],
+        [
+          19,
+          164,
+          87,
+          41
+        ],
+        [
+          20,
+          142,
+          94,
+          21
+        ],
+        [
+          18,
+          157,
+          70,
+          42
+        ]
+      ],
+      "grouped_cv_accuracy_mean": 0.2782361251686266,
+      "grouped_cv_accuracy_sample_sd": 0.015952316574335195,
+      "grouped_cv_macro_f1_mean": 0.259437306067979,
+      "grouped_cv_macro_f1_sample_sd": 0.01905821210683911,
+      "model_sha256": "16eba6aa2aba228f58b1b627542c840b5f43dd9be6699948be2936abf85a0a83",
+      "model_manifest_sha256": "e21c4fa0a82744695936a7684ed94712dedbcd8124196e8fe47c4daaaee9b07b",
+      "prediction_sha256": "3346c2dc2d34d802c03344a368dabca0fa9c575ff2fa0ce1c95bcc0b03d89263"
+    },
+    "adaboost": {
+      "n_rows": 1137,
+      "accuracy": 0.2884784520668426,
+      "macro_f1": 0.2877983023713456,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          75,
+          51,
+          62,
+          74
+        ],
+        [
+          60,
+          69,
+          74,
+          108
+        ],
+        [
+          70,
+          66,
+          85,
+          56
+        ],
+        [
+          82,
+          63,
+          43,
+          99
+        ]
+      ],
+      "grouped_cv_accuracy_mean": 0.2849372660059316,
+      "grouped_cv_accuracy_sample_sd": 0.01735927959341556,
+      "grouped_cv_macro_f1_mean": 0.28108241367520165,
+      "grouped_cv_macro_f1_sample_sd": 0.017735588658484274,
+      "model_sha256": "514c6bfc52c95df127272b85703938d249aead24b6fe7a5388dd20f63c390032",
+      "model_manifest_sha256": "39ab25b72cd9f1db7c9b748763066f86695243e38718dc616e9dfb74c69ac76b",
+      "prediction_sha256": "5fbd32b1a81588c02a1bbb7e8f32249c4d31a3b4bf237e435e59d04549bdb8ff"
+    },
+    "knn": {
+      "n_rows": 1137,
+      "accuracy": 0.2541776605101143,
+      "macro_f1": 0.2475097620300035,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          94,
+          73,
+          49,
+          46
+        ],
+        [
+          72,
+          98,
+          72,
+          69
+        ],
+        [
+          90,
+          93,
+          53,
+          41
+        ],
+        [
+          109,
+          73,
+          61,
+          44
+        ]
+      ],
+      "grouped_cv_accuracy_mean": 0.24644190994998963,
+      "grouped_cv_accuracy_sample_sd": 0.014525622335270537,
+      "grouped_cv_macro_f1_mean": 0.24278622669298539,
+      "grouped_cv_macro_f1_sample_sd": 0.014755697629487299,
+      "model_sha256": "dd7f1b5729bbd01af049d4b0c4b5a13c55d9c1c06b581985a8c3ffc2343da3e3",
+      "model_manifest_sha256": "3a8c7679f2992955189c3c51ee42361a55e105adb537bf4b66bc07789b977065",
+      "prediction_sha256": "09ac00e9d24dac487672e81bec1e675bda3404084ebf8dd48981fd27b3b272f9"
+    },
+    "naive_bayes": {
+      "n_rows": 1137,
+      "accuracy": 0.2638522427440633,
+      "macro_f1": 0.19844258874260934,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          31,
+          197,
+          24,
+          10
+        ],
+        [
+          35,
+          223,
+          34,
+          19
+        ],
+        [
+          37,
+          200,
+          29,
+          11
+        ],
+        [
+          33,
+          208,
+          29,
+          17
+        ]
+      ],
+      "grouped_cv_accuracy_mean": 0.2596552087841727,
+      "grouped_cv_accuracy_sample_sd": 0.01677565164916026,
+      "grouped_cv_macro_f1_mean": 0.20795505939261694,
+      "grouped_cv_macro_f1_sample_sd": 0.027494784627684794,
+      "model_sha256": "b8d860d6ac263f7678614ed2011d1ccc52d5f08ac54383afa5c58f78c64ab54a",
+      "model_manifest_sha256": "9a4a90d92f7fcf2b985e65a3771822e47deb6a16fc0196c6d7b711ec44086c59",
+      "prediction_sha256": "8af5655b4987608a76ce70068b9777b524706dbe0f7952e3112a8dbf6bc534b8"
+    }
+  }
+}

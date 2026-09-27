@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "manifest_sha256": "d1ba355c19f9aa62368f09f769bf392acca990d65ed239290c178c0794ffd073",
+  "checkpoint_sha256": "b09e7be55af51c402b4a94b85158ff03de692e51ce59c04666ced000e5893f8f",
+  "training_csv_sha256": "a477a147ea755ae7b09ebed06cf5202974100e65fb62eb9c37eea7139ba08c3d",
+  "metadata_csv_sha256": "bf7d7f1a794bb062d3e8cf530bac6b66da5615f3eeff7ad99508d03e7899f113",
+  "games": 50,
+  "first_game_seed": 90702,
+  "last_game_seed": 90751,
+  "rows": 6188,
+  "rollouts_evaluated": 2179500,
+  "elapsed_seconds": 1977.9046582520002,
+  "all_game_rows_match_checkpoint": true
+}

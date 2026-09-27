@@ -1,0 +1,100 @@
+{
+  "action_frequency": [
+    {
+      "action": 0,
+      "count": 429748,
+      "direction": "up",
+      "game_cluster_bootstrap_95_ci": [
+        0.4468954016838193,
+        0.4533523659498674
+      ],
+      "proportion": 0.4500652977356819,
+      "total_moves": 954857
+    },
+    {
+      "action": 1,
+      "count": 301127,
+      "direction": "down",
+      "game_cluster_bootstrap_95_ci": [
+        0.31398130541942393,
+        0.31671074635080976
+      ],
+      "proportion": 0.31536345232846386,
+      "total_moves": 954857
+    },
+    {
+      "action": 2,
+      "count": 108829,
+      "direction": "left",
+      "game_cluster_bootstrap_95_ci": [
+        0.11039991617536843,
+        0.11745861404385442
+      ],
+      "proportion": 0.11397413434681843,
+      "total_moves": 954857
+    },
+    {
+      "action": 3,
+      "count": 115153,
+      "direction": "right",
+      "game_cluster_bootstrap_95_ci": [
+        0.1192908244246977,
+        0.12202462813150775
+      ],
+      "proportion": 0.12059711558903584,
+      "total_moves": 954857
+    }
+  ],
+  "action_frequency_bootstrap_seed": 114026,
+  "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
+  "action_frequency_unit": "selected moves across all games",
+  "action_total": 954857,
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "benchmark": "model_policy",
+  "created_utc": "2026-09-27T05:49:39.535826+00:00",
+  "elapsed_seconds": 47.171543542,
+  "first_game_seed": 114024,
+  "games": 10000,
+  "global_seed": 114024,
+  "last_game_seed": 124023,
+  "max_moves": 1000,
+  "model": "reports/candidate_classifier_pilot/2026-09-27-50-game/models/naive_bayes.policy.json",
+  "per_game_action_counts": {
+    "action_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "columns": [
+      "up_moves",
+      "down_moves",
+      "left_moves",
+      "right_moves"
+    ],
+    "source": "GameResult.move_history"
+  },
+  "project_version": "0.1.0",
+  "results_csv": "reports/action-frequency/independent-50-game-seeds-2026-09-27/previous-50-game-fits/naive_bayes-10000.csv",
+  "score_summary_seed": 114025,
+  "seed_derivation": "global_seed.wrapping_add(game_id)",
+  "sha256": "ed36e9beec1388d79b36f823bf9a96f15190d5b0b69679a3ba4fb18f8b3d4622",
+  "source_revision": "0f8df9c9def2cd9fb659ae1a3d09df0c17b5f7f5",
+  "spawn_probability_for_four": 0.1,
+  "summary": {
+    "games_above_2048": 221,
+    "games_above_4096": 14,
+    "games_above_8192": 0,
+    "max": 6336,
+    "mean": 775.4572,
+    "mean_ci_95": [
+      764.97857,
+      785.66327
+    ],
+    "median": 664.0,
+    "min": 24,
+    "p90": 1376.0,
+    "p99": 2520.040000000001,
+    "sample_std_dev": 498.5934200408303
+  }
+}

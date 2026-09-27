@@ -1,0 +1,15 @@
+{
+  "analysis": "matched seed sets use paired exact sign tests, paired bootstrap intervals, and Cohen's dz; unmatched runs use independent Mann-Whitney U, independent bootstrap intervals, and Cohen's d; Holm adjustment applies to all p-values",
+  "bootstrap_replicates": 5000,
+  "comparison_csv": "reports/action-frequency/independent-50-game-seeds-2026-09-27/corpus-fit-pairs/random_forest-comparison.csv",
+  "created_utc": "2026-09-27T05:50:20.967790+00:00",
+  "input_files": [
+    "reports/action-frequency/independent-50-game-seeds-2026-09-27/random_forest-10000.csv",
+    "reports/action-frequency/independent-50-game-seeds-2026-09-27/previous-50-game-fits/random_forest-10000.csv"
+  ],
+  "paired_test_limitation": "sign test uses direction and ignores ties; it is conservative and is not Wilcoxon",
+  "project_version": "0.1.0",
+  "seed_sets_checked_for_equality": true,
+  "sha256": "b6a9cefaff02a79006a2984ecddabe702c9399e02e564f74f5c1dd7f21e898ba",
+  "source_revision": "0f8df9c9def2cd9fb659ae1a3d09df0c17b5f7f5"
+}

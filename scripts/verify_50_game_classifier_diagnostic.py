@@ -10,14 +10,10 @@ from pathlib import Path
 
 
 MODELS = ("random_forest", "extra_trees", "adaboost", "knn", "naive_bayes")
-DATA = Path("reports/collection_pilots/2026-09-27-50-game-followup/training.csv")
-METADATA = Path(
+DEFAULT_DATA = Path("reports/collection_pilots/2026-09-27-50-game-followup/training.csv")
+DEFAULT_METADATA = Path(
     "reports/collection_pilots/2026-09-27-50-game-followup/training.metadata.csv"
 )
-EXPECTED_SOURCE_REVISION = "c7400ef535dd74eb62c263d9a2f7a9b4cabcb624"
-EXPECTED_ROWS = 5318
-TRAINING_ROWS = 4415
-HOLDOUT_ROWS = EXPECTED_ROWS - TRAINING_ROWS
 
 
 def sha256(path: Path) -> str:
@@ -60,39 +56,50 @@ def main():
         type=Path,
         default=Path("reports/candidate_classifier_pilot/2026-09-27-50-game"),
     )
+    parser.add_argument("--data", type=Path, default=DEFAULT_DATA)
+    parser.add_argument("--metadata", type=Path, default=DEFAULT_METADATA)
+    parser.add_argument("--seed", type=int, default=90652)
+    parser.add_argument("--development-fraction", type=float, default=0.8)
     args = parser.parse_args()
     root = Path.cwd().resolve()
     report = (root / args.report_dir).resolve()
-    data_path = root / DATA
-    metadata_path = root / METADATA
+    data_path = (root / args.data).resolve()
+    metadata_path = (root / args.metadata).resolve()
+    assert 0.0 < args.development_fraction < 1.0
     data_header, data = read_csv(data_path)
     metadata_header, metadata = read_csv(metadata_path)
-    assert len(data_header) == 18 and len(data) == EXPECTED_ROWS
+    assert len(data_header) == 18 and len(data) > 0
     assert "game_id" in metadata_header and "row_index" in metadata_header
-    assert len(metadata) == EXPECTED_ROWS
-    assert [int(row["row_index"]) for row in metadata] == list(range(EXPECTED_ROWS))
+    assert len(metadata) == len(data)
+    assert [int(row["row_index"]) for row in metadata] == list(range(len(data)))
     game_ids = [int(row["game_id"]) for row in metadata]
-    assert set(game_ids) == set(range(50))
-    assert set(game_ids[:TRAINING_ROWS]) == set(range(40))
-    assert set(game_ids[TRAINING_ROWS:]) == set(range(40, 50))
-    expected_indices = list(range(TRAINING_ROWS, EXPECTED_ROWS))
-    expected_actual = [int(float(row["action"])) for row in data[TRAINING_ROWS:]]
-    expected_game_ids = game_ids[TRAINING_ROWS:]
+    game_count = len(set(game_ids))
+    development_game_count = int(game_count * args.development_fraction)
+    development_rows = [i for i, game_id in enumerate(game_ids) if game_id < development_game_count]
+    holdout_rows = [i for i, game_id in enumerate(game_ids) if game_id >= development_game_count]
+    assert set(game_ids) == set(range(game_count))
+    assert game_ids == sorted(game_ids)
+    training_row_count = len(development_rows)
+    holdout_row_count = len(holdout_rows)
+    expected_indices = holdout_rows
+    expected_actual = [int(float(data[i]["action"])) for i in holdout_rows]
+    expected_game_ids = [game_ids[i] for i in holdout_rows]
 
     result = {
         "status": "pass",
-        "source_revision": EXPECTED_SOURCE_REVISION,
-        "training_csv": str(DATA),
+        "source_revision": None,
+        "training_csv": str(args.data),
         "training_csv_sha256": sha256(data_path),
-        "metadata_csv": str(METADATA),
+        "metadata_csv": str(args.metadata),
         "metadata_csv_sha256": sha256(metadata_path),
-        "training_rows": TRAINING_ROWS,
-        "training_games": list(range(40)),
-        "holdout_rows": HOLDOUT_ROWS,
-        "holdout_games": list(range(40, 50)),
+        "training_rows": training_row_count,
+        "training_games": list(range(development_game_count)),
+        "holdout_rows": holdout_row_count,
+        "holdout_games": list(range(development_game_count, game_count)),
         "models": {},
     }
 
+    source_revisions = set()
     for model in MODELS:
         prefix = report / "models" / f"{model}.policy"
         model_path = Path(f"{prefix}.json")
@@ -104,16 +111,16 @@ def main():
             predictions_path = root / predictions_path
         assert sha256(model_path) == manifest["model_artifact_sha256"]
         assert sha256(predictions_path) == evaluation["predictions_csv_sha256"]
-        assert manifest["source_revision"] == EXPECTED_SOURCE_REVISION
+        source_revisions.add(manifest["source_revision"])
         assert manifest["model"] == model
-        assert manifest["global_seed"] == 90652
+        assert manifest["global_seed"] == args.seed
         assert manifest["state_feature_count"] == 17
         assert manifest["training_data_sha256"] == sha256(data_path)
         assert manifest["metadata_sha256"] == sha256(metadata_path)
         assert manifest["cv_folds"] == 5
-        assert manifest["development_fraction"] == 0.8
-        assert manifest["held_out_evaluation"]["game_ids"] == list(range(40, 50))
-        assert manifest["held_out_evaluation"]["n_rows"] == HOLDOUT_ROWS
+        assert math.isclose(manifest["development_fraction"], args.development_fraction)
+        assert manifest["held_out_evaluation"]["game_ids"] == list(range(development_game_count, game_count))
+        assert manifest["held_out_evaluation"]["n_rows"] == holdout_row_count
         assert manifest["grouped_cv_evaluation"]["n_splits"] == 5
 
         prediction_header, predictions = read_csv(predictions_path)
@@ -123,7 +130,7 @@ def main():
             "actual_action",
             "predicted_action",
         ]
-        assert len(predictions) == HOLDOUT_ROWS
+        assert len(predictions) == holdout_row_count
         indices = [int(row["row_index"]) for row in predictions]
         predicted_games = [int(row["game_id"]) for row in predictions]
         actual = [int(row["actual_action"]) for row in predictions]
@@ -157,6 +164,9 @@ def main():
             "model_manifest_sha256": sha256(model_manifest_path),
             "prediction_sha256": sha256(predictions_path),
         }
+
+    assert len(source_revisions) == 1
+    result["source_revision"] = next(iter(source_revisions))
 
     verification_path = report / "verification.json"
     verification_path.write_text(json.dumps(result, indent=2) + "\n")

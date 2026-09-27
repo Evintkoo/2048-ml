@@ -1,0 +1,267 @@
+{
+  "schema_version": 2,
+  "config": {
+    "n_games": 50,
+    "seed": 90702,
+    "rollouts_per_valid_action": 100,
+    "threads": 2,
+    "checkpoint_every": 1
+  },
+  "next_game_id": 50,
+  "rows": 6188,
+  "states_collected": 6188,
+  "rollouts_evaluated": 2179500,
+  "elapsed_seconds": 1977.9046582520002,
+  "chunks": [
+    {
+      "first_game_id": 0,
+      "end_game_id_exclusive": 1,
+      "rows": 251
+    },
+    {
+      "first_game_id": 1,
+      "end_game_id_exclusive": 2,
+      "rows": 98
+    },
+    {
+      "first_game_id": 2,
+      "end_game_id_exclusive": 3,
+      "rows": 185
+    },
+    {
+      "first_game_id": 3,
+      "end_game_id_exclusive": 4,
+      "rows": 133
+    },
+    {
+      "first_game_id": 4,
+      "end_game_id_exclusive": 5,
+      "rows": 110
+    },
+    {
+      "first_game_id": 5,
+      "end_game_id_exclusive": 6,
+      "rows": 74
+    },
+    {
+      "first_game_id": 6,
+      "end_game_id_exclusive": 7,
+      "rows": 90
+    },
+    {
+      "first_game_id": 7,
+      "end_game_id_exclusive": 8,
+      "rows": 51
+    },
+    {
+      "first_game_id": 8,
+      "end_game_id_exclusive": 9,
+      "rows": 148
+    },
+    {
+      "first_game_id": 9,
+      "end_game_id_exclusive": 10,
+      "rows": 79
+    },
+    {
+      "first_game_id": 10,
+      "end_game_id_exclusive": 11,
+      "rows": 231
+    },
+    {
+      "first_game_id": 11,
+      "end_game_id_exclusive": 12,
+      "rows": 108
+    },
+    {
+      "first_game_id": 12,
+      "end_game_id_exclusive": 13,
+      "rows": 98
+    },
+    {
+      "first_game_id": 13,
+      "end_game_id_exclusive": 14,
+      "rows": 213
+    },
+    {
+      "first_game_id": 14,
+      "end_game_id_exclusive": 15,
+      "rows": 66
+    },
+    {
+      "first_game_id": 15,
+      "end_game_id_exclusive": 16,
+      "rows": 79
+    },
+    {
+      "first_game_id": 16,
+      "end_game_id_exclusive": 17,
+      "rows": 138
+    },
+    {
+      "first_game_id": 17,
+      "end_game_id_exclusive": 18,
+      "rows": 106
+    },
+    {
+      "first_game_id": 18,
+      "end_game_id_exclusive": 19,
+      "rows": 186
+    },
+    {
+      "first_game_id": 19,
+      "end_game_id_exclusive": 20,
+      "rows": 99
+    },
+    {
+      "first_game_id": 20,
+      "end_game_id_exclusive": 21,
+      "rows": 200
+    },
+    {
+      "first_game_id": 21,
+      "end_game_id_exclusive": 22,
+      "rows": 109
+    },
+    {
+      "first_game_id": 22,
+      "end_game_id_exclusive": 23,
+      "rows": 97
+    },
+    {
+      "first_game_id": 23,
+      "end_game_id_exclusive": 24,
+      "rows": 141
+    },
+    {
+      "first_game_id": 24,
+      "end_game_id_exclusive": 25,
+      "rows": 103
+    },
+    {
+      "first_game_id": 25,
+      "end_game_id_exclusive": 26,
+      "rows": 116
+    },
+    {
+      "first_game_id": 26,
+      "end_game_id_exclusive": 27,
+      "rows": 204
+    },
+    {
+      "first_game_id": 27,
+      "end_game_id_exclusive": 28,
+      "rows": 111
+    },
+    {
+      "first_game_id": 28,
+      "end_game_id_exclusive": 29,
+      "rows": 113
+    },
+    {
+      "first_game_id": 29,
+      "end_game_id_exclusive": 30,
+      "rows": 91
+    },
+    {
+      "first_game_id": 30,
+      "end_game_id_exclusive": 31,
+      "rows": 149
+    },
+    {
+      "first_game_id": 31,
+      "end_game_id_exclusive": 32,
+      "rows": 98
+    },
+    {
+      "first_game_id": 32,
+      "end_game_id_exclusive": 33,
+      "rows": 158
+    },
+    {
+      "first_game_id": 33,
+      "end_game_id_exclusive": 34,
+      "rows": 113
+    },
+    {
+      "first_game_id": 34,
+      "end_game_id_exclusive": 35,
+      "rows": 121
+    },
+    {
+      "first_game_id": 35,
+      "end_game_id_exclusive": 36,
+      "rows": 146
+    },
+    {
+      "first_game_id": 36,
+      "end_game_id_exclusive": 37,
+      "rows": 102
+    },
+    {
+      "first_game_id": 37,
+      "end_game_id_exclusive": 38,
+      "rows": 94
+    },
+    {
+      "first_game_id": 38,
+      "end_game_id_exclusive": 39,
+      "rows": 112
+    },
+    {
+      "first_game_id": 39,
+      "end_game_id_exclusive": 40,
+      "rows": 130
+    },
+    {
+      "first_game_id": 40,
+      "end_game_id_exclusive": 41,
+      "rows": 171
+    },
+    {
+      "first_game_id": 41,
+      "end_game_id_exclusive": 42,
+      "rows": 108
+    },
+    {
+      "first_game_id": 42,
+      "end_game_id_exclusive": 43,
+      "rows": 84
+    },
+    {
+      "first_game_id": 43,
+      "end_game_id_exclusive": 44,
+      "rows": 71
+    },
+    {
+      "first_game_id": 44,
+      "end_game_id_exclusive": 45,
+      "rows": 123
+    },
+    {
+      "first_game_id": 45,
+      "end_game_id_exclusive": 46,
+      "rows": 98
+    },
+    {
+      "first_game_id": 46,
+      "end_game_id_exclusive": 47,
+      "rows": 151
+    },
+    {
+      "first_game_id": 47,
+      "end_game_id_exclusive": 48,
+      "rows": 131
+    },
+    {
+      "first_game_id": 48,
+      "end_game_id_exclusive": 49,
+      "rows": 97
+    },
+    {
+      "first_game_id": 49,
+      "end_game_id_exclusive": 50,
+      "rows": 103
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "action_frequency": [
+    {
+      "action": 0,
+      "count": 294190,
+      "direction": "up",
+      "game_cluster_bootstrap_95_ci": [
+        0.24883973307445828,
+        0.25019691591167836
+      ],
+      "proportion": 0.2495489389568296,
+      "total_moves": 1178887
+    },
+    {
+      "action": 1,
+      "count": 294701,
+      "direction": "down",
+      "game_cluster_bootstrap_95_ci": [
+        0.24930541452783692,
+        0.25065492799156613
+      ],
+      "proportion": 0.24998239865228813,
+      "total_moves": 1178887
+    },
+    {
+      "action": 2,
+      "count": 295020,
+      "direction": "left",
+      "game_cluster_bootstrap_95_ci": [
+        0.24956624919674744,
+        0.2509387278684528
+      ],
+      "proportion": 0.25025299286530434,
+      "total_moves": 1178887
+    },
+    {
+      "action": 3,
+      "count": 294976,
+      "direction": "right",
+      "game_cluster_bootstrap_95_ci": [
+        0.24951535138181305,
+        0.2509002889752435
+      ],
+      "proportion": 0.25021566952557794,
+      "total_moves": 1178887
+    }
+  ],
+  "action_frequency_bootstrap_seed": 114026,
+  "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
+  "action_frequency_unit": "selected moves across all games",
+  "action_total": 1178887,
+  "agent": "random",
+  "benchmark": "baseline",
+  "created_utc": "2026-09-27T05:29:07.644497+00:00",
+  "elapsed_seconds": 27.180155958,
+  "first_game_seed": 114024,
+  "games": 10000,
+  "global_seed": 114024,
+  "last_game_seed": 124023,
+  "max_moves": 1000,
+  "per_game_action_counts": {
+    "action_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "columns": [
+      "up_moves",
+      "down_moves",
+      "left_moves",
+      "right_moves"
+    ],
+    "source": "GameResult.move_history"
+  },
+  "project_version": "0.1.0",
+  "results_csv": "reports/action-frequency/independent-50-game-seeds-2026-09-27/random-10000.csv",
+  "score_summary_seed": 114025,
+  "seed_derivation": "global_seed.wrapping_add(game_id)",
+  "sha256": "476f130d1a1cfbeccce27c997b2c9882f51a184af7bfe0c784eb661d112b15d3",
+  "source_revision": "0f8df9c9def2cd9fb659ae1a3d09df0c17b5f7f5",
+  "spawn_probability_for_four": 0.1,
+  "summary": {
+    "games_above_2048": 718,
+    "games_above_4096": 1,
+    "games_above_8192": 0,
+    "max": 4636,
+    "mean": 1087.522,
+    "mean_ci_95": [
+      1077.5161699999999,
+      1097.60366
+    ],
+    "median": 1044.0,
+    "min": 112,
+    "p90": 1660.0,
+    "p99": 2744.040000000001,
+    "sample_std_dev": 528.3414210354115
+  }
+}
