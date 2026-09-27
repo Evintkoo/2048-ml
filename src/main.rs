@@ -46,6 +46,12 @@ enum Commands {
         data_dir: std::path::PathBuf,
         #[arg(long, default_value = "reports/framework_validation/run-1")]
         output_dir: std::path::PathBuf,
+        /// Run one candidate; omit to run all five candidates.
+        #[arg(long, value_name = "NAME")]
+        model: Option<String>,
+        /// Run one dataset; omit to run all three datasets.
+        #[arg(long, value_name = "NAME")]
+        dataset: Option<String>,
         #[arg(long, default_value_t = 42)]
         seed: u64,
         #[arg(long, default_value_t = 0.2)]
@@ -283,10 +289,19 @@ fn main() {
     let cli = Cli::parse();
     match cli.command {
         None => println!("Select a command. Use --help to see the planned workflows."),
-        Some(Commands::FrameworkValidate { data_dir, output_dir, seed, test_fraction }) => {
+        Some(Commands::FrameworkValidate {
+            data_dir,
+            output_dir,
+            model,
+            dataset,
+            seed,
+            test_fraction,
+        }) => {
             if let Err(error) = framework_validation::benchmark::run_standard_datasets(
                 &data_dir,
                 &output_dir,
+                model.as_deref(),
+                dataset.as_deref(),
                 seed,
                 test_fraction,
             ) {

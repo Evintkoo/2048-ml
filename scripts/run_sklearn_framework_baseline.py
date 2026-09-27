@@ -9,6 +9,7 @@ import resource
 import sys
 import time
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import sklearn
@@ -113,15 +114,23 @@ def inner_training_rows(rows, outer_train_ids, validation_fraction):
     return fit_ids
 
 
-def run(data_dir: Path, split_dir: Path, output_dir: Path):
+def run(
+    data_dir: Path,
+    split_dir: Path,
+    output_dir: Path,
+    dataset_filter: Optional[str] = None,
+    model_filter: Optional[str] = None,
+):
     output_dir.mkdir(parents=True, exist_ok=True)
     matrix_started = time.perf_counter()
     records = []
     split_digests = {}
     source_digests = {}
+    dataset_names = (dataset_filter,) if dataset_filter else DATASETS
+    model_names = (model_filter,) if model_filter else MODELS
     with threadpool_limits(limits=1):
         active_threadpools = threadpoolctl.threadpool_info()
-        for dataset_name in DATASETS:
+        for dataset_name in dataset_names:
             split_path = split_dir / f"{dataset_name}.split.json"
             split = json.loads(split_path.read_text())
             source_path, rows = load_dataset(dataset_name, data_dir)
@@ -143,7 +152,7 @@ def run(data_dir: Path, split_dir: Path, output_dir: Path):
             x_test = np.asarray([row_by_id[row_id][0] for row_id in test_ids], dtype=np.float64)
             y_test = np.asarray([row_by_id[row_id][1] for row_id in test_ids], dtype=np.int64)
             class_ids = list(range(len(split["class_labels"])))
-            for model_name in MODELS:
+            for model_name in model_names:
                 model = classifier(model_name)
                 started = time.perf_counter()
                 model.fit(x_train, y_train)
@@ -231,6 +240,8 @@ def run(data_dir: Path, split_dir: Path, output_dir: Path):
         "created_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "seed": SEED,
         "automl_reference_run": str(split_dir),
+        "selected_datasets": list(dataset_names),
+        "selected_models": list(model_names),
         "configuration": {
             "n_estimators": 32,
             "max_depth": 8,
@@ -251,7 +262,7 @@ def run(data_dir: Path, split_dir: Path, output_dir: Path):
                 "source_sha256": source_digests[name],
                 "split_manifest_sha256": split_digests[name],
             }
-            for name in DATASETS
+            for name in dataset_names
         },
         "environment": {
             "python": platform.python_version(),
@@ -278,7 +289,7 @@ def run(data_dir: Path, split_dir: Path, output_dir: Path):
         "limitations": [
             "Fixed-configuration comparison only; implementation details and some defaults differ from AutoML",
             "One dataset split and seed; no superiority inference",
-            "Python process peak RSS is aggregate across the matrix, not a per-model memory profile",
+            "Python process peak RSS includes interpreter/dependency overhead and all selected cases",
             "Single-thread sklearn timing is not directly comparable to unpinned AutoML/Rayon parallelism",
             "No search budget, CLI/library parity, or independent replication comparison",
         ],
@@ -301,8 +312,10 @@ def main():
         type=Path,
         default=Path("reports/framework_validation/sklearn-1.6.1-seed42"),
     )
+    parser.add_argument("--dataset", choices=DATASETS, help="run one dataset; defaults to all three")
+    parser.add_argument("--model", choices=MODELS, help="run one model; defaults to all five")
     args = parser.parse_args()
-    run(args.data_dir, args.split_dir, args.output_dir)
+    run(args.data_dir, args.split_dir, args.output_dir, args.dataset, args.model)
 
 
 if __name__ == "__main__":

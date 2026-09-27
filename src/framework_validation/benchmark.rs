@@ -427,26 +427,49 @@ fn run_one(
     record
 }
 
-/// Run a deterministic stratified holdout study over the three acquired UCI datasets.
+/// Run a deterministic stratified holdout study over selected acquired UCI cases.
 pub fn run_standard_datasets(
     data_dir: &Path,
     output_dir: &Path,
+    model_filter: Option<&str>,
+    dataset_filter: Option<&str>,
     seed: u64,
     test_fraction: f64,
 ) -> Result<()> {
     fs::create_dir_all(output_dir).with_context(|| format!("create {}", output_dir.display()))?;
-    let candidates = [
+    let all_candidates = [
         ("random_forest", ModelType::RandomForest),
         ("extra_trees", ModelType::ExtraTrees),
         ("adaboost", ModelType::AdaBoost),
         ("knn", ModelType::KNN),
         ("naive_bayes", ModelType::NaiveBayes),
     ];
-    let dataset_names = ["iris", "wine", "breast_cancer_wisconsin_diagnostic"];
+    let all_datasets = ["iris", "wine", "breast_cancer_wisconsin_diagnostic"];
+    let candidates: Vec<_> = if let Some(name) = model_filter {
+        vec![all_candidates
+            .iter()
+            .find(|(candidate, _)| *candidate == name)
+            .with_context(|| format!("unknown framework model '{name}'"))?
+            .clone()]
+    } else {
+        all_candidates.to_vec()
+    };
+    let dataset_names: Vec<_> = if let Some(name) = dataset_filter {
+        vec![*all_datasets
+            .iter()
+            .find(|dataset| **dataset == name)
+            .with_context(|| format!("unknown framework dataset '{name}'"))?]
+    } else {
+        all_datasets.to_vec()
+    };
     let mut records = Vec::new();
     let mut split_records = Vec::new();
-    for (dataset_offset, dataset_name) in dataset_names.iter().enumerate() {
+    for dataset_name in &dataset_names {
         let dataset = Dataset::read(dataset_name, data_dir)?;
+        let dataset_offset = all_datasets
+            .iter()
+            .position(|name| name == dataset_name)
+            .expect("selected dataset comes from the declared dataset list");
         let split_seed = seed.wrapping_add(dataset_offset as u64);
         let (train_indices, test_indices) = dataset.split(split_seed, test_fraction)?;
         let split_path = output_dir.join(format!("{}.split.json", dataset.name));
@@ -506,6 +529,7 @@ pub fn run_standard_datasets(
         "seed": seed,
         "test_fraction": test_fraction,
         "candidate_models": candidates.iter().map(|(name, _)| name).collect::<Vec<_>>(),
+        "datasets": dataset_names,
         "configuration": {"n_estimators": 32, "max_depth": 8, "internal_validation_fraction": 0.1, "preprocessing": "none"},
         "dataset_splits": split_records,
         "results_json": results_path,

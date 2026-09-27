@@ -1,0 +1,49 @@
+[
+  {
+    "dataset": "iris",
+    "model": "naive_bayes",
+    "status": "success",
+    "error": null,
+    "seed": 42,
+    "train_rows": 120,
+    "test_rows": 30,
+    "class_labels": [
+      "Iris-setosa",
+      "Iris-versicolor",
+      "Iris-virginica"
+    ],
+    "accuracy": 0.9,
+    "macro_precision": 0.9023569023569024,
+    "macro_recall": 0.9,
+    "macro_f1": 0.899749373433584,
+    "per_class_f1": [
+      1.0,
+      0.8421052631578948,
+      0.8571428571428572
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        8,
+        2
+      ],
+      [
+        0,
+        1,
+        9
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.003555583,
+    "save_load_equivalent": true,
+    "serialized_model": "reports/framework_validation/single-case-smoke/automl/iris__naive_bayes.model.json",
+    "predictions_csv": "reports/framework_validation/single-case-smoke/automl/iris__naive_bayes.predictions.csv",
+    "model_sha256": "c9955df86a35164ca3ef26f5b7d900c33096af41de59c8acafee8eaca2448566",
+    "predictions_sha256": "bbd3c447cd669408244d2ceeae555bbe7d0c6a461dfa3330e61fd0a721c4b7eb"
+  }
+]
