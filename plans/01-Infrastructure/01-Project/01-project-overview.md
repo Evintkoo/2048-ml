@@ -13,33 +13,31 @@ learning, and framework evaluation is a separate research track.
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** A
-standard-dataset diagnostic covers four stratified split seeds and five AutoML candidates; the initial
-pinned revision exposed nondeterministic tie handling in KNN and ExtraTrees, and the pinned fix produced
-exact prediction agreement in repeated seed-42 runs. A fixed-configuration scikit-learn comparison,
-aggregate same-host resource probe, and two-repeat isolated per-case process resource matrix also exist.
-The matrix covers all 15 dataset/model combinations in 60 processes; it records process RSS and wall time,
-but search budgets are not matched and measurements do not isolate model allocations. A 20-game rollout
-corpus now supports five compatible candidate fits on the same grouped development folds and chronological
-held-out rows, and a separate 20-game simulator smoke; these verify pipeline wiring only. The classifier
-metrics disagree between grouped CV and the three-game holdout. A disjoint-seed 10,000-game score
-diagnostic now covers the same five fitted policies and two baselines; its ordering is exploratory and
-does not establish a general model winner. The main 2048 study and full research results remain pending.
-Protocol, manifests, models, predictions, and verification are retained in [the classifier pilot
-report](../../../reports/candidate_classifier_pilot/2026-09-27/README.md), [the score
-evaluation](../../../reports/action-frequency/disjoint-seeds/README.md), and [the framework-validation
-report](../../../reports/framework_validation/README.md).
+**This plan treats its subject as partial or pending work, not as a research finding.** Framework checks
+cover five AutoML candidates on three standard datasets and four fixed split seeds, with exact repeated
+predictions and save/load equality. A fixed-configuration scikit-learn comparison and a two-repeat,
+60-process resource matrix cover the same 15 dataset/model cases, but do not match optimizer search budgets
+or isolate model memory. The 2048 labeling pilots cover 75 games and support a 50-game chronological
+classifier-label holdout, plus exploratory policy-score comparisons for one 20-game fit and one 50-game
+fit per candidate. The newer policy fits scored below random on the retained 10,000-seed evaluation, and
+four of five had lower paired means than the older fit on common seeds. These are case-study diagnostics,
+not framework-superiority findings or confirmatory candidate selection. Scale collection, repeated fits
+across matched independent corpora, matched-budget framework evaluation, and a predeclared confirmatory
+policy evaluation remain pending. Data and analyses are retained in [the 50-game classifier
+report](../../../reports/candidate_classifier_pilot/2026-09-27-50-game/README.md), [the 50-game policy
+score report](../../../reports/action-frequency/50-game-disjoint-seeds/README.md), and [the
+framework-validation report](../../../reports/framework_validation/README.md).
 
 > **Project:** 2048 Machine Learning System
 > **Version:** 1.0.0
 > **Author:** Evintkoo
 > **Created:** 2026-09-22
-> **Status:** In progress — capability checks passed for five four-class candidates; fixed-protocol
-  standard-dataset diagnostics cover four split seeds and save/load equality is retained after
-  deterministic tie fixes. A 20-game canonical-schema corpus has one AutoML training and
-  policy-simulation smoke, followed by a disjoint-seed exploratory score matrix for five candidate
-  policies. Matched framework comparisons, scale collection, repeated policy fits, and confirmatory
-  2048 evaluation remain incomplete (updated 2026-09-27).
+> **Status:** In progress — fixed-protocol framework diagnostics cover five candidates, three standard
+  datasets, and four split seeds. A 75-game rollout-labeling sample supports a 40/10 chronological
+  classifier-label diagnostic and one fit per candidate on each of two training corpora. Five 50-game-fit
+  policies and both baselines have exploratory 10,000-seed score distributions; earlier and newer fits
+  have paired common-seed comparisons. Matched framework search budgets, scale collection, repeated fits
+  across independent corpora, and confirmatory 2048 evaluation remain incomplete (updated 2026-09-27).
 
 ---
 
@@ -373,24 +371,25 @@ incapable" and "our integration is broken."
 ### Tier 1: Minimum Viable Milestone
 - AutoML capability and correctness gate completed
 - Framework benchmark protocol documented
-- **Partial:** score distributions for five once-fitted candidates and two baselines are retained for
-  10,000 matched, training-disjoint seeds. A budgeted confirmatory protocol and repeated-fit estimates
-  remain open.
+- **Partial:** two sets of once-fitted policies and two baselines have score distributions on separate
+  10,000-seed evaluation ranges, both disjoint from their training seeds. Earlier 20-game fits and newer
+  50-game fits are also compared on the same 10,000 seeds. A budgeted confirmatory protocol and repeated
+  fits on matched independent corpora remain open.
 - **Exploratory evidence recorded:** the disjoint-seed report establishes observed scores for the
   verified four-class candidates—RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes—and the local
   random/heuristic baselines. It does not establish a confirmatory candidate ranking.
 - **Demonstrated at pilot scale:** the data pipeline connects game simulation, rollout labeling, AutoML
   fitting, held-out classifier diagnostics, and saved-policy simulation. Scale and quality criteria
   remain open.
-- Models are ranked by mean score. The exploratory disjoint-seed diagnostic now reports this ordering
-  for the five verified fitted candidates and two baselines; a confirmatory ranking remains pending.
+- Models are ranked by mean score. The two exploratory score reports order their respective fixed fits
+  and baselines; neither establishes a confirmatory ranking across training fits.
 
 ### Tier 2: Intermediate Milestone
 - Framework architecture, data contracts, and design trade-offs documented
 - Framework benchmarks completed on standard tabular datasets
-- Rank all models by mean score across benchmark games. The retained 10,000-game matrix provides an
-  exploratory ranking of the five once-fitted candidate policies, not a ranking across independent
-  training fits.
+- Rank all models by mean score across benchmark games. The two 10,000-game matrices provide exploratory
+  rankings of fixed fits; the common-seed comparison shows sensitivity across two corpus sizes but is not
+  a ranking across repeated, matched training corpora.
 - Training pipeline is fully automated and reproducible
 - Score-based comparison demonstrates clear differences between algorithms
 - Case-study winner identified from held-out mean score with uncertainty and practical-effect reporting
@@ -458,17 +457,15 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
 
 - **The evidence remains bounded by diagnostic runs.** AutoML runs on pinned `82d8483` cover four
   standard-dataset split seeds; two processes per seed succeeded for all 15 cases, matched predictions
-  15/15, and passed save/load equivalence. Two fixed-configuration sklearn runs repeated
-  metrics/predictions exactly for the seed-42 cases, with label agreement on 8/15. A 20-game
-  canonical-schema 2048 pilot trained five compatible classifiers and completed a separate 20-game
-  simulator smoke. A
-  common 391-row classifier diagnostic on its final three game groups is retained, but it does not establish
-  model or policy quality. Matched-budget/model-only framework profiling, repeated policy fits across
-  independent corpora, independent replication, scale collection, and adequate-sample held-out diagnostics
-  remain absent. Five training-seed classifier fits on the same corpus and holdout characterize only
-  fixed-corpus seed sensitivity. The five-game throughput repeat is not a scale study or independent
-  machine replication.
-  Larger runs require a declared resource budget and retained artifacts.
+  15/15, and passed save/load equivalence. Two fixed-configuration sklearn runs repeated metrics and
+  predictions for the seed-42 cases, with label agreement on 8/15. The isolated resource matrix covers
+  all 15 cases and two repeats per implementation, but does not compare search budgets or isolate model
+  memory. The 2048 rollout-labeling sample now spans 75 games. Chronological classifier diagnostics use
+  three- and ten-game holdouts, and one fit on each of two corpus sizes is scored on a common 10,000-seed
+  set. These results do not establish adequate sample size, repeated-fit variability, or a confirmatory
+  policy winner. The five training-seed classifier fits remain fixed-corpus sensitivity evidence; the two
+  policy-fit corpora differ in size and each has only one fit. Larger collection still requires an explicit
+  resource envelope and retained artifacts.
 
 ## Later
 
