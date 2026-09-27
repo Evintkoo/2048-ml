@@ -1,6 +1,6 @@
 # Plan 03 — Tooling Configuration: the repository status is explicit and evidence based
 
-> **Status: DONE (2026-09-24).** Root crate commands checked; clarified no live CI workflow and root tests versus full submodule tests.
+> **Status: DONE (2026-09-27).** Root crate commands and CI workflow checked; root tests remain distinct from the full AutoML submodule suite.
 
 **Goal:** State the current implementation and evidence boundary for tooling configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as implemented with bounded evidence, not as a research finding.** The rejected alternative is to infer completion from a plan title or related code alone. The ledger records this disposition: Root crate commands checked; clarified no live CI workflow and root tests versus full submodule tests.
+**This plan treats its subject as implemented with bounded evidence, not as a research finding.** Root build/test/format/lint commands and CLI help are documented. `.github/workflows/ci.yml` runs on pushes to `main`, pull requests, and manual dispatch; it initializes the AutoML submodule and checks format, root tests, and Clippy. The workflow does not run research benchmarks or claim a coverage threshold. Root crate validation is distinct from the full AutoML submodule test suite.
 
 > **MVP = 20 lines of cargo only.** All other tooling is Optional, not MVP (1-line note each). For CLI subcommands see `04-Tooling/01-cli-tools.md`; for environment setup see `04-Tooling/02-dev-environment.md`.
 
@@ -23,7 +23,7 @@ cargo fmt -- --check     # format check
 cargo clippy -- -D warnings  # lint
 ```
 
-These are local checks. No CI workflow is configured yet; see `09-Quality/03-CI/01-ci-pipeline.md`. No Makefile is required for MVP (cargo suffices).
+These commands are available for local use. The configured CI workflow runs format, root tests, and Clippy; it does not run release builds or research benchmarks. See `09-Quality/03-CI/01-ci-pipeline.md`. No Makefile is required for MVP (cargo suffices).
 
 ## 2. Project Binary (2048-specific)
 
@@ -64,7 +64,7 @@ cargo run -- benchmark run --help            # mean-score benchmark (10k+ games)
 
 ## Open questions
 
-- **The plan-scale evidence remains bounded by current results.** Root crate commands checked; clarified no live CI workflow and root tests versus full submodule tests. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
+- **The evidence remains bounded by current results.** The configured CI checks code quality and root tests only; they do not validate research benchmarks. Any larger corpus or external benchmark needs a declared resource budget and retained artifacts.
 
 ## Later
 
