@@ -11,7 +11,7 @@ learning, and framework evaluation is a separate research track.
 ## Decision and evidence
 
 **This plan treats its subject as partial or pending work, not as a research finding.** A
-standard-dataset diagnostic covers three stratified split seeds and five AutoML candidates; the initial
+standard-dataset diagnostic covers four stratified split seeds and five AutoML candidates; the initial
 pinned revision exposed nondeterministic tie handling in KNN and ExtraTrees, and the pinned fix produced
 exact prediction agreement in repeated seed-42 runs. A fixed-configuration scikit-learn comparison and
 aggregate same-host resource probe also exist, but search budgets and per-model resource boundaries are
@@ -22,7 +22,7 @@ not matched. A 20-game rollout corpus now supports five compatible candidate fit
 > **Author:** Evintkoo
 > **Created:** 2026-09-22
 > **Status:** In progress — capability checks passed for five four-class candidates; fixed-protocol
-  standard-dataset diagnostics cover three split seeds and save/load equality is retained after
+  standard-dataset diagnostics cover four split seeds and save/load equality is retained after
   deterministic tie fixes. A 20-game canonical-schema corpus has one AutoML training and
   policy-simulation smoke, followed by a disjoint-seed exploratory score matrix for five candidate
   policies. Matched framework comparisons, scale collection, repeated policy fits, and confirmatory
@@ -219,8 +219,9 @@ report](../../../reports/framework_validation/README.md) records fixed-configura
 diagnostics across Iris, Wine, and Wisconsin Diagnostic with RandomForest, ExtraTrees, AdaBoost, KNN, and
 NaiveBayes. On pinned AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, seed 42 has two
 independent process runs that succeeded for all 15 cases, matched predictions in 15/15, and passed model
-save/load equivalence. Seeds 2026 and 2027 were each repeated in a second independent process with
-identical splits, predictions in 15/15 cases, and save/load equality. Two
+save/load equivalence. Seeds 2026, 2027, and 2028 were each repeated in a second independent process
+with identical splits, predictions in 15/15 cases, and save/load equality. Seed-2028 artifacts are
+retained in the framework-validation report. Two
 comparison-only scikit-learn 1.6.1 runs used the seed-42 outer split rows and AutoML's per-class trailing
 10% holdback; all 15 cases succeeded and repeated exactly, while predicted labels matched AutoML on 8/15
 cases. A one-process resource probe observed AutoML at 1.33 seconds/27,426,816-byte maximum RSS and
@@ -368,10 +369,9 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
 
 ## Open questions
 
-- **The evidence remains bounded by diagnostic runs.** Seed-42 AutoML runs on pinned `82d8483` succeeded
-  for 15 standard-dataset cases, matched predictions 15/15, and passed save/load
-  equivalence. Seed 2026 repeated the same 15 cases in a second process with exact
-  predictions; seed 2027 was repeated across two processes with exact outputs. Two fixed-configuration sklearn runs repeated
+- **The evidence remains bounded by diagnostic runs.** AutoML runs on pinned `82d8483` cover four
+  standard-dataset split seeds; two processes per seed succeeded for all 15 cases, matched predictions
+  15/15, and passed save/load equivalence. Two fixed-configuration sklearn runs repeated
   metrics/predictions exactly for the seed-42 cases, with label agreement on 8/15. A 20-game
   canonical-schema 2048 pilot trained five compatible classifiers and completed a separate 20-game simulator smoke. A
   common 391-row classifier diagnostic on its final three game groups is retained, but it does not establish

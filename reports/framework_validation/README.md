@@ -97,10 +97,9 @@ runtime/resource profiling remain open.
 To check sensitivity to the one seed in the initial diagnostic, the same
 candidate set, 32 estimators, maximum depth 8, raw predictors, 80/20
 stratified holdout, and 10% per-class trailing inner holdback were run with
-global seeds 2026 and 2027. Seed 2026 has two independent process runs on the
-same split; seed 2027 has one. These are split diagnostics, and the seed-2026
-repeat tests same-split repeatability for that seed. Each run succeeded in 15/15
-cases, with no failures.
+global seeds 2026, 2027, and 2028. Each seed has two independent process runs
+on the same split. These are split diagnostics and test same-split repeatability;
+each run succeeded in 15/15 cases, with no failures.
 Mean accuracy over the 15 heterogeneous cases was 0.9367 at seed 2026 and
 0.9378 at seed 2027; these arithmetic summaries are descriptive only because
 the cases mix datasets and algorithms and are not independent replicates.
@@ -114,9 +113,32 @@ manifests pin AutoML `82d848323eed5e2af86d046d529916c448f2442c` and record root
 source revision
 `290e1810d447e5b608b116730d28ae0222606938`.
 
-This adds evidence that the runner and all five candidates complete under two
-other stratified splits and that the fixed seed-2026 split repeats exactly in two
-processes. It does not establish confidence intervals across datasets, tune-search
+Seed 2027 has two runs; the runs match split assignments and all 15 prediction
+CSVs and pass save/load checks. Seed 2028 was also run in two independent
+processes. Its 15 cases succeeded in each process, predictions match 15/15,
+split assignments match for all three datasets, and save/load checks pass. The mean accuracy over
+the 15 heterogeneous seed-2028 cases is 0.9539; this aggregate is descriptive,
+not an inferential summary. Its artifacts are in
+`pinned-82d8483-seed2027-run-2/`,
+`pinned-82d8483-seed2027-comparison.json`,
+`pinned-82d8483-seed2028-run-1/`,
+`pinned-82d8483-seed2028-run-2/`, and
+`pinned-82d8483-seed2028-comparison.json`. The seed-2028 manifests record root
+revision `93aa4ef49ab39477160a74d90a299acda795e3d4` and the pinned AutoML
+revision above.
+
+The seed-2028 runs used the same command with separate output directories:
+
+```sh
+cargo run -- framework-validate --seed 2028 --test-fraction 0.2 \
+  --output-dir reports/framework_validation/pinned-82d8483-seed2028-run-1
+cargo run -- framework-validate --seed 2028 --test-fraction 0.2 \
+  --output-dir reports/framework_validation/pinned-82d8483-seed2028-run-2
+```
+
+These additional runs show that the runner and all five candidates complete under
+three other stratified splits and that each split repeats exactly in two
+processes. They do not establish confidence intervals across datasets, tune-search
 quality, equivalence with an external implementation, or a framework winner. The
 seed-42 comparison and its limits are reported separately above.
 
@@ -177,10 +199,9 @@ diagnostic evidence and must not be conflated with the current pinned result.
 
 ## Limits
 
-The framework diagnostic covers three dataset split seeds and one fixed model
-configuration. Seeds 42 and 2026 each have two exact prediction runs on the same
-splits; seed 2027 has one run. The fixed-configuration sklearn
-comparison is not a matched search-budget study. There is no per-model
-resource profile; repeat runs cover seeds 42 and 2026 only. CLI/API equivalence and
-independent replication remain untested. Scores are not a framework
+The framework diagnostic covers four dataset split seeds and one fixed model
+configuration. Seeds 42, 2026, 2027, and 2028 each have two exact prediction
+runs on the same split. The fixed-configuration sklearn comparison is not a
+matched search-budget study. There is no per-model resource profile. CLI/API
+equivalence and independent replication remain untested. Scores are not a framework
 superiority result, and game scores remain separate application evidence.

@@ -1,0 +1,106 @@
+{
+  "config": {
+    "task_type": "MultiClassification",
+    "model_type": "NaiveBayes",
+    "target_column": "species",
+    "feature_columns": null,
+    "validation_split": 0.1,
+    "cv_folds": 5,
+    "random_seed": 2028,
+    "early_stopping": true,
+    "early_stopping_rounds": 50,
+    "metric": "auto",
+    "n_jobs": null,
+    "verbose": false,
+    "max_depth": 8,
+    "min_samples_leaf": 5,
+    "n_estimators": 32,
+    "learning_rate": 0.1,
+    "max_iter": 1000,
+    "n_neighbors": 5,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_alpha": 0.01,
+    "reg_lambda": 1.0
+  },
+  "feature_names": [
+    "feature_0",
+    "feature_1",
+    "feature_2",
+    "feature_3"
+  ],
+  "model": {
+    "GaussianNaiveBayes": {
+      "means": {
+        "0": [
+          4.977777777777777,
+          3.3777777777777778,
+          1.4749999999999996,
+          0.24722222222222223
+        ],
+        "1": [
+          6.008333333333333,
+          2.7777777777777777,
+          4.324999999999999,
+          1.3416666666666668
+        ],
+        "2": [
+          6.56388888888889,
+          2.952777777777778,
+          5.544444444444445,
+          2.033333333333333
+        ]
+      },
+      "variances": {
+        "1": [
+          0.26187500100000005,
+          0.10728395161728396,
+          0.17909722322222216,
+          0.04076388988888888
+        ],
+        "0": [
+          0.1400617293950617,
+          0.1389506182839506,
+          0.037986112111111116,
+          0.012492284950617284
+        ],
+        "2": [
+          0.46675154420987647,
+          0.1191589516172839,
+          0.3513580256913582,
+          0.06833333433333333
+        ]
+      },
+      "priors": {
+        "2": 0.3333333333333333,
+        "1": 0.3333333333333333,
+        "0": 0.3333333333333333
+      },
+      "classes": [
+        0,
+        1,
+        2
+      ],
+      "var_smoothing": 1e-9
+    }
+  },
+  "model_bytes": null,
+  "metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "auc_roc": null,
+    "log_loss": null,
+    "mse": null,
+    "rmse": null,
+    "mae": null,
+    "r2": null,
+    "training_time_secs": 0.000396917,
+    "n_features": 4,
+    "n_samples": 120
+  },
+  "is_fitted": true,
+  "training_history": [],
+  "epoch_history": []
+}
