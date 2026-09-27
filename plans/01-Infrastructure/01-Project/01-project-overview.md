@@ -284,12 +284,15 @@ incapable" and "our integration is broken."
 - Establish baseline scores for the verified four-class candidates: Random Forest, ExtraTrees, AdaBoost,
   KNN, and NaiveBayes
 - Full data pipeline from game simulation to trained model works end-to-end
-- Models are ranked by mean score
+- Models are ranked by mean score. The exploratory disjoint-seed diagnostic now reports this ordering
+  for the five verified fitted candidates and two baselines; a confirmatory ranking remains pending.
 
 ### Tier 2: Intermediate Milestone
 - Framework architecture, data contracts, and design trade-offs documented
 - Framework benchmarks completed on standard tabular datasets
-- Rank all models by mean score across benchmark games
+- Rank all models by mean score across benchmark games. The retained 10,000-game matrix provides an
+  exploratory ranking of the five once-fitted candidate policies, not a ranking across independent
+  training fits.
 - Training pipeline is fully automated and reproducible
 - Score-based comparison demonstrates clear differences between algorithms
 - Case-study winner identified from held-out mean score with uncertainty and practical-effect reporting
@@ -326,7 +329,9 @@ heuristic agent serves as a practical baseline; its measured mean depends on the
 be taken from retained benchmark artifacts rather than a fixed threshold.
 
 ### Non-Negotiable Criteria (All Tiers)
-- Models are ranked by held-out game score with uncertainty and practical-effect reporting
+- The exploratory candidate policies are ranked by held-out game score with uncertainty and
+  practical-effect reporting in `reports/action-frequency/disjoint-seeds/`; this is one-fit-per-model
+  evidence. Confirmatory ranking across repeated fits remains pending.
 - The case-study winner is the model with the highest held-out mean score; this does not define framework
   success
 - Statistical comparison completed using a design-matched sign-test or Mann–Whitney U/Holm protocol
