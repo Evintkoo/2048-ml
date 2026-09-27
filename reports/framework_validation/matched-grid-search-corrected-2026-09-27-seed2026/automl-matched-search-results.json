@@ -1,0 +1,558 @@
+[
+  {
+    "dataset": "iris",
+    "model": "random_forest",
+    "outer_test": {
+      "accuracy": 0.9666666666666667,
+      "confusion_matrix": [
+        [
+          10,
+          0,
+          0
+        ],
+        [
+          0,
+          9,
+          1
+        ],
+        [
+          0,
+          0,
+          10
+        ]
+      ],
+      "fit_model_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/iris/random_forest/random_forest.model.json",
+      "macro_f1": 0.9665831244778613,
+      "model_sha256": "4001f2829d37b87087311def4eeb1ba07e4a18b9dfdf5dbf4ff7d9ef33442950",
+      "n_rows": 30,
+      "predict_seconds": 0.000143208,
+      "predictions_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/iris/random_forest/random_forest.predictions.csv",
+      "predictions_sha256": "304e4cfb0384f34ce497f1c6ef5040a09d70b462bbcdaff9725127c99211b10f"
+    },
+    "seed": 3026,
+    "selected_configuration": {
+      "max_depth": 4,
+      "n_estimators": 16,
+      "validation_accuracy": 1.0
+    },
+    "trial_budget": 6,
+    "trials": [
+      {
+        "fit_and_validation_predict_seconds": 0.005556542,
+        "max_depth": 4,
+        "n_estimators": 16,
+        "seed": 3026,
+        "trial": 0,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.003449334,
+        "max_depth": 8,
+        "n_estimators": 16,
+        "seed": 3026,
+        "trial": 1,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.0046755,
+        "max_depth": 4,
+        "n_estimators": 32,
+        "seed": 3026,
+        "trial": 2,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.004909209,
+        "max_depth": 8,
+        "n_estimators": 32,
+        "seed": 3026,
+        "trial": 3,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.008502667,
+        "max_depth": 4,
+        "n_estimators": 64,
+        "seed": 3026,
+        "trial": 4,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.00895075,
+        "max_depth": 8,
+        "n_estimators": 64,
+        "seed": 3026,
+        "trial": 5,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      }
+    ],
+    "validation_metric": "accuracy"
+  },
+  {
+    "dataset": "iris",
+    "model": "extra_trees",
+    "outer_test": {
+      "accuracy": 0.9333333333333333,
+      "confusion_matrix": [
+        [
+          10,
+          0,
+          0
+        ],
+        [
+          0,
+          10,
+          0
+        ],
+        [
+          0,
+          2,
+          8
+        ]
+      ],
+      "fit_model_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/iris/extra_trees/extra_trees.model.json",
+      "macro_f1": 0.9326599326599326,
+      "model_sha256": "5d2c68475e0865728c4467b973fcf347cc18434519a81755582968ed78888f9c",
+      "n_rows": 30,
+      "predict_seconds": 0.000063958,
+      "predictions_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/iris/extra_trees/extra_trees.predictions.csv",
+      "predictions_sha256": "a10d7c675a485d8ca0cfe7dc5f2803d8ae393b62f838d21a380ce5beaf379008"
+    },
+    "seed": 4026,
+    "selected_configuration": {
+      "max_depth": 4,
+      "n_estimators": 16,
+      "validation_accuracy": 1.0
+    },
+    "trial_budget": 6,
+    "trials": [
+      {
+        "fit_and_validation_predict_seconds": 0.001483416,
+        "max_depth": 4,
+        "n_estimators": 16,
+        "seed": 4026,
+        "trial": 0,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.001445125,
+        "max_depth": 8,
+        "n_estimators": 16,
+        "seed": 4026,
+        "trial": 1,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.001787875,
+        "max_depth": 4,
+        "n_estimators": 32,
+        "seed": 4026,
+        "trial": 2,
+        "validation_accuracy": 0.9166666666666666,
+        "validation_macro_f1": 0.9153439153439153
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.002235959,
+        "max_depth": 8,
+        "n_estimators": 32,
+        "seed": 4026,
+        "trial": 3,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.00292125,
+        "max_depth": 4,
+        "n_estimators": 64,
+        "seed": 4026,
+        "trial": 4,
+        "validation_accuracy": 0.9166666666666666,
+        "validation_macro_f1": 0.9153439153439153
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.004272584,
+        "max_depth": 8,
+        "n_estimators": 64,
+        "seed": 4026,
+        "trial": 5,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      }
+    ],
+    "validation_metric": "accuracy"
+  },
+  {
+    "dataset": "wine",
+    "model": "random_forest",
+    "outer_test": {
+      "accuracy": 0.9166666666666666,
+      "confusion_matrix": [
+        [
+          11,
+          1,
+          0
+        ],
+        [
+          1,
+          12,
+          1
+        ],
+        [
+          0,
+          0,
+          10
+        ]
+      ],
+      "fit_model_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/wine/random_forest/random_forest.model.json",
+      "macro_f1": 0.9193121693121693,
+      "model_sha256": "0f7089a230aa48467bc4d72884667e7ce78683bc1f066e210eee038e212d6b89",
+      "n_rows": 36,
+      "predict_seconds": 0.000172042,
+      "predictions_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/wine/random_forest/random_forest.predictions.csv",
+      "predictions_sha256": "5dea670f0a9f32d5896698c2b2cc93bce086b32ab80a560b553cfbb1c1593fcf"
+    },
+    "seed": 3027,
+    "selected_configuration": {
+      "max_depth": 4,
+      "n_estimators": 16,
+      "validation_accuracy": 1.0
+    },
+    "trial_budget": 6,
+    "trials": [
+      {
+        "fit_and_validation_predict_seconds": 0.005669792,
+        "max_depth": 4,
+        "n_estimators": 16,
+        "seed": 3027,
+        "trial": 0,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.005543292,
+        "max_depth": 8,
+        "n_estimators": 16,
+        "seed": 3027,
+        "trial": 1,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.009138,
+        "max_depth": 4,
+        "n_estimators": 32,
+        "seed": 3027,
+        "trial": 2,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.010208875,
+        "max_depth": 8,
+        "n_estimators": 32,
+        "seed": 3027,
+        "trial": 3,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.017867083,
+        "max_depth": 4,
+        "n_estimators": 64,
+        "seed": 3027,
+        "trial": 4,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.017994833,
+        "max_depth": 8,
+        "n_estimators": 64,
+        "seed": 3027,
+        "trial": 5,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      }
+    ],
+    "validation_metric": "accuracy"
+  },
+  {
+    "dataset": "wine",
+    "model": "extra_trees",
+    "outer_test": {
+      "accuracy": 1.0,
+      "confusion_matrix": [
+        [
+          12,
+          0,
+          0
+        ],
+        [
+          0,
+          14,
+          0
+        ],
+        [
+          0,
+          0,
+          10
+        ]
+      ],
+      "fit_model_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/wine/extra_trees/extra_trees.model.json",
+      "macro_f1": 1.0,
+      "model_sha256": "f438665aab6ab357992de160e0c21c42ab3c88186135bfb1859356c11a9d5b3a",
+      "n_rows": 36,
+      "predict_seconds": 0.000077042,
+      "predictions_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/wine/extra_trees/extra_trees.predictions.csv",
+      "predictions_sha256": "9b90ac4b548667f2545cdff4118e9f0c95b2e6a1654d9bb7110943ab6bbe4aaa"
+    },
+    "seed": 4027,
+    "selected_configuration": {
+      "max_depth": 4,
+      "n_estimators": 16,
+      "validation_accuracy": 1.0
+    },
+    "trial_budget": 6,
+    "trials": [
+      {
+        "fit_and_validation_predict_seconds": 0.002495291,
+        "max_depth": 4,
+        "n_estimators": 16,
+        "seed": 4027,
+        "trial": 0,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.0031865,
+        "max_depth": 8,
+        "n_estimators": 16,
+        "seed": 4027,
+        "trial": 1,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.0041875,
+        "max_depth": 4,
+        "n_estimators": 32,
+        "seed": 4027,
+        "trial": 2,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.005473208,
+        "max_depth": 8,
+        "n_estimators": 32,
+        "seed": 4027,
+        "trial": 3,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.007008458,
+        "max_depth": 4,
+        "n_estimators": 64,
+        "seed": 4027,
+        "trial": 4,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.010757125,
+        "max_depth": 8,
+        "n_estimators": 64,
+        "seed": 4027,
+        "trial": 5,
+        "validation_accuracy": 1.0,
+        "validation_macro_f1": 1.0
+      }
+    ],
+    "validation_metric": "accuracy"
+  },
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "random_forest",
+    "outer_test": {
+      "accuracy": 0.9646017699115044,
+      "confusion_matrix": [
+        [
+          70,
+          1
+        ],
+        [
+          3,
+          39
+        ]
+      ],
+      "fit_model_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/breast_cancer_wisconsin_diagnostic/random_forest/random_forest.model.json",
+      "macro_f1": 0.9617208672086721,
+      "model_sha256": "7055bc033ba964a70f3c40c0c9abeb669fb23328a5e102615277579c70b43aff",
+      "n_rows": 113,
+      "predict_seconds": 0.000522292,
+      "predictions_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/breast_cancer_wisconsin_diagnostic/random_forest/random_forest.predictions.csv",
+      "predictions_sha256": "6732453d015d85135fa8173080556886750a9e6650bad3af5ff68ff8edd4d187"
+    },
+    "seed": 3028,
+    "selected_configuration": {
+      "max_depth": 4,
+      "n_estimators": 16,
+      "validation_accuracy": 0.9777777777777777
+    },
+    "trial_budget": 6,
+    "trials": [
+      {
+        "fit_and_validation_predict_seconds": 0.032837209,
+        "max_depth": 4,
+        "n_estimators": 16,
+        "seed": 3028,
+        "trial": 0,
+        "validation_accuracy": 0.9777777777777777,
+        "validation_macro_f1": 0.9760765550239234
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.062192625,
+        "max_depth": 8,
+        "n_estimators": 16,
+        "seed": 3028,
+        "trial": 1,
+        "validation_accuracy": 0.9555555555555556,
+        "validation_macro_f1": 0.9527310924369747
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.056556834,
+        "max_depth": 4,
+        "n_estimators": 32,
+        "seed": 3028,
+        "trial": 2,
+        "validation_accuracy": 0.9777777777777777,
+        "validation_macro_f1": 0.9760765550239234
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.068330667,
+        "max_depth": 8,
+        "n_estimators": 32,
+        "seed": 3028,
+        "trial": 3,
+        "validation_accuracy": 0.9777777777777777,
+        "validation_macro_f1": 0.9760765550239234
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.131412625,
+        "max_depth": 4,
+        "n_estimators": 64,
+        "seed": 3028,
+        "trial": 4,
+        "validation_accuracy": 0.9777777777777777,
+        "validation_macro_f1": 0.9760765550239234
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.129937041,
+        "max_depth": 8,
+        "n_estimators": 64,
+        "seed": 3028,
+        "trial": 5,
+        "validation_accuracy": 0.9777777777777777,
+        "validation_macro_f1": 0.9760765550239234
+      }
+    ],
+    "validation_metric": "accuracy"
+  },
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "extra_trees",
+    "outer_test": {
+      "accuracy": 0.9734513274336283,
+      "confusion_matrix": [
+        [
+          71,
+          0
+        ],
+        [
+          3,
+          39
+        ]
+      ],
+      "fit_model_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/breast_cancer_wisconsin_diagnostic/extra_trees/extra_trees.model.json",
+      "macro_f1": 0.9711366538952746,
+      "model_sha256": "724aa70dbd735a7a8b690358e76ebb8d9f06bcd7f8191b08e28c8aba0677588a",
+      "n_rows": 113,
+      "predict_seconds": 0.000321,
+      "predictions_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2026/automl/breast_cancer_wisconsin_diagnostic/extra_trees/extra_trees.predictions.csv",
+      "predictions_sha256": "2bbe3ecb0ab5e821c51ad9f2840f312bab50eb76523974b27940d64b276c1e82"
+    },
+    "seed": 4028,
+    "selected_configuration": {
+      "max_depth": 8,
+      "n_estimators": 32,
+      "validation_accuracy": 0.9777777777777777
+    },
+    "trial_budget": 6,
+    "trials": [
+      {
+        "fit_and_validation_predict_seconds": 0.009531875,
+        "max_depth": 4,
+        "n_estimators": 16,
+        "seed": 4028,
+        "trial": 0,
+        "validation_accuracy": 0.9555555555555556,
+        "validation_macro_f1": 0.9515086206896552
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.014034959,
+        "max_depth": 8,
+        "n_estimators": 16,
+        "seed": 4028,
+        "trial": 1,
+        "validation_accuracy": 0.9555555555555556,
+        "validation_macro_f1": 0.9515086206896552
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.0159025,
+        "max_depth": 4,
+        "n_estimators": 32,
+        "seed": 4028,
+        "trial": 2,
+        "validation_accuracy": 0.9555555555555556,
+        "validation_macro_f1": 0.9515086206896552
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.0243915,
+        "max_depth": 8,
+        "n_estimators": 32,
+        "seed": 4028,
+        "trial": 3,
+        "validation_accuracy": 0.9777777777777777,
+        "validation_macro_f1": 0.9760765550239234
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.031035375,
+        "max_depth": 4,
+        "n_estimators": 64,
+        "seed": 4028,
+        "trial": 4,
+        "validation_accuracy": 0.9555555555555556,
+        "validation_macro_f1": 0.9515086206896552
+      },
+      {
+        "fit_and_validation_predict_seconds": 0.046058083,
+        "max_depth": 8,
+        "n_estimators": 64,
+        "seed": 4028,
+        "trial": 5,
+        "validation_accuracy": 0.9777777777777777,
+        "validation_macro_f1": 0.9760765550239234
+      }
+    ],
+    "validation_metric": "accuracy"
+  }
+]

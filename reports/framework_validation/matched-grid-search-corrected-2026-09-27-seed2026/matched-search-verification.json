@@ -1,0 +1,133 @@
+{
+  "status": "pass",
+  "protocol_sha256": "ebc2d8dda80a20bbaf0629605ca3e31d9d2c2bcd3d53f806ce402e0785fdbfdd",
+  "automl_manifest_sha256": "0b576dad3d990e10a971170af8f67e3fe7a2567606ed796e6bfd9738a0e61c12",
+  "sklearn_manifest_sha256": "a2534ef7d0cae6a1256123260d6d39d33fc7363d36274ebbce2621451303433e",
+  "matched_cases": 6,
+  "grid_trials_per_case_per_implementation": 6,
+  "trial_fits_per_implementation": 36,
+  "outer_test_used_for_selection": false,
+  "inferential_tests_performed": false,
+  "comparisons": [
+    {
+      "dataset": "iris",
+      "model": "random_forest",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 1.0,
+      "sklearn_validation_accuracy": 1.0,
+      "automl_outer_test_accuracy": 0.9666666666666667,
+      "sklearn_outer_test_accuracy": 0.9666666666666667,
+      "automl_outer_test_macro_f1": 0.9665831244778612,
+      "sklearn_outer_test_macro_f1": 0.9665831244778612,
+      "outer_test_label_agreement": 1.0
+    },
+    {
+      "dataset": "iris",
+      "model": "extra_trees",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 1.0,
+      "sklearn_validation_accuracy": 1.0,
+      "automl_outer_test_accuracy": 0.9333333333333333,
+      "sklearn_outer_test_accuracy": 1.0,
+      "automl_outer_test_macro_f1": 0.9326599326599326,
+      "sklearn_outer_test_macro_f1": 1.0,
+      "outer_test_label_agreement": 0.9333333333333333
+    },
+    {
+      "dataset": "wine",
+      "model": "random_forest",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 1.0,
+      "sklearn_validation_accuracy": 1.0,
+      "automl_outer_test_accuracy": 0.9166666666666666,
+      "sklearn_outer_test_accuracy": 1.0,
+      "automl_outer_test_macro_f1": 0.9193121693121693,
+      "sklearn_outer_test_macro_f1": 1.0,
+      "outer_test_label_agreement": 0.9166666666666666
+    },
+    {
+      "dataset": "wine",
+      "model": "extra_trees",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 1.0,
+      "sklearn_validation_accuracy": 1.0,
+      "automl_outer_test_accuracy": 1.0,
+      "sklearn_outer_test_accuracy": 0.9444444444444444,
+      "automl_outer_test_macro_f1": 1.0,
+      "sklearn_outer_test_macro_f1": 0.9451526251526251,
+      "outer_test_label_agreement": 0.9444444444444444
+    },
+    {
+      "dataset": "breast_cancer_wisconsin_diagnostic",
+      "model": "random_forest",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 0.9777777777777777,
+      "sklearn_validation_accuracy": 0.9777777777777777,
+      "automl_outer_test_accuracy": 0.9646017699115044,
+      "sklearn_outer_test_accuracy": 0.9557522123893806,
+      "automl_outer_test_macro_f1": 0.9617208672086721,
+      "sklearn_outer_test_macro_f1": 0.9518944231587909,
+      "outer_test_label_agreement": 0.9734513274336283
+    },
+    {
+      "dataset": "breast_cancer_wisconsin_diagnostic",
+      "model": "extra_trees",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 32,
+        "max_depth": 8
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 64,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 0.9777777777777777,
+      "sklearn_validation_accuracy": 0.9777777777777777,
+      "automl_outer_test_accuracy": 0.9734513274336283,
+      "sklearn_outer_test_accuracy": 0.9557522123893806,
+      "automl_outer_test_macro_f1": 0.9711366538952746,
+      "sklearn_outer_test_macro_f1": 0.9518944231587909,
+      "outer_test_label_agreement": 0.9646017699115044
+    }
+  ]
+}

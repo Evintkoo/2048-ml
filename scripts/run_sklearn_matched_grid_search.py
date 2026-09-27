@@ -61,6 +61,10 @@ def run(protocol_path: Path, data_dir: Path, output_dir: Path):
             outer_test = dataset_protocol["outer_test_source_rows"]
             fit_ids = dataset_protocol["inner_fit_source_rows"]
             validation_ids = dataset_protocol["inner_validation_source_rows"]
+            model_fit_ids = dataset_protocol["model_training_source_rows"]
+            automl_internal_validation_ids = dataset_protocol[
+                "automl_internal_validation_source_rows"
+            ]
             expected_fit = inner_training_rows(
                 rows, outer_train, dataset_protocol["validation_fraction"]
             )
@@ -76,8 +80,28 @@ def run(protocol_path: Path, data_dir: Path, output_dir: Path):
             if expected_validation != validation_ids:
                 raise ValueError(f"AutoML and sklearn validation rows differ: {dataset_name}")
 
-            x_fit = np.asarray([row_by_id[row_id][0] for row_id in fit_ids], dtype=np.float64)
-            y_fit = np.asarray([row_by_id[row_id][1] for row_id in fit_ids], dtype=np.int64)
+            expected_model_fit = inner_training_rows(
+                rows, fit_ids, dataset_protocol["validation_fraction"]
+            )
+            if expected_model_fit != model_fit_ids:
+                raise ValueError(f"AutoML native training rows differ: {dataset_name}")
+            expected_internal_validation = [
+                row_id
+                for label in sorted({row_by_id[row_id][1] for row_id in fit_ids})
+                for row_id in fit_ids
+                if row_by_id[row_id][1] == label and row_id not in set(model_fit_ids)
+            ]
+            if expected_internal_validation != automl_internal_validation_ids:
+                raise ValueError(f"AutoML internal validation rows differ: {dataset_name}")
+            if set(validation_ids) & set(model_fit_ids):
+                raise ValueError(f"external validation rows leaked into fit: {dataset_name}")
+
+            x_fit = np.asarray(
+                [row_by_id[row_id][0] for row_id in model_fit_ids], dtype=np.float64
+            )
+            y_fit = np.asarray(
+                [row_by_id[row_id][1] for row_id in model_fit_ids], dtype=np.int64
+            )
             x_validation = np.asarray(
                 [row_by_id[row_id][0] for row_id in validation_ids], dtype=np.float64
             )

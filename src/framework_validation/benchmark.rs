@@ -519,6 +519,13 @@ pub fn run_matched_grid_search(
         let (outer_train, outer_test) = dataset.split(split_seed, test_fraction)?;
         let (fit_indices, validation_indices) =
             inner_validation_indices(&dataset, &outer_train, validation_fraction)?;
+        // TrainEngine applies its own per-class trailing validation holdback.
+        // Keep that secondary holdback explicit in the protocol so the
+        // comparison implementation trains on the same source rows. Most
+        // importantly, the external selection-validation rows are never passed
+        // to TrainEngine::fit.
+        let (model_training_indices, automl_internal_validation_indices) =
+            inner_validation_indices(&dataset, &fit_indices, validation_fraction)?;
         let source_path = data_dir.join(dataset.source_file);
         let protocol_dataset = serde_json::json!({
             "dataset": dataset.name,
@@ -531,11 +538,13 @@ pub fn run_matched_grid_search(
             "outer_test_source_rows": outer_test.iter().map(|&i| dataset.rows[i].0).collect::<Vec<_>>(),
             "inner_fit_source_rows": fit_indices.iter().map(|&i| dataset.rows[i].0).collect::<Vec<_>>(),
             "inner_validation_source_rows": validation_indices.iter().map(|&i| dataset.rows[i].0).collect::<Vec<_>>(),
+            "model_training_source_rows": model_training_indices.iter().map(|&i| dataset.rows[i].0).collect::<Vec<_>>(),
+            "automl_internal_validation_source_rows": automl_internal_validation_indices.iter().map(|&i| dataset.rows[i].0).collect::<Vec<_>>(),
             "class_labels": dataset.labels,
         });
         protocol_datasets.push(protocol_dataset);
 
-        let outer_train_frame = dataset.dataframe(&outer_train)?;
+        let model_fit_frame = dataset.dataframe(&fit_indices)?;
         let validation_frame = dataset.dataframe(&validation_indices)?;
         let test_frame = dataset.dataframe(&outer_test)?;
         let validation_actual: Vec<usize> = validation_indices
@@ -574,8 +583,8 @@ pub fn run_matched_grid_search(
                 let mut engine = TrainEngine::new(config);
                 let started = Instant::now();
                 engine
-                    .fit(&outer_train_frame)
-                    .context("fit grid candidate")?;
+                    .fit(&model_fit_frame)
+                    .context("fit grid candidate without external validation rows")?;
                 let predicted = engine
                     .predict(&validation_frame)
                     .context("predict inner validation rows")?;
@@ -668,7 +677,7 @@ pub fn run_matched_grid_search(
         &protocol_path,
         serde_json::to_vec_pretty(&serde_json::json!({
             "schema": "2048-ml.matched-grid-search",
-            "schema_version": 1,
+            "schema_version": 2,
             "seed": seed,
             "test_fraction": test_fraction,
             "validation_fraction": validation_fraction,
@@ -681,6 +690,7 @@ pub fn run_matched_grid_search(
             "trial_budget_per_model_dataset_implementation": MATCHED_GRID.len(),
             "search_objective": "inner_validation_accuracy",
             "selection_rule": "highest validation accuracy; grid order breaks ties",
+            "fit_boundary": "AutoML receives only inner_fit_source_rows; its native per-class holdback is internal to those rows; external validation rows are never used during fit",
             "outer_test_use": "score only after configuration selection; never used for selection",
         }))?,
     )?;

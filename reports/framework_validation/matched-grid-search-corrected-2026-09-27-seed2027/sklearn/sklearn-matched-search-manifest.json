@@ -1,0 +1,44 @@
+{
+  "schema": "2048-ml.sklearn-matched-grid-search",
+  "schema_version": 1,
+  "created_utc": "2026-09-27T04:39:13Z",
+  "source_revision": "dfa11860290bf654e5c2b2c8af6729057b15581a",
+  "root_worktree_dirty": true,
+  "runner_sha256": "33001a66bd7c9c35ff8416ab1439cc2d58c0b197c6d4a16e11ee5796f70324c0",
+  "helper_sha256": "feedf8406b5e328967a06685dc63f6782defd765b5496fb5a47cc7b07863997d",
+  "protocol_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2027/matched-search-protocol.json",
+  "protocol_sha256": "1f55f7f063bf1df38825f16665da3bf56ccdff490748f9bfab6165e428fbc098",
+  "results_file": "reports/framework_validation/matched-grid-search-corrected-2026-09-27-seed2027/sklearn/sklearn-matched-search-results.json",
+  "results_sha256": "fb4a11036630bd900392963407a7a0eecf333368e607596cd6400e4af45069ef",
+  "python": "3.9.21 (main, May 18 2026, 18:33:34) \n[Clang 17.0.0 (clang-1700.6.3.2)]",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "packages": {
+    "scikit_learn": "1.6.1",
+    "numpy": "2.0.2",
+    "scipy": "1.13.1",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0"
+  },
+  "thread_limit": 1,
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libopenblas",
+      "filepath": "/Users/evintleovonzko/.pyenv/versions/3.9.21/lib/python3.9/site-packages/scipy/.dylibs/libopenblas.0.dylib",
+      "version": "0.3.27",
+      "threading_layer": "pthreads",
+      "architecture": "neoversen1"
+    },
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 1,
+      "prefix": "libomp",
+      "filepath": "/Users/evintleovonzko/.pyenv/versions/3.9.21/lib/python3.9/site-packages/sklearn/.dylibs/libomp.dylib",
+      "version": null
+    }
+  ],
+  "successful_cases": 6
+}

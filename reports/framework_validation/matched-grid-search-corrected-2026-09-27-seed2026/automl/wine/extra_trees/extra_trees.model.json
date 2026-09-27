@@ -1,0 +1,1755 @@
+{
+  "config": {
+    "task_type": "MultiClassification",
+    "model_type": "ExtraTrees",
+    "target_column": "cultivar",
+    "feature_columns": null,
+    "validation_split": 0.1,
+    "cv_folds": 5,
+    "random_seed": 4027,
+    "early_stopping": true,
+    "early_stopping_rounds": 50,
+    "metric": "auto",
+    "n_jobs": null,
+    "verbose": false,
+    "max_depth": 4,
+    "min_samples_leaf": 5,
+    "n_estimators": 16,
+    "learning_rate": 0.1,
+    "max_iter": 1000,
+    "n_neighbors": 5,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_alpha": 0.01,
+    "reg_lambda": 1.0
+  },
+  "feature_names": [
+    "feature_0",
+    "feature_1",
+    "feature_2",
+    "feature_3",
+    "feature_4",
+    "feature_5",
+    "feature_6",
+    "feature_7",
+    "feature_8",
+    "feature_9",
+    "feature_10",
+    "feature_11",
+    "feature_12"
+  ],
+  "model": {
+    "ExtraTreesClassifier": {
+      "trees": [
+        {
+          "Split": {
+            "feature": 12,
+            "threshold": 419.3953715785764,
+            "left": {
+              "Split": {
+                "feature": 5,
+                "threshold": 1.2383989765001049,
+                "left": {
+                  "Leaf": {
+                    "value": 2.0
+                  }
+                },
+                "right": {
+                  "Leaf": {
+                    "value": 1.0
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 12,
+                "threshold": 924.9089661667022,
+                "left": {
+                  "Split": {
+                    "feature": 4,
+                    "threshold": 88.61400812063773,
+                    "left": {
+                      "Split": {
+                        "feature": 9,
+                        "threshold": 4.774676514199535,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 11,
+                        "threshold": 2.9248651481888848,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 3,
+                    "threshold": 20.50579698965562,
+                    "left": {
+                      "Leaf": {
+                        "value": 0.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 3,
+                        "threshold": 27.0463437402154,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 12,
+            "threshold": 1446.397198168443,
+            "left": {
+              "Split": {
+                "feature": 12,
+                "threshold": 471.77336940004176,
+                "left": {
+                  "Split": {
+                    "feature": 1,
+                    "threshold": 4.008631152195043,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 11,
+                    "threshold": 2.2467941106260345,
+                    "left": {
+                      "Split": {
+                        "feature": 1,
+                        "threshold": 3.362235268772411,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 0,
+                        "threshold": 13.24761249618832,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Leaf": {
+                "value": 0.0
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 12,
+            "threshold": 878.1116010276696,
+            "left": {
+              "Split": {
+                "feature": 5,
+                "threshold": 1.7038399389906016,
+                "left": {
+                  "Split": {
+                    "feature": 0,
+                    "threshold": 13.377519371826438,
+                    "left": {
+                      "Split": {
+                        "feature": 0,
+                        "threshold": 12.498128523545414,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 7,
+                    "threshold": 0.4465776827267467,
+                    "left": {
+                      "Split": {
+                        "feature": 9,
+                        "threshold": 5.077256901369814,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 1,
+                        "threshold": 2.4955341625301837,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 3,
+                "threshold": 19.993284447509183,
+                "left": {
+                  "Leaf": {
+                    "value": 0.0
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 3,
+                    "threshold": 25.415873793532192,
+                    "left": {
+                      "Leaf": {
+                        "value": 0.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 5,
+                        "threshold": 2.0367845806927445,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 10,
+            "threshold": 0.6560701987921632,
+            "left": {
+              "Leaf": {
+                "value": 2.0
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 12,
+                "threshold": 469.6095741183068,
+                "left": {
+                  "Leaf": {
+                    "value": 1.0
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 6,
+                    "threshold": 2.2341828054954607,
+                    "left": {
+                      "Split": {
+                        "feature": 10,
+                        "threshold": 1.1367790755173863,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 10,
+                        "threshold": 0.7948025025772493,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 1,
+            "threshold": 2.460099494034446,
+            "left": {
+              "Split": {
+                "feature": 4,
+                "threshold": 101.76924933468061,
+                "left": {
+                  "Split": {
+                    "feature": 6,
+                    "threshold": 2.8660224413136115,
+                    "left": {
+                      "Split": {
+                        "feature": 9,
+                        "threshold": 8.828249647769123,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 4,
+                        "threshold": 91.67810871446542,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 9,
+                    "threshold": 3.5670531357786404,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 3,
+                        "threshold": 19.782688026749994,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 6,
+                "threshold": 2.007850876122149,
+                "left": {
+                  "Split": {
+                    "feature": 12,
+                    "threshold": 653.1914473350968,
+                    "left": {
+                      "Split": {
+                        "feature": 9,
+                        "threshold": 3.9688930619036342,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 9,
+                    "threshold": 3.142480214351763,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 0.0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 6,
+            "threshold": 1.5594826103332455,
+            "left": {
+              "Split": {
+                "feature": 3,
+                "threshold": 17.25334730701656,
+                "left": {
+                  "Leaf": {
+                    "value": 1.0
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 1,
+                    "threshold": 2.510928395431301,
+                    "left": {
+                      "Split": {
+                        "feature": 11,
+                        "threshold": 2.1427663323850674,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 6,
+                        "threshold": 1.2607871365158332,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 12,
+                "threshold": 763.2765452583344,
+                "left": {
+                  "Split": {
+                    "feature": 4,
+                    "threshold": 91.4762002134981,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 3,
+                        "threshold": 15.680514056121023,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 4,
+                    "threshold": 110.31428235263091,
+                    "left": {
+                      "Leaf": {
+                        "value": 0.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 5,
+                        "threshold": 2.9172399319535876,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 6,
+            "threshold": 1.5442791586848537,
+            "left": {
+              "Split": {
+                "feature": 10,
+                "threshold": 0.9330027173060728,
+                "left": {
+                  "Split": {
+                    "feature": 6,
+                    "threshold": 0.9740685088695631,
+                    "left": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 3,
+                        "threshold": 21.903097247151702,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 3,
+                    "threshold": 19.040457180401845,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 1,
+                        "threshold": 2.5391731093538406,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 12,
+                "threshold": 929.6610540910671,
+                "left": {
+                  "Split": {
+                    "feature": 9,
+                    "threshold": 6.923039281947463,
+                    "left": {
+                      "Split": {
+                        "feature": 2,
+                        "threshold": 1.9944528800212538,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 4,
+                    "threshold": 123.99893089582491,
+                    "left": {
+                      "Leaf": {
+                        "value": 0.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 2,
+                        "threshold": 2.5960634077614126,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 9,
+            "threshold": 3.1243514073428926,
+            "left": {
+              "Leaf": {
+                "value": 1.0
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 6,
+                "threshold": 1.5188038421321406,
+                "left": {
+                  "Split": {
+                    "feature": 11,
+                    "threshold": 1.9262439747911675,
+                    "left": {
+                      "Split": {
+                        "feature": 0,
+                        "threshold": 12.481004823472256,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 1,
+                        "threshold": 2.5741775668424856,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 0,
+                    "threshold": 12.523666132849307,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 6,
+                        "threshold": 1.8967805231248227,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 5,
+            "threshold": 1.6619082838795192,
+            "left": {
+              "Split": {
+                "feature": 8,
+                "threshold": 1.3066993838759546,
+                "left": {
+                  "Split": {
+                    "feature": 10,
+                    "threshold": 0.8917907436123327,
+                    "left": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 6,
+                    "threshold": 0.9531899048230669,
+                    "left": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 6,
+                "threshold": 2.671548446704199,
+                "left": {
+                  "Split": {
+                    "feature": 7,
+                    "threshold": 0.371339863744529,
+                    "left": {
+                      "Split": {
+                        "feature": 9,
+                        "threshold": 3.1729737119718253,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 1,
+                        "threshold": 1.6192229200807988,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 4,
+                    "threshold": 132.6399391033712,
+                    "left": {
+                      "Split": {
+                        "feature": 0,
+                        "threshold": 13.167602007238672,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 9,
+            "threshold": 9.845537550296859,
+            "left": {
+              "Split": {
+                "feature": 12,
+                "threshold": 603.7800694811449,
+                "left": {
+                  "Split": {
+                    "feature": 2,
+                    "threshold": 1.9258747752552816,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 12,
+                        "threshold": 444.87669127064504,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 9,
+                    "threshold": 3.745203619553936,
+                    "left": {
+                      "Split": {
+                        "feature": 0,
+                        "threshold": 12.23521680037635,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 1,
+                        "threshold": 2.163797389114235,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Leaf": {
+                "value": 2.0
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 3,
+            "threshold": 20.867077187232688,
+            "left": {
+              "Split": {
+                "feature": 9,
+                "threshold": 3.4808501173468605,
+                "left": {
+                  "Leaf": {
+                    "value": 1.0
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 5,
+                    "threshold": 1.8432835595408572,
+                    "left": {
+                      "Split": {
+                        "feature": 0,
+                        "threshold": 12.508523459505527,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 11,
+                        "threshold": 2.6638482851173038,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 9,
+                "threshold": 3.1731829541965793,
+                "left": {
+                  "Leaf": {
+                    "value": 1.0
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 8,
+                    "threshold": 1.4617333637209329,
+                    "left": {
+                      "Split": {
+                        "feature": 11,
+                        "threshold": 1.9441526018481796,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 9,
+                        "threshold": 9.069248165550377,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 5,
+            "threshold": 2.2045111301393323,
+            "left": {
+              "Split": {
+                "feature": 3,
+                "threshold": 20.978076481480464,
+                "left": {
+                  "Split": {
+                    "feature": 9,
+                    "threshold": 6.64019284080776,
+                    "left": {
+                      "Split": {
+                        "feature": 6,
+                        "threshold": 1.1600443048556057,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 5,
+                    "threshold": 1.9007790202801025,
+                    "left": {
+                      "Split": {
+                        "feature": 1,
+                        "threshold": 2.00346958328174,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 6,
+                        "threshold": 1.2906454728617778,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 12,
+                "threshold": 412.1635098878384,
+                "left": {
+                  "Leaf": {
+                    "value": 1.0
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 7,
+                    "threshold": 0.41444702449995285,
+                    "left": {
+                      "Split": {
+                        "feature": 2,
+                        "threshold": 1.916328189993437,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 9,
+                        "threshold": 8.57979289179748,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 11,
+            "threshold": 2.5557339068372915,
+            "left": {
+              "Split": {
+                "feature": 0,
+                "threshold": 11.853394101252785,
+                "left": {
+                  "Leaf": {
+                    "value": 1.0
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 1,
+                    "threshold": 1.6428123728396322,
+                    "left": {
+                      "Split": {
+                        "feature": 11,
+                        "threshold": 1.7392717522283594,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 11,
+                        "threshold": 2.0770261881109624,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 6,
+                "threshold": 2.9867587192750644,
+                "left": {
+                  "Split": {
+                    "feature": 0,
+                    "threshold": 13.31774024552744,
+                    "left": {
+                      "Split": {
+                        "feature": 5,
+                        "threshold": 2.473345017195402,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 3,
+                        "threshold": 21.970508783502964,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 10,
+                    "threshold": 1.389310411330582,
+                    "left": {
+                      "Split": {
+                        "feature": 9,
+                        "threshold": 6.054715947429176,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 6,
+            "threshold": 1.4145590683137685,
+            "left": {
+              "Split": {
+                "feature": 6,
+                "threshold": 0.947628214578647,
+                "left": {
+                  "Split": {
+                    "feature": 5,
+                    "threshold": 1.4064792486776387,
+                    "left": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 9,
+                        "threshold": 2.629820136177362,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 0,
+                    "threshold": 12.590447965421134,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 4,
+                        "threshold": 109.16827112700955,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 0,
+                "threshold": 12.35449944829529,
+                "left": {
+                  "Leaf": {
+                    "value": 1.0
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 5,
+                    "threshold": 2.0355281904669704,
+                    "left": {
+                      "Split": {
+                        "feature": 3,
+                        "threshold": 23.296079795053654,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 3,
+                        "threshold": 20.177288070642007,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 1,
+            "threshold": 2.6215569674923613,
+            "left": {
+              "Split": {
+                "feature": 4,
+                "threshold": 128.65286388795528,
+                "left": {
+                  "Split": {
+                    "feature": 0,
+                    "threshold": 12.2083035952067,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 1,
+                        "threshold": 1.1863536037039648,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Leaf": {
+                    "value": 1.0
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 10,
+                "threshold": 0.7407645456802592,
+                "left": {
+                  "Leaf": {
+                    "value": 2.0
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 10,
+                    "threshold": 0.8662135056372945,
+                    "left": {
+                      "Split": {
+                        "feature": 6,
+                        "threshold": 0.8605143347429451,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 2,
+                        "threshold": 2.305563476400698,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Split": {
+            "feature": 11,
+            "threshold": 2.530529146543527,
+            "left": {
+              "Split": {
+                "feature": 9,
+                "threshold": 4.742733654238311,
+                "left": {
+                  "Split": {
+                    "feature": 9,
+                    "threshold": 3.5815763073657516,
+                    "left": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 6,
+                        "threshold": 1.4990194470289453,
+                        "left": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 6,
+                    "threshold": 1.3024085155898164,
+                    "left": {
+                      "Leaf": {
+                        "value": 2.0
+                      }
+                    },
+                    "right": {
+                      "Split": {
+                        "feature": 4,
+                        "threshold": 92.31543668196552,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 2.0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "right": {
+              "Split": {
+                "feature": 6,
+                "threshold": 2.6241578394668164,
+                "left": {
+                  "Split": {
+                    "feature": 3,
+                    "threshold": 22.391088568771128,
+                    "left": {
+                      "Split": {
+                        "feature": 1,
+                        "threshold": 1.1743021442642423,
+                        "left": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "Split": {
+                    "feature": 3,
+                    "threshold": 27.452498293738607,
+                    "left": {
+                      "Split": {
+                        "feature": 10,
+                        "threshold": 1.3544637710256344,
+                        "left": {
+                          "Leaf": {
+                            "value": 0.0
+                          }
+                        },
+                        "right": {
+                          "Leaf": {
+                            "value": 1.0
+                          }
+                        }
+                      }
+                    },
+                    "right": {
+                      "Leaf": {
+                        "value": 1.0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "n_estimators": 16,
+      "max_depth": 4,
+      "min_samples_split": 2,
+      "min_samples_leaf": 1,
+      "max_features": null,
+      "random_state": 4027,
+      "is_classification": true,
+      "n_features": 13,
+      "classes": [
+        0.0,
+        1.0,
+        2.0
+      ],
+      "is_fitted": true
+    }
+  },
+  "model_bytes": null,
+  "metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "auc_roc": null,
+    "log_loss": null,
+    "mse": null,
+    "rmse": null,
+    "mae": null,
+    "r2": null,
+    "training_time_secs": 0.002440417,
+    "n_features": 13,
+    "n_samples": 130
+  },
+  "is_fitted": true,
+  "training_history": [],
+  "epoch_history": []
+}

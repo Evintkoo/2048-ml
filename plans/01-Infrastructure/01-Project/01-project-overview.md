@@ -2,7 +2,9 @@
 
 > **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 75-game throughput
 > sample, and five-candidate classifier diagnostics on chronological holdouts of 391, 541, and 903 rows,
-> including five fit seeds on the same 541-row holdout, are recorded. Broader matched framework evaluation,
+> including five fit seeds on the same 541-row holdout, are recorded. A corrected matched-grid diagnostic
+> is recorded across three split seeds; its first version was withdrawn after a validation-leak audit.
+> Broader matched framework evaluation,
 > scale collection, and confirmatory policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework.
@@ -17,10 +19,10 @@ learning, and framework evaluation is a separate research track.
 cover five AutoML candidates on three standard datasets and four fixed split seeds, with exact repeated
 predictions and save/load equality. A fixed-configuration scikit-learn comparison and a two-repeat,
 60-process resource matrix cover the same 15 dataset/model cases, but do not compare optimizer search
-behavior or isolate model memory. A separate three-split-seed pilot matches six grid candidates and one
+behavior or isolate model memory. A corrected three-split-seed pilot matches six grid candidates and one
 validation fit per candidate for AutoML and scikit-learn RandomForest/ExtraTrees on the same three UCI
-datasets. The selected configurations agree in 15/18 case-seed observations, with differences confined
-to Wisconsin Diagnostic; this matches candidate counts, not optimizer algorithms. The 2048 labeling
+datasets. The selected configurations agree in 13/18 case-seed observations; the first implementation
+was withdrawn after a validation-leak audit. This matches candidate counts, not optimizer algorithms. The 2048 labeling
 pilots cover 75 games and support a 50-game chronological
 classifier-label holdout, plus exploratory policy-score comparisons for one 20-game fit and one 50-game
 fit per candidate. The newer policy fits scored below random on the retained 10,000-seed evaluation, and
@@ -282,13 +284,13 @@ compare search efficiency or model-only allocation. Full details are in the fram
 The shared-grid pilot addresses candidate-fit count for the two tree models with tuning support.
 AutoML and scikit-learn each evaluated the same six `(n_estimators, max_depth)` configurations on the same
 inner validation rows for RandomForest and ExtraTrees across Iris, Wine, and Wisconsin Diagnostic at
-split seeds 42, 2026, and 2027. Both selected the same configuration in 15/18 case-seed observations;
-the three differences were in Wisconsin Diagnostic tree cases. Each per-seed verifier confirms 36
-candidate fits per implementation, identical source-row partitions, validation-only selection, and
-recomputed outer-test metrics. This is a matched fixed-grid budget, not a comparison of HyperOptX with a
-reference optimizer; three splits per dataset do not establish performance superiority. Results and the
-reproduction protocol are in the
-[matched-grid report](../../../reports/framework_validation/matched-grid-search-multi-seed-2026-09-27/README.md).
+split seeds 42, 2026, and 2027. Corrected protocol-v2 runs selected the same configuration in 13/18
+case-seed observations. The verifier checks the external validation and AutoML native holdback are both
+excluded from fitting, along with source-row partitions and recomputed outer-test metrics. The prior
+runner leaked external validation rows into fit and its results were withdrawn. This is a matched
+fixed-grid budget, not a comparison of HyperOptX with a reference optimizer; three splits do not establish
+performance superiority. Corrected artifacts and protocol are in the
+[matched-grid report](../../../reports/framework_validation/matched-grid-search-corrected-multi-seed-2026-09-27/README.md).
 
 ### 6.6 Main-Study Readiness (updated 2026-09-27)
 

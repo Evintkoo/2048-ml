@@ -1,5 +1,13 @@
 # Matched six-configuration grid-search diagnostic
 
+> **SUPERSEDED — DO NOT USE THESE METRICS.** Source audit found that the first
+> AutoML runner passed the external selection-validation rows into
+> `TrainEngine::fit` before scoring those rows. That leaked selection labels
+> into training. The original seed-42 artifacts below are retained only as an
+> audit trail; their metrics and the derived three-seed summary are withdrawn.
+> Use the corrected, protocol-v2 runs linked from
+> [`matched-grid-search-corrected-multi-seed-2026-09-27`](../matched-grid-search-corrected-multi-seed-2026-09-27/README.md).
+
 This pilot compares the AutoML and scikit-learn RandomForest and ExtraTrees implementations using the
 same six fixed configurations, the same train/validation/test source rows, and six candidate fits per
 dataset/model/implementation. It adds a matched candidate-count budget for the two tree models supported by

@@ -54,36 +54,30 @@ declared tree counts/depths and core KNN/GaussianNB/AdaBoost settings, but
 implementation defaults, random generators, and tree-split behavior are not
 identical. No inferential test was applied to this one-split comparison.
 
-## Matched shared-grid budget pilot (2026-09-27)
+## Matched shared-grid budget diagnostic
 
-The separate [`matched-grid-search-2026-09-27/`](matched-grid-search-2026-09-27/README.md)
-pilot compares AutoML and scikit-learn RandomForest/ExtraTrees on Iris, Wine, and Wisconsin Diagnostic
-using the same six `(n_estimators, max_depth)` configurations. Both implementations see the same
-source-row outer 80/20 split and matching per-class inner 10% validation holdback, select by validation
-accuracy, and use six candidate fits per case. The outer test rows are scored only after selection. Each
-implementation completed 36 candidate fits across six cases.
+The first shared-grid runs and their three-seed extension are **superseded and
+invalidated**. Source audit found that the AutoML runner included the external
+selection-validation rows in `TrainEngine::fit`, then scored those same rows
+for configuration selection. This leaks validation information into fitting.
+Their metrics and the derived summary are withdrawn; artifacts are retained
+with explicit warnings in
+[`matched-grid-search-2026-09-27/`](matched-grid-search-2026-09-27/README.md),
+[`matched-grid-search-2026-09-27-seed2026/`](matched-grid-search-2026-09-27-seed2026/README.md),
+[`matched-grid-search-2026-09-27-seed2027/`](matched-grid-search-2026-09-27-seed2027/README.md),
+and [`matched-grid-search-multi-seed-2026-09-27/`](matched-grid-search-multi-seed-2026-09-27/README.md).
 
-The selected configuration matched in all six cases. Outer test prediction agreement ranged from 0.944
-to 1.000. Accuracy and macro-F1 are retained per case; no inferential test was run. This matches candidate
-count and parameter values for two supported tree models, but it does not compare HyperOptX against a
-reference optimizer. Estimator defaults and implementation details still differ, the study uses one fixed
-split per dataset, and it does not establish framework superiority or a runtime advantage. The verification
-artifact recomputes all six test metrics and checks the shared grid, trial counts, source-row partitions,
-artifact hashes, and holdout predictions.
-
-### Matched-grid split-seed follow-up (2026-09-27)
-
-The same protocol was repeated at split seeds 2026 and 2027, in addition to
-seed 42. All three per-seed verifiers pass. Across three seeds, two models, and
-three datasets, both implementations completed 108 candidate fits each.
-Selected configurations agreed in 15/18 case-seed observations, including
-all Iris and Wine observations; the mismatches were confined to Wisconsin
-Diagnostic tree cases. Wisconsin Diagnostic selections also changed across
-seeds. Outer-test label agreement ranged from 0.917 to 1.000. These results
-show split and implementation sensitivity in a small fixed-grid diagnostic;
-they do not estimate optimizer quality or support a framework winner. The
-per-seed runs, combined CSV/JSON, and reproduction commands are in the
-[`matched-grid-search-multi-seed-2026-09-27/`](matched-grid-search-multi-seed-2026-09-27/README.md)
+Corrected protocol-v2 runs exclude external validation rows from both
+implementations' fitting data and record AutoML's native internal holdback so
+scikit-learn uses the same effective model-training rows. The verifier checks
+these row boundaries, hashes, selected configurations, and recomputed test
+metrics. The current three-seed diagnostic selects the same grid configuration
+in 13/18 case-seed observations; all mismatches concern Wisconsin Diagnostic.
+Outer-test label agreement ranges from 0.917 to 1.000. No inferential test was
+performed, and this remains a fixed-grid pilot rather than a comparison of
+HyperOptX with a reference optimizer. Full protocol, corrected artifacts, and
+reproduction commands are in the
+[`matched-grid-search-corrected-multi-seed-2026-09-27/`](matched-grid-search-corrected-multi-seed-2026-09-27/README.md)
 report.
 
 ### Fixed-configuration match boundary
@@ -320,10 +314,10 @@ diagnostic evidence and must not be conflated with the current pinned result.
 ## Limits
 
 The fixed-configuration sklearn matrix is not a matched search-budget study.
-The later shared-grid pilot matches six candidate configurations per run for
-RandomForest and ExtraTrees on three fixed UCI splits; it does not compare the
-optimizer algorithms, cover all five candidates, or estimate variation across
-splits. Isolated per-case process RSS is available, but it does not isolate
+The corrected shared-grid pilot matches six candidate configurations per run
+for RandomForest and ExtraTrees on three UCI datasets and three split seeds; it
+does not compare optimizer algorithms or cover all five candidates. Isolated
+per-case process RSS is available, but it does not isolate
 model allocations. CLI/API equivalence and independent replication remain
 untested. Scores are not a framework superiority result, and game scores
 remain separate application evidence.

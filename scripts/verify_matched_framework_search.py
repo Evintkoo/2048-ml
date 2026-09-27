@@ -57,6 +57,7 @@ def main():
     report = (root / args.report_dir).resolve()
     protocol_path = report / "matched-search-protocol.json"
     protocol = read_json(protocol_path)
+    assert protocol["schema_version"] == 2, "protocol predates validation-leakage correction"
     automl_results_path = report / "automl-matched-search-results.json"
     automl_manifest_path = report / "automl-matched-search-manifest.json"
     sklearn_dir = report / "sklearn"
@@ -89,12 +90,24 @@ def main():
         dataset = dataset_protocol["dataset"]
         class_count = len(dataset_protocol["class_labels"])
         expected_test_rows = dataset_protocol["outer_test_source_rows"]
+        fit_rows = dataset_protocol["inner_fit_source_rows"]
+        validation_rows = dataset_protocol["inner_validation_source_rows"]
+        model_training_rows = dataset_protocol["model_training_source_rows"]
+        automl_internal_validation_rows = dataset_protocol[
+            "automl_internal_validation_source_rows"
+        ]
+        assert set(validation_rows).isdisjoint(model_training_rows)
+        assert set(validation_rows).isdisjoint(automl_internal_validation_rows)
         assert set(expected_test_rows).isdisjoint(
-            dataset_protocol["inner_fit_source_rows"]
-            + dataset_protocol["inner_validation_source_rows"]
+            set(model_training_rows) | set(automl_internal_validation_rows) | set(validation_rows)
+        )
+        assert set(model_training_rows).isdisjoint(automl_internal_validation_rows)
+        assert set(model_training_rows) | set(automl_internal_validation_rows) == set(fit_rows)
+        assert set(expected_test_rows).isdisjoint(
+            fit_rows + validation_rows
         )
         assert set(dataset_protocol["inner_fit_source_rows"]).isdisjoint(
-            dataset_protocol["inner_validation_source_rows"]
+            validation_rows
         )
 
         for model in protocol["models"]:
