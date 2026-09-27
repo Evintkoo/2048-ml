@@ -901,7 +901,7 @@ fn main() {
             if let Some(parent) = output.parent() { std::fs::create_dir_all(parent).expect("failed to create comparison directory"); }
             use std::io::Write;
             let mut file = std::fs::File::create(&output).expect("failed to create comparison CSV");
-            writeln!(file, "first,second,first_n,second_n,first_mean,second_mean,test,p_value,holm_p,mean_difference_ci95_low,mean_difference_ci95_high,cohens_d,effect_size_method,seed_sets_match,first_input,second_input").unwrap();
+            writeln!(file, "first,second,first_n,second_n,first_mean,second_mean,test,p_value,holm_p,mean_difference_ci95_low,mean_difference_ci95_high,effect_size,effect_size_method,seed_sets_match,first_input,second_input").unwrap();
             for (index, (first_name, second_name, p, test, ci, d, effect_method, paired)) in comparisons.iter().enumerate() {
                 let first = datasets.iter().find(|data| &data.name == first_name).unwrap();
                 let second = datasets.iter().find(|data| &data.name == second_name).unwrap();
