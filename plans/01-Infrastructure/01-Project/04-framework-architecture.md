@@ -1,7 +1,7 @@
 # Plan 04 — AutoML architecture audit: observed module boundaries and API limitations are explicit
 
-> **Status: COMPLETE (2026-09-26).** The source-backed architecture audit was verified as a standalone
-  supporting record for ticket #005.
+> **Status: COMPLETE (2026-09-27).** The source-backed architecture map was re-audited against the current
+> root training, HyperOptX, prediction, and pinned AutoML integration.
 
 **Goal:** Record the framework architecture and integration contracts verified in source.
 **Builds on:** [04-framework-contribution](04-framework-contribution.md) — architecture evidence supports
@@ -10,15 +10,16 @@ this ticket's implementation record.
 ## Decision and evidence
 
 This document records architecture observed in the pinned AutoML submodule and root integration. It is a
-source map, not a framework performance result. Its architecture audit is complete; empirical framework
-claims remain outside this ticket and are tracked in #005/#102.
+source map, not a framework performance result. The audit was refreshed after root integration added
+optional HyperOptX tuning and switched the model policy to `InferenceEngine`; empirical framework claims
+remain outside this ticket and are tracked in #005/#102.
 
 ## Revision and scope
 
-- Root revision at original audit: `ca15cebcdf4d307126a63d4ab19e416606f50564`; current follow-up evidence
-  revision: `e119d18`.
+- Root revision at original audit: `ca15cebcdf4d307126a63d4ab19e416606f50564`; source re-audited on
+  `9958f1a`.
 - AutoML submodule revision at the original audit: `64f5edad29c9e58ee7d33abf380418d5cfbbb561`.
-- Current AutoML pin: `82d848323eed5e2af86d046d529916c448f2442c` (`fix/deterministic-tie-breaking`). It
+- Current AutoML pin: `82d848323eed5e2af86d046d529916c448f2442c` (`v1.0.0-140-g82d8483`). It
   includes deterministic training/serialization fixes and explicit KNN/ExtraTrees tie rules; the
   architecture boundaries above are unchanged.
 - Environment inspected: macOS 26.5, arm64; Rust/Cargo 1.96.1.
@@ -36,18 +37,19 @@ flowchart LR
     SPLIT --> CV[Root grouped CV wrapper]
     CV --> CVAPI[AutoML CrossValidator<br/>group folds]
     CV --> FIT[AutoML TrainEngine<br/>fold fit and score]
+    OPT[Optional root HyperOptX<br/>RF/ExtraTrees only;<br/>grouped-CV objective] -.-> CV
     SPLIT --> FITFINAL[AutoML TrainEngine<br/>final fit]
     FITFINAL --> MODEL[TrainEngine JSON artifact]
-    MODEL --> PRED[Root ModelPolicy / TrainEngine predict]
+    MODEL --> PRED[Root ModelPolicy / AutoML InferenceEngine]
     PRED --> GAME[2048 seeded evaluator]
     PRE[AutoML DataPreprocessor] -. optional independent API;<br/>not in root train path .-> FIT
-    OPT[AutoML HyperOptX] -. objective callback;<br/>not wired into root train CLI .-> FIT
-    INF[AutoML InferenceEngine] -. optional API;<br/>root policy does not use it .-> PRED
 ```
 
 The root has two parallel layers: it owns the game, feature/data protocol, game-group holdout, and
 case-study simulation; the AutoML submodule owns model fitting, framework preprocessing APIs, generic CV
-splitting, optimization primitives, inference utilities, and model serialization. The root's group-aware
+splitting, optimization primitives, inference utilities, and model serialization. The root optionally
+orchestrates AutoML HyperOptX for RandomForest and ExtraTrees, with a grouped-CV accuracy objective and
+serial trials; pruning is disabled because this API has no intermediate-reporting hook. The root's group-aware
 CV wrapper selects rows and evaluates folds around `TrainEngine::fit` because the framework's generic
 `cross_val_score` does not accept group labels (its implementation passes `groups=None` to
 `CrossValidator::split`). It checks that groups do not overlap between each fold's train and test
@@ -63,7 +65,7 @@ indices.
 | Group split | Root partitions game IDs chronologically for holdout; root CV wrapper uses AutoML `CrossValidator::split` with a group array, then materializes train/test DataFrames | `src/main.rs`; `src/training.rs` |
 | Preprocessing | `DataPreprocessor` fits stateful imputer/scaler/encoder statistics and offers transform/save/load; root's canonical numeric features currently bypass it | `automl/src/preprocessing/pipeline.rs`; `src/main.rs` |
 | Model output | `TrainEngine` owns config, feature names, a trained model, metrics and histories; save/load serialize the engine to JSON | `automl/src/training/engine.rs` |
-| Prediction | Root game policy loads the serialized AutoML `TrainEngine` and maps four-class predictions to legal game actions; `InferenceEngine` is a separate generic inference component | `src/policy.rs`; `automl/src/inference/engine.rs` |
+| Prediction | Root game policy loads the serialized AutoML `TrainEngine` through `InferenceEngine`, obtains four-class probabilities, checks the output shape, and masks illegal game actions before argmax | `src/policy.rs`; `automl/src/inference/engine.rs` |
 
 The framework APIs use concrete Rust structs/enums and `Result` errors at their public boundaries.
 `DataFrame` is borrowed for fit/predict calls; the engine extracts owned numeric arrays and stores its
@@ -88,7 +90,7 @@ verified in `TrainEngine` serialization.
   bind to `TrainEngine` or enforce the declared metric/folds.
 - `InferenceConfig` exposes batch/worker, streaming, cache, memory-budget, quantization, and probability
   options. `InferenceEngine` can own an optional preprocessor and a `TrainEngine`; the 2048 root policy
-  currently predicts through the model policy path, not this engine.
+  loads and predicts through this engine, then applies its game-specific shape and legal-action checks.
 - AutoML's `ModelType` is a broad enum, not a guarantee that every model works for every task or emits a
   consistent probability matrix. For four-action classification, the verified candidate set is recorded
   in `plans/01-Infrastructure/01-Project/01-project-overview.md` and rechecked by
@@ -137,7 +139,10 @@ seed-42 diagnostic. Artifacts and provenance are retained in the corresponding
 
 This map records the original source audit plus dated follow-up checks at the
 revisions above. Ticket #034 subsequently changed the root state and CSV
-integration to 17 values, as required by Plan 00. The audit does not measure
+integration to 17 values, as required by Plan 00. The current root CLI can tune
+RandomForest/ExtraTrees with a serial HyperOptX search over grouped-CV accuracy;
+the five-candidate pilot diagnostics themselves used fixed candidate settings.
+The audit does not measure
 matched search quality, per-model resource use, training/inference efficiency,
 CLI/library equivalence, or external-framework trade-offs. The retained
 seed-2026/2027 cases broaden split coverage; repeatability across processes at
