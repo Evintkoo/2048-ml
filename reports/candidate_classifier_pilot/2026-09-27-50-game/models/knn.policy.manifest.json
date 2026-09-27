@@ -1,0 +1,319 @@
+{
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "component_seeds": {
+    "cross_validation": 90656,
+    "data_sampling": 90655,
+    "game_base": 90652,
+    "hyperopt": 90654,
+    "training": 90652
+  },
+  "created_utc": "2026-09-27T03:18:07.175451+00:00",
+  "cv_folds": 5,
+  "dataset_schema": "2048-action-policy-v2",
+  "development_fraction": 0.8,
+  "global_seed": 90652,
+  "grouped_cv_evaluation": {
+    "fold_accuracy": [
+      0.26057906458797325,
+      0.28966346153846156,
+      0.26894865525672373,
+      0.24476295479603086,
+      0.23541666666666666
+    ],
+    "fold_classification_metrics": [
+      {
+        "accuracy": 0.26057906458797325,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            79,
+            68,
+            41,
+            35
+          ],
+          [
+            85,
+            78,
+            56,
+            33
+          ],
+          [
+            80,
+            49,
+            46,
+            28
+          ],
+          [
+            71,
+            75,
+            43,
+            31
+          ]
+        ],
+        "macro_f1": 0.2519272699341397,
+        "macro_precision": 0.25777221395712635,
+        "macro_recall": 0.2578234938351685,
+        "n_rows": 898,
+        "per_action_f1": [
+          0.2936802973977695,
+          0.29885057471264365,
+          0.2365038560411311,
+          0.17867435158501443
+        ]
+      },
+      {
+        "accuracy": 0.28966346153846156,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            81,
+            49,
+            41,
+            26
+          ],
+          [
+            67,
+            81,
+            47,
+            30
+          ],
+          [
+            47,
+            83,
+            59,
+            29
+          ],
+          [
+            62,
+            74,
+            36,
+            20
+          ]
+        ],
+        "macro_f1": 0.2755447294162134,
+        "macro_precision": 0.27757140612348724,
+        "macro_recall": 0.2864940952979711,
+        "n_rows": 832,
+        "per_action_f1": [
+          0.35682819383259906,
+          0.31640625,
+          0.29426433915211975,
+          0.13468013468013468
+        ]
+      },
+      {
+        "accuracy": 0.26894865525672373,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            73,
+            61,
+            40,
+            34
+          ],
+          [
+            86,
+            68,
+            41,
+            25
+          ],
+          [
+            54,
+            57,
+            46,
+            28
+          ],
+          [
+            83,
+            50,
+            39,
+            33
+          ]
+        ],
+        "macro_f1": 0.26327833472570317,
+        "macro_precision": 0.2717164121442251,
+        "macro_recall": 0.2674191764892984,
+        "n_rows": 818,
+        "per_action_f1": [
+          0.2896825396825397,
+          0.2982456140350877,
+          0.2621082621082621,
+          0.20307692307692307
+        ]
+      },
+      {
+        "accuracy": 0.24476295479603086,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            84,
+            77,
+            45,
+            29
+          ],
+          [
+            85,
+            66,
+            51,
+            34
+          ],
+          [
+            88,
+            57,
+            48,
+            33
+          ],
+          [
+            97,
+            56,
+            33,
+            24
+          ]
+        ],
+        "macro_f1": 0.2342974574806121,
+        "macro_precision": 0.2415717690677966,
+        "macro_recall": 0.24094573006911965,
+        "n_rows": 907,
+        "per_action_f1": [
+          0.28522920203735147,
+          0.2682926829268293,
+          0.23821339950372208,
+          0.14545454545454545
+        ]
+      },
+      {
+        "accuracy": 0.23541666666666666,
+        "confusion_matrix_actual_rows_predicted_columns": [
+          [
+            69,
+            90,
+            38,
+            45
+          ],
+          [
+            65,
+            71,
+            34,
+            46
+          ],
+          [
+            79,
+            100,
+            53,
+            31
+          ],
+          [
+            89,
+            72,
+            45,
+            33
+          ]
+        ],
+        "macro_f1": 0.2311612377028373,
+        "macro_precision": 0.2415894915235177,
+        "macro_recall": 0.23835597425022811,
+        "n_rows": 960,
+        "per_action_f1": [
+          0.2536764705882353,
+          0.2586520947176685,
+          0.24480369515011546,
+          0.16751269035532995
+        ]
+      }
+    ],
+    "mean_accuracy": 0.2598741605691712,
+    "mean_macro_f1": 0.25124180585190115,
+    "n_splits": 5,
+    "std_accuracy": 0.018956599608887365,
+    "std_macro_f1": 0.016889761046429967,
+    "strategy": "GroupKFold"
+  },
+  "held_out_evaluation": {
+    "accuracy": 0.2602436323366556,
+    "actions": [
+      "up",
+      "down",
+      "left",
+      "right"
+    ],
+    "confusion_matrix_actual_rows_predicted_columns": [
+      [
+        73,
+        64,
+        42,
+        39
+      ],
+      [
+        85,
+        77,
+        46,
+        31
+      ],
+      [
+        86,
+        55,
+        55,
+        34
+      ],
+      [
+        80,
+        70,
+        36,
+        30
+      ]
+    ],
+    "game_ids": [
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ],
+    "interpretation": "development diagnostic on chronological held-out games; not a confirmatory policy-quality estimate",
+    "macro_f1": 0.25367510386543435,
+    "macro_precision": 0.26148137325829063,
+    "macro_recall": 0.2587643603025429,
+    "n_rows": 903,
+    "per_action_f1": [
+      0.2693726937269373,
+      0.30495049504950494,
+      0.26894865525672373,
+      0.17142857142857143
+    ],
+    "predictions_csv": "reports/candidate_classifier_pilot/2026-09-27-50-game/models/knn.policy.holdout-predictions.csv",
+    "predictions_csv_sha256": "144c90a7d2d8a8abc724c9644fa63ca9b19c5b655c48916068715ef6b1ec38df"
+  },
+  "hyperparameter_optimization": null,
+  "manifest_schema": "game2048-ml.training-run",
+  "manifest_schema_version": 1,
+  "metadata": "reports/collection_pilots/2026-09-27-50-game-followup/training.metadata.csv",
+  "metadata_sha256": "dd8436222240f372a5f5f0be3610678061f2868b2489453b8b9f391ba612d0ba",
+  "model": "knn",
+  "model_artifact": "reports/candidate_classifier_pilot/2026-09-27-50-game/models/knn.policy.json",
+  "model_artifact_sha256": "60217b7c1cdd5b491869762bdb1910095163cc867bee0f29ddc0fd7c7bd6a03c",
+  "project_version": "0.1.0",
+  "selected_max_depth": 6,
+  "selected_n_estimators": 100,
+  "source_revision": "c7400ef535dd74eb62c263d9a2f7a9b4cabcb624",
+  "state_feature_count": 17,
+  "study_artifact": null,
+  "training_configuration": {
+    "cv_folds": 5,
+    "cv_strategy": "GroupKFold",
+    "development_fraction": 0.8,
+    "early_stopping_enabled": false,
+    "feature_preprocessing": "canonical state encoder; deterministic scaling",
+    "final_fit_seed": 90652,
+    "model": "knn",
+    "schema_version": 1,
+    "selected_max_depth": 6,
+    "selected_n_estimators": 100,
+    "state_feature_count": 17,
+    "target_column": "action",
+    "task_type": "MultiClassification"
+  },
+  "training_data": "reports/collection_pilots/2026-09-27-50-game-followup/training.csv",
+  "training_data_sha256": "db0c8df0341fdfa998c146d1804fc05b4fe0a812b379ca10fd37e6dbeec5cae7",
+  "tune_trials": null
+}

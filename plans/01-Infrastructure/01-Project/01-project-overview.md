@@ -1,7 +1,7 @@
 # Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
 
 > **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 75-game throughput
-> sample, and five-candidate classifier diagnostics on chronological holdouts of 391 and 541 rows,
+> sample, and five-candidate classifier diagnostics on chronological holdouts of 391, 541, and 903 rows,
 > including five fit seeds on the same 541-row holdout, are recorded. Matched framework evaluation,
 > scale collection, and confirmatory policy results remain pending.
 
@@ -308,6 +308,16 @@ three candidates returned identical predictions across these five seeds. This de
 sensitivity on one fixed corpus and one small holdout only. It does not estimate variability across
 training corpora or policy game scores, or establish a confirmatory ranking. Per-seed manifests,
 predictions, verification, and summary data are retained in the independent holdout report.
+
+A second independent classifier-label diagnostic used the 50-game corpus on seeds 90652–90701, with the
+first 40 groups (4,415 rows) for development and the final 10 groups (903 rows) as a chronological holdout.
+With one fit per candidate and seed 90652, RandomForest had the highest holdout accuracy (`0.3001`), while
+AdaBoost had the highest macro-F1 (`0.2785`). Grouped-CV accuracy and holdout accuracy do not yield one
+consistent candidate ordering. Recomputed metrics, row/group identities, and data/model/prediction hashes
+pass in `scripts/verify_50_game_classifier_diagnostic.py`; models, manifests, predictions, verification,
+protocol, and metric summary are retained in the
+[50-game classifier report](../../../reports/candidate_classifier_pilot/2026-09-27-50-game/README.md).
+This one-corpus label diagnostic is exploratory; it is not policy-score evidence or a confirmatory ranking.
 
 The exploratory 10,000-game score matrix now supplies disjoint-seed score distributions for the five
 verified policies and both measured baselines, but it is based on one fit per candidate. Remaining
