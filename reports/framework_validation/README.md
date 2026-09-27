@@ -196,7 +196,7 @@ startup are excluded.
 contains both observations and their medians for all 15 cases. The comparison
 script is [`../../scripts/compare_framework_fit_timings.py`](../../scripts/compare_framework_fit_timings.py);
 the CSV SHA-256 is
-`93bad5cecc4872c8ffca59f10c3fb1a1c59ea1442b92cd0c4042f4f69b7e467a`.
+`bbb9513ecd4ab1fb652a04c82903ab4bcb38b87c2e011dc368ae5062350017a4`.
 Reproduce the AutoML runs with:
 
 ```sh
