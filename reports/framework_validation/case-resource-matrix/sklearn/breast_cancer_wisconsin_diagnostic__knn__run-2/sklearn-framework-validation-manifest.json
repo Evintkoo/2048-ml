@@ -1,0 +1,83 @@
+{
+  "schema": "2048-ml.sklearn-framework-baseline",
+  "schema_version": 1,
+  "protocol": "same UCI sources, outer test rows, feature policy, and AutoML inner holdback boundary",
+  "created_utc": "2026-09-27T01:50:05Z",
+  "seed": 42,
+  "automl_reference_run": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/pinned-82d8483-run-1",
+  "selected_datasets": [
+    "breast_cancer_wisconsin_diagnostic"
+  ],
+  "selected_models": [
+    "knn"
+  ],
+  "configuration": {
+    "n_estimators": 32,
+    "max_depth": 8,
+    "validation_fraction": 0.1,
+    "validation_boundary": "per-class trailing rows after source-order outer-train partition, matching AutoML stratified_split",
+    "preprocessing": "none; raw numeric features; WDBC ID excluded",
+    "thread_limit": 1,
+    "model_specific": {
+      "random_forest": "sklearn defaults except n_estimators, max_depth, random_state, and n_jobs",
+      "extra_trees": "sklearn defaults except n_estimators, max_depth, random_state, and n_jobs",
+      "adaboost": "32 depth-1 decision stumps and learning_rate=1.0 (SAMME behavior in pinned sklearn)",
+      "knn": "k=5, uniform weights, Euclidean distance",
+      "naive_bayes": "GaussianNB var_smoothing=1e-9"
+    }
+  },
+  "datasets": {
+    "breast_cancer_wisconsin_diagnostic": {
+      "source_sha256": "d606af411f3e5be8a317a5a8b652b425aaf0ff38ca683d5327ffff94c3695f4a",
+      "split_manifest_sha256": "17dd7dbd39a56790d979296e40b715abbe599f5c69d76cefb2fde57afd336ffe"
+    }
+  },
+  "environment": {
+    "python": "3.9.21",
+    "scikit_learn": "1.6.1",
+    "numpy": "2.0.2",
+    "scipy": "1.13.1",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "logical_cpus": 10,
+    "max_rss_bytes_process": 153518080,
+    "thread_limit": 1,
+    "threadpools_during_fit": [
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 1,
+        "prefix": "libopenblas",
+        "filepath": "/Users/evintleovonzko/.pyenv/versions/3.9.21/lib/python3.9/site-packages/scipy/.dylibs/libopenblas.0.dylib",
+        "version": "0.3.27",
+        "threading_layer": "pthreads",
+        "architecture": "neoversen1"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 1,
+        "prefix": "libomp",
+        "filepath": "/Users/evintleovonzko/.pyenv/versions/3.9.21/lib/python3.9/site-packages/sklearn/.dylibs/libomp.dylib",
+        "version": null
+      }
+    ]
+  },
+  "runner_sha256": "feedf8406b5e328967a06685dc63f6782defd765b5496fb5a47cc7b07863997d",
+  "results_file": "sklearn-framework-validation-results.json",
+  "results_sha256": "a1928f643a597cad484a2d904dfc33708f316526489555e753e7682da3636c0b",
+  "comparison_file": "automl-sklearn-score-differences.json",
+  "comparison_sha256": "54fe089654940a963bb7254046391ce4862665cb2eaa88b711ec90333de0824d",
+  "successful_runs": 1,
+  "failed_runs": 0,
+  "matrix_wall_seconds": 0.026488417000000042,
+  "limitations": [
+    "Fixed-configuration comparison only; implementation details and some defaults differ from AutoML",
+    "One dataset split and seed; no superiority inference",
+    "Python process peak RSS includes interpreter/dependency overhead and all selected cases",
+    "Single-thread sklearn timing is not directly comparable to unpinned AutoML/Rayon parallelism",
+    "No search budget, CLI/library parity, or independent replication comparison"
+  ]
+}

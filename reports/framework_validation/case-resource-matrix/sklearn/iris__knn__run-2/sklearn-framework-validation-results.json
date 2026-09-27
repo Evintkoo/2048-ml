@@ -1,0 +1,34 @@
+[
+  {
+    "dataset": "iris",
+    "model": "knn",
+    "status": "success",
+    "seed": 42,
+    "train_rows_outer": 120,
+    "train_rows_fit": 108,
+    "test_rows": 30,
+    "accuracy": 0.9333333333333333,
+    "macro_f1": 0.9333333333333332,
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        9,
+        1
+      ],
+      [
+        0,
+        1,
+        9
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.0014312919999999174,
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/sklearn/iris__knn__run-2/iris__knn.predictions.csv",
+    "predictions_sha256": "2ca3aa973ff4d555dd4d1b4c1902193cafabe263eb5fcd8b3e844d9717f3a584"
+  }
+]

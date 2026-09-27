@@ -1,0 +1,34 @@
+[
+  {
+    "dataset": "wine",
+    "model": "knn",
+    "status": "success",
+    "seed": 42,
+    "train_rows_outer": 142,
+    "train_rows_fit": 130,
+    "test_rows": 36,
+    "accuracy": 0.8055555555555556,
+    "macro_f1": 0.798320587794272,
+    "confusion_matrix": [
+      [
+        12,
+        0,
+        0
+      ],
+      [
+        2,
+        10,
+        2
+      ],
+      [
+        1,
+        2,
+        7
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.002013584000000068,
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/sklearn/wine__knn__run-1/wine__knn.predictions.csv",
+    "predictions_sha256": "8b8fc5b86b4c1ae51b2cacf8f16cdf5d97319fb67b7912ecbdd56a1c01ab04d0"
+  }
+]

@@ -1,0 +1,20 @@
+framework validation complete: 1 successful, 0 failed; results=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/iris__naive_bayes__run-1/framework-validation-results.json manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/iris__naive_bayes__run-1/framework-validation-manifest.json
+framework_validation dataset=iris model=naive_bayes status=success accuracy=Some(0.9) error=None
+        0.07 real         0.03 user         0.02 sys
+            27426816  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                9219  page reclaims
+                  38  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   4  voluntary context switches
+                 280  involuntary context switches
+           152055349  instructions retired
+            60389647  cycles elapsed
+             4325784  peak memory footprint

@@ -1,0 +1,48 @@
+{
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "automl_worktree_dirty": false,
+  "candidate_models": [
+    "naive_bayes"
+  ],
+  "cargo_lock_sha256": "84c2c9910b8baff1c05523fe1f298ff12335a886e37b7c8929ac35e75d888681",
+  "configuration": {
+    "internal_validation_fraction": 0.1,
+    "max_depth": 8,
+    "n_estimators": 32,
+    "preprocessing": "none"
+  },
+  "created_utc": "2026-09-27T01:49:39.050979+00:00",
+  "dataset_splits": [
+    {
+      "dataset": "breast_cancer_wisconsin_diagnostic",
+      "split_manifest": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/breast_cancer_wisconsin_diagnostic__naive_bayes__run-2/breast_cancer_wisconsin_diagnostic.split.json"
+    }
+  ],
+  "datasets": [
+    "breast_cancer_wisconsin_diagnostic"
+  ],
+  "failed_runs": 0,
+  "host": {
+    "architecture": "aarch64",
+    "logical_cpus": 10,
+    "os": "macos"
+  },
+  "limitations": [
+    "No external framework baseline",
+    "No memory profile",
+    "One seed only",
+    "ROC-AUC is reported only when binary class probabilities are available",
+    "No CLI versus API equivalence study"
+  ],
+  "project_version": "0.1.0",
+  "results_json": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/breast_cancer_wisconsin_diagnostic__naive_bayes__run-2/framework-validation-results.json",
+  "results_sha256": "60b35277bd70a18c6fd8b7d382f43c6ec74fcd6d96de51a1db943a4c1c908eb1",
+  "root_worktree_dirty": false,
+  "rustc_version": "rustc 1.96.1 (31fca3adb 2026-06-26)",
+  "schema": "2048-ml.framework-validation-run",
+  "schema_version": 1,
+  "seed": 42,
+  "source_revision": "1b625544d14996a33055761aec7fb8841c8a2cd0",
+  "successful_runs": 1,
+  "test_fraction": 0.2
+}

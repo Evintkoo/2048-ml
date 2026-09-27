@@ -13,9 +13,10 @@ learning, and framework evaluation is a separate research track.
 **This plan treats its subject as partial or pending work, not as a research finding.** A
 standard-dataset diagnostic covers four stratified split seeds and five AutoML candidates; the initial
 pinned revision exposed nondeterministic tie handling in KNN and ExtraTrees, and the pinned fix produced
-exact prediction agreement in repeated seed-42 runs. A fixed-configuration scikit-learn comparison and
-aggregate same-host resource probe also exist, but search budgets and per-model resource boundaries are
-not matched. A 20-game rollout corpus now supports five compatible candidate fits on the same grouped development folds and chronological held-out rows, and a separate 20-game simulator smoke; these verify pipeline wiring only. The classifier metrics disagree between grouped CV and the three-game holdout. A disjoint-seed 10,000-game score diagnostic now covers the same five fitted policies and two baselines; its ordering is exploratory and does not establish a general model winner. The main 2048 study and full research results remain pending. Protocol, manifests, models, predictions, and verification are retained in [the classifier pilot report](../../../reports/candidate_classifier_pilot/2026-09-27/README.md) and [the score evaluation](../../../reports/action-frequency/disjoint-seeds/README.md).
+exact prediction agreement in repeated seed-42 runs. A fixed-configuration scikit-learn comparison,
+aggregate same-host resource probe, and two-repeat isolated per-case process resource matrix also exist.
+The matrix covers all 15 dataset/model combinations in 60 processes; it records process RSS and wall time,
+but search budgets are not matched and measurements do not isolate model allocations. A 20-game rollout corpus now supports five compatible candidate fits on the same grouped development folds and chronological held-out rows, and a separate 20-game simulator smoke; these verify pipeline wiring only. The classifier metrics disagree between grouped CV and the three-game holdout. A disjoint-seed 10,000-game score diagnostic now covers the same five fitted policies and two baselines; its ordering is exploratory and does not establish a general model winner. The main 2048 study and full research results remain pending. Protocol, manifests, models, predictions, and verification are retained in [the classifier pilot report](../../../reports/candidate_classifier_pilot/2026-09-27/README.md), [the score evaluation](../../../reports/action-frequency/disjoint-seeds/README.md), and [the framework-validation report](../../../reports/framework_validation/README.md).
 
 > **Project:** 2048 Machine Learning System
 > **Version:** 1.0.0
@@ -234,6 +235,14 @@ retain per-case fit/predict timings for the same 15 cases and split. The timing 
 model-specific implementation defaults differ, optimizer search budgets are not matched, and no speed
 claim follows. Per-model memory and broader hardware profiling remain open; details and artifacts are in
 the [framework-validation report](../../../reports/framework_validation/README.md).
+
+An isolated per-case process resource matrix now adds two repeats for each of the same 15 cases under
+both implementations (60 processes total). Seed-42 split rows match, and all processes succeeded.
+Observed process peak RSS ranged from 27,410,432–27,443,200 bytes for AutoML and
+154,779,648–157,024,256 bytes for scikit-learn. These include process/runtime startup and dataset handling;
+they are not model-only memory estimates or matched-budget comparisons. One-host, two-repeat measurements
+remain descriptive. Matched search budgets, model-only resource profiling, and broader hardware runs
+remain open; protocol, limitations, and artifacts are in the [framework-validation report](../../../reports/framework_validation/README.md).
 
 ### 6.6 Main-Study Readiness (updated 2026-09-27)
 

@@ -1,0 +1,49 @@
+[
+  {
+    "dataset": "iris",
+    "model": "random_forest",
+    "status": "success",
+    "error": null,
+    "seed": 42,
+    "train_rows": 120,
+    "test_rows": 30,
+    "class_labels": [
+      "Iris-setosa",
+      "Iris-versicolor",
+      "Iris-virginica"
+    ],
+    "accuracy": 0.9,
+    "macro_precision": 0.923076923076923,
+    "macro_recall": 0.9,
+    "macro_f1": 0.8976982097186701,
+    "per_class_f1": [
+      1.0,
+      0.8235294117647058,
+      0.8695652173913044
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        7,
+        3
+      ],
+      [
+        0,
+        0,
+        10
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.02121525,
+    "save_load_equivalent": true,
+    "serialized_model": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/iris__random_forest__run-1/iris__random_forest.model.json",
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/iris__random_forest__run-1/iris__random_forest.predictions.csv",
+    "model_sha256": "80b2b39ec1cd574a8de3885ee9ba573bb2e5bd0932c848912dd71dddea41deeb",
+    "predictions_sha256": "4f3ec32d4989f1bf9c3803f1f4687b0089f085f02498586dce2437a7ca941893"
+  }
+]

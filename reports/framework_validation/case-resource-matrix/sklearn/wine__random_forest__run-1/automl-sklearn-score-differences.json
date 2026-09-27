@@ -1,0 +1,24 @@
+{
+  "protocol": "same source rows and labels; fixed configurations; descriptive paired score differences",
+  "automl_reference_manifest_sha256": "de8bb992fcda13bdf2af219dd64f3a61510634f1392b8026e431947aecf05cb6",
+  "automl_reference_results_sha256": "aa2063c7133bd9ac404b1b8f9852bb371490e5f19d3a7ae41cafd91479d409c1",
+  "comparisons": [
+    {
+      "dataset": "wine",
+      "model": "random_forest",
+      "test_rows": 36,
+      "automl_accuracy": 0.9722222222222222,
+      "sklearn_accuracy": 0.9722222222222222,
+      "sklearn_minus_automl_accuracy": 0.0,
+      "automl_macro_f1": 0.9743209876543211,
+      "sklearn_macro_f1": 0.974320987654321,
+      "sklearn_minus_automl_macro_f1": -1.1102230246251565e-16,
+      "automl_fit_predict_seconds": 0.012085625,
+      "sklearn_fit_predict_seconds": 0.015197582999999959,
+      "predicted_labels_equal": true
+    }
+  ],
+  "cases": 1,
+  "inferential_tests_performed": false,
+  "interpretation": "One fixed split and seed; implementation and parallelism differences preclude superiority or runtime claims."
+}

@@ -1,0 +1,19 @@
+completed 1 sklearn cases; manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/sklearn/iris__extra_trees__run-2/sklearn-framework-validation-manifest.json
+        0.92 real         1.47 user         1.83 sys
+           155254784  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               45389  page reclaims
+                   4  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   8  voluntary context switches
+                 734  involuntary context switches
+         17337848127  instructions retired
+         11296849152  cycles elapsed
+           112837232  peak memory footprint

@@ -1,0 +1,49 @@
+[
+  {
+    "dataset": "iris",
+    "model": "adaboost",
+    "status": "success",
+    "error": null,
+    "seed": 42,
+    "train_rows": 120,
+    "test_rows": 30,
+    "class_labels": [
+      "Iris-setosa",
+      "Iris-versicolor",
+      "Iris-virginica"
+    ],
+    "accuracy": 0.8666666666666667,
+    "macro_precision": 0.8666666666666667,
+    "macro_recall": 0.8666666666666667,
+    "macro_f1": 0.8666666666666668,
+    "per_class_f1": [
+      1.0,
+      0.8000000000000002,
+      0.8000000000000002
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        8,
+        2
+      ],
+      [
+        0,
+        2,
+        8
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.0108015,
+    "save_load_equivalent": true,
+    "serialized_model": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/iris__adaboost__run-2/iris__adaboost.model.json",
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/iris__adaboost__run-2/iris__adaboost.predictions.csv",
+    "model_sha256": "c9937374d0ec8e67d52e44e5789e0989e3b6b282ceb766799baa957b7c816711",
+    "predictions_sha256": "e571e8488ffe71609a4e1b38bd13567d7692ea42d1999ce930187605c2d3f958"
+  }
+]

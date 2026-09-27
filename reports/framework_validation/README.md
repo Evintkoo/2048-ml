@@ -215,8 +215,41 @@ Thread count, seed, splits, and top-level estimator settings are aligned, but
 model-specific defaults and implementation details differ, and no optimizer
 search budget is compared. These two-run, one-host measurements are descriptive
 only: the timing ratios do not establish a general speed advantage. Matched
-search-budget profiling, per-model memory, and broader hardware repetitions
+search-budget profiling, model-only memory, and broader hardware repetitions
 remain open.
+
+### Isolated per-case process resources (2026-09-27)
+
+The resource runner executes one dataset/model case per process and measures peak
+RSS and wall time with macOS `/usr/bin/time -l`. It ran two repeats for each of
+15 dataset/model cases for AutoML and scikit-learn (60 processes total), using
+the seed-42 outer splits, one thread, 32 estimators, maximum depth 8, and a
+20% test split. All cases succeeded, and split row assignments match between
+the implementations. Across these runs, AutoML process peak RSS ranged from
+27,410,432 to 27,443,200 bytes; scikit-learn ranged from 154,779,648 to
+157,024,256 bytes. Process wall times ranged from 0.07 to 0.97 seconds.
+
+These are process-level observations: RSS includes runtime/library startup and
+dataset handling, and wall time includes process startup. Two repeats on one
+host do not estimate hardware variation. Model implementations and some
+defaults differ, and optimizer search budgets are not matched, so these
+measurements do not establish framework superiority or model-only resource use.
+
+The run-level measurements, per-case summaries, and manifests are retained in
+[`case-resource-matrix/`](case-resource-matrix/). SHA-256 values are
+`6f155c97fe0220053565ba4dd2c11a11d6d3b92934f11b194df251a7fec6e5ef` for
+`case-resource-runs.csv`,
+`0822ec664fea5ee0b1a5224e1b7bffed97f536727d399195dd4fb0119b0ea590` for
+`case-resource-summary.csv`, and
+`97eddffb5d2e5cd6dd92a344b93405371868d3a1169c8709ec5846c4eccec3d0` for
+`case-resource-manifest.json`. Reproduce on macOS with:
+
+```sh
+cargo build
+python3 scripts/run_framework_case_resource_matrix.py
+```
+
+The runner supports `--dataset`, `--model`, and `--repeats` to select a subset.
 
 ## Diagnosis and fix
 
@@ -238,6 +271,7 @@ diagnostic evidence and must not be conflated with the current pinned result.
 The framework diagnostic covers four dataset split seeds and one fixed model
 configuration. Seeds 42, 2026, 2027, and 2028 each have two exact prediction
 runs on the same split. The fixed-configuration sklearn comparison is not a
-matched search-budget study. There is no per-model resource profile. CLI/API
-equivalence and independent replication remain untested. Scores are not a framework
+matched search-budget study. Isolated per-case process RSS is available, but it
+does not isolate model allocations. CLI/API equivalence and independent replication
+remain untested. Scores are not a framework
 superiority result, and game scores remain separate application evidence.

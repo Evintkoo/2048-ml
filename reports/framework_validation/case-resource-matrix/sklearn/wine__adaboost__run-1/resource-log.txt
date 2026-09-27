@@ -1,0 +1,19 @@
+completed 1 sklearn cases; manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/sklearn/wine__adaboost__run-1/sklearn-framework-validation-manifest.json
+        0.96 real         1.22 user         1.97 sys
+           155549696  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               45525  page reclaims
+                   4  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   9  voluntary context switches
+                 628  involuntary context switches
+         15285185440  instructions retired
+         11044491586  cycles elapsed
+           113164936  peak memory footprint

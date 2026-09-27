@@ -1,0 +1,49 @@
+[
+  {
+    "dataset": "wine",
+    "model": "knn",
+    "status": "success",
+    "error": null,
+    "seed": 42,
+    "train_rows": 142,
+    "test_rows": 36,
+    "class_labels": [
+      "cultivar_1",
+      "cultivar_2",
+      "cultivar_3"
+    ],
+    "accuracy": 0.8055555555555556,
+    "macro_precision": 0.8037037037037037,
+    "macro_recall": 0.8047619047619049,
+    "macro_f1": 0.798320587794272,
+    "per_class_f1": [
+      0.888888888888889,
+      0.7692307692307692,
+      0.7368421052631577
+    ],
+    "confusion_matrix": [
+      [
+        12,
+        0,
+        0
+      ],
+      [
+        2,
+        10,
+        2
+      ],
+      [
+        1,
+        2,
+        7
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.005831,
+    "save_load_equivalent": true,
+    "serialized_model": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/wine__knn__run-2/wine__knn.model.json",
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/wine__knn__run-2/wine__knn.predictions.csv",
+    "model_sha256": "66196a45b07bfb96ea2072ee295f63ac79d035d635b309b1da2a1f9d90a4b992",
+    "predictions_sha256": "8b8fc5b86b4c1ae51b2cacf8f16cdf5d97319fb67b7912ecbdd56a1c01ab04d0"
+  }
+]

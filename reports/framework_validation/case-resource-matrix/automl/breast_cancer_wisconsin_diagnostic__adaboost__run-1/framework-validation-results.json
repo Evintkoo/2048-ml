@@ -1,0 +1,40 @@
+[
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "adaboost",
+    "status": "success",
+    "error": null,
+    "seed": 42,
+    "train_rows": 456,
+    "test_rows": 113,
+    "class_labels": [
+      "B",
+      "M"
+    ],
+    "accuracy": 0.9203539823008849,
+    "macro_precision": 0.9132890365448505,
+    "macro_recall": 0.9171696847753186,
+    "macro_f1": 0.9151439299123905,
+    "per_class_f1": [
+      0.9361702127659575,
+      0.8941176470588236
+    ],
+    "confusion_matrix": [
+      [
+        66,
+        5
+      ],
+      [
+        4,
+        38
+      ]
+    ],
+    "positive_class_roc_auc": 0.9753521126760564,
+    "fit_predict_seconds": 0.295594541,
+    "save_load_equivalent": true,
+    "serialized_model": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/breast_cancer_wisconsin_diagnostic__adaboost__run-1/breast_cancer_wisconsin_diagnostic__adaboost.model.json",
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/breast_cancer_wisconsin_diagnostic__adaboost__run-1/breast_cancer_wisconsin_diagnostic__adaboost.predictions.csv",
+    "model_sha256": "2268b99439794a8cd48779d48af07b20c044ff31831b8acd6d2448b5dd1e32d6",
+    "predictions_sha256": "8db61e382dbf5101d307a0e57c354368a55284e3a199c3049e275e9dabdd7617"
+  }
+]

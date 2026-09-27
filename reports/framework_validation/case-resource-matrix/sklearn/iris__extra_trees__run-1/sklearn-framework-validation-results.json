@@ -1,0 +1,34 @@
+[
+  {
+    "dataset": "iris",
+    "model": "extra_trees",
+    "status": "success",
+    "seed": 42,
+    "train_rows_outer": 120,
+    "train_rows_fit": 108,
+    "test_rows": 30,
+    "accuracy": 0.8666666666666667,
+    "macro_f1": 0.8653198653198654,
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        7,
+        3
+      ],
+      [
+        0,
+        1,
+        9
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.011459875000000008,
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/sklearn/iris__extra_trees__run-1/iris__extra_trees.predictions.csv",
+    "predictions_sha256": "6cc9da7976434f0a85d5881fdb63925facc5b27f43b5dad96466c511a534cc6e"
+  }
+]

@@ -1,0 +1,20 @@
+framework validation complete: 1 successful, 0 failed; results=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/wine__extra_trees__run-1/framework-validation-results.json manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/wine__extra_trees__run-1/framework-validation-manifest.json
+framework_validation dataset=wine model=extra_trees status=success accuracy=Some(0.9722222222222222) error=None
+        0.13 real         0.08 user         0.03 sys
+            27443200  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                9326  page reclaims
+                  50  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   6  voluntary context switches
+                 463  involuntary context switches
+           827381457  instructions retired
+           279251273  cycles elapsed
+             5063088  peak memory footprint

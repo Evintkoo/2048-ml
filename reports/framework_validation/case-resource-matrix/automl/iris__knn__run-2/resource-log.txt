@@ -1,0 +1,20 @@
+framework validation complete: 1 successful, 0 failed; results=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/iris__knn__run-2/framework-validation-results.json manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/iris__knn__run-2/framework-validation-manifest.json
+framework_validation dataset=iris model=knn status=success accuracy=Some(0.9333333333333333) error=None
+        0.07 real         0.03 user         0.02 sys
+            27443200  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                9285  page reclaims
+                  38  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   5  voluntary context switches
+                 327  involuntary context switches
+           189584993  instructions retired
+            71894392  cycles elapsed
+             4587952  peak memory footprint

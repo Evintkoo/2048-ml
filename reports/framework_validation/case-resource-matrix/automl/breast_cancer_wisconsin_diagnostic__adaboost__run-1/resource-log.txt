@@ -1,0 +1,20 @@
+framework validation complete: 1 successful, 0 failed; results=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/breast_cancer_wisconsin_diagnostic__adaboost__run-1/framework-validation-results.json manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/breast_cancer_wisconsin_diagnostic__adaboost__run-1/framework-validation-manifest.json
+framework_validation dataset=breast_cancer_wisconsin_diagnostic model=adaboost status=success accuracy=Some(0.9203539823008849) error=None
+        0.37 real         0.33 user         0.02 sys
+            27443200  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                9339  page reclaims
+                  38  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   4  voluntary context switches
+                 292  involuntary context switches
+          4215078247  instructions retired
+          1332019855  cycles elapsed
+             5407176  peak memory footprint

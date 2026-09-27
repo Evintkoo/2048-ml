@@ -1,0 +1,19 @@
+completed 1 sklearn cases; manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/sklearn/breast_cancer_wisconsin_diagnostic__naive_bayes__run-1/sklearn-framework-validation-manifest.json
+        0.92 real         2.21 user         1.00 sys
+           156581888  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               45596  page reclaims
+                   4  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   9  voluntary context switches
+                1149  involuntary context switches
+         23754348579  instructions retired
+         11033023473  cycles elapsed
+           114377352  peak memory footprint

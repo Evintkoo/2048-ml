@@ -1,0 +1,42 @@
+{
+  "protocol": "one selected dataset/model per process; /usr/bin/time -l; fixed seed-42 split; 2 repeat(s)",
+  "seed": 42,
+  "threading": {
+    "automl": "RAYON_NUM_THREADS=1",
+    "sklearn": "threadpoolctl limit=1 and n_jobs=1"
+  },
+  "configuration": {
+    "n_estimators": 32,
+    "max_depth": 8,
+    "test_fraction": 0.2
+  },
+  "selected_datasets": [
+    "iris",
+    "wine",
+    "breast_cancer_wisconsin_diagnostic"
+  ],
+  "selected_models": [
+    "random_forest",
+    "extra_trees",
+    "adaboost",
+    "knn",
+    "naive_bayes"
+  ],
+  "repeats": 2,
+  "source_revision": "1b625544d14996a33055761aec7fb8841c8a2cd0",
+  "root_worktree_dirty": false,
+  "host": {
+    "os": "macOS-26.6.2-arm64-arm-64bit",
+    "architecture": "arm64"
+  },
+  "runs_csv": "case-resource-runs.csv",
+  "runs_csv_sha256": "6f155c97fe0220053565ba4dd2c11a11d6d3b92934f11b194df251a7fec6e5ef",
+  "summary_csv": "case-resource-summary.csv",
+  "summary_csv_sha256": "0822ec664fea5ee0b1a5224e1b7bffed97f536727d399195dd4fb0119b0ea590",
+  "interpretation_limitations": [
+    "Peak RSS is process-level and includes runtime/library startup and dataset handling, not model-only memory",
+    "Two repeats on one host are descriptive and do not estimate hardware variation",
+    "Fixed settings do not compare optimizer search budgets or establish framework superiority",
+    "AutoML and scikit-learn model implementations and some defaults differ"
+  ]
+}

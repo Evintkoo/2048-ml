@@ -1,0 +1,19 @@
+completed 1 sklearn cases; manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/sklearn/iris__naive_bayes__run-1/sklearn-framework-validation-manifest.json
+        0.91 real         1.03 user         2.25 sys
+           154779648  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               45384  page reclaims
+                   4  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   8  voluntary context switches
+                 685  involuntary context switches
+         13467382677  instructions retired
+         11253041724  cycles elapsed
+           112640648  peak memory footprint

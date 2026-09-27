@@ -1,0 +1,20 @@
+framework validation complete: 1 successful, 0 failed; results=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/wine__adaboost__run-2/framework-validation-results.json manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/automl/wine__adaboost__run-2/framework-validation-manifest.json
+framework_validation dataset=wine model=adaboost status=success accuracy=Some(0.9444444444444444) error=None
+        0.11 real         0.07 user         0.02 sys
+            27426816  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                9282  page reclaims
+                  38  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   5  voluntary context switches
+                 284  involuntary context switches
+           709501172  instructions retired
+           235369107  cycles elapsed
+             4587952  peak memory footprint

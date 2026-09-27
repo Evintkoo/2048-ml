@@ -1,0 +1,24 @@
+{
+  "protocol": "same source rows and labels; fixed configurations; descriptive paired score differences",
+  "automl_reference_manifest_sha256": "de8bb992fcda13bdf2af219dd64f3a61510634f1392b8026e431947aecf05cb6",
+  "automl_reference_results_sha256": "aa2063c7133bd9ac404b1b8f9852bb371490e5f19d3a7ae41cafd91479d409c1",
+  "comparisons": [
+    {
+      "dataset": "breast_cancer_wisconsin_diagnostic",
+      "model": "adaboost",
+      "test_rows": 113,
+      "automl_accuracy": 0.9203539823008849,
+      "sklearn_accuracy": 0.9469026548672567,
+      "sklearn_minus_automl_accuracy": 0.026548672566371723,
+      "automl_macro_f1": 0.9151439299123905,
+      "sklearn_macro_f1": 0.9431589537223339,
+      "sklearn_minus_automl_macro_f1": 0.028015023809943473,
+      "automl_fit_predict_seconds": 0.308331083,
+      "sklearn_fit_predict_seconds": 0.04133924999999994,
+      "predicted_labels_equal": false
+    }
+  ],
+  "cases": 1,
+  "inferential_tests_performed": false,
+  "interpretation": "One fixed split and seed; implementation and parallelism differences preclude superiority or runtime claims."
+}

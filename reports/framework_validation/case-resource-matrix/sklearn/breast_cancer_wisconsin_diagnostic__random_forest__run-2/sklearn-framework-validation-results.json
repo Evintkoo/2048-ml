@@ -1,0 +1,27 @@
+[
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "random_forest",
+    "status": "success",
+    "seed": 42,
+    "train_rows_outer": 456,
+    "train_rows_fit": 411,
+    "test_rows": 113,
+    "accuracy": 0.9557522123893806,
+    "macro_f1": 0.9523970005897717,
+    "confusion_matrix": [
+      [
+        69,
+        2
+      ],
+      [
+        3,
+        39
+      ]
+    ],
+    "positive_class_roc_auc": 0.9696512407780012,
+    "fit_predict_seconds": 0.02351345799999993,
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/sklearn/breast_cancer_wisconsin_diagnostic__random_forest__run-2/breast_cancer_wisconsin_diagnostic__random_forest.predictions.csv",
+    "predictions_sha256": "8a9e4bb5618725a7f0285334aa2e3aeda9b4963e104f3b53cf96eebf13ebdb57"
+  }
+]

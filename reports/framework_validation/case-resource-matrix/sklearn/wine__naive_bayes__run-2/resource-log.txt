@@ -1,0 +1,19 @@
+completed 1 sklearn cases; manifest=/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/case-resource-matrix/sklearn/wine__naive_bayes__run-2/sklearn-framework-validation-manifest.json
+        0.92 real         2.22 user         1.05 sys
+           155549696  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               45427  page reclaims
+                   4  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   8  voluntary context switches
+                 718  involuntary context switches
+         23735175894  instructions retired
+         11198684247  cycles elapsed
+           113410696  peak memory footprint
