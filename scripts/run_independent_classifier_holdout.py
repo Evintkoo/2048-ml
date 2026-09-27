@@ -93,6 +93,7 @@ def main():
         type=Path,
         default=Path("reports/candidate_classifier_independent_holdout/2026-09-27-25-game"),
     )
+    parser.add_argument("--training-seed", type=int, default=SEED)
     args = parser.parse_args()
     root = Path.cwd().resolve()
     output = (root / args.output_dir).resolve()
@@ -121,7 +122,7 @@ def main():
             "--development-fraction",
             "0.8",
             "--seed",
-            str(SEED),
+            str(args.training_seed),
             "--output",
             str(model_dir / f"{model}.policy.json"),
         ]
@@ -137,7 +138,7 @@ def main():
         "interpretation": "small descriptive classifier diagnostic; not confirmatory policy quality or model selection",
         "source_revision": source_revision(root),
         "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
-        "global_training_seed": SEED,
+        "global_training_seed": args.training_seed,
         "candidate_models": list(MODELS),
         "dataset_schema": "2048-action-policy-v2",
         "state_feature_count": 17,
