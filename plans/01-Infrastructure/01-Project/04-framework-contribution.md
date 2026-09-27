@@ -166,7 +166,9 @@ establish general AutoML superiority.
 - [x] Same-split process repeats now cover seeds 42 and 2026; repeated-fit evidence remains bounded to
   these fixed candidate/configuration matrices.
 - [x] Isolated per-case process wall time and peak-RSS matrix repeated twice across all 15
-  dataset/model cases for AutoML and scikit-learn; startup/runtime/dependency overhead remains in scope.
+  dataset/model cases for AutoML and scikit-learn; `scripts/verify_framework_case_resource_matrix.py`
+  rechecks all 60 run records, manifests/results hashes, split lineage, prediction equality across
+  repeats, and recomputed summaries. Startup/runtime/dependency overhead remains in scope.
 - [ ] Model-only memory profiles and CLI/library equivalence evidence collected.
 - [ ] Independent replication or validation completed.
 

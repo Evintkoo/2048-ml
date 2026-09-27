@@ -295,6 +295,15 @@ python3 scripts/run_framework_case_resource_matrix.py
 ```
 
 The runner supports `--dataset`, `--model`, and `--repeats` to select a subset.
+Recheck the retained run/summary CSVs, all 60 per-process manifests and results,
+split lineage, prediction hashes and repeat equality with:
+
+```sh
+python3 scripts/verify_framework_case_resource_matrix.py
+```
+
+This verifier checks resource-artifact integrity and the fixed-split protocol;
+it does not turn process RSS into a model-only memory estimate.
 
 ## Diagnosis and fix
 
