@@ -1,0 +1,2107 @@
+{
+  "status": "pass",
+  "run_manifest_sha256": "251871d8f98085e479183e83a7c872ed020a52e7a4d94cb307997c9e9eacc19a",
+  "replicates_per_corpus_candidate": 5,
+  "corpus_count": 2,
+  "candidate_count": 5,
+  "verified_fit_count": 50,
+  "inferential_tests_performed": false,
+  "interpretation_limit": "Fit-seed variation is conditional on each fixed corpus. The corpus contrast is descriptive with two corpora; no inferential test or policy-score claim follows from classifier-label metrics.",
+  "candidate_summary": [
+    {
+      "model": "random_forest",
+      "corpora": {
+        "previous": {
+          "fit_seeds": [
+            90652,
+            90653,
+            90654,
+            90655,
+            90656
+          ],
+          "holdout_accuracy_mean": 0.3005537098560354,
+          "holdout_accuracy_sample_sd": 0.002992083297033492,
+          "holdout_macro_f1_mean": 0.2883308312461721,
+          "holdout_macro_f1_sample_sd": 0.00325905464568782,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.3147028022973781,
+          "per_seed": [
+            {
+              "corpus": "previous",
+              "seed": 90652,
+              "model": "random_forest",
+              "accuracy": 0.3001107419712071,
+              "macro_f1": 0.2872534104963069,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  89,
+                  63,
+                  43,
+                  23
+                ],
+                [
+                  74,
+                  101,
+                  31,
+                  33
+                ],
+                [
+                  75,
+                  87,
+                  43,
+                  25
+                ],
+                [
+                  79,
+                  70,
+                  29,
+                  38
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.3154320546920194,
+              "grouped_cv_accuracy_sd": 0.014573753370839939,
+              "model_sha256": "9372016032afc62db853ee05e51a58b6d22f02cb326cd70dd33ef3e60eda9df6",
+              "manifest_sha256": "983189eac9fbf765dc828c713ba0e4cc6413be62b904c4e354024dbcddb9bfe3",
+              "predictions_sha256": "5f534f75f5fdb11570cd3502901a74554d7760fef1495438181e278ee2f7f6d7"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90653,
+              "model": "random_forest",
+              "accuracy": 0.3023255813953488,
+              "macro_f1": 0.2906063075827848,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  89,
+                  63,
+                  42,
+                  24
+                ],
+                [
+                  73,
+                  100,
+                  32,
+                  34
+                ],
+                [
+                  72,
+                  89,
+                  44,
+                  25
+                ],
+                [
+                  75,
+                  71,
+                  30,
+                  40
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.3155047973892747,
+              "grouped_cv_accuracy_sd": 0.012109188269522248,
+              "model_sha256": "232e3bd6a0079de068d661d9e876673a4c5a6270e8be3eab68d9e152787b0521",
+              "manifest_sha256": "434d3e992734889ae714976620ea34838847eab8158403b0310efa96169cbf2b",
+              "predictions_sha256": "e84ee6205e3f1ebceefd52465407ca61c900e91020756d35824a7d5458fc7a31"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90654,
+              "model": "random_forest",
+              "accuracy": 0.2967884828349945,
+              "macro_f1": 0.28402960593027254,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  88,
+                  64,
+                  42,
+                  24
+                ],
+                [
+                  75,
+                  100,
+                  30,
+                  34
+                ],
+                [
+                  74,
+                  88,
+                  42,
+                  26
+                ],
+                [
+                  79,
+                  71,
+                  28,
+                  38
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.3134805282450474,
+              "grouped_cv_accuracy_sd": 0.011204910012490878,
+              "model_sha256": "98ba1bbec3301f27ba28428ba34f2e44cd51f63b5e7ae5000cbd883c7267f25b",
+              "manifest_sha256": "42e8dfb58ad8382de32b57ee0b04d4b1a320bcc048336c2ad280e55709defe61",
+              "predictions_sha256": "a9a0d32a3089dd50a82a998bc8c36b0e9adf49d71e75516b12b711c83cebf659"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90655,
+              "model": "random_forest",
+              "accuracy": 0.30454042081949056,
+              "macro_f1": 0.2924153738977528,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  92,
+                  64,
+                  40,
+                  22
+                ],
+                [
+                  73,
+                  99,
+                  32,
+                  35
+                ],
+                [
+                  71,
+                  90,
+                  45,
+                  24
+                ],
+                [
+                  79,
+                  69,
+                  29,
+                  39
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.31403058786958016,
+              "grouped_cv_accuracy_sd": 0.011615896620914726,
+              "model_sha256": "6d32c2236b59edbaaeec5cf9ba11f42e686a436da1d909ee576955ca03806671",
+              "manifest_sha256": "1aa910628c64316af869080e5c2870c88b81df37398b8ed8291751f652782c5b",
+              "predictions_sha256": "d5fde5b69779bf59f3c61e258bfd391f8336e5f3c59c097b8ec7ebde1d37cece"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90656,
+              "model": "random_forest",
+              "accuracy": 0.29900332225913623,
+              "macro_f1": 0.2873494583237435,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  87,
+                  64,
+                  42,
+                  25
+                ],
+                [
+                  72,
+                  100,
+                  32,
+                  35
+                ],
+                [
+                  73,
+                  89,
+                  43,
+                  25
+                ],
+                [
+                  77,
+                  69,
+                  30,
+                  40
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.3150660432909688,
+              "grouped_cv_accuracy_sd": 0.012650821416981371,
+              "model_sha256": "82cc66951844ec4481c57b9102765ffe861351a70ceaa960f3a2888ccbddb2d8",
+              "manifest_sha256": "d41ba7298bc2b50bc238af59f1b06e6fa83b958a4cc15fe14561235c27e73611",
+              "predictions_sha256": "e2bdfd0a84e8bd5d1eac7e1a39177c8fd61852c67fead0afbd9446a7e05410f9"
+            }
+          ]
+        },
+        "independent": {
+          "fit_seeds": [
+            90702,
+            90703,
+            90704,
+            90705,
+            90706
+          ],
+          "holdout_accuracy_mean": 0.30043975373790677,
+          "holdout_accuracy_sample_sd": 0.002822657262248235,
+          "holdout_macro_f1_mean": 0.299971974325186,
+          "holdout_macro_f1_sample_sd": 0.003163134394130833,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.29691336181932476,
+          "per_seed": [
+            {
+              "corpus": "independent",
+              "seed": 90702,
+              "model": "random_forest",
+              "accuracy": 0.3007915567282322,
+              "macro_f1": 0.30065260747004197,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  95,
+                  57,
+                  52,
+                  58
+                ],
+                [
+                  78,
+                  74,
+                  78,
+                  81
+                ],
+                [
+                  72,
+                  58,
+                  89,
+                  58
+                ],
+                [
+                  107,
+                  49,
+                  47,
+                  84
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.29720504057587827,
+              "grouped_cv_accuracy_sd": 0.016741925282814808,
+              "model_sha256": "2c90ff7977dd97787a5f63ee085a5593a2924c0eff6ba976c46d702cb50c9ff5",
+              "manifest_sha256": "b0b32e6bbfc23383bce2b8cc026d0f5f052f5d5011dd2fa3cfd4abc804e6df02",
+              "predictions_sha256": "2b968b0452aa015f47ae82bfe0c4c4945b72960ffed5618de65ec74780ab10dd"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90703,
+              "model": "random_forest",
+              "accuracy": 0.3043095866314864,
+              "macro_f1": 0.30430651379142887,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  93,
+                  58,
+                  54,
+                  57
+                ],
+                [
+                  76,
+                  76,
+                  77,
+                  82
+                ],
+                [
+                  73,
+                  55,
+                  89,
+                  60
+                ],
+                [
+                  106,
+                  47,
+                  46,
+                  88
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2963683206224665,
+              "grouped_cv_accuracy_sd": 0.014413714852664482,
+              "model_sha256": "4b52b0b856341d99465dde055b5062827af49fe5613c2e9a8582ac4347778cf4",
+              "manifest_sha256": "7e6245077d41dc7ec1db8fb0b4dcacb3ac300868790e6ceae90b80b85fe391de",
+              "predictions_sha256": "cb24d9296990bfeb0d3b1b170a8270e71f259d7387b9067e46ed90832477dc9d"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90704,
+              "model": "random_forest",
+              "accuracy": 0.29991204925241866,
+              "macro_f1": 0.29966755288990177,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  90,
+                  59,
+                  56,
+                  57
+                ],
+                [
+                  77,
+                  71,
+                  78,
+                  85
+                ],
+                [
+                  72,
+                  55,
+                  89,
+                  61
+                ],
+                [
+                  103,
+                  46,
+                  47,
+                  91
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2974227108142101,
+              "grouped_cv_accuracy_sd": 0.014337135789464448,
+              "model_sha256": "488c43018b9e262baa48f6039753ad88498eef706adf42fa4a36c94d2ebec39c",
+              "manifest_sha256": "32ce7ef96546de03ef8ea0fdd1bca81f82dd2222631500ed8bf4d97e318c9ab9",
+              "predictions_sha256": "334ce4df7c5c87bbc1c57e87cfec185168cc362e932c49b441df97c1ed4e6ad1"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90705,
+              "model": "random_forest",
+              "accuracy": 0.3007915567282322,
+              "macro_f1": 0.2998054251566825,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  94,
+                  53,
+                  53,
+                  62
+                ],
+                [
+                  78,
+                  65,
+                  78,
+                  90
+                ],
+                [
+                  72,
+                  55,
+                  89,
+                  61
+                ],
+                [
+                  103,
+                  44,
+                  46,
+                  94
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2975099559304484,
+              "grouped_cv_accuracy_sd": 0.014370111207285529,
+              "model_sha256": "12f50e4778d0d6f915d419f1da0973355c20597d947ffb60a3331fac0fa29062",
+              "manifest_sha256": "d879c6d8d7a653fc5b5297d5d0207d81bf83ffbc2d3fd9183b62ca2eb115b6f5",
+              "predictions_sha256": "c12f713d54957e4cc53bc120a648f8d334b75eeee870ee2de4effc59dd45c8bd"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90706,
+              "model": "random_forest",
+              "accuracy": 0.2963940193491645,
+              "macro_f1": 0.29542777231787487,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  94,
+                  51,
+                  54,
+                  63
+                ],
+                [
+                  80,
+                  64,
+                  78,
+                  89
+                ],
+                [
+                  74,
+                  52,
+                  89,
+                  62
+                ],
+                [
+                  106,
+                  45,
+                  46,
+                  90
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2960607811536206,
+              "grouped_cv_accuracy_sd": 0.013824811621700574,
+              "model_sha256": "1fbb6bb1c598ded8dc0ff58014b5bd8eadc4505ea2701b742627035f8a61dfbb",
+              "manifest_sha256": "30d0c0066d8377c1a03d7a336f7903565519ff9e6b506b3b7c173e683341bfd2",
+              "predictions_sha256": "a30c2e5ed009223c3218f2da63ed7615a1ff000cc81484333e23f2871fd7e023"
+            }
+          ]
+        }
+      },
+      "new_minus_previous_holdout_accuracy_mean": -0.00011395611812864415,
+      "new_minus_previous_holdout_macro_f1_mean": 0.011641143079013927
+    },
+    {
+      "model": "extra_trees",
+      "corpora": {
+        "previous": {
+          "fit_seeds": [
+            90652,
+            90653,
+            90654,
+            90655,
+            90656
+          ],
+          "holdout_accuracy_mean": 0.279734219269103,
+          "holdout_accuracy_sample_sd": 0.0018530676113711496,
+          "holdout_macro_f1_mean": 0.207834578252372,
+          "holdout_macro_f1_sample_sd": 0.0013474345020078502,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.29387272311116996,
+          "per_seed": [
+            {
+              "corpus": "previous",
+              "seed": 90652,
+              "model": "extra_trees",
+              "accuracy": 0.2779623477297896,
+              "macro_f1": 0.20696141992796288,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  88,
+                  114,
+                  13,
+                  3
+                ],
+                [
+                  79,
+                  147,
+                  12,
+                  1
+                ],
+                [
+                  77,
+                  137,
+                  15,
+                  1
+                ],
+                [
+                  75,
+                  125,
+                  15,
+                  1
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2958628972728591,
+              "grouped_cv_accuracy_sd": 0.028749376441018097,
+              "model_sha256": "767334a4b0014a63b9fa6991d368b03686088230e22d54334912836087580fec",
+              "manifest_sha256": "3ccd5be433ea39b6309f2c1ecaf9176a5b5e55f169b085b34ede66d55c063515",
+              "predictions_sha256": "101802bffb686b48050bea0835eac90573d9a5119141362fad000e79c0634809"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90653,
+              "model": "extra_trees",
+              "accuracy": 0.28017718715393136,
+              "macro_f1": 0.20926407193904925,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  88,
+                  114,
+                  13,
+                  3
+                ],
+                [
+                  78,
+                  148,
+                  12,
+                  1
+                ],
+                [
+                  79,
+                  134,
+                  16,
+                  1
+                ],
+                [
+                  75,
+                  129,
+                  11,
+                  1
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.29510098936384244,
+              "grouped_cv_accuracy_sd": 0.028812245452326357,
+              "model_sha256": "49b9b73d6fbf150006dab73ec9ca9588d66cbdf8db4005f363382396a79f3286",
+              "manifest_sha256": "4a04958c4411222b0cea61ed2bfbf49ca6a6e650237cd0446d4eefad7d42fc7b",
+              "predictions_sha256": "79b3b7b67a92c016074a0477957cf66d9244047da5faabd73227e2170c7e19f5"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90654,
+              "model": "extra_trees",
+              "accuracy": 0.2779623477297896,
+              "macro_f1": 0.20652727642030935,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  88,
+                  114,
+                  13,
+                  3
+                ],
+                [
+                  80,
+                  147,
+                  11,
+                  1
+                ],
+                [
+                  81,
+                  133,
+                  15,
+                  1
+                ],
+                [
+                  79,
+                  127,
+                  9,
+                  1
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2933064791259581,
+              "grouped_cv_accuracy_sd": 0.02673222791618012,
+              "model_sha256": "fd978fbb727727ec77de6843ab133674b47e41ef0358a11311e535f77c7429e9",
+              "manifest_sha256": "427a8fed32abddf60fb3c3d9fb5bc2acbf37e30d3fad8489f3676375fdab77a3",
+              "predictions_sha256": "6febedaca11c77cef1118a8a82aa2a4696bd268b4043fa1884827797ef3978de"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90655,
+              "model": "extra_trees",
+              "accuracy": 0.28017718715393136,
+              "macro_f1": 0.20709978046663144,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  90,
+                  113,
+                  12,
+                  3
+                ],
+                [
+                  80,
+                  148,
+                  10,
+                  1
+                ],
+                [
+                  80,
+                  135,
+                  14,
+                  1
+                ],
+                [
+                  80,
+                  125,
+                  10,
+                  1
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.29244287348585074,
+              "grouped_cv_accuracy_sd": 0.025033048669170974,
+              "model_sha256": "5d7410abab60bc3ab53fffe127b77da477cdbcf4435f7d2cf002ea9fb457a569",
+              "manifest_sha256": "a367d7198f25170af7904e295659ade3840657cab88add3461c9d64ec33b6d1b",
+              "predictions_sha256": "f0cf67f986a7986e6bebf2aca3c8f6ba96c918d375970953c44311876247cc47"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90656,
+              "model": "extra_trees",
+              "accuracy": 0.2823920265780731,
+              "macro_f1": 0.20932034250790715,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  88,
+                  113,
+                  14,
+                  3
+                ],
+                [
+                  76,
+                  151,
+                  11,
+                  1
+                ],
+                [
+                  80,
+                  134,
+                  15,
+                  1
+                ],
+                [
+                  79,
+                  126,
+                  10,
+                  1
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.29265037630733953,
+              "grouped_cv_accuracy_sd": 0.02419458731263816,
+              "model_sha256": "776522d9d66197e8552b3a07c3d5257bc98bdf81dade87ca03bb184eb5f075d7",
+              "manifest_sha256": "b92824d9736499457b20adf216d09dc64637fb8e8eabd2d9eb4fb1b526523287",
+              "predictions_sha256": "0d18da2de0e0d53d90bf4204d7526e37cfc966f3e0ea750841d1a782cadf9902"
+            }
+          ]
+        },
+        "independent": {
+          "fit_seeds": [
+            90702,
+            90703,
+            90704,
+            90705,
+            90706
+          ],
+          "holdout_accuracy_mean": 0.27669305189094107,
+          "holdout_accuracy_sample_sd": 0.00572018031363556,
+          "holdout_macro_f1_mean": 0.23667145982623058,
+          "holdout_macro_f1_sample_sd": 0.006181196610794588,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.2776645522695384,
+          "per_seed": [
+            {
+              "corpus": "independent",
+              "seed": 90702,
+              "model": "extra_trees",
+              "accuracy": 0.2770448548812665,
+              "macro_f1": 0.2394050730726602,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  15,
+                  125,
+                  85,
+                  37
+                ],
+                [
+                  19,
+                  164,
+                  87,
+                  41
+                ],
+                [
+                  20,
+                  142,
+                  94,
+                  21
+                ],
+                [
+                  18,
+                  157,
+                  70,
+                  42
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2785762373071946,
+              "grouped_cv_accuracy_sd": 0.01599186519108875,
+              "model_sha256": "140e8b5f7558f0d4dfc614223cac03ed5e1166d76397bb799d530227d618622c",
+              "manifest_sha256": "6c7f8d7fff2d22e8b4d73d7f4bbfc7fe8e8515511a5285b3e5825a5edddd2153",
+              "predictions_sha256": "3346c2dc2d34d802c03344a368dabca0fa9c575ff2fa0ce1c95bcc0b03d89263"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90703,
+              "model": "extra_trees",
+              "accuracy": 0.2691292875989446,
+              "macro_f1": 0.22833654878106588,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  13,
+                  127,
+                  86,
+                  36
+                ],
+                [
+                  17,
+                  166,
+                  87,
+                  41
+                ],
+                [
+                  20,
+                  146,
+                  90,
+                  21
+                ],
+                [
+                  18,
+                  163,
+                  69,
+                  37
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.27746206640650317,
+              "grouped_cv_accuracy_sd": 0.014059271190859488,
+              "model_sha256": "6aa64e24c1608b52fc0072b275aa92c00bfff9efbc00298361b2e20fc32e2b6b",
+              "manifest_sha256": "dcceb203c2f0274c89456cbc9fe66b599be5ca5858bd9d90bf5dec1a8f84b6b4",
+              "predictions_sha256": "599de1e132b64ea4fc3d5cb9005b9bed51b8152cb6c9b9470bc52c10a32597dd"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90704,
+              "model": "extra_trees",
+              "accuracy": 0.27352682497801234,
+              "macro_f1": 0.23210215881595506,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  14,
+                  131,
+                  83,
+                  34
+                ],
+                [
+                  17,
+                  170,
+                  88,
+                  36
+                ],
+                [
+                  20,
+                  147,
+                  90,
+                  20
+                ],
+                [
+                  17,
+                  163,
+                  70,
+                  37
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.278793910211452,
+              "grouped_cv_accuracy_sd": 0.014368597849852956,
+              "model_sha256": "c884b428a4436b4c5a31df3cdc8cca111065a134a74878725bccccc106e8a12e",
+              "manifest_sha256": "cf436b08b36274de729ea2d4c84e6f4a3c1b92cbbfafbd295fe809a193103af1",
+              "predictions_sha256": "4e00f831761b530d218c2ea58340f23dc2e5dc1b18060e9aa3e14272090f312a"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90705,
+              "model": "extra_trees",
+              "accuracy": 0.2796833773087071,
+              "macro_f1": 0.24047489908549755,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  18,
+                  130,
+                  83,
+                  31
+                ],
+                [
+                  19,
+                  172,
+                  86,
+                  34
+                ],
+                [
+                  24,
+                  143,
+                  91,
+                  19
+                ],
+                [
+                  21,
+                  160,
+                  69,
+                  37
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2784101795347345,
+              "grouped_cv_accuracy_sd": 0.015296192162690441,
+              "model_sha256": "c981d4b8197582d0de23b614e993f285f71b565023ad0705dbf9f745d7f38852",
+              "manifest_sha256": "c0fed11ee49a266028fd01313facb5d6228b9fffc16e0e7473942451dd541539",
+              "predictions_sha256": "115f8f7e3be11180d4a485da82d9c12c836181e17656a7a22ea83aa499c80fab"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90706,
+              "model": "extra_trees",
+              "accuracy": 0.28408091468777485,
+              "macro_f1": 0.24303861937597424,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  20,
+                  126,
+                  84,
+                  32
+                ],
+                [
+                  19,
+                  178,
+                  84,
+                  30
+                ],
+                [
+                  25,
+                  142,
+                  91,
+                  19
+                ],
+                [
+                  22,
+                  160,
+                  71,
+                  34
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2750803678878076,
+              "grouped_cv_accuracy_sd": 0.016156099805803584,
+              "model_sha256": "978727160edc565ea6f94e5f5f7de1592eca22199cc4bf7f9e7c06d7368f0b5c",
+              "manifest_sha256": "14005eaabb37f29600ddaed1c57140d57f273506532831939038dcd3b979d3e2",
+              "predictions_sha256": "fed73959d6037a945836c14836534d5b6bb02672b92d0163cb702813fb2e1099"
+            }
+          ]
+        }
+      },
+      "new_minus_previous_holdout_accuracy_mean": -0.0030411673781619575,
+      "new_minus_previous_holdout_macro_f1_mean": 0.02883688157385858
+    },
+    {
+      "model": "adaboost",
+      "corpora": {
+        "previous": {
+          "fit_seeds": [
+            90652,
+            90653,
+            90654,
+            90655,
+            90656
+          ],
+          "holdout_accuracy_mean": 0.28349944629014395,
+          "holdout_accuracy_sample_sd": 0.0,
+          "holdout_macro_f1_mean": 0.2785072971150453,
+          "holdout_macro_f1_sample_sd": 0.0,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.3082159074706313,
+          "per_seed": [
+            {
+              "corpus": "previous",
+              "seed": 90652,
+              "model": "adaboost",
+              "accuracy": 0.28349944629014395,
+              "macro_f1": 0.2785072971150453,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  72,
+                  65,
+                  44,
+                  37
+                ],
+                [
+                  61,
+                  89,
+                  40,
+                  49
+                ],
+                [
+                  74,
+                  80,
+                  44,
+                  32
+                ],
+                [
+                  65,
+                  58,
+                  42,
+                  51
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.3082159074706313,
+              "grouped_cv_accuracy_sd": 0.008768562480236934,
+              "model_sha256": "c03e05260f585ba4986399341ddf27681671ab4032412a123bf3f41e5bd3db5f",
+              "manifest_sha256": "7a7f85a53381ed336382b2fe47d14b4a4551e341a37a0cb14a7c4d10258f374a",
+              "predictions_sha256": "a8618a1dd7a72790e5bce8d43a070a10ae9f2eccd4d3f1d84742c2aec9c5059c"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90653,
+              "model": "adaboost",
+              "accuracy": 0.28349944629014395,
+              "macro_f1": 0.2785072971150453,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  72,
+                  65,
+                  44,
+                  37
+                ],
+                [
+                  61,
+                  89,
+                  40,
+                  49
+                ],
+                [
+                  74,
+                  80,
+                  44,
+                  32
+                ],
+                [
+                  65,
+                  58,
+                  42,
+                  51
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.3082159074706313,
+              "grouped_cv_accuracy_sd": 0.008768562480236934,
+              "model_sha256": "6de6a527cedcf547abf1c5271e95b2cc8319c3e6fb341fdfbce6185a6b4a7a8c",
+              "manifest_sha256": "34f0fb70168d43a6dd2726640e666c96644fda28a1075090c18dd20f1f978898",
+              "predictions_sha256": "a8618a1dd7a72790e5bce8d43a070a10ae9f2eccd4d3f1d84742c2aec9c5059c"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90654,
+              "model": "adaboost",
+              "accuracy": 0.28349944629014395,
+              "macro_f1": 0.2785072971150453,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  72,
+                  65,
+                  44,
+                  37
+                ],
+                [
+                  61,
+                  89,
+                  40,
+                  49
+                ],
+                [
+                  74,
+                  80,
+                  44,
+                  32
+                ],
+                [
+                  65,
+                  58,
+                  42,
+                  51
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.3082159074706313,
+              "grouped_cv_accuracy_sd": 0.008768562480236934,
+              "model_sha256": "7ab7e8f36045cc0f89f3528e80a5710bb5fdb62820040af698f2cd76da7a71c1",
+              "manifest_sha256": "4b9b316edd616718b840a2695a102f03bed372515fc3c8901cdaa53134ff1866",
+              "predictions_sha256": "a8618a1dd7a72790e5bce8d43a070a10ae9f2eccd4d3f1d84742c2aec9c5059c"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90655,
+              "model": "adaboost",
+              "accuracy": 0.28349944629014395,
+              "macro_f1": 0.2785072971150453,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  72,
+                  65,
+                  44,
+                  37
+                ],
+                [
+                  61,
+                  89,
+                  40,
+                  49
+                ],
+                [
+                  74,
+                  80,
+                  44,
+                  32
+                ],
+                [
+                  65,
+                  58,
+                  42,
+                  51
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.3082159074706313,
+              "grouped_cv_accuracy_sd": 0.008768562480236934,
+              "model_sha256": "e058fee3e0295967dceeb4228ad1bfabf6b8536270ad69836b55efd77ff668f0",
+              "manifest_sha256": "ce8d3be1c276f3597c16947d752afbbe2635b685e39fb06b4de809bd8fc53311",
+              "predictions_sha256": "a8618a1dd7a72790e5bce8d43a070a10ae9f2eccd4d3f1d84742c2aec9c5059c"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90656,
+              "model": "adaboost",
+              "accuracy": 0.28349944629014395,
+              "macro_f1": 0.2785072971150453,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  72,
+                  65,
+                  44,
+                  37
+                ],
+                [
+                  61,
+                  89,
+                  40,
+                  49
+                ],
+                [
+                  74,
+                  80,
+                  44,
+                  32
+                ],
+                [
+                  65,
+                  58,
+                  42,
+                  51
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.3082159074706313,
+              "grouped_cv_accuracy_sd": 0.008768562480236934,
+              "model_sha256": "6766b20c53e8c134c3d44865e1403265efbed41b7a5ac74776a4ed84542b3a34",
+              "manifest_sha256": "5b6a5d01e6a9deea5b0116e64ba084a3da74b4fc232dfde8dd108d3f33adb063",
+              "predictions_sha256": "a8618a1dd7a72790e5bce8d43a070a10ae9f2eccd4d3f1d84742c2aec9c5059c"
+            }
+          ]
+        },
+        "independent": {
+          "fit_seeds": [
+            90702,
+            90703,
+            90704,
+            90705,
+            90706
+          ],
+          "holdout_accuracy_mean": 0.2884784520668426,
+          "holdout_accuracy_sample_sd": 0.0,
+          "holdout_macro_f1_mean": 0.2877983023713456,
+          "holdout_macro_f1_sample_sd": 0.0,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.2849372660059316,
+          "per_seed": [
+            {
+              "corpus": "independent",
+              "seed": 90702,
+              "model": "adaboost",
+              "accuracy": 0.2884784520668426,
+              "macro_f1": 0.2877983023713456,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  75,
+                  51,
+                  62,
+                  74
+                ],
+                [
+                  60,
+                  69,
+                  74,
+                  108
+                ],
+                [
+                  70,
+                  66,
+                  85,
+                  56
+                ],
+                [
+                  82,
+                  63,
+                  43,
+                  99
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2849372660059316,
+              "grouped_cv_accuracy_sd": 0.01735927959341556,
+              "model_sha256": "119637086c361163e8956221b8a01c82a74ee7a59436022c1ab9bc50e5a1bedc",
+              "manifest_sha256": "475f2506b1197cbf92546f7f23946eba249659c74c8e032bc9b50923768603df",
+              "predictions_sha256": "5fbd32b1a81588c02a1bbb7e8f32249c4d31a3b4bf237e435e59d04549bdb8ff"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90703,
+              "model": "adaboost",
+              "accuracy": 0.2884784520668426,
+              "macro_f1": 0.2877983023713456,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  75,
+                  51,
+                  62,
+                  74
+                ],
+                [
+                  60,
+                  69,
+                  74,
+                  108
+                ],
+                [
+                  70,
+                  66,
+                  85,
+                  56
+                ],
+                [
+                  82,
+                  63,
+                  43,
+                  99
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2849372660059316,
+              "grouped_cv_accuracy_sd": 0.01735927959341556,
+              "model_sha256": "902a8e80f8f59b644fdf5d4fc723046f819794934bd8c01bdf7a0a06a8941cee",
+              "manifest_sha256": "ab447c74ea02890cccf04e193fe9e5ae6783281c87750a4d0333885561eddee9",
+              "predictions_sha256": "5fbd32b1a81588c02a1bbb7e8f32249c4d31a3b4bf237e435e59d04549bdb8ff"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90704,
+              "model": "adaboost",
+              "accuracy": 0.2884784520668426,
+              "macro_f1": 0.2877983023713456,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  75,
+                  51,
+                  62,
+                  74
+                ],
+                [
+                  60,
+                  69,
+                  74,
+                  108
+                ],
+                [
+                  70,
+                  66,
+                  85,
+                  56
+                ],
+                [
+                  82,
+                  63,
+                  43,
+                  99
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2849372660059316,
+              "grouped_cv_accuracy_sd": 0.01735927959341556,
+              "model_sha256": "25af6746aed271c271c6c03c94aad3c99e02b87bb01c874a99327715495f706e",
+              "manifest_sha256": "74d964703b39c45813cbb4249c0f2962dd9636ade0a8e49bd10befbfa9efefd2",
+              "predictions_sha256": "5fbd32b1a81588c02a1bbb7e8f32249c4d31a3b4bf237e435e59d04549bdb8ff"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90705,
+              "model": "adaboost",
+              "accuracy": 0.2884784520668426,
+              "macro_f1": 0.2877983023713456,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  75,
+                  51,
+                  62,
+                  74
+                ],
+                [
+                  60,
+                  69,
+                  74,
+                  108
+                ],
+                [
+                  70,
+                  66,
+                  85,
+                  56
+                ],
+                [
+                  82,
+                  63,
+                  43,
+                  99
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2849372660059316,
+              "grouped_cv_accuracy_sd": 0.01735927959341556,
+              "model_sha256": "0b4a61542a140d48b1c531dd8d732f147ffffbdec4ffb244aacc65e70ef50a98",
+              "manifest_sha256": "58f71f4c24ea2ae2310fd28b676ced3e6586084b1505e44a2c230959c8d178d8",
+              "predictions_sha256": "5fbd32b1a81588c02a1bbb7e8f32249c4d31a3b4bf237e435e59d04549bdb8ff"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90706,
+              "model": "adaboost",
+              "accuracy": 0.2884784520668426,
+              "macro_f1": 0.2877983023713456,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  75,
+                  51,
+                  62,
+                  74
+                ],
+                [
+                  60,
+                  69,
+                  74,
+                  108
+                ],
+                [
+                  70,
+                  66,
+                  85,
+                  56
+                ],
+                [
+                  82,
+                  63,
+                  43,
+                  99
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2849372660059316,
+              "grouped_cv_accuracy_sd": 0.01735927959341556,
+              "model_sha256": "db72db68816ee73e685ce62a7df73ca1309700e1af49ec2a554a78dfff8bc864",
+              "manifest_sha256": "d1e47637d4bc6a033a6cc676d66adb006cbf913b86b914dc24c519d1cecd4ac5",
+              "predictions_sha256": "5fbd32b1a81588c02a1bbb7e8f32249c4d31a3b4bf237e435e59d04549bdb8ff"
+            }
+          ]
+        }
+      },
+      "new_minus_previous_holdout_accuracy_mean": 0.004979005776698631,
+      "new_minus_previous_holdout_macro_f1_mean": 0.009291005256300333
+    },
+    {
+      "model": "knn",
+      "corpora": {
+        "previous": {
+          "fit_seeds": [
+            90652,
+            90653,
+            90654,
+            90655,
+            90656
+          ],
+          "holdout_accuracy_mean": 0.2602436323366556,
+          "holdout_accuracy_sample_sd": 0.0,
+          "holdout_macro_f1_mean": 0.25367510386543435,
+          "holdout_macro_f1_sample_sd": 0.0,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.2598741605691712,
+          "per_seed": [
+            {
+              "corpus": "previous",
+              "seed": 90652,
+              "model": "knn",
+              "accuracy": 0.2602436323366556,
+              "macro_f1": 0.25367510386543435,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  73,
+                  64,
+                  42,
+                  39
+                ],
+                [
+                  85,
+                  77,
+                  46,
+                  31
+                ],
+                [
+                  86,
+                  55,
+                  55,
+                  34
+                ],
+                [
+                  80,
+                  70,
+                  36,
+                  30
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2598741605691712,
+              "grouped_cv_accuracy_sd": 0.018956599608887365,
+              "model_sha256": "f436b897544b81ef82b0a58f3480c90ef7d32ef8f9b053ca5767313e3677882e",
+              "manifest_sha256": "59fff25f41db87252e088a17df90543dde1ce8c6aa265e37ee2eebeb91648e6d",
+              "predictions_sha256": "144c90a7d2d8a8abc724c9644fa63ca9b19c5b655c48916068715ef6b1ec38df"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90653,
+              "model": "knn",
+              "accuracy": 0.2602436323366556,
+              "macro_f1": 0.25367510386543435,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  73,
+                  64,
+                  42,
+                  39
+                ],
+                [
+                  85,
+                  77,
+                  46,
+                  31
+                ],
+                [
+                  86,
+                  55,
+                  55,
+                  34
+                ],
+                [
+                  80,
+                  70,
+                  36,
+                  30
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2598741605691712,
+              "grouped_cv_accuracy_sd": 0.018956599608887365,
+              "model_sha256": "2285d1dc34f3db1be175639dcd576172e07b187aac7a2cb64ce5c1a3d7331c28",
+              "manifest_sha256": "c5b4eba8f1dd404bacc2f21765730233108da4875fb0e02b58cab7959a43d3c6",
+              "predictions_sha256": "144c90a7d2d8a8abc724c9644fa63ca9b19c5b655c48916068715ef6b1ec38df"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90654,
+              "model": "knn",
+              "accuracy": 0.2602436323366556,
+              "macro_f1": 0.25367510386543435,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  73,
+                  64,
+                  42,
+                  39
+                ],
+                [
+                  85,
+                  77,
+                  46,
+                  31
+                ],
+                [
+                  86,
+                  55,
+                  55,
+                  34
+                ],
+                [
+                  80,
+                  70,
+                  36,
+                  30
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2598741605691712,
+              "grouped_cv_accuracy_sd": 0.018956599608887365,
+              "model_sha256": "d11af5b41608f8dfdc35c32c7b4480df33d4477d3369e3d4ad34fdbef5c039b2",
+              "manifest_sha256": "480d1d51fdb039b3ffd9447c6ba50c08954608a34d810a5d91c0dc64672ff299",
+              "predictions_sha256": "144c90a7d2d8a8abc724c9644fa63ca9b19c5b655c48916068715ef6b1ec38df"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90655,
+              "model": "knn",
+              "accuracy": 0.2602436323366556,
+              "macro_f1": 0.25367510386543435,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  73,
+                  64,
+                  42,
+                  39
+                ],
+                [
+                  85,
+                  77,
+                  46,
+                  31
+                ],
+                [
+                  86,
+                  55,
+                  55,
+                  34
+                ],
+                [
+                  80,
+                  70,
+                  36,
+                  30
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2598741605691712,
+              "grouped_cv_accuracy_sd": 0.018956599608887365,
+              "model_sha256": "4da1a3a89d7e6680fb117cfdaeba781f87f11e61b127bf72695984e7265a51c0",
+              "manifest_sha256": "33c895c73f189126e445bd2bb7cf0178d0e131e7fecadeb8cb1d661ff3e192db",
+              "predictions_sha256": "144c90a7d2d8a8abc724c9644fa63ca9b19c5b655c48916068715ef6b1ec38df"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90656,
+              "model": "knn",
+              "accuracy": 0.2602436323366556,
+              "macro_f1": 0.25367510386543435,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  73,
+                  64,
+                  42,
+                  39
+                ],
+                [
+                  85,
+                  77,
+                  46,
+                  31
+                ],
+                [
+                  86,
+                  55,
+                  55,
+                  34
+                ],
+                [
+                  80,
+                  70,
+                  36,
+                  30
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2598741605691712,
+              "grouped_cv_accuracy_sd": 0.018956599608887365,
+              "model_sha256": "5d51a030927d532472e69636faefd1bac74bdce763ceb94df0d331d557966e85",
+              "manifest_sha256": "fb7061035e6e89bdac4c982c4b8429ef24bb6c8e91f8147f5da3122c5f7f062d",
+              "predictions_sha256": "144c90a7d2d8a8abc724c9644fa63ca9b19c5b655c48916068715ef6b1ec38df"
+            }
+          ]
+        },
+        "independent": {
+          "fit_seeds": [
+            90702,
+            90703,
+            90704,
+            90705,
+            90706
+          ],
+          "holdout_accuracy_mean": 0.2541776605101143,
+          "holdout_accuracy_sample_sd": 0.0,
+          "holdout_macro_f1_mean": 0.2475097620300035,
+          "holdout_macro_f1_sample_sd": 0.0,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.24644190994998963,
+          "per_seed": [
+            {
+              "corpus": "independent",
+              "seed": 90702,
+              "model": "knn",
+              "accuracy": 0.2541776605101143,
+              "macro_f1": 0.2475097620300035,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  94,
+                  73,
+                  49,
+                  46
+                ],
+                [
+                  72,
+                  98,
+                  72,
+                  69
+                ],
+                [
+                  90,
+                  93,
+                  53,
+                  41
+                ],
+                [
+                  109,
+                  73,
+                  61,
+                  44
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.24644190994998963,
+              "grouped_cv_accuracy_sd": 0.014525622335270537,
+              "model_sha256": "9394ea0359ab36b72c900bf229eadc54f0c28bad9494885408345ce07998124a",
+              "manifest_sha256": "ec02ad25f34aef778b304080d0bb68ddbfe96e7f453ab8873fa0c7aad35e05b9",
+              "predictions_sha256": "09ac00e9d24dac487672e81bec1e675bda3404084ebf8dd48981fd27b3b272f9"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90703,
+              "model": "knn",
+              "accuracy": 0.2541776605101143,
+              "macro_f1": 0.2475097620300035,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  94,
+                  73,
+                  49,
+                  46
+                ],
+                [
+                  72,
+                  98,
+                  72,
+                  69
+                ],
+                [
+                  90,
+                  93,
+                  53,
+                  41
+                ],
+                [
+                  109,
+                  73,
+                  61,
+                  44
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.24644190994998963,
+              "grouped_cv_accuracy_sd": 0.014525622335270537,
+              "model_sha256": "35f755e9ca062822e674cb9dd297df5524cad4d948cff44e65139df781d10112",
+              "manifest_sha256": "cd349788486ae4594e282256833be8b40220f8cefd6e5545065308eb26c39820",
+              "predictions_sha256": "09ac00e9d24dac487672e81bec1e675bda3404084ebf8dd48981fd27b3b272f9"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90704,
+              "model": "knn",
+              "accuracy": 0.2541776605101143,
+              "macro_f1": 0.2475097620300035,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  94,
+                  73,
+                  49,
+                  46
+                ],
+                [
+                  72,
+                  98,
+                  72,
+                  69
+                ],
+                [
+                  90,
+                  93,
+                  53,
+                  41
+                ],
+                [
+                  109,
+                  73,
+                  61,
+                  44
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.24644190994998963,
+              "grouped_cv_accuracy_sd": 0.014525622335270537,
+              "model_sha256": "0645b951b225d2b303670b97be3d2ccf84083822cd34db79e80dd2b4c285ab8f",
+              "manifest_sha256": "4911ad95979fb30f0cc9ed28e1bc183496a54521e916ae3985bc35df62fa0d54",
+              "predictions_sha256": "09ac00e9d24dac487672e81bec1e675bda3404084ebf8dd48981fd27b3b272f9"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90705,
+              "model": "knn",
+              "accuracy": 0.2541776605101143,
+              "macro_f1": 0.2475097620300035,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  94,
+                  73,
+                  49,
+                  46
+                ],
+                [
+                  72,
+                  98,
+                  72,
+                  69
+                ],
+                [
+                  90,
+                  93,
+                  53,
+                  41
+                ],
+                [
+                  109,
+                  73,
+                  61,
+                  44
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.24644190994998963,
+              "grouped_cv_accuracy_sd": 0.014525622335270537,
+              "model_sha256": "031f6a3bccabc37ecac3ef383d4698b56ed40f2ba1acd55d9a8c9c539f05bb42",
+              "manifest_sha256": "e74aca77de818064590834887f00ea940b0f907a271e89502b8efb9911f281d6",
+              "predictions_sha256": "09ac00e9d24dac487672e81bec1e675bda3404084ebf8dd48981fd27b3b272f9"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90706,
+              "model": "knn",
+              "accuracy": 0.2541776605101143,
+              "macro_f1": 0.2475097620300035,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  94,
+                  73,
+                  49,
+                  46
+                ],
+                [
+                  72,
+                  98,
+                  72,
+                  69
+                ],
+                [
+                  90,
+                  93,
+                  53,
+                  41
+                ],
+                [
+                  109,
+                  73,
+                  61,
+                  44
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.24644190994998963,
+              "grouped_cv_accuracy_sd": 0.014525622335270537,
+              "model_sha256": "eb64c16d4e3e10db47ecb3ae68ea95741c22e4f4052c82b48b03a9cd2ec2ab35",
+              "manifest_sha256": "9e043578254df48d44170b032a7c330816485ee6b827499363588b549e9caa39",
+              "predictions_sha256": "09ac00e9d24dac487672e81bec1e675bda3404084ebf8dd48981fd27b3b272f9"
+            }
+          ]
+        }
+      },
+      "new_minus_previous_holdout_accuracy_mean": -0.006065971826541283,
+      "new_minus_previous_holdout_macro_f1_mean": -0.006165341835430854
+    },
+    {
+      "model": "naive_bayes",
+      "corpora": {
+        "previous": {
+          "fit_seeds": [
+            90652,
+            90653,
+            90654,
+            90655,
+            90656
+          ],
+          "holdout_accuracy_mean": 0.23809523809523808,
+          "holdout_accuracy_sample_sd": 0.0,
+          "holdout_macro_f1_mean": 0.19606195098099377,
+          "holdout_macro_f1_sample_sd": 0.0,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.26526636985627816,
+          "per_seed": [
+            {
+              "corpus": "previous",
+              "seed": 90652,
+              "model": "naive_bayes",
+              "accuracy": 0.23809523809523808,
+              "macro_f1": 0.19606195098099377,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  105,
+                  77,
+                  11,
+                  25
+                ],
+                [
+                  124,
+                  86,
+                  15,
+                  14
+                ],
+                [
+                  120,
+                  82,
+                  9,
+                  19
+                ],
+                [
+                  107,
+                  82,
+                  12,
+                  15
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.26526636985627816,
+              "grouped_cv_accuracy_sd": 0.0187070209903799,
+              "model_sha256": "d79c8d8df92b2ddf34e2138da3be7c301dcbb61b952fc14377000f2f852fd877",
+              "manifest_sha256": "f1644daf3bafe7e2d6fb52b0de11e914a3eec04bc0d9f983817568911231454d",
+              "predictions_sha256": "5b6d919c24a9bdb03a49d9061238ea1977fd50a9ed7881921c35ca6bb7af6db0"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90653,
+              "model": "naive_bayes",
+              "accuracy": 0.23809523809523808,
+              "macro_f1": 0.19606195098099377,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  105,
+                  77,
+                  11,
+                  25
+                ],
+                [
+                  124,
+                  86,
+                  15,
+                  14
+                ],
+                [
+                  120,
+                  82,
+                  9,
+                  19
+                ],
+                [
+                  107,
+                  82,
+                  12,
+                  15
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.26526636985627816,
+              "grouped_cv_accuracy_sd": 0.0187070209903799,
+              "model_sha256": "7380a148e6cf164a65c2b99df55e88a147ca897cf4ed527c14f221b7448731f7",
+              "manifest_sha256": "8c8cffb071d5124f44851fd7857e5fed7af4465c619cf22f3d0d65fe251c30a9",
+              "predictions_sha256": "5b6d919c24a9bdb03a49d9061238ea1977fd50a9ed7881921c35ca6bb7af6db0"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90654,
+              "model": "naive_bayes",
+              "accuracy": 0.23809523809523808,
+              "macro_f1": 0.19606195098099377,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  105,
+                  77,
+                  11,
+                  25
+                ],
+                [
+                  124,
+                  86,
+                  15,
+                  14
+                ],
+                [
+                  120,
+                  82,
+                  9,
+                  19
+                ],
+                [
+                  107,
+                  82,
+                  12,
+                  15
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.26526636985627816,
+              "grouped_cv_accuracy_sd": 0.0187070209903799,
+              "model_sha256": "31ec965576589e00e35b98024336f5393380bb3a6237a3269d81e375064be325",
+              "manifest_sha256": "64dd4147ca16f43a77424240a730dabea5dd903e65c1335e6fb05e676b44f666",
+              "predictions_sha256": "5b6d919c24a9bdb03a49d9061238ea1977fd50a9ed7881921c35ca6bb7af6db0"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90655,
+              "model": "naive_bayes",
+              "accuracy": 0.23809523809523808,
+              "macro_f1": 0.19606195098099377,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  105,
+                  77,
+                  11,
+                  25
+                ],
+                [
+                  124,
+                  86,
+                  15,
+                  14
+                ],
+                [
+                  120,
+                  82,
+                  9,
+                  19
+                ],
+                [
+                  107,
+                  82,
+                  12,
+                  15
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.26526636985627816,
+              "grouped_cv_accuracy_sd": 0.0187070209903799,
+              "model_sha256": "79ab3d026136ef78d07b6d4540e6232fa1286e5a19172b6c74a02cdda8dba0fd",
+              "manifest_sha256": "1ba3a75b4c2e42e987cb955210fb8c0647ee84915ae319c9de696d92a0e4df6a",
+              "predictions_sha256": "5b6d919c24a9bdb03a49d9061238ea1977fd50a9ed7881921c35ca6bb7af6db0"
+            },
+            {
+              "corpus": "previous",
+              "seed": 90656,
+              "model": "naive_bayes",
+              "accuracy": 0.23809523809523808,
+              "macro_f1": 0.19606195098099377,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  105,
+                  77,
+                  11,
+                  25
+                ],
+                [
+                  124,
+                  86,
+                  15,
+                  14
+                ],
+                [
+                  120,
+                  82,
+                  9,
+                  19
+                ],
+                [
+                  107,
+                  82,
+                  12,
+                  15
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.26526636985627816,
+              "grouped_cv_accuracy_sd": 0.0187070209903799,
+              "model_sha256": "38137c74fc5d5134159cc93f1a855d8db580b5fd64c3c1759bacc4227cd53152",
+              "manifest_sha256": "e64bd30c9271eddab00491a8d099f5f03dadb74470184dbffb229b66323dd585",
+              "predictions_sha256": "5b6d919c24a9bdb03a49d9061238ea1977fd50a9ed7881921c35ca6bb7af6db0"
+            }
+          ]
+        },
+        "independent": {
+          "fit_seeds": [
+            90702,
+            90703,
+            90704,
+            90705,
+            90706
+          ],
+          "holdout_accuracy_mean": 0.2638522427440633,
+          "holdout_accuracy_sample_sd": 0.0,
+          "holdout_macro_f1_mean": 0.19844258874260934,
+          "holdout_macro_f1_sample_sd": 0.0,
+          "grouped_cv_accuracy_mean_across_fit_seeds": 0.2596552087841727,
+          "per_seed": [
+            {
+              "corpus": "independent",
+              "seed": 90702,
+              "model": "naive_bayes",
+              "accuracy": 0.2638522427440633,
+              "macro_f1": 0.19844258874260934,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  31,
+                  197,
+                  24,
+                  10
+                ],
+                [
+                  35,
+                  223,
+                  34,
+                  19
+                ],
+                [
+                  37,
+                  200,
+                  29,
+                  11
+                ],
+                [
+                  33,
+                  208,
+                  29,
+                  17
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2596552087841727,
+              "grouped_cv_accuracy_sd": 0.01677565164916026,
+              "model_sha256": "79f6f36529c1702f483a51500edb12feabb22aa026c1ae429a5c547a8b1e717a",
+              "manifest_sha256": "5098cea02ed83474609f519c155f51a2daa52ba7e6f8ecd8da927e75d84b540a",
+              "predictions_sha256": "8af5655b4987608a76ce70068b9777b524706dbe0f7952e3112a8dbf6bc534b8"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90703,
+              "model": "naive_bayes",
+              "accuracy": 0.2638522427440633,
+              "macro_f1": 0.19844258874260934,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  31,
+                  197,
+                  24,
+                  10
+                ],
+                [
+                  35,
+                  223,
+                  34,
+                  19
+                ],
+                [
+                  37,
+                  200,
+                  29,
+                  11
+                ],
+                [
+                  33,
+                  208,
+                  29,
+                  17
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2596552087841727,
+              "grouped_cv_accuracy_sd": 0.01677565164916026,
+              "model_sha256": "e7148fe9ae6b82a995bba1b463ccadb505bb6c487de80079e0baf0f26bdd7883",
+              "manifest_sha256": "8e2c067316c950d6ecc76068e5cbc8e39109027b2fcef709ad19a072215afd2d",
+              "predictions_sha256": "8af5655b4987608a76ce70068b9777b524706dbe0f7952e3112a8dbf6bc534b8"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90704,
+              "model": "naive_bayes",
+              "accuracy": 0.2638522427440633,
+              "macro_f1": 0.19844258874260934,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  31,
+                  197,
+                  24,
+                  10
+                ],
+                [
+                  35,
+                  223,
+                  34,
+                  19
+                ],
+                [
+                  37,
+                  200,
+                  29,
+                  11
+                ],
+                [
+                  33,
+                  208,
+                  29,
+                  17
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2596552087841727,
+              "grouped_cv_accuracy_sd": 0.01677565164916026,
+              "model_sha256": "ef85c7c046d4a2d63482a980335ed275017736caaa145f76c55d91685e2d4608",
+              "manifest_sha256": "858b43dba516bfe2f00ef587e057d315753d81db6ee439e4ded18a6fd9c1e776",
+              "predictions_sha256": "8af5655b4987608a76ce70068b9777b524706dbe0f7952e3112a8dbf6bc534b8"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90705,
+              "model": "naive_bayes",
+              "accuracy": 0.2638522427440633,
+              "macro_f1": 0.19844258874260934,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  31,
+                  197,
+                  24,
+                  10
+                ],
+                [
+                  35,
+                  223,
+                  34,
+                  19
+                ],
+                [
+                  37,
+                  200,
+                  29,
+                  11
+                ],
+                [
+                  33,
+                  208,
+                  29,
+                  17
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2596552087841727,
+              "grouped_cv_accuracy_sd": 0.01677565164916026,
+              "model_sha256": "1630746ee2a318233223abc7eeed8a52177df95d580cdaa00badd3e8ce78db9d",
+              "manifest_sha256": "0a9d4e515f5baefc43349d43a41855eedf3fa09ecf5da86c6112b0a232af0865",
+              "predictions_sha256": "8af5655b4987608a76ce70068b9777b524706dbe0f7952e3112a8dbf6bc534b8"
+            },
+            {
+              "corpus": "independent",
+              "seed": 90706,
+              "model": "naive_bayes",
+              "accuracy": 0.2638522427440633,
+              "macro_f1": 0.19844258874260934,
+              "confusion_matrix_actual_rows_predicted_columns": [
+                [
+                  31,
+                  197,
+                  24,
+                  10
+                ],
+                [
+                  35,
+                  223,
+                  34,
+                  19
+                ],
+                [
+                  37,
+                  200,
+                  29,
+                  11
+                ],
+                [
+                  33,
+                  208,
+                  29,
+                  17
+                ]
+              ],
+              "grouped_cv_accuracy_mean": 0.2596552087841727,
+              "grouped_cv_accuracy_sd": 0.01677565164916026,
+              "model_sha256": "c030c8e231d6d5a85827f4c6304e30404fc6ce15e8337f8ba0ef07fd12a57206",
+              "manifest_sha256": "80615b6eacc04f81ca3b54da6e422b035e899ed3e6534aa9a912c4713ab633f7",
+              "predictions_sha256": "8af5655b4987608a76ce70068b9777b524706dbe0f7952e3112a8dbf6bc534b8"
+            }
+          ]
+        }
+      },
+      "new_minus_previous_holdout_accuracy_mean": 0.025757004648825244,
+      "new_minus_previous_holdout_macro_f1_mean": 0.002380637761615567
+    }
+  ]
+}
