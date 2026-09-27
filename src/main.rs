@@ -882,25 +882,35 @@ fn main() {
                     } else {
                         (evaluation::mann_whitney_u_pvalue(&first.scores, &second.scores), "mann_whitney_u_independent".to_string())
                     };
+                    let comparison_seed = seeds::SeedManager::new(seed).comparison_seed(comparisons.len());
+                    let interval = if paired {
+                        evaluation::paired_bootstrap_mean_difference_ci(&first_scores, &second_scores, comparison_seed, 5_000)
+                    } else {
+                        evaluation::bootstrap_mean_difference_ci(&first_scores, &second_scores, comparison_seed, 5_000)
+                    };
+                    let (effect_size, effect_method) = if paired {
+                        (evaluation::paired_cohens_dz(&first_scores, &second_scores), "cohens_dz_paired")
+                    } else {
+                        (evaluation::cohens_d(&first_scores, &second_scores), "cohens_d_independent")
+                    };
                     comparisons.push((first.name.clone(), second.name.clone(), p_value.unwrap_or(1.0), test,
-                        evaluation::bootstrap_mean_difference_ci(&first_scores, &second_scores, seeds::SeedManager::new(seed).comparison_seed(comparisons.len()), 5_000),
-                        evaluation::cohens_d(&first_scores, &second_scores)));
+                        interval, effect_size, effect_method, paired));
                 }
             }
             let adjusted = evaluation::holm_adjust(&comparisons.iter().map(|row| row.2).collect::<Vec<_>>());
             if let Some(parent) = output.parent() { std::fs::create_dir_all(parent).expect("failed to create comparison directory"); }
             use std::io::Write;
             let mut file = std::fs::File::create(&output).expect("failed to create comparison CSV");
-            writeln!(file, "first,second,first_n,second_n,first_mean,second_mean,test,p_value,holm_p,mean_difference_ci95_low,mean_difference_ci95_high,cohens_d,seed_sequences_equal,first_input,second_input").unwrap();
-            for (index, (first_name, second_name, p, test, ci, d)) in comparisons.iter().enumerate() {
+            writeln!(file, "first,second,first_n,second_n,first_mean,second_mean,test,p_value,holm_p,mean_difference_ci95_low,mean_difference_ci95_high,cohens_d,effect_size_method,seed_sets_match,first_input,second_input").unwrap();
+            for (index, (first_name, second_name, p, test, ci, d, effect_method, paired)) in comparisons.iter().enumerate() {
                 let first = datasets.iter().find(|data| &data.name == first_name).unwrap();
                 let second = datasets.iter().find(|data| &data.name == second_name).unwrap();
                 let ci = ci.unwrap_or((f64::NAN, f64::NAN));
                 let d = d.unwrap_or(f64::NAN);
-                writeln!(file, "{first_name},{second_name},{},{},{:.6},{:.6},{test},{p:.8},{:.8},{:.6},{:.6},{d:.6},{},{},{}", first.scores.len(), second.scores.len(), first.scores.iter().map(|&x| x as f64).sum::<f64>() / first.scores.len() as f64, second.scores.iter().map(|&x| x as f64).sum::<f64>() / second.scores.len() as f64, adjusted[index], ci.0, ci.1, first.seeds == second.seeds, first.input.display(), second.input.display()).unwrap();
+                writeln!(file, "{first_name},{second_name},{},{},{:.6},{:.6},{test},{p:.8},{:.8},{:.6},{:.6},{d:.6},{effect_method},{paired},{},{}", first.scores.len(), second.scores.len(), first.scores.iter().map(|&x| x as f64).sum::<f64>() / first.scores.len() as f64, second.scores.iter().map(|&x| x as f64).sum::<f64>() / second.scores.len() as f64, adjusted[index], ci.0, ci.1, first.input.display(), second.input.display()).unwrap();
             }
             file.flush().unwrap();
-            write_json_manifest(&output, &serde_json::json!({"created_utc": chrono::Utc::now().to_rfc3339(), "project_version": env!("CARGO_PKG_VERSION"), "analysis": "matched seed sequences use exact two-sided sign test; unmatched runs use independent Mann-Whitney U; Holm adjustment; independent bootstrap CI of mean score difference and Cohen's d", "paired_test_limitation": "sign test uses direction and ignores ties; it is conservative and is not Wilcoxon", "seed_sequences_checked_for_equality": true, "input_files": datasets.iter().map(|data| &data.input).collect::<Vec<_>>(), "comparison_csv": output})).expect("failed to write comparison manifest");
+            write_json_manifest(&output, &serde_json::json!({"created_utc": chrono::Utc::now().to_rfc3339(), "project_version": env!("CARGO_PKG_VERSION"), "analysis": "matched seed sets use paired exact sign tests, paired bootstrap intervals, and Cohen's dz; unmatched runs use independent Mann-Whitney U, independent bootstrap intervals, and Cohen's d; Holm adjustment applies to all p-values", "paired_test_limitation": "sign test uses direction and ignores ties; it is conservative and is not Wilcoxon", "bootstrap_replicates": 5000, "seed_sets_checked_for_equality": true, "input_files": datasets.iter().map(|data| &data.input).collect::<Vec<_>>(), "comparison_csv": output})).expect("failed to write comparison manifest");
             let manifest_path = output.with_extension("manifest.json");
             let mut manifest: serde_json::Value = serde_json::from_slice(&std::fs::read(&manifest_path).unwrap()).unwrap();
             manifest["source_revision"] = serde_json::json!(std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|result| result.status.success()).map(|result| String::from_utf8_lossy(&result.stdout).trim().to_owned()));

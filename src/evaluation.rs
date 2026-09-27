@@ -263,6 +263,39 @@ pub fn bootstrap_mean_difference_ci(
     ))
 }
 
+/// Percentile bootstrap interval for the mean of paired first-minus-second
+/// observations. The shared index is resampled once per pair.
+pub fn paired_bootstrap_mean_difference_ci(
+    first: &[u64],
+    second: &[u64],
+    seed: u64,
+    bootstrap_replicates: usize,
+) -> Option<(f64, f64)> {
+    if first.is_empty() || first.len() != second.len() || bootstrap_replicates == 0 {
+        return None;
+    }
+    let differences: Vec<f64> = first
+        .iter()
+        .zip(second)
+        .map(|(&a, &b)| a as f64 - b as f64)
+        .collect();
+    let mut rng = ChaCha8Rng::seed_from_u64(seed);
+    let mut means = Vec::with_capacity(bootstrap_replicates);
+    for _ in 0..bootstrap_replicates {
+        means.push(
+            (0..differences.len())
+                .map(|_| differences[rng.gen_range(0..differences.len())])
+                .sum::<f64>()
+                / differences.len() as f64,
+        );
+    }
+    means.sort_by(f64::total_cmp);
+    Some((
+        quantile_sorted(&means, 0.025),
+        quantile_sorted(&means, 0.975),
+    ))
+}
+
 /// Two-sided Mann–Whitney U test with average ranks, tie correction, and a
 /// normal approximation. Suitable for the large held-out game counts in plans.
 pub fn mann_whitney_u_pvalue(first: &[u64], second: &[u64]) -> Option<f64> {
@@ -382,6 +415,26 @@ pub fn cohens_d(first: &[u64], second: &[u64]) -> Option<f64> {
     (pooled > 0.0).then_some((first_mean - second_mean) / pooled)
 }
 
+/// Paired Cohen's dz: mean paired difference divided by the sample standard
+/// deviation of those differences. Returns None for a zero-variance difference.
+pub fn paired_cohens_dz(first: &[u64], second: &[u64]) -> Option<f64> {
+    if first.len() < 2 || first.len() != second.len() {
+        return None;
+    }
+    let differences: Vec<f64> = first
+        .iter()
+        .zip(second)
+        .map(|(&a, &b)| a as f64 - b as f64)
+        .collect();
+    let mean = differences.iter().sum::<f64>() / differences.len() as f64;
+    let variance = differences
+        .iter()
+        .map(|difference| (difference - mean).powi(2))
+        .sum::<f64>()
+        / (differences.len() - 1) as f64;
+    (variance > 0.0).then_some(mean / variance.sqrt())
+}
+
 fn normal_cdf(value: f64) -> f64 {
     let x = value / std::f64::consts::SQRT_2;
     let sign = if x < 0.0 { -1.0 } else { 1.0 };
@@ -437,5 +490,25 @@ mod tests {
             paired_sign_test_pvalue(&[1, 3, 2, 4], &[2, 2, 3, 5]),
             Some(0.625)
         );
+    }
+
+    #[test]
+    fn paired_comparison_resamples_and_scales_matched_differences() {
+        let first = [11, 22, 33, 44, 55];
+        let second = [10, 20, 30, 40, 50];
+        let interval = paired_bootstrap_mean_difference_ci(&first, &second, 42, 1_000).unwrap();
+        assert_eq!(
+            interval,
+            paired_bootstrap_mean_difference_ci(&first, &second, 42, 1_000).unwrap()
+        );
+        assert!(interval.0 <= 3.0 && interval.1 >= 3.0);
+        let dz = paired_cohens_dz(&first, &second).unwrap();
+        assert!((dz - 3.0 / 2.5_f64.sqrt()).abs() < 1e-12);
+        assert_eq!(
+            paired_bootstrap_mean_difference_ci(&first, &[10, 20], 42, 10),
+            None
+        );
+        assert_eq!(paired_cohens_dz(&[1, 2], &[0]), None);
+        assert_eq!(paired_cohens_dz(&[2, 3], &[1, 2]), None);
     }
 }
