@@ -201,13 +201,13 @@ envelope and a scale-appropriate collection protocol remain prerequisites.
 The root crate now exposes seeded `benchmark baseline --agent random|heuristic`, `benchmark run`,
 `benchmark report`, and `benchmark compare` workflows. Game-level CSV outputs have JSON manifests.
 Reports include distribution summaries, tail thresholds, and bootstrap mean intervals. Comparisons check
-seed sequences, pair matching seeds with an exact sign test, use Mann-Whitney U for unmatched samples,
-apply Holm correction across pairwise tests, and report bootstrap mean-difference intervals and Cohen's
-d. The paired sign test is conservative, ignores ties, and is not Wilcoxon; the method is named in
-outputs.
+seed-set equality, align matching rows by seed, and use an exact sign test, paired-difference bootstrap
+intervals, and Cohen's dz for matched scores. Unmatched samples use Mann–Whitney U, independent
+bootstrap intervals, and Cohen's d. Holm correction applies across pairwise tests. The paired sign test
+is conservative, ignores ties, and is not Wilcoxon; the method is named in outputs.
 
 A 20-game seed-987 wiring sample yielded random mean 1,046.6 and heuristic mean 7,800.6. This is an
-implementation smoke measurement, far below the pre-registered 10,000-game protocol, and is not used as a
+implementation smoke measurement, far below the documented 10,000-game protocol, and is not used as a
 baseline claim or populated in the results matrix.
 
 The framework contribution remains partially evaluated. The [framework-validation
@@ -215,7 +215,8 @@ report](../../../reports/framework_validation/README.md) records fixed-configura
 diagnostics across Iris, Wine, and Wisconsin Diagnostic with RandomForest, ExtraTrees, AdaBoost, KNN, and
 NaiveBayes. On pinned AutoML commit `82d848323eed5e2af86d046d529916c448f2442c`, seed 42 has two
 independent process runs that succeeded for all 15 cases, matched predictions in 15/15, and passed model
-save/load equivalence. Seed 2026 was repeated in a second independent process with identical splits and predictions in 15/15 cases; seed 2027 completed once. Two
+save/load equivalence. Seeds 2026 and 2027 were each repeated in a second independent process with
+identical splits, predictions in 15/15 cases, and save/load equality. Two
 comparison-only scikit-learn 1.6.1 runs used the seed-42 outer split rows and AutoML's per-class trailing
 10% holdback; all 15 cases succeeded and repeated exactly, while predicted labels matched AutoML on 8/15
 cases. A one-process resource probe observed AutoML at 1.33 seconds/27,426,816-byte maximum RSS and
@@ -296,8 +297,8 @@ incapable" and "our integration is broken."
 - **Case-study winner** = model with the highest held-out mean score under the declared evaluation
   protocol
 - Ranking is based on mean score (primary), with median score and score consistency as tiebreakers
-- The primary comparison uses the pre-registered method: exact sign test for matched seeds or
-  Mann-Whitney U for unmatched samples, with Holm correction
+- The primary comparison uses a predeclared method: exact sign test for matched seed sets or
+  Mann–Whitney U for unmatched samples, with Holm correction
 - Bootstrap 95% CIs and effect sizes must be reported for practical interpretation
 - Benchmark results demonstrate meaningful automl capability on sequential games
 - Comprehensive IMRD research report published with validated findings
@@ -312,7 +313,7 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
 - Models are ranked by held-out game score with uncertainty and practical-effect reporting
 - The case-study winner is the model with the highest held-out mean score; this does not define framework
   success
-- Statistical comparison completed using the pre-registered Mann-Whitney U/Holm protocol
+- Statistical comparison completed using a design-matched sign-test or Mann–Whitney U/Holm protocol
 - Bootstrap 95% CI and effect size reported; neither is an automatic exclusion gate
 - Best model identified and documented with strong statistical evidence
 - Research findings contribute to understanding of automl on sequential decision-making
@@ -336,7 +337,7 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
 - **The evidence remains bounded by diagnostic runs.** Seed-42 AutoML runs on pinned `82d8483` succeeded
   for 15 standard-dataset cases, matched predictions 15/15, and passed save/load
   equivalence. Seed 2026 repeated the same 15 cases in a second process with exact
-  predictions; seed 2027 completed once. Two fixed-configuration sklearn runs repeated
+  predictions; seed 2027 was repeated across two processes with exact outputs. Two fixed-configuration sklearn runs repeated
   metrics/predictions exactly for the seed-42 cases, with label agreement on 8/15. A 20-game
   canonical-schema 2048 pilot trained five compatible classifiers and completed a separate 20-game simulator smoke. A
   common 391-row classifier diagnostic on its final three game groups is retained, but it does not establish
