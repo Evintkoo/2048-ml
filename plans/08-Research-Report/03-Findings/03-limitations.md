@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan combines known scope limits with open empirical limits.** A 10,000-game random/heuristic/fitted-pilot action-frequency study and an exploratory same-seed score comparison exist. The fitted policy used a 20-game labeled corpus; this is wiring/descriptive evidence, not a selected-model quality result or full framework benchmark.
+**This plan combines known scope limits with open empirical limits.** A 10,000-game action-frequency study and an exploratory seven-agent score comparison on training-disjoint seeds exist. The five fitted policies each use one fit from the same 20-game labeled corpus; the score ordering is descriptive, not confirmatory model selection or full framework evidence.
 
 > Limits below distinguish observed implementation boundaries from questions that require the planned studies.
 
@@ -142,7 +142,7 @@ No power or precision claim can be made from the planned 10,000-game number. Rar
 
 Known implementation and evidence limits are recorded explicitly:
 
-1. The retained report measured random, heuristic, and fitted-pilot mean scores of 1,094.12, 8,056.23, and 866.15 across 10,000 matched-seed games; the pilot used a 20-game corpus and is not a confirmatory model comparison
+1. An earlier 10,000-game report used seeds that overlapped 20 rollout-training games and is superseded. The corrected disjoint-seed evaluation covers five once-fitted pilot candidates plus random/heuristic baselines; its models share one 20-game corpus and are not a confirmatory ranking.
 2. Results are specific to the 2048 game domain
 3. Generalizability to other games is untested
 4. Computational constraints may affect optimal model selection

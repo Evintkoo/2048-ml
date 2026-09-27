@@ -108,7 +108,7 @@ For confirmatory comparisons, report:
 
 ## Implementation Record
 
-- `src/evaluation.rs` and comparison/report paths provide score summaries, paired-difference and independent bootstrap intervals, Mann–Whitney U, paired exact sign test, Holm-adjusted p-values, Cohen's dz for matched scores, independent Cohen's d, and reusable classification summaries. The root CLI retains a 391-row pilot classifier report and an exploratory same-seed score comparison across Random, Heuristic, and one fitted RandomForest pilot; its paired interval/effect-size calculations now follow the seed-matched design. The initial UCI results are descriptive single-split metrics; two-run repeatability is reported separately and is not an inferential comparison. Kruskal–Wallis, Wilcoxon, formal power analysis, explicit assumption diagnostics, and a confirmatory 2048 case-study report remain absent.
+- `src/evaluation.rs` and comparison/report paths provide score summaries, paired-difference and independent bootstrap intervals, Mann–Whitney U, paired exact sign test, Holm-adjusted p-values, Cohen's dz for matched scores, independent Cohen's d, and reusable classification summaries. The root CLI retains a 391-row classifier report and an exploratory seven-agent score matrix on training-disjoint seeds; its paired intervals/effect sizes follow the matched design. The initial UCI results are descriptive fixed-split metrics; repeated predictions are reported separately and are not an inferential model comparison. Kruskal–Wallis, Wilcoxon, formal power analysis, explicit assumption diagnostics, and a confirmatory 2048 case-study report remain absent.
 
 ## 10. Analysis Validation
 

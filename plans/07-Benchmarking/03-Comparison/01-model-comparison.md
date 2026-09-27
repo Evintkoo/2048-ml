@@ -1,6 +1,6 @@
 # Plan 01 — Model Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Candidate and comparison tooling are documented; a paired random/heuristic/single-pilot comparison exists, while the selected five-policy matrix remains unrun.
+> **Status: PARTIAL (2026-09-27).** A disjoint-seed exploratory score matrix covers five fixed pilot policies and two baselines; a confirmatory ranking with repeated training remains pending.
 
 **Goal:** State the current implementation and evidence boundary for model comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats model compatibility and score comparison support as implemented, with the selected-candidate ranking pending.** The verified four-class probability candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. Random and heuristic baselines and one fitted RandomForest pilot were scored on a common 10,000-seed set and compared in `reports/action-frequency/pilot-comparison.md`. The RandomForest came from a small pilot corpus and was not selected under a predeclared model-selection protocol; this is exploratory evidence, not the planned five-candidate comparison.
+**This plan treats model compatibility and exploratory score comparison as implemented, with confirmatory model selection pending.** The five verified candidates are RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes. Each was fitted once on the same small rollout corpus and scored for 10,000 game seeds that do not overlap its training seeds. Random and heuristic baselines were evaluated on the same seeds. The resulting matrix and paired analysis are in `reports/action-frequency/disjoint-seeds/README.md`; the result is exploratory because the corpus is small and model selection was not predeclared.
 
 ## 1. Purpose
 
@@ -34,25 +34,29 @@ Add rows only for engines actually exposed by `automl` — no invented architect
 
 The proposed final test uses a predeclared held-out game-seed set. Choose its size from pilot variance and available compute; no fixed target is a completed run or power guarantee. Training and test games must remain separate. The `benchmark compare` command aligns rows by identical seeds and uses a two-sided exact sign test for matched seed runs; otherwise it uses Mann-Whitney U. It reports Holm-adjusted p-values, paired-difference bootstrap intervals and Cohen's dz for matching seed sets, or independent bootstrap intervals and Cohen's d otherwise. The paired sign test is not Wilcoxon and ignores tied outcomes; the exact test choice and its limitation are recorded in the output manifest. Do not describe held-out benchmark games as the chronological data split itself.
 
-## 4. Performance Matrix — To Be Filled Post-Training
+## 4. Exploratory Performance Matrix
 
-| Model | Mean | Median | Std | Adjusted pairwise comparison (per declared design) | Rank |
-|-------|------|--------|-----|-----------------------------------------------|------|
-| RF | TBD | TBD | TBD | — | TBD |
-| ExtraTrees | TBD | TBD | TBD | — | TBD |
-| AdaBoost | TBD | TBD | TBD | — | TBD |
-| KNN | TBD | TBD | TBD | — | TBD |
-| NaiveBayes | TBD | TBD | TBD | — | TBD |
-| Heuristic | TBD | TBD | TBD | ref | — |
-| Random | TBD | TBD | TBD | ref | — |
+| Model | Mean | Median | Std | 95% bootstrap CI for mean | Rank by mean |
+|-------|------:|-------:|----:|--------------------------|-------------:|
+| Heuristic | 8,096.70 | 7,140 | 3,503.15 | [8,028.04, 8,168.45] | 1 |
+| Random | 1,086.52 | 1,048 | 527.16 | [1,076.03, 1,097.03] | 2 |
+| NaiveBayes | 914.14 | 744 | 546.81 | [903.49, 924.74] | 3 |
+| KNN | 887.35 | 776 | 445.03 | [879.02, 895.82] | 4 |
+| RandomForest | 864.44 | 740 | 447.96 | [855.48, 873.05] | 5 |
+| ExtraTrees | 837.15 | 736 | 459.45 | [827.92, 846.14] | 6 |
+| AdaBoost | 765.62 | 680 | 399.06 | [757.52, 773.64] | 7 |
 
-This matrix remains unfilled because the pilot policy is not a selected candidate and its training corpus is inadequate for case-study ranking. The separate exploratory run reports mean scores for Random (1,094.12), Heuristic (8,056.23), and the fitted RandomForest pilot (866.15); see `reports/action-frequency/pilot-comparison.md` for methods and limitations. These observations do not fill the five-candidate selected-model matrix.
+The comparison CSV at `reports/action-frequency/disjoint-seeds/score-comparison.csv`
+retains all 21 pairwise comparisons in one Holm family, including paired-difference
+intervals and Cohen's dz. NaiveBayes has the highest mean among these five fixed
+fits; this is only a descriptive ordering for one small training corpus and one
+evaluation seed set, not a general model winner.
 
 > Matrix is filled **post-training** — no pre-filled winners. The descriptive ranking uses held-out mean; use the predeclared paired or unmatched comparison procedure, Holm adjustment, bootstrap CI, and effect size to characterize uncertainty and practical magnitude. See `04-Analysis/03-significance-testing.md`.
 
 ## Implementation Record
 
-- CLI has model/agent score comparison and statistical primitives. One paired 10,000-game baseline/pilot analysis is retained, but the selected five-candidate held-out matrix remains unrun; its result rows are not populated from the exploratory pilot.
+- CLI has model/agent score comparison and statistical primitives. All five pilot candidates and both baselines have 10,000-game disjoint-seed score summaries; the full matrix and 21-pair adjusted analysis are retained. Repeated training corpora, predeclared selection, and an independent final test remain absent.
 
 ---
 
@@ -69,7 +73,7 @@ This matrix remains unfilled because the pilot policy is not a selected candidat
 
 ## Open questions
 
-- Execute after model selection, an adequate labeled corpus, and a predeclared held-out protocol. The retained pilot comparison is not a substitute. Retain identical environment settings, per-game outcomes, and input manifests for every candidate.
+- A confirmatory model-selection study still needs an adequate labeled corpus, repeated fits, and a predeclared held-out protocol. This exploratory matrix is not that study. Retain identical environment settings, per-game outcomes, and input manifests for every candidate.
 
 ## Later
 

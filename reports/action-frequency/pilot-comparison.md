@@ -1,5 +1,12 @@
 # Exploratory paired score comparison for the fitted pilot policy
 
+> **Superseded for held-out interpretation.** The original score evaluation used
+> seeds 84024–94023, which overlap 20 rollout-training seeds (90627–90646).
+> Its per-game files and comparison are retained as historical artifacts, but
+> they are not a training-disjoint evaluation. See the corrected seven-agent
+> evaluation on seeds 94024–104023 in
+> [`disjoint-seeds/README.md`](disjoint-seeds/README.md).
+
 This analysis uses the existing 10,000-game score CSVs for random play, the
 heuristic baseline, and one fitted RandomForest pilot policy. It documents an
 exploratory same-seed comparison; it is not a predeclared five-candidate

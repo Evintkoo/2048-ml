@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is partial.** Implemented comparisons choose an independent Mann–Whitney U test or a paired exact sign test based on seed-set equality, apply Holm adjustment, and report bootstrap mean-difference intervals with an effect size matched to the design. An exploratory 10,000-seed three-policy analysis is retained in `reports/action-frequency/pilot-comparison.md`: its sign tests, bootstrap intervals, and Cohen's dz use matched seed pairs. There is no validated winner result or power analysis.
+**This plan is partial.** Implemented comparisons choose an independent Mann–Whitney U test or a paired exact sign test based on seed-set equality, apply Holm adjustment, and report bootstrap mean-difference intervals with an effect size matched to the design. An exploratory seven-agent 10,000-seed analysis is retained in `reports/action-frequency/disjoint-seeds/README.md`: its sign tests, bootstrap intervals, and Cohen's dz use matched seed pairs. There is no validated winner result or power analysis.
 
 ## 1. Purpose
 

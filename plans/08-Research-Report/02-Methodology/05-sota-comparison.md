@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a comparison plan, not a ranking.** Local random/heuristic and fitted-policy runs exist, with one exploratory same-seed comparison retained. The model came from a small corpus and was not selected under a predeclared protocol; no confirmatory result exists. Published methods and their quoted score ranges are not local measured baselines.
+**This is a comparison plan, not a winner claim.** Local random/heuristic and five fitted-policy runs exist on matched, training-disjoint seeds, with exploratory paired analyses retained. Each model came from one fit on a small corpus, and selection was not predeclared; no confirmatory result exists. Published methods and their quoted score ranges are not local measured baselines.
 
 ## 1. Purpose
 
@@ -134,7 +134,7 @@ This comparison sets the methodological standard for the entire research and pro
 
 ## Implementation Record
 
-- Random, heuristic, and model benchmark commands exist; an exploratory same-seed comparison of Random, Heuristic, and one fitted RandomForest pilot is retained in `reports/action-frequency/pilot-comparison.md`. The paired interval/effect-size calculations follow the matched seed design, but the model was trained on a small corpus and was not selected under a declared candidate protocol. No confirmatory selected-policy comparison is complete. Quoted external score estimates remain excluded. The standard-dataset AutoML diagnostic is a separate framework track.
+- Random, heuristic, and model benchmark commands exist; an exploratory disjoint-seed score matrix for five fitted candidates and two baselines is retained in `reports/action-frequency/disjoint-seeds/README.md`. The paired interval/effect-size calculations follow the matched seed design, but each model was trained once on a small corpus and was not selected under a declared candidate protocol. No confirmatory selected-policy comparison is complete. Quoted external score estimates remain excluded. The standard-dataset AutoML diagnostic is a separate framework track.
 
 ---
 

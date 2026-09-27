@@ -1,6 +1,6 @@
 # Plan 01 — Introduction: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Repeated UCI diagnostics and an exploratory same-seed 2048 policy comparison exist; matched framework comparisons, confirmatory case-study experiments, and broader literature review remain pending.
+> **Status: PARTIAL (2026-09-27).** Repeated UCI diagnostics and an exploratory disjoint-seed score matrix for five 2048 policies exist; matched framework comparisons, confirmatory case-study experiments, and broader literature review remain pending.
 
 **Goal:** State the current implementation and evidence boundary for introduction.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -17,7 +17,7 @@
 
 The central research object is the design and validation of a Rust-native AutoML architecture. The 2048 system is the principal application case study. Several architecture components are implemented, but integrated standard-dataset validation and the complete reproducibility study remain pending.
 
-2048 is a stochastic 4×4 tile-merging game. The simulator defaults to spawning a 4 with probability 0.1; its available actions are Up, Down, Left, and Right. This study evaluates a supervised policy using the canonical 17-value state (16 board cells plus current score) and four action labels with the pinned Rust AutoML submodule. A small pilot policy has been trained and scored; its same-seed baseline comparison is exploratory, and confirmatory case-study experiments remain pending.
+2048 is a stochastic 4×4 tile-merging game. The simulator defaults to spawning a 4 with probability 0.1; its available actions are Up, Down, Left, and Right. This study evaluates a supervised policy using the canonical 17-value state (16 board cells plus current score) and four action labels with the pinned Rust AutoML submodule. Five candidate policies were each fit once on a small pilot corpus and scored on training-disjoint seeds; this comparison is exploratory, and confirmatory case-study experiments remain pending.
 
 ## 2. Research Context
 
@@ -38,7 +38,7 @@ The study has two linked research layers. First, the independent `automl` implem
 **Framework validation:** Does the implemented architecture satisfy its correctness, reproducibility, efficiency, and interoperability requirements on standard tabular tasks before the 2048 application results are interpreted? Fixed-protocol diagnostics cover three UCI datasets, five candidate models, and split seeds 42, 2026, and 2027; they do not complete the validation gate.
 
 **Secondary:**
-- RQ2: What are the mean scores, uncertainty intervals, and differences versus measured random and heuristic baselines? An exploratory same-seed comparison exists; confirmatory inference remains pending.
+- RQ2: What are the mean scores, uncertainty intervals, and differences versus measured random and heuristic baselines? An exploratory seven-agent comparison exists; confirmatory inference remains pending.
 - RQ3: Is the selected policy reproducible across independently declared training and evaluation seeds? No robustness matrix is complete.
 - RQ4: Which declared feature subsets of the 17-value canonical state affect case-study performance? This ablation question remains a proposal without a frozen protocol or completed run.
 
@@ -90,7 +90,7 @@ No result fabricated. Null/inconclusive outcomes, training failures, and any aut
 
 ## Implementation Record
 
-- Research framing and honest-reporting requirements are documented. Pinned UCI diagnostics and the historical pre-fix Wine KNN issue are recorded in `reports/framework_validation/`. An exploratory matched-seed comparison across Random, Heuristic, and one pilot policy is retained in `reports/action-frequency/pilot-comparison.md`, using paired-difference intervals and Cohen's dz. Matched framework budgets, broader literature review, and confirmatory 2048 experiments remain pending.
+- Research framing and honest-reporting requirements are documented. Pinned UCI diagnostics and the historical pre-fix Wine KNN issue are recorded in `reports/framework_validation/`. An exploratory disjoint-seed score matrix for five fixed policies and two baselines is retained in `reports/action-frequency/disjoint-seeds/README.md`, using paired-difference intervals and Cohen's dz. Matched framework budgets, broader literature review, and confirmatory 2048 experiments remain pending.
 
 ---
 

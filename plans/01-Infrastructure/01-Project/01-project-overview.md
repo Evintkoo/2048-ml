@@ -15,7 +15,7 @@ standard-dataset diagnostic covers three stratified split seeds and five AutoML 
 pinned revision exposed nondeterministic tie handling in KNN and ExtraTrees, and the pinned fix produced
 exact prediction agreement in repeated seed-42 runs. A fixed-configuration scikit-learn comparison and
 aggregate same-host resource probe also exist, but search budgets and per-model resource boundaries are
-not matched. A 20-game rollout corpus now supports five compatible candidate fits on the same grouped development folds and chronological held-out rows, and a separate 20-game simulator smoke; these verify pipeline wiring only. The candidate metrics disagree between grouped CV and the three-game holdout and do not select a policy. The main 2048 study and full research results remain pending. Protocol, manifests, models, predictions, and verification are retained in [the classifier pilot report](../../../reports/candidate_classifier_pilot/2026-09-27/README.md).
+not matched. A 20-game rollout corpus now supports five compatible candidate fits on the same grouped development folds and chronological held-out rows, and a separate 20-game simulator smoke; these verify pipeline wiring only. The classifier metrics disagree between grouped CV and the three-game holdout. A disjoint-seed 10,000-game score diagnostic now covers the same five fitted policies and two baselines; its ordering is exploratory and does not establish a general model winner. The main 2048 study and full research results remain pending. Protocol, manifests, models, predictions, and verification are retained in [the classifier pilot report](../../../reports/candidate_classifier_pilot/2026-09-27/README.md) and [the score evaluation](../../../reports/action-frequency/disjoint-seeds/README.md).
 
 > **Project:** 2048 Machine Learning System
 > **Version:** 1.0.0
@@ -24,8 +24,9 @@ not matched. A 20-game rollout corpus now supports five compatible candidate fit
 > **Status:** In progress — capability checks passed for five four-class candidates; fixed-protocol
   standard-dataset diagnostics cover three split seeds and save/load equality is retained after
   deterministic tie fixes. A 20-game canonical-schema corpus has one AutoML training and
-  policy-simulation smoke. Matched framework comparisons, scale collection, and held-out 2048 policy
-  evaluation remain incomplete (updated 2026-09-27).
+  policy-simulation smoke, followed by a disjoint-seed exploratory score matrix for five candidate
+  policies. Matched framework comparisons, scale collection, repeated policy fits, and confirmatory
+  2048 evaluation remain incomplete (updated 2026-09-27).
 
 ---
 
@@ -247,6 +248,21 @@ resource framework comparisons, broader repeated-fit reproducibility evidence, a
 projects to about 238 hours for 20,000 games, with 62–207 rows per game; both figures are uncertain and
 configuration-specific. Declare a resource envelope and collection protocol before starting a corpus at
 that scale.
+
+### 6.7 Five-Candidate Policy Score Diagnostic (2026-09-27)
+
+To check held-out game behavior for every verified candidate without reusing rollout-training seeds,
+the five serialized policies and random/heuristic baselines were evaluated on the same 10,000 game seeds,
+94024–104023. The 20 rollout-training seeds are 90627–90646, so the sets are disjoint. All candidate
+policies were fitted once using the same 20-game corpus, 17-game development split, and AutoML pin.
+
+The observed mean-score order among the five fitted policies was NaiveBayes (914.14), KNN (887.35),
+RandomForest (864.44), ExtraTrees (837.15), and AdaBoost (765.62). Random averaged 1,086.52 and the
+heuristic 8,096.70 on this seed set. All per-game outputs, run manifests, score summaries, and the
+21-comparison paired analysis are retained in
+[`reports/action-frequency/disjoint-seeds/README.md`](../../../reports/action-frequency/disjoint-seeds/README.md).
+This is a descriptive ordering of five fixed fits from one small corpus. It is not confirmatory model
+selection, an estimate across repeated training corpora, or evidence of general AutoML superiority.
 
 **This verification is not optional.** Without it, the project cannot distinguish between "automl is
 incapable" and "our integration is broken."

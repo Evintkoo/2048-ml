@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats move validity and descriptive policy-frequency analysis as implemented.** Seeded 10,000-game random and heuristic baselines and a 10,000-game fitted-policy profile are retained in [the action-frequency report](../../../reports/action-frequency/README.md). Intervals resample whole games to account for within-game dependence. Each per-run manifest records its source revision, input digest, seeds, timing, and AutoML pin where applicable. The fitted policy came from a small development corpus, so its action frequencies do not establish policy quality or select a model winner.
+**This plan treats move validity and descriptive policy-frequency analysis as implemented.** Seeded 10,000-game random and heuristic baselines and five 10,000-game fitted-policy profiles are retained in [the action-frequency report](../../../reports/action-frequency/README.md). The current score comparison uses seeds 94024–104023, disjoint from the rollout-training seeds, and intervals resample matched whole games. Each per-run manifest records its source revision, input digest, seeds, timing, and AutoML pin where applicable. The policies came from one small development corpus, so these profiles do not establish a confirmatory model winner.
 
 > **Canonical validity:** `board.would_change(dir)` — single source. Do not duplicate `get_valid_moves` logic elsewhere.
 
@@ -77,7 +77,7 @@ The retained report summarizes 10,000 games per agent with game-cluster bootstra
 | Left | 0.249917 [0.249265, 0.250623] | 0.257937 [0.257469, 0.258413] | 0.231507 [0.230450, 0.232569] |
 | Right | 0.250077 [0.249356, 0.250779] | 0.238202 [0.237747, 0.238662] | 0.347573 [0.346386, 0.348728] |
 
-These are descriptive frequencies, not a training prior or framework result. All three agents’ raw per-game CSVs retain action counts, and their manifests and independent JSON summaries retain pooled counts and intervals. The Rust verifier reconstructs each summary exactly from raw rows. All use seed range 84024–94023 and 2,000 whole-game bootstrap replicates with seed 84026. Detailed policy fit provenance and limitations are recorded in the linked report.
+These are descriptive frequencies, not a training prior or framework result. The original random, heuristic, and pilot-policy action-frequency files retain per-game counts on seeds 84024–94023, while current disjoint-seed score runs cover five policies and two baselines. The earlier range overlaps 20 policy-training seeds and is retained as historical descriptive evidence. Manifests and independent JSON summaries retain pooled counts and intervals; the Rust verifier reconstructs the historical summaries exactly from raw rows. Detailed provenance and limitations are recorded in the linked report.
 
 ## 8. Deleted — No Sequence / LSTM Hint
 

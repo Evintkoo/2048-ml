@@ -1,6 +1,6 @@
 # Plan 01 — Benchmarking Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Seeded benchmark/compare commands and 10,000-game baseline plus pilot-policy score runs exist; a predeclared model ranking and performance profiling remain pending.
+> **Status: PARTIAL (2026-09-27).** Seeded benchmark/compare commands and disjoint 10,000-game score runs for two baselines and five pilot policies exist; a confirmatory model ranking and performance profiling remain pending.
 
 **Goal:** State the current implementation and evidence boundary for benchmarking framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats score benchmarking tools as implemented and winner comparison as pending.** The CLI runs random, heuristic, or saved-model policies with seeded games; it writes per-game CSV and manifests and provides paired/unpaired score comparisons. Retained artifacts include 10,000-game random and heuristic baselines and one 10,000-game run of a small-corpus fitted pilot policy. That pilot is descriptive evidence, not a selected-model or matched-budget comparison. Per-move performance profiling is absent.
+**This plan treats score benchmarking tools as implemented and confirmatory winner comparison as pending.** The CLI runs random, heuristic, or saved-model policies with seeded games; it writes per-game CSV and manifests and provides paired/unpaired score comparisons. Retained disjoint-seed artifacts include 10,000-game random and heuristic baselines and five 10,000-game policies fitted from one small corpus. They form an exploratory score matrix, not a repeated-training or confirmatory model-selection study. Per-move performance profiling is absent.
 
 ## 1. Purpose
 
@@ -102,37 +102,46 @@ graph TD
 
 The random agent selects moves uniformly at random from available actions. It is one measured comparison baseline, not an asserted absolute floor.
 
-| Metric | Measured in retained 10,000-game run |
+| Metric | Measured in disjoint 10,000-game run |
 |--------|---------------|
-| Mean Score | 1,094.12 |
-| Median Score | 1,050 |
-| Max Score | 4,892 |
+| Mean Score | 1,086.52 |
+| Median Score | 1,048 |
+| Max Score | 4,904 |
 | Max tile | 512 |
-| Mean moves | 118.29 |
+| Mean moves | 117.86 |
 
-**Protocol**: 10,000 games, seeds 84024–94023; see the raw CSV, manifest, and analysis in `reports/action-frequency/README.md`. These local results are descriptive for this protocol.
+**Protocol**: 10,000 games, seeds 94024–104023; see raw CSVs, manifests, and paired analysis in `reports/action-frequency/disjoint-seeds/README.md`. These local results are descriptive for this protocol.
 
 #### Heuristic Agent Baseline
 
-The heuristic agent uses domain-specific rules to select moves: prioritize maintaining monotonicity, keeping the highest tile in a corner, and maximizing empty tiles. This represents the best non-ML approach.
+The heuristic agent uses domain-specific rules to select moves: prioritize maintaining monotonicity, keeping the highest tile in a corner, and maximizing empty tiles. It is a measured non-ML baseline.
 
-| Metric | Measured in retained 10,000-game run |
+| Metric | Measured in disjoint 10,000-game run |
 |--------|---------------|
-| Mean Score | 8,056.23 |
-| Median Score | 7,136 |
-| Max Score | 20,940 |
+| Mean Score | 8,096.70 |
+| Median Score | 7,140 |
+| Max Score | 20,908 |
 | Max tile | 2,048 |
-| Mean moves | 521.52 |
+| Mean moves | 523.32 |
 
-**Protocol**: 10,000 games, seeds 84024–94023; see the raw CSV, manifest, and analysis in `reports/action-frequency/README.md`.
+**Protocol**: 10,000 games, seeds 94024–104023; see raw CSVs, manifests, and paired analysis in `reports/action-frequency/disjoint-seeds/README.md`.
 
 #### Summary Table
 
 | Agent | Mean Score | Median Score | Max Score | Max Tile | Notes |
 |-------|-----------:|--------------:|----------:|---------:|-------|
-| Random | 1,094.12 | 1,050 | 4,892 | 512 | 10,000 seeded games |
-| Heuristic | 8,056.23 | 7,136 | 20,940 | 2,048 | 10,000 seeded games |
-| Fitted RandomForest pilot | 866.15 | 744 | 3,296 | 256 | One pilot policy, 10,000 games; not a model ranking |
+| Heuristic | 8,096.70 | 7,140 | 20,908 | 2,048 | 10,000 disjoint seeded games |
+| Random | 1,086.52 | 1,048 | 4,904 | 512 | 10,000 disjoint seeded games |
+| NaiveBayes | 914.14 | 744 | 5,080 | 512 | One fit from the shared 20-game corpus |
+| KNN | 887.35 | 776 | 4,028 | 256 | One fit from the shared 20-game corpus |
+| RandomForest | 864.44 | 740 | 3,304 | 256 | One fit from the shared 20-game corpus |
+| ExtraTrees | 837.15 | 736 | 3,740 | 256 | One fit from the shared 20-game corpus |
+| AdaBoost | 765.62 | 680 | 3,120 | 256 | One fit from the shared 20-game corpus |
+
+These scores are ordered by mean for this fixed seed set. Pairwise paired tests,
+Holm-adjusted p-values, paired bootstrap intervals, and Cohen's dz are retained
+for the full 21-comparison family in the linked analysis. Because each model was
+fit once on the same small corpus, this is not a confirmatory algorithm ranking.
 
 ### 6.2 Comparison Methodology
 
@@ -221,7 +230,7 @@ For the 2048 case study, the provisional winner is the model with the highest he
 ## Implementation Record
 
 - CLI supports seeded random, heuristic, and saved-model score runs; paired comparisons; score summaries; bootstrap intervals; exact sign tests; Mann–Whitney U; Holm adjustment; and effect sizes. Results include manifests and source/file hashes.
-- Seeded 10,000-game runs are retained for random and heuristic baselines and one fitted RandomForest pilot policy. The pilot used a small rollout corpus; these runs do not form a predeclared matched model-selection study and no winner claim is made. Per-move profiling remains unimplemented.
+- Seeded 10,000-game runs are retained for random and heuristic baselines and all five fitted candidate policies on seeds 94024–104023. The models share one small rollout corpus and one fit each; the 21 paired comparisons are exploratory, not a predeclared model-selection study. Per-move profiling remains unimplemented.
 - The architecture diagram names the implemented per-run CSV and JSON manifest artifacts; no results database is present.
 
 ---

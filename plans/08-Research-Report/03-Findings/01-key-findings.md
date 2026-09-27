@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This remains a reporting protocol for overall findings.** UCI diagnostics and an exploratory same-seed comparison of Random, Heuristic, and a small-corpus fitted policy are available, but framework validation and confirmatory trained-policy evaluation remain incomplete. Checklist items are proposed evidence requirements, not acceptance gates already met.
+**This remains a reporting protocol for overall findings.** UCI diagnostics and an exploratory disjoint-seed score matrix for five small-corpus policies and two baselines are available, but framework validation and confirmatory trained-policy evaluation remain incomplete. Checklist items are proposed evidence requirements, not acceptance gates already met.
 
 > The result pipeline described below is proposed. Current benchmark artifacts are CSV plus JSON manifests, and statistics live in `src/evaluation.rs`.
 
@@ -42,7 +42,7 @@ F1–F3→RQ1/RQ2 framework validation, H1→2048 baseline comparison, H2→appl
 
 ## Implementation Record
 
-- The overall findings template remains unpopulated. Standard-dataset diagnostics and their repeatability artifacts are retained in `reports/framework_validation/`; an exploratory 10,000-seed policy comparison is retained in `reports/action-frequency/pilot-comparison.md`. It uses paired intervals and Cohen's dz but is not a selected-model ranking or confirmatory result. The original Parquet pipeline and ranking script do not exist. Checklist items remain pending.
+- The overall findings template remains unpopulated. Standard-dataset diagnostics and their repeatability artifacts are retained in `reports/framework_validation/`; an exploratory disjoint-seed score matrix for five fitted candidates and two baselines is retained in `reports/action-frequency/disjoint-seeds/README.md`. It uses paired intervals and Cohen's dz but is not confirmatory model selection. The original Parquet pipeline and ranking script do not exist. Checklist items remain pending.
 
 ---
 

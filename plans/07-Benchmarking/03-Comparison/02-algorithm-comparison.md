@@ -1,6 +1,6 @@
 # Plan 02 — Algorithm Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Random/heuristic/model score runners and comparison statistics exist; a same-seed pilot comparison is retained, while the selected-model study remains pending.
+> **Status: PARTIAL (2026-09-27).** Random/heuristic/model score runners and an exploratory seven-agent comparison exist; confirmatory model selection remains pending.
 
 **Goal:** State the current implementation and evidence boundary for algorithm comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,25 +9,29 @@
 
 ## Decision and evidence
 
-**This plan treats the comparison mechanism as available, with exploratory results separated from the pending model-selection study.** Random and heuristic baselines and one fitted RandomForest pilot were each scored on seeds 84024–94023. A paired CLI analysis is retained in `reports/action-frequency/pilot-comparison.md`. The model was trained on a small 20-game corpus; it was not selected under a declared candidate comparison, so these outcomes are not a confirmatory three-way study.
+**This plan treats the comparison mechanism as available, with exploratory results separated from the pending model-selection study.** Random, heuristic, and five fitted candidate policies were scored on matched seeds 94024–104023; the paired comparison is retained in `reports/action-frequency/disjoint-seeds/README.md`. Models were each fit once on the small 20-game corpus. The result is exploratory, not a confirmatory algorithm comparison.
 
 ## 1. Purpose
 
-Compare exactly **3 groups** under the same preregistered simulator and seed protocol. Choose game count from pilot variance and available budget. No Greedy / Search-Based candidates.
+Compare the five verified AutoML candidates with random and heuristic baselines under one simulator and matched seed set. Choose confirmatory game count from pilot variance and declared compute budget. Greedy/search agents are not in this scope.
 
 ## 2. Groups
 
-| Group | Agent | Observed mean in pilot run | Source |
-|-------|-------|---------------|--------|
-| Random | uniform legal move policy | 1,094.12 | 10,000-game seeded baseline |
-| Heuristic | rule-based policy | 8,056.23 | 10,000-game seeded baseline |
-| AutoML model | fitted RandomForest pilot | 866.15 | 10,000-game run; not selected candidate |
+| Rank | Agent | Observed mean | Source |
+|-----:|-------|---------------:|--------|
+| 1 | Heuristic | 8,096.70 | 10,000-game disjoint-seed baseline |
+| 2 | Random | 1,086.52 | 10,000-game disjoint-seed baseline |
+| 3 | NaiveBayes | 914.14 | One fitted candidate; 10,000 games |
+| 4 | KNN | 887.35 | One fitted candidate; 10,000 games |
+| 5 | RandomForest | 864.44 | One fitted candidate; 10,000 games |
+| 6 | ExtraTrees | 837.15 | One fitted candidate; 10,000 games |
+| 7 | AdaBoost | 765.62 | One fitted candidate; 10,000 games |
 
-These measured summaries describe this retained seed set, not universal targets. The small-corpus pilot is not evidence for selected-model performance.
+These summaries describe this retained seed set and these five fixed fits, not universal model targets. The small-corpus pilot is exploratory and does not estimate variation across training runs.
 
 ## 3. Protocol
 
-The confirmatory protocol must use the same declared game-seed set and simulator for each policy; the target game count must fit a documented budget. Compare score distributions under a predeclared procedure and report uncertainty. The retained pilot comparison is exploratory; its CLI uses paired-difference bootstrap intervals and Cohen's dz for the matched seed outcomes. These methods do not make the pilot a confirmatory or selected-model result.
+The exploratory protocol used the same 10,000 game seeds and simulator for all seven policies. Its CLI reports paired-difference bootstrap intervals and Cohen's dz for matched outcomes. A confirmatory protocol must predeclare candidate selection, game count/precision rationale, and the held-out seed set; the current paired analysis does not make this pilot a confirmatory result.
 
 ```rust
 pub struct AlgorithmComparison {
@@ -42,7 +46,7 @@ pub struct AlgorithmComparison {
 
 ## Implementation Record
 
-- Random and heuristic baselines and one fitted RandomForest pilot share a 10,000-game seed set. Their paired exploratory analysis is retained separately. A model-selection study with an adequate corpus and a predeclared candidate/protocol remains pending.
+- Random, heuristic, and five once-fitted candidate policies have retained 10,000-game runs on disjoint seeds 94024–104023. The seven-agent pairwise comparison applies Holm adjustment across 21 paired tests; the artifacts and limits are in `reports/action-frequency/disjoint-seeds/README.md`. Repeated fits, a scale-appropriate corpus, and predeclared confirmatory model selection remain pending.
 
 ---
 

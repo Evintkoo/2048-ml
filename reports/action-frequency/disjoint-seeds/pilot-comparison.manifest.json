@@ -1,0 +1,16 @@
+{
+  "analysis": "matched seed sets use paired exact sign tests, paired bootstrap intervals, and Cohen's dz; unmatched runs use independent Mann-Whitney U, independent bootstrap intervals, and Cohen's d; Holm adjustment applies to all p-values",
+  "bootstrap_replicates": 5000,
+  "comparison_csv": "reports/action-frequency/disjoint-seeds/pilot-comparison.csv",
+  "created_utc": "2026-09-27T00:29:37.577711+00:00",
+  "input_files": [
+    "reports/action-frequency/disjoint-seeds/random_10000.csv",
+    "reports/action-frequency/disjoint-seeds/heuristic_10000.csv",
+    "reports/action-frequency/disjoint-seeds/random_forest_pilot_10000.csv"
+  ],
+  "paired_test_limitation": "sign test uses direction and ignores ties; it is conservative and is not Wilcoxon",
+  "project_version": "0.1.0",
+  "seed_sets_checked_for_equality": true,
+  "sha256": "b630dc6aea8a767ad1cbdae9804e49193a28c0d9d56d74046aae69cae80adb0b",
+  "source_revision": "fa1cd25c94bb76a83eea90a6996487bb7da8e00d"
+}

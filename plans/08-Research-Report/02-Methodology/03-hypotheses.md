@@ -164,9 +164,9 @@ Declare the comparison family and correction before analysis. The CLI currently 
 
 ## Implementation Record
 
-- An exploratory same-seed comparison of Random, Heuristic, and one small-corpus RandomForest pilot is retained in `reports/action-frequency/pilot-comparison.md`. It is not confirmatory evidence for any application hypothesis; paired bootstrap intervals and Cohen's dz are now reported for its matched seeds.
+- An exploratory disjoint-seed score matrix for five one-fit pilot candidates and two baselines is retained in `reports/action-frequency/disjoint-seeds/README.md`. It is not confirmatory evidence for any application hypothesis; paired bootstrap intervals and Cohen's dz are reported.
 
-- Framework and application hypotheses remain provisional and untested. UCI diagnostics on split seeds 42, 2026, and 2027 are retained; repeated processes on seeds 42, 2026, and 2027 matched 15/15 predictions and save/load outputs under AutoML `82d8483`. An exploratory three-policy 2048 score comparison is retained but does not satisfy H1/H2; its intervals and Cohen's dz resample and summarize matched seed differences. The `88a86bf` Wine KNN disagreement is historical. No matched-budget benchmark, selected-model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
+- Framework and application hypotheses remain provisional and untested. UCI diagnostics on split seeds 42, 2026, and 2027 are retained; repeated processes on each seed matched 15/15 predictions and save/load outputs under AutoML `82d8483`. An exploratory seven-agent 2048 score matrix is retained but does not satisfy H1/H2; its intervals and Cohen's dz use matched seed differences. The `88a86bf` Wine KNN disagreement is historical. No matched-budget framework benchmark, repeated-fit policy comparison, tuning, ablation, power analysis, or confirmatory test family is established.
 
 ---
 

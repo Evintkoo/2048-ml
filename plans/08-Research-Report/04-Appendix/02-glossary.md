@@ -43,9 +43,9 @@ mindmap
 | Move | Slide operation (up/down/left/right) |
 | Score | Sum of all merge values during a game |
 | Game Over | Board is full with no valid moves |
-| Heuristic Baseline | Local policy using heuristic board evaluation; measured mean is protocol-specific (8,056.23 in the recorded 10k same-seed comparison) |
-| Fitted Pilot Policy | One RandomForest fitted on a 20-game rollout-labeled corpus; exploratory mean 866.15 on the same 10k seeds, not a selected-model result |
-| Random Baseline | Agent selecting a legal move uniformly; measured mean is protocol-specific (1,094.12 in the recorded 10k same-seed comparison) |
+| Heuristic Baseline | Local policy using heuristic board evaluation; measured mean is protocol-specific (8,096.70 in the disjoint-seed 10k diagnostic) |
+| Fitted Pilot Policy | Five candidate policies were each fit once on a 20-game rollout-labeled corpus; observed ML candidate means ranged from 765.62 to 914.14 in a disjoint-seed diagnostic, not a confirmatory winner result |
+| Random Baseline | Agent selecting a legal move uniformly; measured mean is protocol-specific (1,086.52 in the disjoint-seed 10k diagnostic) |
 | Case-study winner | Model with the highest held-out mean score under the declared 2048 protocol; not a globally optimal policy |
 
 ## 4. ML Terminology

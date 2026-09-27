@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a redirect ticket.** It points to the current design document and distinguishes diagnostics from the proposed confirmatory protocol. An exploratory three-policy same-seed score comparison ran, but its pilot model was not selected under a declared protocol and its interval/effect-size calculations do not account for pairing. Numeric sample sizes, seed matrices, and winner criteria remain proposals.
+**This is a redirect ticket.** It points to the current design document and distinguishes diagnostics from the proposed confirmatory protocol. An exploratory seven-agent score comparison ran on training-disjoint matched seeds using paired intervals and Cohen's dz. The candidate ordering comes from one small-corpus fit per model and is not confirmatory. Sample-size rationale, preregistration, and winner criteria remain open.
 
 > **This file is a 25-line redirect. Do not duplicate flowcharts or expand scope here. All protocol, variables, and gates are defined in `02-Methodology/01-experimental-design.md`.**
 
@@ -27,7 +27,7 @@ The planned case study uses the canonical 17-value state and four action labels 
 | Features | 17-value model vector | 16 board cells plus current score; game ID is provenance/group key |
 | polars | `0.46` dependency | Root output paths include CSV; Parquet is not established for this workflow |
 | Seeds | To be declared per study | Record training and evaluation seed roles separately |
-| Games | To be justified and declared | Exploratory pilot comparison exists; no winner ranking has been performed |
+| Games | To be justified and declared | Exploratory seven-agent score ordering exists; no confirmatory winner has been established |
 
 **Statistical protocol:** available CLI helpers choose a paired exact sign test, paired-difference bootstrap interval, and Cohen's dz when seed sets match; unmatched samples use Mann–Whitney U, independent bootstrap intervals, and Cohen's d. Both use Holm adjustment. Assumptions and the experimental unit require explicit review. No protocol has been preregistered and no winner claim is available. See `07-Benchmarking/04-Analysis/02-statistical-analysis.md`.
 

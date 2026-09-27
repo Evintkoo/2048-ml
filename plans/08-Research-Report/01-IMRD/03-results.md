@@ -1,6 +1,6 @@
 # Plan 03 — Results: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** UCI diagnostics and an exploratory same-seed 2048 score comparison are retained; matched framework comparisons and confirmatory policy results remain pending.
+> **Status: PARTIAL (2026-09-27).** UCI diagnostics and an exploratory disjoint-seed 2048 score matrix are retained; matched framework comparisons and confirmatory policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for results.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan remains an output specification, not a completed results report.** UCI fixed-split outcomes and repeatability analyses are retained in `reports/framework_validation/`. An exploratory 10,000-seed comparison of Random, Heuristic, and one fitted pilot policy is retained in `reports/action-frequency/pilot-comparison.md`. It is not the selected five-candidate matrix, and its bootstrap intervals and Cohen's dz use the matched seed pairs. No matched-budget external framework comparison or confirmatory 2048 ranking is available.
+**This plan remains an output specification, not a completed results report.** UCI fixed-split outcomes and repeatability analyses are retained in `reports/framework_validation/`. An exploratory 10,000-seed comparison of five fitted policies and two baselines is retained in `reports/action-frequency/disjoint-seeds/README.md`. Its bootstrap intervals and Cohen's dz use matched, training-disjoint seed pairs; this is not a confirmatory selection result. No matched-budget external framework comparison or confirmatory 2048 ranking is available.
 
 > No empirical result or winner is claimed in this document.
 
@@ -64,7 +64,7 @@ pub fn holm_adjust(p: &[f64]) -> Vec<f64>;
 
 The helper inventory and its limitations are summarized in the benchmarking analysis tickets.
 
-## 4. Table Shells (Populated by Pipeline, Not Hand-Edited)
+## 4. Confirmatory Table Shells (Populated by Pipeline, Not Hand-Edited)
 
 ### Ranking Table Shell (No Case-Study Ranking Result)
 
@@ -72,7 +72,7 @@ The helper inventory and its limitations are summarized in the benchmarking anal
 |-------|------|--------|----|---------------------|------|---------------|-----------|
 | TBD | TBD | TBD | TBD | [TBD, TBD] | TBD | TBD | p=TBD, d=TBD |
 
-The CLI can summarize and compare game-score files. An exploratory three-policy analysis exists, but no selected-model ranking has been run. Populate only with results from a declared protocol.
+The CLI can summarize and compare game-score files, and an exploratory seven-agent score matrix exists on seeds disjoint from the rollout corpus. This confirmatory results shell remains unfilled: the exploratory ordering comes from one small-corpus fit per model and no preregistered selection protocol.
 
 ### 3.2 Gate Table
 
