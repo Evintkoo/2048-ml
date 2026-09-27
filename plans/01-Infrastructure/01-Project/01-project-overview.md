@@ -128,15 +128,18 @@ circular dependency:
 
 1. **API completeness**: Verify `TrainEngine`, `HyperOptX`, `ModelType` enum, and `CrossValidator` exist
   and are functional in the automl submodule
-2. **Model coverage**: Confirm at least 4 of the planned candidate algorithms (RandomForest,
-  GradientBoosting, XGBoost, LightGBM) are available via `ModelType`
+2. **Model coverage**: Confirm at least four candidate algorithms selected for the study are exposed
+  by `ModelType` and return the expected four probability columns for the action task. The revised,
+  verified candidate set is recorded in §6.2; the original GradientBoosting/XGBoost/LightGBM proposal
+  is not the active candidate list because those variants failed the four-class probability check.
 3. **MultiClassification task**: Verify `TaskType::MultiClassification` is supported with proper loss
   functions
 4. **Hyperparameter optimization**: Confirm `HyperOptX` with TPE sampler and `MedianPruner` are
   functional
-5. **Cross-validation**: Verify `GroupKFold` (group-preserving, **not** temporal) or equivalent exists;
-  for true temporal forward-chaining use `TimeSeriesSplit` — `GroupKFold` keeps each `game_id` together
-  but does not enforce temporal order (sort chronologically, `shuffle=false`)
+5. **Cross-validation**: Verify a group-preserving split is available for keeping each `game_id`
+  together. Treat temporal ordering as a separate requirement: the pinned `GroupKFold` preserves group
+  membership but does not provide chronological forward chaining; use an explicitly ordered procedure
+  when that property is needed.
 
 **If verification fails:**
 - Document which automl capabilities are missing in
