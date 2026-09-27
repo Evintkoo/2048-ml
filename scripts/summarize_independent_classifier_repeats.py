@@ -27,6 +27,8 @@ def main():
     for run_dir in run_dirs:
         protocol = json.loads((run_dir / "protocol-manifest.json").read_text())
         verification = json.loads((run_dir / "verification.json").read_text())
+        if run_dir.name != f"seed-{protocol['global_training_seed']}":
+            raise SystemExit(f"repeat directory/seed mismatch in {run_dir}")
         if verification["status"] != "pass":
             raise SystemExit(f"verification failed for {run_dir}")
         runs.append((protocol, verification))
@@ -64,19 +66,29 @@ def main():
     for model in models:
         accuracy = []
         macro_f1 = []
+        cv_accuracy = []
+        cv_macro_f1 = []
         for seed, (_, verification) in zip(seeds, runs):
             result = verification["models"][model]
             accuracy.append(result["accuracy"])
             macro_f1.append(result["macro_f1"])
+            cv_accuracy.append(result["grouped_cv_accuracy_mean"])
+            cv_macro_f1.append(result["grouped_cv_macro_f1_mean"])
             rows.append(
                 {
                     "model": model,
                     "training_seed": seed,
+                    "grouped_cv_accuracy": f"{result['grouped_cv_accuracy_mean']:.12f}",
+                    "grouped_cv_macro_f1": f"{result['grouped_cv_macro_f1_mean']:.12f}",
                     "holdout_accuracy": f"{result['accuracy']:.12f}",
                     "holdout_macro_f1": f"{result['macro_f1']:.12f}",
                 }
             )
         summary["models"][model] = {
+            "grouped_cv_accuracy_mean_across_fits": statistics.mean(cv_accuracy),
+            "grouped_cv_accuracy_sample_sd_across_fits": statistics.stdev(cv_accuracy),
+            "grouped_cv_macro_f1_mean_across_fits": statistics.mean(cv_macro_f1),
+            "grouped_cv_macro_f1_sample_sd_across_fits": statistics.stdev(cv_macro_f1),
             "accuracy_mean": statistics.mean(accuracy),
             "accuracy_sample_sd": statistics.stdev(accuracy),
             "accuracy_min": min(accuracy),
@@ -91,7 +103,14 @@ def main():
     with csv_path.open("w", newline="") as stream:
         writer = csv.DictWriter(
             stream,
-            fieldnames=["model", "training_seed", "holdout_accuracy", "holdout_macro_f1"],
+            fieldnames=[
+                "model",
+                "training_seed",
+                "grouped_cv_accuracy",
+                "grouped_cv_macro_f1",
+                "holdout_accuracy",
+                "holdout_macro_f1",
+            ],
             lineterminator="\n",
         )
         writer.writeheader()

@@ -1,0 +1,89 @@
+{
+  "status": "pass",
+  "protocol": "training-seed repeats on one fixed 20-game training corpus and one fixed five-game holdout",
+  "interpretation": "descriptive fit-seed sensitivity; does not estimate corpus, host, or holdout-game uncertainty",
+  "source_revision": "6130cd58b027b1e495089e182d30bcdd58644d35",
+  "training_seeds": [
+    90627,
+    90628,
+    90629,
+    90630,
+    90631
+  ],
+  "n_repeats": 5,
+  "training_input_sha256": "1e8de5a0fb945b25162dacca0186f30c1accfef84af26a0c46a945b0991f9a78",
+  "metadata_input_sha256": "2207a7cc274b8c9aaf0da175cdf5d48739cb29583f51431d671e571fdd49734a",
+  "holdout_manifest_sha256": "9b270b877d623a732f461846c161d9a1f36d9392f5fa59a3b9ccf273a1a77cf2",
+  "models": {
+    "adaboost": {
+      "grouped_cv_accuracy_mean_across_fits": 0.28105448613688466,
+      "grouped_cv_accuracy_sample_sd_across_fits": 0.0,
+      "grouped_cv_macro_f1_mean_across_fits": 0.2615304106611824,
+      "grouped_cv_macro_f1_sample_sd_across_fits": 0.0,
+      "accuracy_mean": 0.27171903881700554,
+      "accuracy_sample_sd": 0.0,
+      "accuracy_min": 0.27171903881700554,
+      "accuracy_max": 0.27171903881700554,
+      "macro_f1_mean": 0.2558082393142669,
+      "macro_f1_sample_sd": 0.0,
+      "macro_f1_min": 0.2558082393142669,
+      "macro_f1_max": 0.2558082393142669
+    },
+    "extra_trees": {
+      "grouped_cv_accuracy_mean_across_fits": 0.2961364351444851,
+      "grouped_cv_accuracy_sample_sd_across_fits": 0.0015813085811292016,
+      "grouped_cv_macro_f1_mean_across_fits": 0.234095424521767,
+      "grouped_cv_macro_f1_sample_sd_across_fits": 0.0019400941714727664,
+      "accuracy_mean": 0.2724584103512015,
+      "accuracy_sample_sd": 0.005932275983689916,
+      "accuracy_min": 0.266173752310536,
+      "accuracy_max": 0.2809611829944547,
+      "macro_f1_mean": 0.21006327615906045,
+      "macro_f1_sample_sd": 0.007375312356918733,
+      "macro_f1_min": 0.2027001922928262,
+      "macro_f1_max": 0.21959790982060778
+    },
+    "knn": {
+      "grouped_cv_accuracy_mean_across_fits": 0.2549620809061576,
+      "grouped_cv_accuracy_sample_sd_across_fits": 0.0,
+      "grouped_cv_macro_f1_mean_across_fits": 0.2496699060605502,
+      "grouped_cv_macro_f1_sample_sd_across_fits": 0.0,
+      "accuracy_mean": 0.2587800369685767,
+      "accuracy_sample_sd": 0.0,
+      "accuracy_min": 0.2587800369685767,
+      "accuracy_max": 0.2587800369685767,
+      "macro_f1_mean": 0.25389279152496086,
+      "macro_f1_sample_sd": 0.0,
+      "macro_f1_min": 0.25389279152496086,
+      "macro_f1_max": 0.25389279152496086
+    },
+    "naive_bayes": {
+      "grouped_cv_accuracy_mean_across_fits": 0.26312996883104134,
+      "grouped_cv_accuracy_sample_sd_across_fits": 0.0,
+      "grouped_cv_macro_f1_mean_across_fits": 0.23394113093053623,
+      "grouped_cv_macro_f1_sample_sd_across_fits": 0.0,
+      "accuracy_mean": 0.27911275415896486,
+      "accuracy_sample_sd": 0.0,
+      "accuracy_min": 0.27911275415896486,
+      "accuracy_max": 0.27911275415896486,
+      "macro_f1_mean": 0.2504675976371776,
+      "macro_f1_sample_sd": 0.0,
+      "macro_f1_min": 0.2504675976371776,
+      "macro_f1_max": 0.2504675976371776
+    },
+    "random_forest": {
+      "grouped_cv_accuracy_mean_across_fits": 0.2842207269711449,
+      "grouped_cv_accuracy_sample_sd_across_fits": 0.001425583361459342,
+      "grouped_cv_macro_f1_mean_across_fits": 0.274435461776076,
+      "grouped_cv_macro_f1_sample_sd_across_fits": 0.0012001470024742646,
+      "accuracy_mean": 0.27837338262476896,
+      "accuracy_sample_sd": 0.0028032811253425423,
+      "accuracy_min": 0.2754158964879852,
+      "accuracy_max": 0.2828096118299446,
+      "macro_f1_mean": 0.27159707927624094,
+      "macro_f1_sample_sd": 0.0022764929727335935,
+      "macro_f1_min": 0.26853210080946543,
+      "macro_f1_max": 0.27481912121577734
+    }
+  }
+}

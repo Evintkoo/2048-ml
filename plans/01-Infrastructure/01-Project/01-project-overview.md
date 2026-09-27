@@ -1,9 +1,9 @@
 # Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
 
 > **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 25-game throughput
-> sample, and five-candidate classifier diagnostics on chronological holdouts of 391 and 541 rows are
-> recorded;
-> matched framework evaluation, scale collection, and confirmatory policy results remain pending.
+> sample, and five-candidate classifier diagnostics on chronological holdouts of 391 and 541 rows,
+> including five fit seeds on the same 541-row holdout, are recorded. Matched framework evaluation,
+> scale collection, and confirmatory policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy
@@ -284,10 +284,18 @@ evidence only, not a policy score, model-selection result, or confirmatory quali
 data, manifests, models, predictions, and verifier are retained in the
 [report](../../../reports/candidate_classifier_independent_holdout/2026-09-27-25-game/README.md).
 
+To measure fit-seed sensitivity, all five candidates were additionally trained with seeds 90627–90631
+on that same 20-game corpus and evaluated on the same 541 holdout rows. RandomForest holdout accuracy
+was `0.2784 ± 0.0028` and ExtraTrees was `0.2725 ± 0.0059` (mean ± sample SD over five seeds); the other
+three candidates returned identical predictions across these five seeds. This describes training-seed
+sensitivity on one fixed corpus and one small holdout only. It does not estimate variability across
+training corpora or policy game scores, or establish a confirmatory ranking. Per-seed manifests,
+predictions, verification, and summary data are retained in the independent holdout report.
+
 The exploratory 10,000-game score matrix now supplies disjoint-seed score distributions for the five
 verified policies and both measured baselines, but it is based on one fit per candidate. Remaining
 prerequisites before main-study claims are matched search-budget/per-model resource framework
-comparisons, broader repeated-fit reproducibility evidence, a scale-appropriate rollout-labeled corpus,
+comparisons, policy-fit repeats across independent corpora, a scale-appropriate rollout-labeled corpus,
 adequate-sample classifier evaluation, and a predeclared confirmatory policy evaluation. The 20-game
 training/simulator smoke and exploratory score matrix do not substitute for those artifacts. Pilot
 collection linearly projects to about 231 hours for 20,000 games using the combined 25-game pilot, with
@@ -416,10 +424,11 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
   canonical-schema 2048 pilot trained five compatible classifiers and completed a separate 20-game
   simulator smoke. A
   common 391-row classifier diagnostic on its final three game groups is retained, but it does not establish
-  model or policy quality. Matched-budget/model-only framework profiling, broader repeated-fit evidence,
-  independent replication, scale collection, and adequate-sample held-out diagnostics remain absent. A
-  five-game independent throughput repeat and classifier-label holdout complement the earlier pilot but
-  do not constitute a scale study or independent machine replication.
+  model or policy quality. Matched-budget/model-only framework profiling, repeated policy fits across
+  independent corpora, independent replication, scale collection, and adequate-sample held-out diagnostics
+  remain absent. Five training-seed classifier fits on the same corpus and holdout characterize only
+  fixed-corpus seed sensitivity. The five-game throughput repeat is not a scale study or independent
+  machine replication.
   Larger runs require a declared resource budget and retained artifacts.
 
 ## Later

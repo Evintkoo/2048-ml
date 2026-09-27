@@ -1,0 +1,60 @@
+{
+  "protocol": "fit on 20 earlier rollout games; reserve five later games as chronological classifier-label holdout",
+  "interpretation": "small descriptive classifier diagnostic; not confirmatory policy quality or model selection",
+  "source_revision": "6130cd58b027b1e495089e182d30bcdd58644d35",
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "global_training_seed": 90627,
+  "candidate_models": [
+    "random_forest",
+    "extra_trees",
+    "adaboost",
+    "knn",
+    "naive_bayes"
+  ],
+  "dataset_schema": "2048-action-policy-v2",
+  "state_feature_count": 17,
+  "cv_strategy": "GroupKFold",
+  "cv_folds": 5,
+  "development_fraction": 0.8,
+  "training_source": {
+    "manifest": "reports/collection_pilots/2026-09-27-20-game/training.manifest.json",
+    "manifest_sha256": "0520d00f21cece840f1a13459239e88334e8f19695500bb6595f10e4e262e585",
+    "game_seeds": [
+      90627,
+      90646
+    ],
+    "games": 20,
+    "rows": 2447
+  },
+  "holdout_source": {
+    "manifest": "reports/collection_pilots/2026-09-27-5-game-repeat/training.manifest.json",
+    "manifest_sha256": "9b270b877d623a732f461846c161d9a1f36d9392f5fa59a3b9ccf273a1a77cf2",
+    "game_seeds": [
+      90647,
+      90651
+    ],
+    "games": 5,
+    "rows": 541
+  },
+  "combined_data": {
+    "training_csv": "reports/candidate_classifier_independent_holdout/2026-09-27-25-game/repeated-fit/seed-90627/joined-training.csv",
+    "training_csv_sha256": "1e8de5a0fb945b25162dacca0186f30c1accfef84af26a0c46a945b0991f9a78",
+    "metadata_csv": "reports/candidate_classifier_independent_holdout/2026-09-27-25-game/repeated-fit/seed-90627/joined-training.metadata.csv",
+    "metadata_csv_sha256": "2207a7cc274b8c9aaf0da175cdf5d48739cb29583f51431d671e571fdd49734a",
+    "total_games": 25,
+    "total_rows": 2988,
+    "holdout_game_ids": [
+      20,
+      21,
+      22,
+      23,
+      24
+    ]
+  },
+  "limitations": [
+    "The five held-out game groups are a small sample and do not support policy-quality claims",
+    "Each candidate is fitted once; no training-seed uncertainty is estimated",
+    "These rollout-derived action-label metrics are not held-out game-score metrics",
+    "The five holdout games were collected with the same host and simulator protocol as training data"
+  ]
+}

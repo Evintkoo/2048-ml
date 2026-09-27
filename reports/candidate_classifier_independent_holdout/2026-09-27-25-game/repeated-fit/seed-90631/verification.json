@@ -1,7 +1,7 @@
 {
   "status": "pass",
-  "source_revision": "4d6a0a7d91318a3d8159436e3f2fd79d9aaf1d6b",
-  "protocol_manifest_sha256": "5338603d9be97846c8d82c6c2430ca8e686ba0130619b3988fbca03c7e0a5773",
+  "source_revision": "6130cd58b027b1e495089e182d30bcdd58644d35",
+  "protocol_manifest_sha256": "70260a2265c616353a7664c7d91c66bf92e851d4f1fc3e057739d87d99d67849",
   "combined_training_csv_sha256": "1e8de5a0fb945b25162dacca0186f30c1accfef84af26a0c46a945b0991f9a78",
   "combined_metadata_csv_sha256": "2207a7cc274b8c9aaf0da175cdf5d48739cb29583f51431d671e571fdd49734a",
   "training_rows": 2447,
@@ -16,79 +16,79 @@
   "models": {
     "random_forest": {
       "n_rows": 541,
-      "accuracy": 0.2828096118299446,
-      "macro_f1": 0.27481912121577734,
+      "accuracy": 0.2754158964879852,
+      "macro_f1": 0.26853210080946543,
       "confusion_matrix_actual_rows_predicted_columns": [
         [
-          51,
-          18,
-          26,
-          41
-        ],
-        [
-          37,
-          22,
-          30,
-          45
-        ],
-        [
-          44,
-          15,
-          30,
-          41
-        ],
-        [
-          46,
-          26,
+          48,
           19,
-          50
+          27,
+          42
+        ],
+        [
+          38,
+          21,
+          33,
+          42
+        ],
+        [
+          42,
+          16,
+          32,
+          40
+        ],
+        [
+          45,
+          26,
+          22,
+          48
         ]
       ],
-      "grouped_cv_accuracy_mean": 0.28656663717175745,
-      "grouped_cv_accuracy_sample_sd": 0.019819496196446188,
-      "grouped_cv_macro_f1_mean": 0.2761220534872246,
-      "grouped_cv_macro_f1_sample_sd": 0.020682367198943202,
-      "model_sha256": "c3d939c7f86e5e244d4731ff9c344bf95762400bd9d03e0576550235d946330f",
-      "model_manifest_sha256": "de3c558abc189def1aaafcc04bdf0a39c9f7139f9b109bc2e99197e801773a4a",
-      "prediction_sha256": "362a235de60f1fde87538a469f338cfd82d5e9f85a03977872c8a5cd991c04d5"
+      "grouped_cv_accuracy_mean": 0.2833846891353266,
+      "grouped_cv_accuracy_sample_sd": 0.02409562827970027,
+      "grouped_cv_macro_f1_mean": 0.2743900163448238,
+      "grouped_cv_macro_f1_sample_sd": 0.025923633878383655,
+      "model_sha256": "79013c0a3efede81c22431f8da3b0726ec6c9454b053b087ccf15f34d6c679df",
+      "model_manifest_sha256": "f553de1dce3b50d194703e447b6e02f644a230a657118516e7987e454a1baedd",
+      "prediction_sha256": "b5ac6ad8cba01d1a89de926f589af199e423c98a61e8c91241b64ae7e5a08f10"
     },
     "extra_trees": {
       "n_rows": 541,
-      "accuracy": 0.266173752310536,
-      "macro_f1": 0.20348108709207857,
+      "accuracy": 0.2754158964879852,
+      "macro_f1": 0.2153834476422122,
       "confusion_matrix_actual_rows_predicted_columns": [
         [
-          102,
-          22,
-          9,
-          3
+          103,
+          18,
+          10,
+          5
         ],
         [
-          96,
-          24,
+          95,
+          25,
           11,
           3
         ],
         [
-          87,
-          26,
-          12,
-          5
+          89,
+          22,
+          15,
+          4
         ],
         [
-          88,
-          41,
+          90,
+          39,
           6,
           6
         ]
       ],
-      "grouped_cv_accuracy_mean": 0.2948219659257542,
-      "grouped_cv_accuracy_sample_sd": 0.017258681980503367,
-      "grouped_cv_macro_f1_mean": 0.2325899210623675,
-      "grouped_cv_macro_f1_sample_sd": 0.03086897785881578,
-      "model_sha256": "d96a2802c61e3fea5870d7cee0ce6cf8d0c4ee369b143045905ee0f1db10f447",
-      "model_manifest_sha256": "c101402cf883a9101c4c7ebc7f73b5b2fcdec499d1a274f98dc059584b92b096",
-      "prediction_sha256": "86fbf67c9862ceb0f91d056e14aa5fb9482dc7ac1fff91d113e7fcbe4abbf442"
+      "grouped_cv_accuracy_mean": 0.2945422624336089,
+      "grouped_cv_accuracy_sample_sd": 0.02069098388445558,
+      "grouped_cv_macro_f1_mean": 0.23155418799229968,
+      "grouped_cv_macro_f1_sample_sd": 0.035197760013886005,
+      "model_sha256": "938d8690c7d074e6a4e490ffd545a4534fe27a07e9901dbe597ab4c313454eaa",
+      "model_manifest_sha256": "016261587d2c351cd07151947bfd7d3850ce41a38482bbcec3fa929682d73e0a",
+      "prediction_sha256": "00ec8a6f574ca0bb826ba33d73f13415c49249ba7c303e48cce0c7e2a3258f76"
     },
     "adaboost": {
       "n_rows": 541,
@@ -124,8 +124,8 @@
       "grouped_cv_accuracy_sample_sd": 0.020643105987118632,
       "grouped_cv_macro_f1_mean": 0.2615304106611824,
       "grouped_cv_macro_f1_sample_sd": 0.02250759810906114,
-      "model_sha256": "c149b8c7f0eecfc399c86786c1637f1fb08ae3b3c3564dfda3d8058e02e637f7",
-      "model_manifest_sha256": "d02b8cb1ab7d96300457972116c18fea0d3a2083454de7f2f6091f07d722b65f",
+      "model_sha256": "8017bb1b79dad5b77257f7448a73c92833e9e98ab8b71a40689a6d3031394ef0",
+      "model_manifest_sha256": "5c03f1572b0a54099f600bda165dd8b0567d9fc9cd01729915fb8c0dc4355be0",
       "prediction_sha256": "712eb21b186d359bd3b66c9c31b4edcad34f4691de281dae578abff2d6ae4d92"
     },
     "knn": {
@@ -162,8 +162,8 @@
       "grouped_cv_accuracy_sample_sd": 0.024204260073487034,
       "grouped_cv_macro_f1_mean": 0.2496699060605502,
       "grouped_cv_macro_f1_sample_sd": 0.02351787058427161,
-      "model_sha256": "b70c05d3deddc3be32c15eda8d2867760f926cfc5fc5e2e12b568f6118cffac7",
-      "model_manifest_sha256": "275f6f9d337e3be4b3497ace788ccc3e08d1200c1744ee8d558857e571b9cfa3",
+      "model_sha256": "58f2235aff38e6c2da6629d6d4a8f703a147cd80e71e20b8915cf2d142500116",
+      "model_manifest_sha256": "32a8b6229c77c00754c05127d638291a12ca68f2a85dc20a3afe896b3f710072",
       "prediction_sha256": "fd2c15f6f313e0d3adaae37a418da382b2a2e001f3619a222f3db6483d9111cc"
     },
     "naive_bayes": {
@@ -200,8 +200,8 @@
       "grouped_cv_accuracy_sample_sd": 0.03368700040232051,
       "grouped_cv_macro_f1_mean": 0.23394113093053623,
       "grouped_cv_macro_f1_sample_sd": 0.036784518711868865,
-      "model_sha256": "8ea504334fac308e8425e73b2c7513161000c57d83e15a448f905c1ef0c61aea",
-      "model_manifest_sha256": "1a8a010347ff3e5c9667feb2172f95df0d8cc4a51ec6462ac21073aa87aae7b4",
+      "model_sha256": "7f4ce2940e62fdb540af9f2bb1801e731659bdac1335d3daacd44d2e0b5c8287",
+      "model_manifest_sha256": "333897bf9bc5e93f76e35d8f4a9af03b732e19077c72c2498bd8f0d15859d5ac",
       "prediction_sha256": "2b3825039aacd76f55958b91ea528fe86a22d54259e25d6f164f012a704fb02b"
     }
   }

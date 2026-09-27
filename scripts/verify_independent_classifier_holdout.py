@@ -130,6 +130,7 @@ def main():
         assert model_manifest["metadata_sha256"] == sha256(metadata_path)
         assert model_manifest["model"] == model
         assert model_manifest["source_revision"] == protocol["source_revision"]
+        assert model_manifest["global_seed"] == protocol["global_training_seed"]
         assert model_manifest["training_data_sha256"] == protocol["combined_data"]["training_csv_sha256"]
         assert model_manifest["metadata_sha256"] == protocol["combined_data"]["metadata_csv_sha256"]
         assert model_manifest["development_fraction"] == 0.8
@@ -155,6 +156,18 @@ def main():
         ]
         result["models"][model] = {
             **measured,
+            "grouped_cv_accuracy_mean": model_manifest["grouped_cv_evaluation"][
+                "mean_accuracy"
+            ],
+            "grouped_cv_accuracy_sample_sd": model_manifest["grouped_cv_evaluation"][
+                "std_accuracy"
+            ],
+            "grouped_cv_macro_f1_mean": model_manifest["grouped_cv_evaluation"][
+                "mean_macro_f1"
+            ],
+            "grouped_cv_macro_f1_sample_sd": model_manifest["grouped_cv_evaluation"][
+                "std_macro_f1"
+            ],
             "model_sha256": sha256(model_path),
             "model_manifest_sha256": sha256(model_manifest_path),
             "prediction_sha256": sha256(predictions_path),
