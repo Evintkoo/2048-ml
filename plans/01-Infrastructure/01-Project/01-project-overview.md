@@ -1,6 +1,6 @@
 # Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 25-game throughput
+> **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 75-game throughput
 > sample, and five-candidate classifier diagnostics on chronological holdouts of 391 and 541 rows,
 > including five fit seeds on the same 541-row holdout, are recorded. Matched framework evaluation,
 > scale collection, and confirmatory policy results remain pending.
@@ -214,7 +214,17 @@ both runs, 25 games produced 2,988 rows and 1,048,600 rollout evaluations in 1,0
 combined mean of 41.58 seconds/game and a rough linear 20,000-game projection of 230.99 hours. This is
 still a single-host, configuration-specific estimate, not a runtime guarantee or compute authorization.
 The five-game run does not measure machine-to-machine variance or support a large-corpus quality claim.
-A declared compute envelope and a scale-appropriate collection protocol remain prerequisites.
+
+A subsequent 50-game follow-up on seeds 90652–90701 used the same labeling settings under a bounded
+one-hour wall-time envelope, with a checkpoint after each game. It produced 5,318 rows and 1,877,900
+rollout evaluations in 1,799.88 collector seconds (35.997 seconds/game); rows/game ranged from 54 to 197
+(mean 106.36, sample SD 33.35). Checkpoint chunks sum to the manifest row count, and both CSV hashes,
+row identities, seed range, and manifest/checkpoint counters agree. Across all three contiguous same-host
+runs, 75 games produced 8,306 rows and 2,926,500 evaluations in 2,839.33 seconds. The updated rough
+linear estimate is 210.32 hours for 20,000 games. This bounded follow-up is still a throughput diagnostic,
+not a scale-quality result or authorization for the 20,000-game corpus. Its artifacts are in the
+[50-game follow-up report](../../../reports/collection_pilots/2026-09-27-50-game-followup/README.md).
+A larger corpus still needs its own explicit resource envelope, protocol, and quality evaluation plan.
 
 ### 6.5 Baseline and Evaluation Tooling (2026-09-24)
 
@@ -303,13 +313,15 @@ The exploratory 10,000-game score matrix now supplies disjoint-seed score distri
 verified policies and both measured baselines, but it is based on one fit per candidate. Remaining
 prerequisites before main-study claims are matched search-budget/per-model resource framework
 comparisons, policy-fit repeats across independent corpora, a scale-appropriate rollout-labeled corpus,
-adequate-sample classifier evaluation, and a predeclared confirmatory policy evaluation. The 20-game
+adequate-sample classifier evaluation, and a predeclared confirmatory policy evaluation. The pilot
 training/simulator smoke and exploratory score matrix do not substitute for those artifacts. Pilot
-collection linearly projects to about 231 hours for 20,000 games using the combined 25-game pilot, with
-62–207 rows per game in the initial 20-game sample. Both figures are uncertain and configuration-specific.
+collection linearly projects to about 210 hours for 20,000 games using the combined 75-game sample, with
+54–207 rows per game across the three runs. These figures are uncertain and configuration-specific.
 Declare a resource envelope and collection protocol before starting a corpus at that scale. The independent
 five-game repeat and its integrity evidence are retained in the
-[five-game pilot report](../../../reports/collection_pilots/2026-09-27-5-game-repeat/README.md).
+[five-game pilot report](../../../reports/collection_pilots/2026-09-27-5-game-repeat/README.md); the larger
+bounded follow-up is retained in the
+[50-game follow-up report](../../../reports/collection_pilots/2026-09-27-50-game-followup/README.md).
 
 ### 6.7 Five-Candidate Policy Score Diagnostic (2026-09-27)
 
