@@ -12,7 +12,7 @@ this ticket's implementation record.
 This document records architecture observed in the pinned AutoML submodule and root integration. It is a
 source map, not a framework performance result. The audit was refreshed after root integration added
 optional HyperOptX tuning and switched the model policy to `InferenceEngine`; empirical framework claims
-remain outside this ticket and are tracked in #005/#102.
+remain outside this ticket and are tracked in #005, #006, #102, and #103.
 
 ## Revision and scope
 

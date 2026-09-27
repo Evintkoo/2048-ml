@@ -218,6 +218,8 @@ independent replication remain outstanding.
 ## Later
 
 - **Complete the framework-validation program in
-  `plans/07-Benchmarking/03-Comparison/04-framework-validation.md`.** Add matched-budget baselines,
-  per-model resource measurements and CLI/library equivalence under a declared budget; return here to update contribution conclusions after that evidence
-  is available.
+  `plans/07-Benchmarking/03-Comparison/04-framework-validation.md` (ticket #103, after earlier tickets
+  are processed). Its matched-budget baselines, per-model resource measurements and CLI/library
+  equivalence work must be completed before returning here to update contribution conclusions.
+- Independent replication remains a separate open acceptance item after #103; repeated processes by the
+  same implementation do not count as an independent replication.
