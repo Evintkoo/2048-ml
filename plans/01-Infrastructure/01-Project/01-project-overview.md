@@ -286,17 +286,17 @@ incapable" and "our integration is broken."
 ### Tier 1: Minimum Viable Milestone
 - AutoML capability and correctness gate completed
 - Framework benchmark protocol documented
-- Determine each model's score distribution through systematic evaluation under a declared, budgeted
-  protocol
-- Establish baseline scores for the verified four-class candidates: Random Forest, ExtraTrees, AdaBoost,
-  KNN, and NaiveBayes
-- Full data pipeline from game simulation to trained model works end-to-end
+- **Partial:** score distributions for five once-fitted candidates and two baselines are retained for
+  10,000 matched, training-disjoint seeds. A budgeted confirmatory protocol and repeated-fit estimates
+  remain open.
+- **Exploratory evidence recorded:** the disjoint-seed report establishes observed scores for the
+  verified four-class candidates—RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes—and the local
+  random/heuristic baselines. It does not establish a confirmatory candidate ranking.
+- **Demonstrated at pilot scale:** the data pipeline connects game simulation, rollout labeling, AutoML
+  fitting, held-out classifier diagnostics, and saved-policy simulation. Scale and quality criteria
+  remain open.
 - Models are ranked by mean score. The exploratory disjoint-seed diagnostic now reports this ordering
   for the five verified fitted candidates and two baselines; a confirmatory ranking remains pending.
-
-The pipeline criterion is demonstrated at pilot scale: the retained corpus was used for five compatible
-AutoML fits, grouped-CV and chronological holdout diagnostics, and a separate saved-policy simulator
-smoke. This verifies the integration path only; scale and quality criteria remain open.
 
 ### Tier 2: Intermediate Milestone
 - Framework architecture, data contracts, and design trade-offs documented
