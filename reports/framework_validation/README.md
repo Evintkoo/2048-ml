@@ -54,6 +54,25 @@ declared tree counts/depths and core KNN/GaussianNB/AdaBoost settings, but
 implementation defaults, random generators, and tree-split behavior are not
 identical. No inferential test was applied to this one-split comparison.
 
+### Fixed-configuration match boundary
+
+The isolated per-case resource matrix uses one configured fit per model and
+dataset for each implementation. Neither side runs optimizer trials, so this
+is a one-configuration diagnostic rather than a search-efficiency study. The
+explicit settings line up for 32-tree forests at depth 8, 32 AdaBoost stumps at
+learning rate 1.0, five-neighbor uniform Euclidean KNN, and Gaussian Naive Bayes
+with nominal variance smoothing `1e-9`.
+
+The implementations still differ internally. AutoML tree classifiers use
+`ceil(sqrt(n_features))` features per split while sklearn applies its own
+feature-count conversion. AutoML KNN applies its seeded random projection
+above 16 input features; sklearn KNN uses the original feature space. AdaBoost
+split search and Naive Bayes variance handling are separate implementations.
+The common outer rows, thread limits, and single-fit count make the case-level
+process measurements useful descriptive evidence, but they do not match
+optimizer trial budgets, isolate model allocations, or establish framework
+superiority.
+
 | Dataset | Model | AutoML accuracy | sklearn accuracy | AutoML macro-F1 | sklearn macro-F1 | Labels equal |
 |---|---|---:|---:|---:|---:|---|
 | Iris | RandomForest | 0.900 | 0.833 | 0.898 | 0.833 | No |

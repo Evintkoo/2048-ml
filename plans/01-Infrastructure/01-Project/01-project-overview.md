@@ -259,6 +259,13 @@ they are not model-only memory estimates or matched-budget comparisons. One-host
 remain descriptive. Matched search budgets, model-only resource profiling, and broader hardware runs
 remain open; see the [framework report](../../../reports/framework_validation/README.md).
 
+The resource matrix uses one fixed fit per model and dataset, with no optimizer trials in either runner.
+Its explicit settings align 32-tree forest counts/depth, 32 AdaBoost stumps and learning rate 1.0, and
+the nominal five-neighbor KNN and Gaussian Naive Bayes settings. Implementation behavior still differs:
+AutoML KNN projects inputs above 16 features, and tree feature-subset counts use different rounding
+rules. The matrix therefore describes process resources under one fixed configuration; it does not
+compare search efficiency or model-only allocation. Full details are in the framework-validation report.
+
 ### 6.6 Main-Study Readiness (updated 2026-09-27)
 
 The root training command requires row-aligned game metadata, excludes the final chronological game
