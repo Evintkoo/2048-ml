@@ -16,13 +16,15 @@ learning, and framework evaluation is a separate research track.
 **This plan treats its subject as partial or pending work, not as a research finding.** Framework checks
 cover five AutoML candidates on three standard datasets and four fixed split seeds, with exact repeated
 predictions and save/load equality. A fixed-configuration scikit-learn comparison and a two-repeat,
-60-process resource matrix cover the same 15 dataset/model cases, but do not match optimizer search budgets
-or isolate model memory. The 2048 labeling pilots cover 75 games and support a 50-game chronological
+60-process resource matrix cover the same 15 dataset/model cases, but do not compare optimizer search
+behavior or isolate model memory. A separate pilot matches six grid candidates and one validation fit per
+candidate for AutoML and scikit-learn RandomForest/ExtraTrees on the same three UCI splits. This matches
+candidate counts, not optimizer algorithms. The 2048 labeling pilots cover 75 games and support a 50-game chronological
 classifier-label holdout, plus exploratory policy-score comparisons for one 20-game fit and one 50-game
 fit per candidate. The newer policy fits scored below random on the retained 10,000-seed evaluation, and
 four of five had lower paired means than the older fit on common seeds. These are case-study diagnostics,
 not framework-superiority findings or confirmatory candidate selection. Scale collection, repeated fits
-across matched independent corpora, matched-budget framework evaluation, and a predeclared confirmatory
+across matched independent corpora, broader matched-budget framework evaluation, and a predeclared confirmatory
 policy evaluation remain pending. Data and analyses are retained in [the 50-game classifier
 report](../../../reports/candidate_classifier_pilot/2026-09-27-50-game/README.md), [the 50-game policy
 score report](../../../reports/action-frequency/50-game-disjoint-seeds/README.md), and [the
@@ -36,8 +38,9 @@ framework-validation report](../../../reports/framework_validation/README.md).
   datasets, and four split seeds. A 75-game rollout-labeling sample supports a 40/10 chronological
   classifier-label diagnostic and one fit per candidate on each of two training corpora. Five 50-game-fit
   policies and both baselines have exploratory 10,000-seed score distributions; earlier and newer fits
-  have paired common-seed comparisons. Matched framework search budgets, scale collection, repeated fits
-  across independent corpora, and confirmatory 2048 evaluation remain incomplete (updated 2026-09-27).
+  have paired common-seed comparisons. A six-candidate matched-grid pilot covers two tree models on three
+  standard datasets. Optimizer-algorithm comparisons, scale collection, repeated fits across independent
+  corpora, and confirmatory 2048 evaluation remain incomplete (updated 2026-09-27).
 
 ---
 
@@ -274,6 +277,16 @@ AutoML KNN projects inputs above 16 features, and tree feature-subset counts use
 rules. The matrix therefore describes process resources under one fixed configuration; it does not
 compare search efficiency or model-only allocation. Full details are in the framework-validation report.
 
+The shared-grid pilot addresses candidate-fit count for the two tree models with tuning support.
+AutoML and scikit-learn each evaluated the same six `(n_estimators, max_depth)` configurations on the same
+inner validation rows for RandomForest and ExtraTrees across Iris, Wine, and Wisconsin Diagnostic. Both
+selected the same configuration in all six cases. The verifier confirms 36 candidate fits per
+implementation, identical source-row partitions, configuration selection from validation scores, and
+recomputed outer-test metrics. This is a matched fixed-grid budget, not a comparison of HyperOptX with a
+reference optimizer; one seed and one split per dataset do not establish performance superiority. Results
+and the reproduction protocol are in the
+[matched-grid report](../../../reports/framework_validation/matched-grid-search-2026-09-27/README.md).
+
 ### 6.6 Main-Study Readiness (updated 2026-09-27)
 
 The root training command requires row-aligned game metadata, excludes the final chronological game
@@ -328,8 +341,8 @@ confirmatory ranking or a general AutoML result. Data, manifests, comparisons, a
 retained in the [50-game score report](../../../reports/action-frequency/50-game-disjoint-seeds/README.md).
 
 The earlier disjoint 10,000-game score matrix also supplies score distributions for the original five
-verified policies and both baselines. Remaining prerequisites before main-study claims are matched
-search-budget/per-model resource framework comparisons, additional independent training corpora with
+verified policies and both baselines. Remaining prerequisites before main-study claims are optimizer-
+algorithm comparisons and broader per-model resource framework comparisons, additional independent training corpora with
 repeated fits, a scale-appropriate rollout-labeled corpus, adequate-sample classifier evaluation, and a
 predeclared confirmatory policy evaluation. The small-corpus training/simulator diagnostics and score
 matrices do not substitute for those artifacts. Pilot

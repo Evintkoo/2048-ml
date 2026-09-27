@@ -54,6 +54,23 @@ declared tree counts/depths and core KNN/GaussianNB/AdaBoost settings, but
 implementation defaults, random generators, and tree-split behavior are not
 identical. No inferential test was applied to this one-split comparison.
 
+## Matched shared-grid budget pilot (2026-09-27)
+
+The separate [`matched-grid-search-2026-09-27/`](matched-grid-search-2026-09-27/README.md)
+pilot compares AutoML and scikit-learn RandomForest/ExtraTrees on Iris, Wine, and Wisconsin Diagnostic
+using the same six `(n_estimators, max_depth)` configurations. Both implementations see the same
+source-row outer 80/20 split and matching per-class inner 10% validation holdback, select by validation
+accuracy, and use six candidate fits per case. The outer test rows are scored only after selection. Each
+implementation completed 36 candidate fits across six cases.
+
+The selected configuration matched in all six cases. Outer test prediction agreement ranged from 0.944
+to 1.000. Accuracy and macro-F1 are retained per case; no inferential test was run. This matches candidate
+count and parameter values for two supported tree models, but it does not compare HyperOptX against a
+reference optimizer. Estimator defaults and implementation details still differ, the study uses one fixed
+split per dataset, and it does not establish framework superiority or a runtime advantage. The verification
+artifact recomputes all six test metrics and checks the shared grid, trial counts, source-row partitions,
+artifact hashes, and holdout predictions.
+
 ### Fixed-configuration match boundary
 
 The isolated per-case resource matrix uses one configured fit per model and
@@ -287,10 +304,11 @@ diagnostic evidence and must not be conflated with the current pinned result.
 
 ## Limits
 
-The framework diagnostic covers four dataset split seeds and one fixed model
-configuration. Seeds 42, 2026, 2027, and 2028 each have two exact prediction
-runs on the same split. The fixed-configuration sklearn comparison is not a
-matched search-budget study. Isolated per-case process RSS is available, but it
-does not isolate model allocations. CLI/API equivalence and independent replication
-remain untested. Scores are not a framework
-superiority result, and game scores remain separate application evidence.
+The fixed-configuration sklearn matrix is not a matched search-budget study.
+The later shared-grid pilot matches six candidate configurations per run for
+RandomForest and ExtraTrees on three fixed UCI splits; it does not compare the
+optimizer algorithms, cover all five candidates, or estimate variation across
+splits. Isolated per-case process RSS is available, but it does not isolate
+model allocations. CLI/API equivalence and independent replication remain
+untested. Scores are not a framework superiority result, and game scores
+remain separate application evidence.

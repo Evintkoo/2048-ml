@@ -1,0 +1,41 @@
+{
+  "schema": "2048-ml.sklearn-matched-grid-search",
+  "schema_version": 1,
+  "created_utc": "2026-09-27T04:19:54Z",
+  "source_revision": "9141c252350fe97c816ed31a5327d600013ef4f5",
+  "protocol_file": "reports/framework_validation/matched-grid-search-2026-09-27/matched-search-protocol.json",
+  "protocol_sha256": "b0495096e1ac8f486a22b38bd3ee4125d311fba915ffffa9d61cb20ebba3b112",
+  "results_file": "reports/framework_validation/matched-grid-search-2026-09-27/sklearn/sklearn-matched-search-results.json",
+  "results_sha256": "a4660effa201c86c8837dbc31c1e6830e90d850e5892aebb4903ef73a944687f",
+  "python": "3.9.21 (main, May 18 2026, 18:33:34) \n[Clang 17.0.0 (clang-1700.6.3.2)]",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "packages": {
+    "scikit_learn": "1.6.1",
+    "numpy": "2.0.2",
+    "scipy": "1.13.1",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0"
+  },
+  "thread_limit": 1,
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libopenblas",
+      "filepath": "/Users/evintleovonzko/.pyenv/versions/3.9.21/lib/python3.9/site-packages/scipy/.dylibs/libopenblas.0.dylib",
+      "version": "0.3.27",
+      "threading_layer": "pthreads",
+      "architecture": "neoversen1"
+    },
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 1,
+      "prefix": "libomp",
+      "filepath": "/Users/evintleovonzko/.pyenv/versions/3.9.21/lib/python3.9/site-packages/sklearn/.dylibs/libomp.dylib",
+      "version": null
+    }
+  ],
+  "successful_cases": 6
+}

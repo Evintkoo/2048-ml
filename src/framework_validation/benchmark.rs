@@ -427,6 +427,291 @@ fn run_one(
     record
 }
 
+const MATCHED_GRID: [(usize, usize); 6] = [(16, 4), (16, 8), (32, 4), (32, 8), (64, 4), (64, 8)];
+
+fn estimator_type(name: &str) -> Result<ModelType> {
+    match name {
+        "random_forest" => Ok(ModelType::RandomForest),
+        "extra_trees" => Ok(ModelType::ExtraTrees),
+        _ => bail!("matched grid search supports random_forest and extra_trees, not {name}"),
+    }
+}
+
+fn inner_validation_indices(
+    dataset: &Dataset,
+    outer_train_indices: &[usize],
+    validation_fraction: f64,
+) -> Result<(Vec<usize>, Vec<usize>)> {
+    if !validation_fraction.is_finite() || !(0.0..1.0).contains(&validation_fraction) {
+        bail!("validation fraction must be finite and in (0, 1)");
+    }
+    let mut by_class: BTreeMap<usize, Vec<usize>> = BTreeMap::new();
+    for &index in outer_train_indices {
+        by_class
+            .entry(dataset.rows[index].2)
+            .or_default()
+            .push(index);
+    }
+    let mut fit = Vec::new();
+    let mut validation = Vec::new();
+    for indices in by_class.values() {
+        if indices.len() < 2 {
+            bail!("each outer-training class needs at least two rows");
+        }
+        let validation_count =
+            ((indices.len() as f64 * validation_fraction).max(1.0) as usize).min(indices.len() - 1);
+        let split = indices.len() - validation_count;
+        fit.extend_from_slice(&indices[..split]);
+        validation.extend_from_slice(&indices[split..]);
+    }
+    Ok((fit, validation))
+}
+
+/// Run a six-configuration shared grid on one inner holdout for AutoML.
+/// Python comparison runners consume the emitted source-row protocol verbatim.
+pub fn run_matched_grid_search(
+    data_dir: &Path,
+    output_dir: &Path,
+    model_filter: Option<&str>,
+    dataset_filter: Option<&str>,
+    seed: u64,
+    test_fraction: f64,
+    validation_fraction: f64,
+) -> Result<()> {
+    if output_dir.exists() {
+        bail!(
+            "refusing to overwrite output directory {}",
+            output_dir.display()
+        );
+    }
+    if !validation_fraction.is_finite() || !(0.0..1.0).contains(&validation_fraction) {
+        bail!("validation fraction must be finite and in (0, 1)");
+    }
+    let all_models = ["random_forest", "extra_trees"];
+    let all_datasets = ["iris", "wine", "breast_cancer_wisconsin_diagnostic"];
+    let models: Vec<_> = if let Some(name) = model_filter {
+        if !all_models.contains(&name) {
+            bail!("unknown model {name}; choose random_forest or extra_trees");
+        }
+        vec![name]
+    } else {
+        all_models.to_vec()
+    };
+    let datasets: Vec<&'static str> = if let Some(name) = dataset_filter {
+        vec![*all_datasets
+            .iter()
+            .find(|candidate| **candidate == name)
+            .with_context(|| format!("unknown dataset {name}"))?]
+    } else {
+        all_datasets.to_vec()
+    };
+
+    fs::create_dir_all(output_dir)?;
+    let mut protocol_datasets = Vec::new();
+    let mut case_records = Vec::new();
+    for dataset_name in &datasets {
+        let dataset = Dataset::read(dataset_name, data_dir)?;
+        let dataset_offset = all_datasets
+            .iter()
+            .position(|name| name == dataset_name)
+            .expect("selected dataset comes from declared dataset list");
+        let split_seed = seed.wrapping_add(dataset_offset as u64);
+        let (outer_train, outer_test) = dataset.split(split_seed, test_fraction)?;
+        let (fit_indices, validation_indices) =
+            inner_validation_indices(&dataset, &outer_train, validation_fraction)?;
+        let source_path = data_dir.join(dataset.source_file);
+        let protocol_dataset = serde_json::json!({
+            "dataset": dataset.name,
+            "source_file": dataset.source_file,
+            "source_sha256": sha256(&source_path)?,
+            "split_seed": split_seed,
+            "test_fraction": test_fraction,
+            "validation_fraction": validation_fraction,
+            "outer_train_source_rows": outer_train.iter().map(|&i| dataset.rows[i].0).collect::<Vec<_>>(),
+            "outer_test_source_rows": outer_test.iter().map(|&i| dataset.rows[i].0).collect::<Vec<_>>(),
+            "inner_fit_source_rows": fit_indices.iter().map(|&i| dataset.rows[i].0).collect::<Vec<_>>(),
+            "inner_validation_source_rows": validation_indices.iter().map(|&i| dataset.rows[i].0).collect::<Vec<_>>(),
+            "class_labels": dataset.labels,
+        });
+        protocol_datasets.push(protocol_dataset);
+
+        let outer_train_frame = dataset.dataframe(&outer_train)?;
+        let validation_frame = dataset.dataframe(&validation_indices)?;
+        let test_frame = dataset.dataframe(&outer_test)?;
+        let validation_actual: Vec<usize> = validation_indices
+            .iter()
+            .map(|&i| dataset.rows[i].2)
+            .collect();
+        let test_actual: Vec<usize> = outer_test.iter().map(|&i| dataset.rows[i].2).collect();
+
+        for (model_index, model_name) in models.iter().enumerate() {
+            let model_type = estimator_type(model_name)?;
+            let model_seed = seed
+                .wrapping_add(dataset_offset as u64)
+                .wrapping_add((model_index as u64 + 1) * 1000);
+            let case_dir = output_dir
+                .join("automl")
+                .join(dataset.name)
+                .join(model_name);
+            fs::create_dir_all(&case_dir)?;
+            let mut trials = Vec::new();
+            let mut best_accuracy = f64::NEG_INFINITY;
+            let mut best_configuration = (0, 0);
+            let mut best_engine: Option<TrainEngine> = None;
+
+            for (trial_index, &(n_estimators, max_depth)) in MATCHED_GRID.iter().enumerate() {
+                let task = if dataset.labels.len() == 2 {
+                    TaskType::BinaryClassification
+                } else {
+                    TaskType::MultiClassification
+                };
+                let mut config = TrainingConfig::new(task, dataset.target_name)
+                    .with_model(model_type.clone())
+                    .with_random_state(model_seed)
+                    .with_n_estimators(n_estimators)
+                    .with_max_depth(max_depth);
+                config.validation_split = validation_fraction;
+                let mut engine = TrainEngine::new(config);
+                let started = Instant::now();
+                engine
+                    .fit(&outer_train_frame)
+                    .context("fit grid candidate")?;
+                let predicted = engine
+                    .predict(&validation_frame)
+                    .context("predict inner validation rows")?;
+                let predicted_ids: Vec<usize> = predicted
+                    .iter()
+                    .map(|value| value.round() as usize)
+                    .collect();
+                let summary = crate::evaluation::summarize_classification(
+                    &validation_actual,
+                    &predicted_ids,
+                    dataset.labels.len(),
+                )
+                .context("summarize inner validation predictions")?;
+                let fit_validation_seconds = started.elapsed().as_secs_f64();
+                trials.push(serde_json::json!({
+                    "trial": trial_index,
+                    "n_estimators": n_estimators,
+                    "max_depth": max_depth,
+                    "seed": model_seed,
+                    "validation_accuracy": summary.accuracy,
+                    "validation_macro_f1": summary.macro_f1,
+                    "fit_and_validation_predict_seconds": fit_validation_seconds,
+                }));
+                if summary.accuracy > best_accuracy {
+                    best_accuracy = summary.accuracy;
+                    best_configuration = (n_estimators, max_depth);
+                    best_engine = Some(engine);
+                }
+            }
+
+            let selected_engine = best_engine.context("grid search selected no model")?;
+            let test_started = Instant::now();
+            let predicted = selected_engine
+                .predict(&test_frame)
+                .context("predict untouched outer test rows")?;
+            let test_predict_seconds = test_started.elapsed().as_secs_f64();
+            let predicted_ids: Vec<usize> = predicted
+                .iter()
+                .map(|value| value.round() as usize)
+                .collect();
+            let summary = crate::evaluation::summarize_classification(
+                &test_actual,
+                &predicted_ids,
+                dataset.labels.len(),
+            )
+            .context("summarize outer test predictions")?;
+            let model_path = case_dir.join(format!("{}.model.json", model_name));
+            selected_engine
+                .save(model_path.to_str().context("model path is not UTF-8")?)
+                .context("save selected model")?;
+            let predictions_path = case_dir.join(format!("{}.predictions.csv", model_name));
+            let mut predictions_file = fs::File::create(&predictions_path)?;
+            writeln!(predictions_file, "source_row,actual_label,predicted_label")?;
+            for (position, &index) in outer_test.iter().enumerate() {
+                writeln!(
+                    predictions_file,
+                    "{},{},{}",
+                    dataset.rows[index].0, test_actual[position], predicted_ids[position]
+                )?;
+            }
+            predictions_file.flush()?;
+            case_records.push(serde_json::json!({
+                "dataset": dataset.name,
+                "model": model_name,
+                "seed": model_seed,
+                "trial_budget": MATCHED_GRID.len(),
+                "validation_metric": "accuracy",
+                "trials": trials,
+                "selected_configuration": {
+                    "n_estimators": best_configuration.0,
+                    "max_depth": best_configuration.1,
+                    "validation_accuracy": best_accuracy,
+                },
+                "outer_test": {
+                    "n_rows": outer_test.len(),
+                    "accuracy": summary.accuracy,
+                    "macro_f1": summary.macro_f1,
+                    "confusion_matrix": summary.confusion_matrix,
+                    "fit_model_file": model_path,
+                    "model_sha256": sha256(&model_path)?,
+                    "predictions_file": predictions_path,
+                    "predictions_sha256": sha256(&predictions_path)?,
+                    "predict_seconds": test_predict_seconds,
+                },
+            }));
+        }
+    }
+    let protocol_path = output_dir.join("matched-search-protocol.json");
+    fs::write(
+        &protocol_path,
+        serde_json::to_vec_pretty(&serde_json::json!({
+            "schema": "2048-ml.matched-grid-search",
+            "schema_version": 1,
+            "seed": seed,
+            "test_fraction": test_fraction,
+            "validation_fraction": validation_fraction,
+            "models": models,
+            "datasets": protocol_datasets,
+            "grid": MATCHED_GRID.iter().map(|&(n_estimators, max_depth)| serde_json::json!({
+                "n_estimators": n_estimators,
+                "max_depth": max_depth,
+            })).collect::<Vec<_>>(),
+            "trial_budget_per_model_dataset_implementation": MATCHED_GRID.len(),
+            "search_objective": "inner_validation_accuracy",
+            "selection_rule": "highest validation accuracy; grid order breaks ties",
+            "outer_test_use": "score only after configuration selection; never used for selection",
+        }))?,
+    )?;
+    let results_path = output_dir.join("automl-matched-search-results.json");
+    fs::write(&results_path, serde_json::to_vec_pretty(&case_records)?)?;
+    let manifest_path = output_dir.join("automl-matched-search-manifest.json");
+    fs::write(
+        &manifest_path,
+        serde_json::to_vec_pretty(&serde_json::json!({
+            "created_utc": chrono::Utc::now().to_rfc3339(),
+            "source_revision": std::process::Command::new("git").args(["rev-parse", "HEAD"]).output().ok().filter(|r| r.status.success()).map(|r| String::from_utf8_lossy(&r.stdout).trim().to_owned()),
+            "automl_commit": std::process::Command::new("git").args(["-C", "automl", "rev-parse", "HEAD"]).output().ok().filter(|r| r.status.success()).map(|r| String::from_utf8_lossy(&r.stdout).trim().to_owned()),
+            "root_worktree_dirty": std::process::Command::new("git").args(["diff", "--quiet"]).status().map(|s| !s.success()).ok(),
+            "host": {"os": std::env::consts::OS, "architecture": std::env::consts::ARCH},
+            "protocol_file": protocol_path,
+            "protocol_sha256": sha256(&protocol_path)?,
+            "results_file": results_path,
+            "results_sha256": sha256(&results_path)?,
+            "successful_cases": case_records.len(),
+            "interpretation_limitations": [
+                "The six shared configurations are a matched grid, not a comparison of the frameworks' optimizer algorithms",
+                "The single inner validation holdout and outer test split are fixed-split diagnostics",
+                "Model implementations and defaults differ even when tree count and depth are equal",
+                "One process and one split do not establish runtime superiority or population-level performance",
+            ],
+        }))?,
+    )?;
+    println!("matched-grid artifacts written to {}", output_dir.display());
+    Ok(())
+}
+
 /// Run a deterministic stratified holdout study over selected acquired UCI cases.
 pub fn run_standard_datasets(
     data_dir: &Path,

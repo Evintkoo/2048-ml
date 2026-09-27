@@ -57,6 +57,28 @@ enum Commands {
         #[arg(long, default_value_t = 0.2)]
         test_fraction: f64,
     },
+    /// Compare AutoML and reference implementations under the same fixed grid-search budget.
+    FrameworkSearchValidate {
+        #[arg(long, default_value = "data/framework_validation")]
+        data_dir: std::path::PathBuf,
+        #[arg(
+            long,
+            default_value = "reports/framework_validation/matched-grid-search"
+        )]
+        output_dir: std::path::PathBuf,
+        /// Run one candidate (random_forest or extra_trees); omit to run both.
+        #[arg(long, value_name = "NAME")]
+        model: Option<String>,
+        /// Run one dataset; omit to run all three datasets.
+        #[arg(long, value_name = "NAME")]
+        dataset: Option<String>,
+        #[arg(long, default_value_t = 42)]
+        seed: u64,
+        #[arg(long, default_value_t = 0.2)]
+        test_fraction: f64,
+        #[arg(long, default_value_t = 0.1)]
+        validation_fraction: f64,
+    },
     /// Train a supervised action classifier through the AutoML framework.
     Train {
         #[arg(long)]
@@ -306,6 +328,28 @@ fn main() {
                 test_fraction,
             ) {
                 eprintln!("framework validation failed: {error:#}");
+                std::process::exit(2);
+            }
+        }
+        Some(Commands::FrameworkSearchValidate {
+            data_dir,
+            output_dir,
+            model,
+            dataset,
+            seed,
+            test_fraction,
+            validation_fraction,
+        }) => {
+            if let Err(error) = framework_validation::benchmark::run_matched_grid_search(
+                &data_dir,
+                &output_dir,
+                model.as_deref(),
+                dataset.as_deref(),
+                seed,
+                test_fraction,
+                validation_fraction,
+            ) {
+                eprintln!("matched framework search validation failed: {error:#}");
                 std::process::exit(2);
             }
         }
