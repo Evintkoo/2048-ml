@@ -242,12 +242,15 @@ data-to-fit-to-simulator wiring only. The final fit uses AutoML's internal row-l
 development rows. The three-game classifier diagnostic is too small to support a policy-quality or
 generalization claim, and this is not a completed end-to-end research study.
 
-The following prerequisites remain open before main-study claims: matched search-budget/per-model
-resource framework comparisons, broader repeated-fit reproducibility evidence, a scale-appropriate rollout-labeled corpus, adequate-sample classifier evaluation, and a predeclared policy evaluation. The
-20-game training/simulator smoke does not substitute for those artifacts. Its collection rate linearly
-projects to about 238 hours for 20,000 games, with 62–207 rows per game; both figures are uncertain and
-configuration-specific. Declare a resource envelope and collection protocol before starting a corpus at
-that scale.
+The exploratory 10,000-game score matrix now supplies disjoint-seed score distributions for the five
+verified policies and both measured baselines, but it is based on one fit per candidate. Remaining
+prerequisites before main-study claims are matched search-budget/per-model resource framework
+comparisons, broader repeated-fit reproducibility evidence, a scale-appropriate rollout-labeled corpus,
+adequate-sample classifier evaluation, and a predeclared confirmatory policy evaluation. The 20-game
+training/simulator smoke and exploratory score matrix do not substitute for those artifacts. Pilot
+collection linearly projects to about 238 hours for 20,000 games, with 62–207 rows per game; both figures
+are uncertain and configuration-specific. Declare a resource envelope and collection protocol before
+starting a corpus at that scale.
 
 ### 6.7 Five-Candidate Policy Score Diagnostic (2026-09-27)
 
@@ -286,6 +289,10 @@ incapable" and "our integration is broken."
 - Full data pipeline from game simulation to trained model works end-to-end
 - Models are ranked by mean score. The exploratory disjoint-seed diagnostic now reports this ordering
   for the five verified fitted candidates and two baselines; a confirmatory ranking remains pending.
+
+The pipeline criterion is demonstrated at pilot scale: the retained corpus was used for five compatible
+AutoML fits, grouped-CV and chronological holdout diagnostics, and a separate saved-policy simulator
+smoke. This verifies the integration path only; scale and quality criteria remain open.
 
 ### Tier 2: Intermediate Milestone
 - Framework architecture, data contracts, and design trade-offs documented
@@ -332,6 +339,9 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
 - The exploratory candidate policies are ranked by held-out game score with uncertainty and
   practical-effect reporting in `reports/action-frequency/disjoint-seeds/`; this is one-fit-per-model
   evidence. Confirmatory ranking across repeated fits remains pending.
+- A confirmatory case-study winner has not been identified. The retained exploratory ordering must not
+  be used to satisfy the winner or strong-statistical-evidence criteria until the evaluation protocol,
+  training replication, and held-out analysis are declared and completed.
 - The case-study winner is the model with the highest held-out mean score; this does not define framework
   success
 - Statistical comparison completed using a design-matched sign-test or Mann–Whitney U/Holm protocol
