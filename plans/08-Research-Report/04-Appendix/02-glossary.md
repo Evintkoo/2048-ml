@@ -85,7 +85,7 @@ mindmap
 | Winner Determination | Protocol-specific comparison; the retained pilot comparison is exploratory and does not establish a selected-policy winner |
 | Mean Score | Primary 2048 case-study metric; framework validation uses task-appropriate quality and resource metrics |
 | Bootstrap CI | Resampling-based interval; confidence interpretation depends on sampling design |
-| Effect Size | Magnitude of difference; Cohen's d helper exists, but its independent-sample estimate is not paired-seed uncertainty; no automatic project cutoff |
+| Effect Size | Magnitude of difference; Cohen's d helper exists, but paired comparisons use Cohen's dz; unmatched comparisons use independent-sample Cohen's d; no automatic project cutoff |
 
 ## 7. Statistical Terms
 
@@ -93,7 +93,7 @@ mindmap
 |------|------------|
 | p-value | Probability of observing results under null hypothesis |
 | Confidence Interval | Interval estimate; method and coverage assumptions must be stated |
-| Effect Size | Magnitude of difference; method must match the design (the CLI Cohen's d helper uses independent samples) |
+| Effect Size | Magnitude of difference; paired comparisons use Cohen's dz; unmatched comparisons use Cohen's d |
 | Standard Deviation | Data spread measure |
 | Wilcoxon | Paired rank test; not implemented in current comparison helpers |
 | Mann-Whitney U | Two-group non-parametric comparison |

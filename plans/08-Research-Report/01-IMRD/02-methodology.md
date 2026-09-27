@@ -29,7 +29,7 @@ The planned case study uses the canonical 17-value state and four action labels 
 | Seeds | To be declared per study | Record training and evaluation seed roles separately |
 | Games | To be justified and declared | Exploratory pilot comparison exists; no winner ranking has been performed |
 
-**Statistical protocol:** available CLI helpers choose a paired exact sign test when seed sequences match, or Mann–Whitney U for unmatched samples; reports also include Holm adjustment, bootstrap intervals, and Cohen's d. Assumptions and the experimental unit require explicit review. No protocol has been preregistered and no winner claim is available. See `07-Benchmarking/04-Analysis/02-statistical-analysis.md`.
+**Statistical protocol:** available CLI helpers choose a paired exact sign test, paired-difference bootstrap interval, and Cohen's dz when seed sets match; unmatched samples use Mann–Whitney U, independent bootstrap intervals, and Cohen's d. Both use Holm adjustment. Assumptions and the experimental unit require explicit review. No protocol has been preregistered and no winner claim is available. See `07-Benchmarking/04-Analysis/02-statistical-analysis.md`.
 
 **No duplication:** No flowchart copy here; no PSPACE/Markov/8×8/ensemble/RL in core.
 

@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is partial.** Available inference consists of independent Mann–Whitney U or paired exact sign tests, percentile bootstrap intervals, Holm adjustment, and Cohen's d. These helpers do not constitute the broader analysis plan or a completed research report.
+**This plan is partial.** Available inference consists of independent Mann–Whitney U or paired exact sign tests, design-matched percentile bootstrap intervals and effect sizes, and Holm adjustment. These helpers do not constitute the broader analysis plan or a completed research report.
 
 > **Distinct focus vs `03-significance-testing.md`:** This file = descriptive foundations (distributions, CIs, test assumptions). `03-significance-testing.md` = winner determination protocol (adjusted α, ranking, power). No duplication — cross-ref there for ranking.
 
@@ -49,7 +49,7 @@ flowchart LR
 | Test | Purpose | Assumption |
 |------|---------|------------|
 | Mann-Whitney U | Compare distributions | Independent samples |
-| Paired exact sign test | Paired comparison | Same ordered seed sequence; ties omitted |
+| Paired exact sign test | Paired comparison | Same seed set aligned by seed; ties omitted |
 | Wilcoxon signed-rank | Not implemented | Planned only |
 | Kruskal-Wallis | Not implemented | Planned only |
 | Chi-squared | Not implemented | Planned only |
@@ -82,7 +82,7 @@ graph TD
     style D fill:#9f9,stroke:#363
 ```
 
-Current score-summary intervals and pairwise mean-difference intervals use percentile bootstrap resampling. They are implemented helpers, not the illustrative normal-approximation struct above. The pairwise comparison CLI resamples inputs independently even when it uses a paired sign test; its interval does not model matched game seeds.
+Current score-summary intervals and pairwise mean-difference intervals use percentile bootstrap resampling. They are implemented helpers, not the illustrative normal-approximation struct above. The comparison CLI resamples paired score differences when seed sets match and resamples inputs independently otherwise.
 
 ## 7. Classification Analysis — No Regression (Actions 0–3 Only)
 
@@ -108,7 +108,7 @@ For confirmatory comparisons, report:
 
 ## Implementation Record
 
-- `src/evaluation.rs` and comparison/report paths provide score summaries, bootstrap intervals, Mann–Whitney U, paired exact sign test, Holm-adjusted p-values, Cohen's d, and reusable classification summaries. The root CLI retains a 391-row pilot classifier report and an exploratory same-seed score comparison across Random, Heuristic, and one fitted RandomForest pilot. The latter uses independent-sample bootstrap intervals/Cohen's d despite pairing for sign tests, so it does not provide paired uncertainty estimates. The initial UCI results are descriptive single-split metrics; two-run repeatability is reported separately and is not an inferential comparison. Kruskal–Wallis, Wilcoxon, formal power analysis, explicit assumption diagnostics, and a confirmatory 2048 case-study report remain absent.
+- `src/evaluation.rs` and comparison/report paths provide score summaries, paired-difference and independent bootstrap intervals, Mann–Whitney U, paired exact sign test, Holm-adjusted p-values, Cohen's dz for matched scores, independent Cohen's d, and reusable classification summaries. The root CLI retains a 391-row pilot classifier report and an exploratory same-seed score comparison across Random, Heuristic, and one fitted RandomForest pilot; its paired interval/effect-size calculations now follow the seed-matched design. The initial UCI results are descriptive single-split metrics; two-run repeatability is reported separately and is not an inferential comparison. Kruskal–Wallis, Wilcoxon, formal power analysis, explicit assumption diagnostics, and a confirmatory 2048 case-study report remain absent.
 
 ## 10. Analysis Validation
 

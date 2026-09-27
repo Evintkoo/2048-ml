@@ -42,7 +42,7 @@ F1–F3→RQ1/RQ2 framework validation, H1→2048 baseline comparison, H2→appl
 
 ## Implementation Record
 
-- The overall findings template remains unpopulated. Standard-dataset diagnostics and their repeatability artifacts are retained in `reports/framework_validation/`; an exploratory 10,000-seed policy comparison is retained in `reports/action-frequency/pilot-comparison.md`. It is not a selected-model ranking; the CLI interval/effect-size calculations are independent-sample despite paired sign tests. The original Parquet pipeline and ranking script do not exist. Checklist items remain pending.
+- The overall findings template remains unpopulated. Standard-dataset diagnostics and their repeatability artifacts are retained in `reports/framework_validation/`; an exploratory 10,000-seed policy comparison is retained in `reports/action-frequency/pilot-comparison.md`. It uses paired intervals and Cohen's dz but is not a selected-model ranking or confirmatory result. The original Parquet pipeline and ranking script do not exist. Checklist items remain pending.
 
 ---
 

@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats pairwise score comparison tooling as implemented with ranking execution pending.** The benchmark compare command ranks inputs by mean score and emits paired sign or independent Mann–Whitney tests, Holm-adjusted p-values, bootstrap mean-difference intervals, and Cohen’s d. It does not establish a winner without comparable held-out game data.
+**This plan treats pairwise score comparison tooling as implemented with ranking execution pending.** The benchmark compare command ranks inputs by mean score and emits paired sign or independent Mann–Whitney tests, Holm-adjusted p-values, paired-difference or independent bootstrap intervals, and Cohen's dz or d according to the seed design. It does not establish a winner without comparable held-out game data.
 
 ## 1. Purpose
 
@@ -43,7 +43,7 @@ For the 2048 case study, compare held-out mean score with distribution, uncertai
 
 ## Implementation Record
 
-- The compare command ranks score files by mean and computes matched sign-test or independent Mann–Whitney, Holm-adjusted p-values, bootstrap mean-difference intervals, and Cohen's d.
+- The compare command ranks score files by mean and computes matched sign-test or independent Mann–Whitney, Holm-adjusted p-values, paired-difference or independent bootstrap intervals, and Cohen's dz or d according to design.
 - No full multi-model held-out ranking has been produced; metric table inputs must represent comparable runs.
 
 ---

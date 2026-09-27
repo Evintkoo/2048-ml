@@ -44,7 +44,7 @@ Before release, run the agreed test suite and any adopted coverage gate; no cove
 
 ## Implementation Record
 
-- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, framework smokes, current AutoML revision provenance, and the policy configuration contract. `cargo test` passed 38/38 after adding overflow atomicity and tree early-stopping configuration regressions; no Tarpaulin config or coverage report exists.
+- Source audit found tests for merge/score history, no-op and terminal moves, seeded spawn, features, CSV/splits, statistical helpers, framework smokes, current AutoML revision provenance, and the policy configuration contract. `cargo test` passed 39/39 after adding overflow atomicity and tree early-stopping configuration regressions; no Tarpaulin config or coverage report exists.
 
 ---
 

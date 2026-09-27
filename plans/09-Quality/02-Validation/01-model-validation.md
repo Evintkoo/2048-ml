@@ -64,7 +64,7 @@ flowchart TD
 | Output | Current support | Limitation |
 |--------|-----------------|------------|
 | Game score summary | Mean, standard deviation, median, p90/p99, min/max, thresholds, bootstrap mean interval | Describes supplied games; no project acceptance threshold |
-| Pairwise score comparison | Sign test or Mann–Whitney U, Holm adjustment, bootstrap mean difference, Cohen's d | Assumptions/experimental unit must be declared; no clustered paired interval |
+| Pairwise score comparison | Sign test or Mann–Whitney U, Holm adjustment, paired-difference or independent bootstrap interval, Cohen's dz or d by design | Assumptions/experimental unit must be declared; no confirmatory clustered training-repetition analysis |
 | Action classification metrics | Generic helpers and a 391-row chronological pilot raw-label report exist; legal-action helper is not in that report | Expand only after defining an adequate held-out protocol |
 | Robustness / approval score | Not implemented | No 0–100 quality score or deployment gate |
 

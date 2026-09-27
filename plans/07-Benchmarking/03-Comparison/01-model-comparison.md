@@ -32,7 +32,7 @@ Add rows only for engines actually exposed by `automl` — no invented architect
 
 ## 3. Protocol — Identical Conditions
 
-The proposed final test uses a predeclared held-out game-seed set. Choose its size from pilot variance and available compute; no fixed target is a completed run or power guarantee. Training and test games must remain separate. The `benchmark compare` command pairs rows by identical seeds and uses a two-sided exact sign test for matched seed runs; otherwise it uses Mann-Whitney U. It reports Holm-adjusted p-values, bootstrap mean-difference intervals, and Cohen's d. The paired sign test is not Wilcoxon and ignores tied outcomes; the exact test choice and its limitation are recorded in the output manifest. Do not describe held-out benchmark games as the chronological data split itself.
+The proposed final test uses a predeclared held-out game-seed set. Choose its size from pilot variance and available compute; no fixed target is a completed run or power guarantee. Training and test games must remain separate. The `benchmark compare` command aligns rows by identical seeds and uses a two-sided exact sign test for matched seed runs; otherwise it uses Mann-Whitney U. It reports Holm-adjusted p-values, paired-difference bootstrap intervals and Cohen's dz for matching seed sets, or independent bootstrap intervals and Cohen's d otherwise. The paired sign test is not Wilcoxon and ignores tied outcomes; the exact test choice and its limitation are recorded in the output manifest. Do not describe held-out benchmark games as the chronological data split itself.
 
 ## 4. Performance Matrix — To Be Filled Post-Training
 

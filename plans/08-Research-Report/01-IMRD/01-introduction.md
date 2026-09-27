@@ -90,7 +90,7 @@ No result fabricated. Null/inconclusive outcomes, training failures, and any aut
 
 ## Implementation Record
 
-- Research framing and honest-reporting requirements are documented. Pinned UCI diagnostics and the historical pre-fix Wine KNN issue are recorded in `reports/framework_validation/`. An exploratory matched-seed comparison across Random, Heuristic, and one pilot policy is retained in `reports/action-frequency/pilot-comparison.md`; the independent-sample interval/effect-size limitation is documented. Matched framework budgets, broader literature review, and confirmatory 2048 experiments remain pending.
+- Research framing and honest-reporting requirements are documented. Pinned UCI diagnostics and the historical pre-fix Wine KNN issue are recorded in `reports/framework_validation/`. An exploratory matched-seed comparison across Random, Heuristic, and one pilot policy is retained in `reports/action-frequency/pilot-comparison.md`, using paired-difference intervals and Cohen's dz. Matched framework budgets, broader literature review, and confirmatory 2048 experiments remain pending.
 
 ---
 

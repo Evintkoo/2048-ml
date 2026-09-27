@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is an interpretation guide, not a completed findings discussion.** The standard-dataset runs are diagnostics, not matched-budget framework evidence. An exploratory 2048 score comparison exists, but the fitted policy came from a small corpus and its intervals/effect sizes are not paired-design uncertainty estimates. The current pinned repeatability checks passed on three fixed splits; the earlier Wine KNN mismatch is historical evidence. Unjustified thresholds are not decision gates.
+**This plan is an interpretation guide, not a completed findings discussion.** The standard-dataset runs are diagnostics, not matched-budget framework evidence. An exploratory 2048 score comparison exists, with paired-difference intervals and Cohen's dz for its matched seeds; the fitted policy came from a small corpus and was not selected under a confirmatory protocol. The current pinned repeatability checks passed on three fixed splits; the earlier Wine KNN mismatch is historical evidence. Unjustified thresholds are not decision gates.
 
 > **Status: PENDING.** No conclusions drawn. This file defines how the primary Rust-native AutoML framework results and the downstream 2048 case-study results will be interpreted.
 

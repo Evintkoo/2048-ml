@@ -45,7 +45,7 @@ Full scores are retained in source reports; no heavy-tail property or anomaly de
 
 ## 6. Comparative Analysis
 
-The comparison command selects an exact paired sign test when seed sequences match and independent Mann–Whitney U otherwise; it also reports a bootstrap mean-difference interval, Holm-adjusted p-values, and Cohen's d. An exploratory 10,000-seed comparison of Random, Heuristic, and one fitted pilot is retained in `reports/action-frequency/pilot-comparison.md`. Its bootstrap interval and Cohen's d use independent-sample formulas despite matched seeds, so they are not paired uncertainty estimates. This is not a selected-model or confirmatory comparison.
+The comparison command selects an exact paired sign test when seed sets match and independent Mann–Whitney U otherwise. For matched seeds it resamples paired differences and reports Cohen's dz; for unmatched samples it uses an independent bootstrap and Cohen's d. Both paths report Holm-adjusted p-values. The exploratory 10,000-seed comparison in `reports/action-frequency/pilot-comparison.md` uses paired methods, but is not a selected-model or confirmatory comparison.
 
 ## 7. Analysis Conclusions
 
@@ -61,7 +61,7 @@ All analysis results are compiled into:
 ## Implementation Record
 
 - `src/evaluation.rs` implements the score summary fields and bootstrap intervals; `src/main.rs` writes score reports and comparison CSV/JSON manifests. No populated plan-scale trained-model result corpus, trend analysis, anomaly investigation, plots, or defensible model conclusion exists.
-- `reports/framework_validation/README.md` summarizes the initial fixed-split UCI matrix and repeatability finding. `reports/action-frequency/pilot-comparison.md` retains exploratory 2048 score comparisons with the independent-bootstrap limitation documented. No confirmatory model corpus or ranking is available; no trend, anomaly, or causal conclusion is claimed.
+- `reports/framework_validation/README.md` summarizes the initial fixed-split UCI matrix and repeatability finding. `reports/action-frequency/pilot-comparison.md` retains exploratory 2048 score comparisons with paired bootstrap intervals and Cohen's dz for its matched seeds. No confirmatory model corpus or ranking is available; no trend, anomaly, or causal conclusion is claimed.
 
 ---
 

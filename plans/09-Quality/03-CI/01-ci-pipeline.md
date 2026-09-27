@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**A minimal CI workflow is configured** for pushes to `main`, pull requests, and manual dispatch. It initializes submodules and runs formatting, root tests, and Clippy through `scripts/ci-check.sh`. The script passes locally, and the first hosted Actions run passed on successive pushed revisions, including commit `af022d0` (run [36280654071](https://github.com/Evintkoo/2048-ml/actions/runs/36280654071)). Research validation and deployment remain separate or out of scope.
+**A minimal CI workflow is configured** for pushes to `main`, pull requests, and manual dispatch. It initializes submodules and runs formatting, root tests, and Clippy through `scripts/ci-check.sh`. The script passes locally, and the first hosted Actions run passed on successive pushed revisions, including commit `4c0f486` (run [36281445126](https://github.com/Evintkoo/2048-ml/actions/runs/36281445126)). Research validation and deployment remain separate or out of scope.
 
 ## 1. Purpose
 
@@ -167,7 +167,7 @@ Each pipeline run produces:
 
 ## Current Repository Status
 
-`.github/workflows/ci.yml` runs `scripts/ci-check.sh` on GitHub-hosted Ubuntu with stable Rust. The script passed locally and in hosted run [36280654071](https://github.com/Evintkoo/2048-ml/actions/runs/36280654071) on commit `af022d0`: format check, 38/38 root tests, and Clippy. Coverage reporting, scheduled research/performance jobs, and deployment are not configured; deployment is outside current scope. The older stage and trigger diagrams above are target descriptions where they include validation, scheduling, notifications, or deployment; the workflow configuration is authoritative for current behavior.
+`.github/workflows/ci.yml` runs `scripts/ci-check.sh` on GitHub-hosted Ubuntu with stable Rust. The script passed locally and in hosted run [36281445126](https://github.com/Evintkoo/2048-ml/actions/runs/36281445126) on commit `4c0f486`: format check, 39/39 root tests, and Clippy. Coverage reporting, scheduled research/performance jobs, and deployment are not configured; deployment is outside current scope. The older stage and trigger diagrams above are target descriptions where they include validation, scheduling, notifications, or deployment; the workflow configuration is authoritative for current behavior.
 
 ---
 

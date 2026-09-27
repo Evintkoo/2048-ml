@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan remains an output specification, not a completed results report.** UCI fixed-split outcomes and repeatability analyses are retained in `reports/framework_validation/`. An exploratory 10,000-seed comparison of Random, Heuristic, and one fitted pilot policy is retained in `reports/action-frequency/pilot-comparison.md`. It is not the selected five-candidate matrix, and its bootstrap intervals/effect sizes use independent-sample formulas despite matched seeds. No matched-budget external framework comparison or confirmatory 2048 ranking is available.
+**This plan remains an output specification, not a completed results report.** UCI fixed-split outcomes and repeatability analyses are retained in `reports/framework_validation/`. An exploratory 10,000-seed comparison of Random, Heuristic, and one fitted pilot policy is retained in `reports/action-frequency/pilot-comparison.md`. It is not the selected five-candidate matrix, and its bootstrap intervals and Cohen's dz use the matched seed pairs. No matched-budget external framework comparison or confirmatory 2048 ranking is available.
 
 > No empirical result or winner is claimed in this document.
 
@@ -36,7 +36,7 @@ No 2048 game score can substitute for this table.
 
 ## 2. 2048 Case-Study Winner Protocol (Canonical: `07-Benchmarking/01-Evaluation/01-benchmarking-framework.md`)
 
-Winner protocol, sample size, seed roles, and inferential unit must be declared before confirmatory evaluation. The current comparison CLI supports paired exact sign / unmatched Mann–Whitney tests, Holm adjustment, bootstrap intervals, and Cohen's d; it does not implement a global ranking gate. Baseline scores must be measured locally or supported by verified literature.
+Winner protocol, sample size, seed roles, and inferential unit must be declared before confirmatory evaluation. The comparison CLI supports paired exact sign tests with paired-difference bootstrap intervals and Cohen's dz, or unmatched Mann–Whitney tests with independent bootstrap intervals and Cohen's d; it applies Holm adjustment but does not implement a global ranking gate. Baseline scores must be measured locally or supported by verified literature.
 
 ## 3. Concrete Schemas
 

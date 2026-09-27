@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is partial.** Implemented comparisons choose an independent Mann–Whitney U test or a paired exact sign test based on seed sequence equality, apply Holm adjustment, and report bootstrap mean-difference intervals and Cohen's d. An exploratory 10,000-seed three-policy analysis is retained in `reports/action-frequency/pilot-comparison.md`: its sign tests are paired, but its intervals and Cohen's d are independent-sample calculations. There is no validated winner result or power analysis.
+**This plan is partial.** Implemented comparisons choose an independent Mann–Whitney U test or a paired exact sign test based on seed-set equality, apply Holm adjustment, and report bootstrap mean-difference intervals with an effect size matched to the design. An exploratory 10,000-seed three-policy analysis is retained in `reports/action-frequency/pilot-comparison.md`: its sign tests, bootstrap intervals, and Cohen's dz use matched seed pairs. There is no validated winner result or power analysis.
 
 ## 1. Purpose
 
@@ -35,7 +35,7 @@ flowchart TD
 ```mermaid
 graph TD
     A[Declared comparison unit] -->|Independent samples| B[Mann-Whitney U helper]
-    A -->|Matched seed sequences| C[Exact sign test helper]
+    A -->|Matched seed sets| C[Exact sign test helper]
     A -->|Multiple groups or categorical| D[No implemented helper]
 ```
 
@@ -53,11 +53,11 @@ Used only when the comparison groups are independent at the declared unit of ana
 
 **Decision rule:** compare the p-value against the preregistered threshold after the declared multiplicity correction.
 
-The comparison report also includes Cohen's d. The implemented test helper returns a p-value; it does not return a U statistic, rank-biserial effect, or Cliff's delta.
+The comparison report includes independent-sample Cohen's d for unmatched inputs. The implemented test helper returns a p-value; it does not return a U statistic, rank-biserial effect, or Cliff's delta.
 
 ### 4.2 Paired Exact Sign Test (Implemented)
 
-Used by the comparison command when the ordered seed sequences match. It counts direction of non-tied paired differences and does not use their magnitudes.
+Used by the comparison command when seed sets match. Score rows are aligned by seed; the test counts direction of non-tied paired differences and does not use their magnitudes.
 
 It is not Wilcoxon signed-rank and does not test a rank-sum statistic. Wilcoxon remains unimplemented.
 
@@ -70,17 +70,18 @@ Kruskal–Wallis and post-hoc Dunn tests are not implemented. Multiple model inp
 Used for estimating the uncertainty of mean scores.
 
 **Procedure:**
-1. Resample each input independently with replacement for the configured replicate count (the CLI currently uses 5,000)
-2. Compute the mean score for each resample
-3. Take the 2.5th and 97.5th percentiles as the 95% CI
+For matched seed sets, resample paired score differences with a shared pair index. For unmatched inputs, resample each input independently. The CLI currently uses 5,000 replicates in either case; it reports the 2.5th and 97.5th percentiles as the 95% interval.
 
 ## 5. Effect Size Calculation
 
 ```mermaid
 flowchart LR
-    A[Mean Difference] --> B[Pooled Standard Deviation]
-    B --> C[Cohen's d]
-    C --> D[Report Estimate with Context]
+    A[Mean Difference] --> B{Design}
+    B -->|Matched| C[Cohen's dz]
+    B -->|Independent| D[Pooled Standard Deviation]
+    D --> E[Cohen's d]
+    C --> F[Report Estimate with Context]
+    E --> F
 ```
 
 **Reporting guidance:** Report p-values with effect sizes and uncertainty when these analyses apply. Statistical significance alone does not establish practical value.
@@ -127,11 +128,11 @@ graph TD
 
 ## 9. Winner Determination Protocol
 
-No winner determination is currently supported. A future protocol must specify game-level or seed-level experimental units, model-training repetitions, sample size/precision rationale, matched evaluation seeds, practical threshold, and multiplicity family before collecting confirmatory data. Fixed game counts and Cohen's d categories in explanatory material are not evidence-based acceptance rules.
+No winner determination is currently supported. A future protocol must specify game-level or seed-level experimental units, model-training repetitions, sample size/precision rationale, matched evaluation seeds, practical threshold, and multiplicity family before collecting confirmatory data. Fixed game counts and conventional effect-size categories are not evidence-based acceptance rules.
 
 ## 10. Rust Implementation
 
-`src/evaluation.rs` contains standalone helpers rather than the proposed `SignificanceTest` abstraction. `src/main.rs` chooses a paired exact sign test when seed sequences match, otherwise Mann–Whitney U; it writes raw and Holm-adjusted p-values, a 5,000-replicate bootstrap mean-difference interval, and Cohen's d. The comparison manifest records the test and paired-test limitation.
+`src/evaluation.rs` contains standalone helpers rather than the proposed `SignificanceTest` abstraction. `src/main.rs` chooses a paired exact sign test when seed sets match, otherwise Mann–Whitney U; it writes raw and Holm-adjusted p-values, a 5,000-replicate paired-difference or independent bootstrap interval, and paired Cohen's dz or independent Cohen's d. The comparison manifest records the test and paired-test limitation.
 
 ## 11. References
 
@@ -143,7 +144,7 @@ No winner determination is currently supported. A future protocol must specify g
 
 ## Implementation Record
 
-- Mann–Whitney U, paired exact sign test, bootstrap mean-difference CI, Holm adjustment, and Cohen's d helpers are implemented and used by the comparison command. The retained 2048 pilot comparison is exploratory; independent-sample intervals and Cohen's d do not estimate paired-seed uncertainty. No Kruskal–Wallis/Wilcoxon, permutation test, formal power analysis, clustered paired bootstrap, or predeclared winner study has been completed. Test choice and limitations are emitted in comparison reports.
+- Mann–Whitney U, paired exact sign test, paired-difference and independent bootstrap CIs, Holm adjustment, Cohen's dz, and independent Cohen's d helpers are implemented and used by the comparison command. The retained 2048 pilot comparison is exploratory and reports paired-seed uncertainty. No Kruskal–Wallis/Wilcoxon, permutation test, formal power analysis, clustered paired bootstrap, or predeclared winner study has been completed. Test choice and limitations are emitted in comparison reports.
 - The two seed-42 UCI runs under AutoML `82d8483` are compared only for exact prediction repeatability; no significance test is applied to their one-split model accuracies. The earlier Wine KNN mismatch on `88a86bf` is retained as historical framework reproducibility evidence, not as a model-quality comparison.
 
 ---

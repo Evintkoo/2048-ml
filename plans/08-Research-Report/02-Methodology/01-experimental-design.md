@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a proposed design, not a preregistered confirmatory experiment.** UCI diagnostics cover three datasets, five model variants, and split seeds 42, 2026, and 2027 under `reports/framework_validation/`; repeated runs on seeds 42, 2026, and 2027 matched all 15 prediction sets and save/load equivalence. An exploratory 10,000-seed 2048 comparison of Random, Heuristic, and a small-corpus fitted policy is retained separately; its bootstrap intervals and Cohen's d use independent-sample formulas despite pairing for sign tests. The earlier `88a86bf` discrepancy is historical. Matched-budget baselines, per-model resources, confirmatory policy evaluation, sample-size rationale, and analysis assumptions remain open.
+**This is a proposed design, not a preregistered confirmatory experiment.** UCI diagnostics cover three datasets, five model variants, and split seeds 42, 2026, and 2027 under `reports/framework_validation/`; repeated runs on seeds 42, 2026, and 2027 matched all 15 prediction sets and save/load equivalence. An exploratory 10,000-seed 2048 comparison of Random, Heuristic, and a small-corpus fitted policy is retained separately; its bootstrap intervals resample paired differences and its effect size is Cohen's dz. The earlier `88a86bf` discrepancy is historical. Matched-budget baselines, per-model resources, confirmatory policy evaluation, sample-size rationale, and analysis assumptions remain open.
 
 ## 1. Purpose
 
@@ -137,7 +137,7 @@ flowchart LR
 - **Same evaluation criteria** for all models (same declared instances where pairing is intended; measure baselines under the same protocol)
 - **Seed roles** are declared per study; the current 42/2026/2027 diagnostic matrix is not a completed robustness study
 - **Analysis transparency** — retain raw outcomes and prespecified analysis choices; use blinding only if it addresses a specific researcher degree of freedom
-- **Comparison assumptions**: shared sequences induce pairing; select a paired/clustered method rather than treating them as independent observations
+- **Comparison assumptions**: shared seed sets induce pairing; select a paired/clustered method rather than treating them as independent observations
 
 ## 8. Equipment and Tools (Record Actual Study Versions)
 

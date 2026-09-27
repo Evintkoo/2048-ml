@@ -27,7 +27,7 @@ These measured summaries describe this retained seed set, not universal targets.
 
 ## 3. Protocol
 
-The confirmatory protocol must use the same declared game-seed set and simulator for each policy; the target game count must fit a documented budget. Compare score distributions under a predeclared procedure and report uncertainty. The retained pilot comparison is exploratory; its CLI uses an independent-sample bootstrap interval and Cohen's d even with paired seed outcomes, so those quantities are not paired-design uncertainty estimates.
+The confirmatory protocol must use the same declared game-seed set and simulator for each policy; the target game count must fit a documented budget. Compare score distributions under a predeclared procedure and report uncertainty. The retained pilot comparison is exploratory; its CLI uses paired-difference bootstrap intervals and Cohen's dz for the matched seed outcomes. These methods do not make the pilot a confirmatory or selected-model result.
 
 ```rust
 pub struct AlgorithmComparison {

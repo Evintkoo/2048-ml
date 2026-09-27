@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan records questions for future testing, not confirmatory hypothesis evidence.** The study protocol is not finalized; UCI diagnostics are not a matched-budget benchmark. The exploratory 2048 comparison does not resolve H1 or H2 because it uses an unselected pilot policy, and its intervals/effect sizes are independent-sample. Planned sample sizes do not establish power, and several named tests are not implemented.
+**This plan records questions for future testing, not confirmatory hypothesis evidence.** The study protocol is not finalized; UCI diagnostics are not a matched-budget benchmark. The exploratory 2048 comparison does not resolve H1 or H2 because it uses an unselected pilot policy, and its intervals and effect sizes use matched seed pairs. Planned sample sizes do not establish power, and several named tests are not implemented.
 
 > **Note:** This section defines hypotheses to be tested. The retained exploratory 2048 comparison is descriptive context only; no confirmatory hypothesis decision is claimed.
 
@@ -74,7 +74,7 @@ flowchart TD
 ### H1: Policy Comparison
 
 - Define the estimand and practical improvement threshold after measuring a reproducible baseline.
-- Choose paired or independent inference based on the evaluation design. Available helpers include Mann–Whitney U for unmatched samples and an exact sign test for matching seed sequences; dependence between games still needs consideration.
+- Choose paired or independent inference based on the evaluation design. Available helpers include Mann–Whitney U for unmatched samples and an exact sign test for matching seed sets; paired score differences are bootstrapped by seed. Dependence between model-training repetitions still needs consideration.
 - Declare the multiplicity family before confirmatory analysis.
 - **Effect size:** Cohen's d is reported to quantify practical magnitude; no universal 0.5 cutoff is used as an automatic exclusion rule.
 - **Status:** Not tested; exploratory baseline comparison exists, but selection and confirmatory protocol are pending
@@ -164,9 +164,9 @@ Declare the comparison family and correction before analysis. The CLI currently 
 
 ## Implementation Record
 
-- An exploratory same-seed comparison of Random, Heuristic, and one small-corpus RandomForest pilot is retained in `reports/action-frequency/pilot-comparison.md`. It is not confirmatory evidence for any application hypothesis; independent-sample intervals/effect sizes do not represent paired uncertainty.
+- An exploratory same-seed comparison of Random, Heuristic, and one small-corpus RandomForest pilot is retained in `reports/action-frequency/pilot-comparison.md`. It is not confirmatory evidence for any application hypothesis; paired bootstrap intervals and Cohen's dz are now reported for its matched seeds.
 
-- Framework and application hypotheses remain provisional and untested. UCI diagnostics on split seeds 42, 2026, and 2027 are retained; repeated processes on seeds 42, 2026, and 2027 matched 15/15 predictions and save/load outputs under AutoML `82d8483`. An exploratory three-policy 2048 score comparison is retained but does not satisfy H1/H2; its intervals and Cohen's d are not paired-seed uncertainty estimates. The `88a86bf` Wine KNN disagreement is historical. No matched-budget benchmark, selected-model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
+- Framework and application hypotheses remain provisional and untested. UCI diagnostics on split seeds 42, 2026, and 2027 are retained; repeated processes on seeds 42, 2026, and 2027 matched 15/15 predictions and save/load outputs under AutoML `82d8483`. An exploratory three-policy 2048 score comparison is retained but does not satisfy H1/H2; its intervals and Cohen's dz resample and summarize matched seed differences. The `88a86bf` Wine KNN disagreement is historical. No matched-budget benchmark, selected-model comparison, tuning, ablation, power analysis, or confirmatory test family is established.
 
 ---
 

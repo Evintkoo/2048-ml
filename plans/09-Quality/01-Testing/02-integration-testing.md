@@ -42,7 +42,7 @@ No dedicated `tests/integration` suite or integration JSON reporter was found. T
 
 ## Implementation Record
 
-- Root implementation and focused tests cover CSV collection/splitting, grouped CV, training configuration, inference, and benchmarks. `cargo test` passed 38/38. No dedicated end-to-end test suite, Parquet pipeline, or integration report artifact exists.
+- Root implementation and focused tests cover CSV collection/splitting, grouped CV, training configuration, inference, and benchmarks. `cargo test` passed 39/39. No dedicated end-to-end test suite, Parquet pipeline, or integration report artifact exists.
 
 ---
 

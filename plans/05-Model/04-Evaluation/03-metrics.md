@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Score summaries and generic classification helpers are implemented; the 2048 integration is a bounded pilot diagnostic.** `src/evaluation.rs` summarizes score distributions, bootstrap intervals, action frequencies, and paired/unpaired score comparisons. It also computes accuracy, macro precision/recall/F1, and a confusion matrix. The root `train` command reports accuracy, macro precision/recall/F1, per-action F1, and confusion matrices for every grouped-CV fold, and writes the same summaries plus row-level predictions for 391 chronological pilot holdout rows. This diagnostic is not an adequate-sample or confirmatory policy-quality estimate; valid-action analysis and trained-policy game outcomes remain pending. The standard-dataset runner uses the same helpers on its separate framework-validation track.
+**Score summaries and generic classification helpers are implemented; the 2048 integration is a bounded pilot diagnostic.** `src/evaluation.rs` summarizes score distributions, bootstrap intervals, action frequencies, and paired/unpaired score comparisons. Matched-seed comparisons use paired-difference bootstrap intervals and Cohen's dz; unmatched comparisons use independent bootstrap intervals and Cohen's d. It also computes accuracy, macro precision/recall/F1, and a confusion matrix. The root `train` command reports accuracy, macro precision/recall/F1, per-action F1, and confusion matrices for every grouped-CV fold, and writes the same summaries plus row-level predictions for 391 chronological pilot holdout rows. This diagnostic is not an adequate-sample or confirmatory policy-quality estimate; valid-action analysis and trained-policy game outcomes remain pending. The standard-dataset runner uses the same helpers on its separate framework-validation track.
 
 ## 1. Purpose
 
@@ -186,7 +186,7 @@ flowchart LR
 
 ## Implementation Record
 
-- `src/evaluation.rs` implements descriptive score summaries, bootstrap intervals, action-frequency summaries, paired sign tests, Mann–Whitney U, Holm adjustment, effect-size helpers, and generic classification summaries (accuracy, macro precision/recall/F1, confusion matrix).
+- `src/evaluation.rs` implements descriptive score summaries, independent and paired-difference bootstrap intervals, action-frequency summaries, paired sign tests, Mann–Whitney U, Holm adjustment, paired Cohen's dz and independent Cohen's d, and generic classification summaries (accuracy, macro precision/recall/F1, confusion matrix).
 - Generic classification summaries are used for each grouped-CV fold and by the standard-dataset diagnostic and the 2048 training command's 391-row chronological pilot holdout report. Both include accuracy, macro precision/recall/F1, per-class F1, and a confusion matrix; the holdout report also retains row-level predictions. It is a bounded classifier diagnostic, not an adequate-sample policy estimate; valid-action analysis, trained-policy results, and scope-defined performance gates remain absent.
 
 ---

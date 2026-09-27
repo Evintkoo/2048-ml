@@ -92,7 +92,7 @@ Record runtime, hardware, memory method, model configuration, and evaluation thr
 
 ### 4.3 Statistical Comparison
 
-Use the comparison CLI only after selecting a valid experimental unit and considering paired seed/game dependence. It emits pairwise p-values, Holm adjustment, bootstrap mean-difference intervals, and Cohen's d. No global multi-group test is implemented.
+Use the comparison CLI only after selecting a valid experimental unit and considering paired seed/game dependence. It emits pairwise p-values, Holm adjustment, paired-difference or independent bootstrap intervals, and Cohen's dz or d according to the seed design. No global multi-group test is implemented.
 
 ## 5. Analysis of Results
 
@@ -134,7 +134,7 @@ This comparison sets the methodological standard for the entire research and pro
 
 ## Implementation Record
 
-- Random, heuristic, and model benchmark commands exist; an exploratory same-seed comparison of Random, Heuristic, and one fitted RandomForest pilot is retained in `reports/action-frequency/pilot-comparison.md`. The model was trained on a small corpus, was not selected under a declared candidate protocol, and the interval/effect-size calculations are independent-sample; no confirmatory selected-policy comparison is complete. Quoted external score estimates remain excluded. The standard-dataset AutoML diagnostic is a separate framework track.
+- Random, heuristic, and model benchmark commands exist; an exploratory same-seed comparison of Random, Heuristic, and one fitted RandomForest pilot is retained in `reports/action-frequency/pilot-comparison.md`. The paired interval/effect-size calculations follow the matched seed design, but the model was trained on a small corpus and was not selected under a declared candidate protocol. No confirmatory selected-policy comparison is complete. Quoted external score estimates remain excluded. The standard-dataset AutoML diagnostic is a separate framework track.
 
 ---
 

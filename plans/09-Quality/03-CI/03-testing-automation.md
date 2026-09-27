@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is an automation plan, not a test inventory.** Existing tests run through `scripts/ci-check.sh`, which is called by the GitHub Actions workflow. Local and hosted run [36280654071](https://github.com/Evintkoo/2048-ml/actions/runs/36280654071) passed 38/38. No coverage gate or scheduled report is configured.
+**This is an automation plan, not a test inventory.** Existing tests run through `scripts/ci-check.sh`, which is called by the GitHub Actions workflow. Local and hosted run [36281445126](https://github.com/Evintkoo/2048-ml/actions/runs/36281445126) passed 39/39. No coverage gate or scheduled report is configured.
 
 > **See canonical `09-Quality/03-CI/01-ci-pipeline.md` — duplicate stub.** Repetitive CI mermaid trimmed; see canonical for pipeline.
 
@@ -29,7 +29,7 @@ Define automated testing procedures for the 2048 ML system.
 
 | Category | Tests | Execution Time | Frequency |
 |----------|-------|---------------|-----------|
-| Unit/root suite | Binary crate tests | 38 tests; last local run 1.45 sec | GitHub Actions on push/PR/manual dispatch and local script |
+| Unit/root suite | Binary crate tests | 39 tests; last local run 1.45 sec | GitHub Actions on push/PR/manual dispatch and local script |
 | Integration | Focused tests; no dedicated suite | Covered by root suite; not a separate target | GitHub Actions workflow and local script |
 | Game | Tests in `game_engine` module | Covered by root suite | GitHub Actions workflow and local script |
 | Research validation | Not automated | N/A | Requires separate experiment design |
@@ -61,7 +61,7 @@ No automated test result dashboards, coverage reports, performance trends, or re
 
 ## Implementation Record
 
-- Redirect/duplicate audited. The CI script passes locally and in hosted run [36280654071](https://github.com/Evintkoo/2048-ml/actions/runs/36280654071) with 38/38 root tests. No coverage dashboard, scheduled performance suite, or historical report artifact exists.
+- Redirect/duplicate audited. The CI script passes locally and in hosted run [36281445126](https://github.com/Evintkoo/2048-ml/actions/runs/36281445126) with 39/39 root tests. No coverage dashboard, scheduled performance suite, or historical report artifact exists.
 
 ---
 

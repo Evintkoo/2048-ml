@@ -48,11 +48,11 @@ No aggregate `GameTestMetrics` reporter is implemented; test assertions are unit
 
 ## 5. Run
 
-There is no separate `game` test target; game tests live within the binary crate modules. `cargo test` passed 38/38, including score and move-count overflow atomicity. Cross-ref `09-Quality/02-Validation/02-game-validation.md` for independent validation; do not duplicate that content here.
+There is no separate `game` test target; game tests live within the binary crate modules. `cargo test` passed 39/39, including score and move-count overflow atomicity. Cross-ref `09-Quality/02-Validation/02-game-validation.md` for independent validation; do not duplicate that content here.
 
 ## Implementation Record
 
-- Game-engine tests cover core rules and randomness behavior and passed within `cargo test` (38/38). Regression tests confirm score and move-count overflow return errors without mutating the board. The separate test target and formal maximum-tile proof do not exist.
+- Game-engine tests cover core rules and randomness behavior and passed within `cargo test` (39/39). Regression tests confirm score and move-count overflow return errors without mutating the board. The separate test target and formal maximum-tile proof do not exist.
 
 ---
 
