@@ -7,11 +7,11 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-project-overview](01-project-overview.md) | Rust-Native AutoML Framework | PARTIAL — fixed-configuration diagnostics across three split seeds; matched-budget framework study and 2048 case study pending |
-| [02-dependencies](02-dependencies.md) | Dependencies | DONE (2026-09-24) |
-| [03-tooling](03-tooling.md) | Tooling Configuration | DONE (2026-09-24) |
-| [04-framework-contribution](04-framework-contribution.md) | Rust-Native AutoML Framework Contribution | PARTIAL — fixed-split sklearn baseline, three split seeds, per-case timings, and aggregate resource probe retained; matched comparison/memory profile/replication pending |
+| [02-dependencies](02-dependencies.md) | Dependencies | DONE (2026-09-27) |
+| [03-tooling](03-tooling.md) | Tooling Configuration | DONE (2026-09-27) — CLI and configured CI checked |
+| [04-framework-contribution](04-framework-contribution.md) | Rust-Native AutoML Framework Contribution | PARTIAL — three repeated split seeds, fixed-config sklearn baseline, corrected matched-grid diagnostic, per-case timings/RSS, aggregate resource probe; broader matched budgets, model-only memory, CLI/library parity, and independent replication pending |
 
-Supporting evidence: [04-framework-architecture](04-framework-architecture.md) records the source-backed architecture and API contract audit for ticket 04; its standalone ledger disposition records that evidence audit as complete.
+Supporting evidence: [04-framework-architecture](04-framework-architecture.md) records the current source-backed architecture and API contract audit for ticket 04; its standalone ledger disposition records that evidence audit as complete.
 
 Scope note: Plan 00 defines 17 training values (16 board cells plus score). Ticket #034 aligned the root encoder and CLI schema with that contract; the former 27-value derived-feature vector is excluded from canonical training.
 

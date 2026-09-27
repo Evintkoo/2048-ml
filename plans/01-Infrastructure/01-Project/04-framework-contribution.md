@@ -1,8 +1,9 @@
 # Plan 04 — Rust-Native AutoML Framework Contribution: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Fixed-configuration sklearn comparisons, three split seeds, two-run
-  per-case fit/predict timings, three repeated-split seeds, and aggregate resource probes are retained;
-  matched-budget study, per-model memory profiles, and independent replication remain pending.
+> **Status: PARTIAL (2026-09-27).** Fixed-configuration sklearn comparisons, three repeated split seeds,
+> a corrected matched-grid diagnostic, two-run per-case timings, and isolated per-case process RSS probes
+> are retained. Broader matched-budget comparisons, model-only memory, CLI/library parity, and independent
+> replication remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework
 contribution.
@@ -22,9 +23,15 @@ second seed-2026 process run matched all 15 prediction files exactly. Seed 2027 
 independent process runs with matching splits and predictions in 15/15 cases. Two fixed-configuration
 scikit-learn runs used the seed-42 outer splits and AutoML inner holdback, succeeded in 15/15 cases, and
 repeated metrics and prediction CSVs exactly; their predicted labels agreed with AutoML in 8/15 cases.
-One single-thread process-level resource probe per implementation is retained. These observations do not
-establish framework superiority: model defaults, implementations, and process measurement boundaries
-differ.
+One single-thread aggregate resource probe per implementation is retained. A later isolated process matrix
+ran two repeats of each of the 15 dataset/model cases per implementation, recording per-case wall time and
+process peak RSS; those values still include runtime/dependency overhead and do not isolate model memory.
+A corrected matched-grid pilot also ran 108 candidate fits per implementation at each of three split seeds
+on three UCI datasets, matching six RF/ExtraTrees parameter candidates and the effective fit rows. Chosen
+configurations matched in 13/18 observations. The original shared-grid results were withdrawn after a
+validation-leak audit; corrected protocol-v2 artifacts are retained. These observations do not establish
+framework superiority: model implementations differ, the grid study is a narrow tree-model diagnostic,
+and process measurements include overhead.
 
 ### Architecture audit result
 
@@ -32,10 +39,13 @@ The audit found concrete training, preprocessing, optimization, CV, inference, a
 It also confirmed that the pieces are not one automatically composed pipeline: root integration loads the
 CSV into a Polars `DataFrame`, provides game-group split/CV orchestration, and invokes `TrainEngine`;
 root does not currently use `DataPreprocessor` or `InferenceEngine`, and the `HyperOptX` objective
-callback is not wired into the training command. `TrainEngine::fit` uses its own seeded row split and
-does not call cross-validation or consume `cv_folds`. The root therefore performs grouped CV in a wrapper
-and then separately fits the final model. Seed controls are component-level, and explicit artifact schema
-migration was not found. Details and source paths are in the architecture record.
+callback is wired into the root training command for optional RandomForest/ExtraTrees tuning over a
+grouped-CV accuracy objective. `TrainEngine::fit` uses its own seeded row split and does not call
+cross-validation or consume `cv_folds`. The root therefore performs grouped CV in a wrapper and then
+separately fits the final model. The root policy uses `InferenceEngine` to load the serialized engine and
+predict; `DataPreprocessor` remains unused by the canonical root path. Seed controls are component-level,
+and explicit artifact schema migration was not found. Details and source paths are in the architecture
+record.
 
 ## 1. Primary Contribution
 
@@ -155,7 +165,9 @@ establish general AutoML superiority.
   Timings are descriptive and do not include peak memory.
 - [x] Same-split process repeats now cover seeds 42 and 2026; repeated-fit evidence remains bounded to
   these fixed candidate/configuration matrices.
-- [ ] Per-model memory profiles and CLI/library equivalence evidence collected.
+- [x] Isolated per-case process wall time and peak-RSS matrix repeated twice across all 15
+  dataset/model cases for AutoML and scikit-learn; startup/runtime/dependency overhead remains in scope.
+- [ ] Model-only memory profiles and CLI/library equivalence evidence collected.
 - [ ] Independent replication or validation completed.
 
 The original 2026-09-24 root smoke failed once in 20 repetitions. Follow-up checks isolated three issues
@@ -178,20 +190,26 @@ split. Two scikit-learn 1.6.1 runs succeeded and
 repeated metrics and prediction CSVs in 15/15 cases. The report retains their side-by-side metrics,
 exact-label agreement of 8/15, fixed dependencies, and the explicit limits of this one-split comparison.
 Per-case fit/predict timings from the two seed-42 runs are summarized in
-`pinned-82d8483-per-case-timings.csv`; no per-model memory measurement is available. A same-host
+`pinned-82d8483-per-case-timings.csv`. A two-repeat process matrix now records per-case wall time and
+peak RSS for all 15 dataset/model combinations; its memory values include process and dependency
+overhead and do not isolate model allocations. A same-host
 single-thread process probe measured 1.33 seconds and 27,426,816-byte maximum RSS for the
 prebuilt AutoML matrix, and 1.22 seconds and 158,466,048-byte maximum RSS for the Python matrix. Since
-process startup and implementations differ, these are not framework performance conclusions. Matched search
-budgets, per-model memory profiles, broader common-split process repeatability, API/CLI parity, and
+process startup and implementations differ, these are not framework performance conclusions. The corrected
+matched-grid diagnostic selects the same configuration in 13/18 dataset-seed observations after fixing a
+validation-leak flaw in its withdrawn predecessor; see
+[`matched-grid-search-corrected-multi-seed-2026-09-27/`](../../../reports/framework_validation/matched-grid-search-corrected-multi-seed-2026-09-27/README.md).
+Matched optimizer budgets, model-only memory profiles, API/CLI parity, and
 independent replication remain outstanding.
 
 ## Open questions
 
 - **The evidence remains bounded by fixed-split diagnostics.** Three standard datasets and five AutoML
   models have one split each under seeds 42, 2026, and 2027; each split has two exact-repeat runs
-  with save/load equivalence. A comparison-only sklearn matrix and aggregate
-  single-thread resource probe are also retained. There is no matched search-budget comparison,
-  per-model memory profile, broad dataset study, CLI/library equivalence, or independent replication.
+  with save/load equivalence. A comparison-only sklearn matrix, aggregate single-thread probe, per-case
+  two-repeat process resource matrix, and corrected matched candidate-grid study are retained. There is no
+  matched optimizer-budget comparison, model-only memory profile, broad dataset study, CLI/library
+  equivalence, or independent replication.
   Further experiments require a declared
   compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
 
