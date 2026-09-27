@@ -1,0 +1,15 @@
+{
+  "analysis": "matched seed sets use paired exact sign tests, paired bootstrap intervals, and Cohen's dz; unmatched runs use independent Mann-Whitney U, independent bootstrap intervals, and Cohen's d; Holm adjustment applies to all p-values",
+  "bootstrap_replicates": 5000,
+  "comparison_csv": "reports/action-frequency/50-game-disjoint-seeds/corpus-pairwise/naive_bayes.csv",
+  "created_utc": "2026-09-27T03:59:50.784124+00:00",
+  "input_files": [
+    "reports/action-frequency/50-game-disjoint-seeds/20game_naive_bayes_10000.csv",
+    "reports/action-frequency/50-game-disjoint-seeds/naive_bayes_10000.csv"
+  ],
+  "paired_test_limitation": "sign test uses direction and ignores ties; it is conservative and is not Wilcoxon",
+  "project_version": "0.1.0",
+  "seed_sets_checked_for_equality": true,
+  "sha256": "5072f6a69b8edf068ad053bd9a011f4f4e105f8275c58471f7f1a359affe797d",
+  "source_revision": "ee43aa8a2a4c3e12d43d9fffb7c7892e58110ccb"
+}

@@ -319,12 +319,22 @@ protocol, and metric summary are retained in the
 [50-game classifier report](../../../reports/candidate_classifier_pilot/2026-09-27-50-game/README.md).
 This one-corpus label diagnostic is exploratory; it is not policy-score evidence or a confirmatory ranking.
 
-The exploratory 10,000-game score matrix now supplies disjoint-seed score distributions for the five
-verified policies and both measured baselines, but it is based on one fit per candidate. Remaining
-prerequisites before main-study claims are matched search-budget/per-model resource framework
-comparisons, policy-fit repeats across independent corpora, a scale-appropriate rollout-labeled corpus,
-adequate-sample classifier evaluation, and a predeclared confirmatory policy evaluation. The pilot
-training/simulator smoke and exploratory score matrix do not substitute for those artifacts. Pilot
+The five 50-game-trained policies and two baselines were also evaluated on the same 10,000 seeds,
+104024–114023. Their observed means were 808.82 (RandomForest), 711.35 (ExtraTrees), 752.29 (AdaBoost),
+903.67 (KNN), and 773.10 (NaiveBayes), compared with 1,097.38 for random and 8,047.04 for heuristic.
+The paired matrix retains 21 comparisons, 5,000-replicate bootstrap intervals, paired effect sizes, and
+Holm adjustment. The five earlier 20-game fits were evaluated on the same seed set; paired old-versus-new
+fit comparisons show lower means for four candidates and a higher KNN mean. These two corpus sizes each
+have one fit per candidate. The score results are descriptive corpus-fit sensitivity evidence, not a
+confirmatory ranking or a general AutoML result. Data, manifests, comparisons, and integrity evidence are
+retained in the [50-game score report](../../../reports/action-frequency/50-game-disjoint-seeds/README.md).
+
+The earlier disjoint 10,000-game score matrix also supplies score distributions for the original five
+verified policies and both baselines. Remaining prerequisites before main-study claims are matched
+search-budget/per-model resource framework comparisons, additional independent training corpora with
+repeated fits, a scale-appropriate rollout-labeled corpus, adequate-sample classifier evaluation, and a
+predeclared confirmatory policy evaluation. The small-corpus training/simulator diagnostics and score
+matrices do not substitute for those artifacts. Pilot
 collection linearly projects to about 210 hours for 20,000 games using the combined 75-game sample, with
 54–207 rows per game across the three runs. These figures are uncertain and configuration-specific.
 Declare a resource envelope and collection protocol before starting a corpus at that scale. The independent

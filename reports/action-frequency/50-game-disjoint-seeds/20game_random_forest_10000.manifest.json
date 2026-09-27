@@ -1,0 +1,100 @@
+{
+  "action_frequency": [
+    {
+      "action": 0,
+      "count": 263671,
+      "direction": "up",
+      "game_cluster_bootstrap_95_ci": [
+        0.2595555746750883,
+        0.26213360900422605
+      ],
+      "proportion": 0.2608437149734033,
+      "total_moves": 1010839
+    },
+    {
+      "action": 1,
+      "count": 160281,
+      "direction": "down",
+      "game_cluster_bootstrap_95_ci": [
+        0.1579296654886132,
+        0.15919340500742926
+      ],
+      "proportion": 0.15856234276675119,
+      "total_moves": 1010839
+    },
+    {
+      "action": 2,
+      "count": 235348,
+      "direction": "left",
+      "game_cluster_bootstrap_95_ci": [
+        0.23180202319940135,
+        0.23379637658369193
+      ],
+      "proportion": 0.23282441615331423,
+      "total_moves": 1010839
+    },
+    {
+      "action": 3,
+      "count": 351539,
+      "direction": "right",
+      "game_cluster_bootstrap_95_ci": [
+        0.3465903530031993,
+        0.3489788312418866
+      ],
+      "proportion": 0.34776952610653133,
+      "total_moves": 1010839
+    }
+  ],
+  "action_frequency_bootstrap_seed": 104026,
+  "action_frequency_interval": "95% game-cluster bootstrap percentile interval (2000 replicates)",
+  "action_frequency_unit": "selected moves across all games",
+  "action_total": 1010839,
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "benchmark": "model_policy",
+  "created_utc": "2026-09-27T03:53:04.112871+00:00",
+  "elapsed_seconds": 122.600233041,
+  "first_game_seed": 104024,
+  "games": 10000,
+  "global_seed": 104024,
+  "last_game_seed": 114023,
+  "max_moves": 1000,
+  "model": "reports/candidate_classifier_pilot/2026-09-27/random_forest.policy.json",
+  "per_game_action_counts": {
+    "action_ids": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "columns": [
+      "up_moves",
+      "down_moves",
+      "left_moves",
+      "right_moves"
+    ],
+    "source": "GameResult.move_history"
+  },
+  "project_version": "0.1.0",
+  "results_csv": "reports/action-frequency/50-game-disjoint-seeds/20game_random_forest_10000.csv",
+  "score_summary_seed": 104025,
+  "seed_derivation": "global_seed.wrapping_add(game_id)",
+  "sha256": "03e46f4fb96afbce7806b863fb03caec465061546ba234e1c6e6d6802a640eca",
+  "source_revision": "ee43aa8a2a4c3e12d43d9fffb7c7892e58110ccb",
+  "spawn_probability_for_four": 0.1,
+  "summary": {
+    "games_above_2048": 258,
+    "games_above_4096": 0,
+    "games_above_8192": 0,
+    "max": 3520,
+    "mean": 851.8548,
+    "mean_ci_95": [
+      843.00839,
+      860.6903000000001
+    ],
+    "median": 732.0,
+    "min": 16,
+    "p90": 1400.0,
+    "p99": 2348.0,
+    "sample_std_dev": 443.43867163623736
+  }
+}

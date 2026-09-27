@@ -1,0 +1,20 @@
+{
+  "analysis": "matched seed sets use paired exact sign tests, paired bootstrap intervals, and Cohen's dz; unmatched runs use independent Mann-Whitney U, independent bootstrap intervals, and Cohen's d; Holm adjustment applies to all p-values",
+  "bootstrap_replicates": 5000,
+  "comparison_csv": "reports/action-frequency/50-game-disjoint-seeds/comparison.csv",
+  "created_utc": "2026-09-27T03:49:30.305287+00:00",
+  "input_files": [
+    "reports/action-frequency/50-game-disjoint-seeds/random_10000.csv",
+    "reports/action-frequency/50-game-disjoint-seeds/heuristic_10000.csv",
+    "reports/action-frequency/50-game-disjoint-seeds/random_forest_10000.csv",
+    "reports/action-frequency/50-game-disjoint-seeds/extra_trees_10000.csv",
+    "reports/action-frequency/50-game-disjoint-seeds/adaboost_10000.csv",
+    "reports/action-frequency/50-game-disjoint-seeds/knn_10000.csv",
+    "reports/action-frequency/50-game-disjoint-seeds/naive_bayes_10000.csv"
+  ],
+  "paired_test_limitation": "sign test uses direction and ignores ties; it is conservative and is not Wilcoxon",
+  "project_version": "0.1.0",
+  "seed_sets_checked_for_equality": true,
+  "sha256": "3f1a84ff56850a184ef60bfb1a5966023a1b2ae82113cfbae6ed00a7f5726340",
+  "source_revision": "ee43aa8a2a4c3e12d43d9fffb7c7892e58110ccb"
+}
