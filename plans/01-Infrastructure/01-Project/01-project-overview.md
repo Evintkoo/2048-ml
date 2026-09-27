@@ -228,7 +228,12 @@ cases. A one-process resource probe observed AutoML at 1.33 seconds/27,426,816-b
 sklearn at 1.22 seconds/158,466,048 bytes on the same host. Different implementation defaults and process
 startup boundaries make these descriptive only. Matched search-budget/resource profiling, broader
 repeated-fit reproducibility, CLI/library equivalence, and independent replication remain open. Neither
-diagnostic completes framework validation or clears the main 2048 training milestone.
+diagnostic completes framework validation or clears the main 2048 training milestone. Two sequential
+AutoML seed-42 runs with `RAYON_NUM_THREADS=1` now match the single-thread scikit-learn setting and
+retain per-case fit/predict timings for the same 15 cases and split. The timing comparison is descriptive;
+model-specific implementation defaults differ, optimizer search budgets are not matched, and no speed
+claim follows. Per-model memory and broader hardware profiling remain open; details and artifacts are in
+the [framework-validation report](../../../reports/framework_validation/README.md).
 
 ### 6.6 Main-Study Readiness (updated 2026-09-27)
 

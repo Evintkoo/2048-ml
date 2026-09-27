@@ -182,6 +182,42 @@ host. The timer includes `TrainEngine::fit`, `predict`, and `predict_proba`; it 
 serialization, process startup, and peak memory. The separate aggregate process probe remains the only
 RSS measurement. These timings do not form a matched framework performance comparison.
 
+### Repeated single-thread per-case timing diagnostic
+
+Two additional AutoML seed-42 matrices were run sequentially with
+`RAYON_NUM_THREADS=1`, matching the one-thread setting of the two retained
+scikit-learn runs. The runner completed all 15 dataset/model cases in each
+process, reproduced the same outer splits, matched predictions in 15/15 cases,
+and passed save/load checks. The per-case timer covers fit, prediction, and
+probability prediction for both implementations; data loading and process
+startup are excluded.
+
+[`pinned-82d8483-vs-sklearn-seed42-single-thread-fit-predict.csv`](pinned-82d8483-vs-sklearn-seed42-single-thread-fit-predict.csv)
+contains both observations and their medians for all 15 cases. The comparison
+script is [`../../scripts/compare_framework_fit_timings.py`](../../scripts/compare_framework_fit_timings.py);
+the CSV SHA-256 is
+`93bad5cecc4872c8ffca59f10c3fb1a1c59ea1442b92cd0c4042f4f69b7e467a`.
+Reproduce the AutoML runs with:
+
+```sh
+RAYON_NUM_THREADS=1 cargo run -- framework-validate --seed 42 --test-fraction 0.2 \
+  --output-dir reports/framework_validation/pinned-82d8483-rayon1-seed42-run-1
+RAYON_NUM_THREADS=1 cargo run -- framework-validate --seed 42 --test-fraction 0.2 \
+  --output-dir reports/framework_validation/pinned-82d8483-rayon1-seed42-run-2
+python3 scripts/compare_framework_validation_runs.py \
+  reports/framework_validation/pinned-82d8483-rayon1-seed42-run-1 \
+  reports/framework_validation/pinned-82d8483-rayon1-seed42-run-2 \
+  --output reports/framework_validation/pinned-82d8483-rayon1-seed42-comparison.json
+python3 scripts/compare_framework_fit_timings.py
+```
+
+Thread count, seed, splits, and top-level estimator settings are aligned, but
+model-specific defaults and implementation details differ, and no optimizer
+search budget is compared. These two-run, one-host measurements are descriptive
+only: the timing ratios do not establish a general speed advantage. Matched
+search-budget profiling, per-model memory, and broader hardware repetitions
+remain open.
+
 ## Diagnosis and fix
 
 The preceding pinned commit `88a86bf44a0cb03664931f7ef15201b95fa11255`
