@@ -1,7 +1,8 @@
 # Plan 01 — Rust-Native AutoML Framework: the repository status is explicit and evidence based
 
 > **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 25-game throughput
-> sample, and five-candidate classifier diagnostics on a common 391-row chronological holdout are recorded;
+> sample, and five-candidate classifier diagnostics on chronological holdouts of 391 and 541 rows are
+> recorded;
 > matched framework evaluation, scale collection, and confirmatory policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework.
@@ -274,6 +275,15 @@ data-to-fit-to-simulator wiring only. The final fit uses AutoML's internal row-l
 development rows. The three-game classifier diagnostic is too small to support a policy-quality or
 generalization claim, and this is not a completed end-to-end research study.
 
+An independent classifier-label diagnostic then fit each candidate on all 20 games from seeds
+90627–90646 and reserved five later games, seeds 90647–90651, as a 541-row holdout. Five-fold GroupKFold
+accuracy ranked ExtraTrees first (`0.2948`), while holdout accuracy ranked RandomForest first (`0.2828`);
+holdout accuracy ranged from `0.2588` to `0.2828`, and macro-F1 from `0.2035` to `0.2748`. This is one
+fit per candidate and five game groups from the same host and labeling protocol. It is classifier-label
+evidence only, not a policy score, model-selection result, or confirmatory quality estimate. The joined
+data, manifests, models, predictions, and verifier are retained in the
+[report](../../../reports/candidate_classifier_independent_holdout/2026-09-27-25-game/README.md).
+
 The exploratory 10,000-game score matrix now supplies disjoint-seed score distributions for the five
 verified policies and both measured baselines, but it is based on one fit per candidate. Remaining
 prerequisites before main-study claims are matched search-budget/per-model resource framework
@@ -408,7 +418,8 @@ be taken from retained benchmark artifacts rather than a fixed threshold.
   common 391-row classifier diagnostic on its final three game groups is retained, but it does not establish
   model or policy quality. Matched-budget/model-only framework profiling, broader repeated-fit evidence,
   independent replication, scale collection, and adequate-sample held-out diagnostics remain absent. A
-  five-game independent throughput repeat complements the earlier 20-game pilot but is not a scale study.
+  five-game independent throughput repeat and classifier-label holdout complement the earlier pilot but
+  do not constitute a scale study or independent machine replication.
   Larger runs require a declared resource budget and retained artifacts.
 
 ## Later
