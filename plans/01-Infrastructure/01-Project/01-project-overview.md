@@ -2,7 +2,7 @@
 
 > **Status: PARTIAL (2026-09-27).** Capability checks, standard-dataset diagnostics, a 75-game throughput
 > sample, and five-candidate classifier diagnostics on chronological holdouts of 391, 541, and 903 rows,
-> including five fit seeds on the same 541-row holdout, are recorded. Matched framework evaluation,
+> including five fit seeds on the same 541-row holdout, are recorded. Broader matched framework evaluation,
 > scale collection, and confirmatory policy results remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework.
@@ -17,9 +17,11 @@ learning, and framework evaluation is a separate research track.
 cover five AutoML candidates on three standard datasets and four fixed split seeds, with exact repeated
 predictions and save/load equality. A fixed-configuration scikit-learn comparison and a two-repeat,
 60-process resource matrix cover the same 15 dataset/model cases, but do not compare optimizer search
-behavior or isolate model memory. A separate pilot matches six grid candidates and one validation fit per
-candidate for AutoML and scikit-learn RandomForest/ExtraTrees on the same three UCI splits. This matches
-candidate counts, not optimizer algorithms. The 2048 labeling pilots cover 75 games and support a 50-game chronological
+behavior or isolate model memory. A separate three-split-seed pilot matches six grid candidates and one
+validation fit per candidate for AutoML and scikit-learn RandomForest/ExtraTrees on the same three UCI
+datasets. The selected configurations agree in 15/18 case-seed observations, with differences confined
+to Wisconsin Diagnostic; this matches candidate counts, not optimizer algorithms. The 2048 labeling
+pilots cover 75 games and support a 50-game chronological
 classifier-label holdout, plus exploratory policy-score comparisons for one 20-game fit and one 50-game
 fit per candidate. The newer policy fits scored below random on the retained 10,000-seed evaluation, and
 four of five had lower paired means than the older fit on common seeds. These are case-study diagnostics,
@@ -279,13 +281,14 @@ compare search efficiency or model-only allocation. Full details are in the fram
 
 The shared-grid pilot addresses candidate-fit count for the two tree models with tuning support.
 AutoML and scikit-learn each evaluated the same six `(n_estimators, max_depth)` configurations on the same
-inner validation rows for RandomForest and ExtraTrees across Iris, Wine, and Wisconsin Diagnostic. Both
-selected the same configuration in all six cases. The verifier confirms 36 candidate fits per
-implementation, identical source-row partitions, configuration selection from validation scores, and
+inner validation rows for RandomForest and ExtraTrees across Iris, Wine, and Wisconsin Diagnostic at
+split seeds 42, 2026, and 2027. Both selected the same configuration in 15/18 case-seed observations;
+the three differences were in Wisconsin Diagnostic tree cases. Each per-seed verifier confirms 36
+candidate fits per implementation, identical source-row partitions, validation-only selection, and
 recomputed outer-test metrics. This is a matched fixed-grid budget, not a comparison of HyperOptX with a
-reference optimizer; one seed and one split per dataset do not establish performance superiority. Results
-and the reproduction protocol are in the
-[matched-grid report](../../../reports/framework_validation/matched-grid-search-2026-09-27/README.md).
+reference optimizer; three splits per dataset do not establish performance superiority. Results and the
+reproduction protocol are in the
+[matched-grid report](../../../reports/framework_validation/matched-grid-search-multi-seed-2026-09-27/README.md).
 
 ### 6.6 Main-Study Readiness (updated 2026-09-27)
 
@@ -342,8 +345,8 @@ retained in the [50-game score report](../../../reports/action-frequency/50-game
 
 The earlier disjoint 10,000-game score matrix also supplies score distributions for the original five
 verified policies and both baselines. Remaining prerequisites before main-study claims are optimizer-
-algorithm comparisons and broader per-model resource framework comparisons, additional independent training corpora with
-repeated fits, a scale-appropriate rollout-labeled corpus, adequate-sample classifier evaluation, and a
+algorithm comparisons and broader per-model resource framework comparisons, additional independent
+training corpora with repeated fits, a scale-appropriate rollout-labeled corpus, adequate-sample classifier evaluation, and a
 predeclared confirmatory policy evaluation. The small-corpus training/simulator diagnostics and score
 matrices do not substitute for those artifacts. Pilot
 collection linearly projects to about 210 hours for 20,000 games using the combined 75-game sample, with

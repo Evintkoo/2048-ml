@@ -1,0 +1,322 @@
+{
+  "split_seeds": [
+    42,
+    2026,
+    2027
+  ],
+  "verified_run_count": 3,
+  "dataset_model_cases": 6,
+  "matched_case_seed_observations": 18,
+  "candidate_fits_per_implementation": 108,
+  "selected_configuration_matches": 15,
+  "selected_configuration_observations": 18,
+  "inferential_tests_performed": false,
+  "cases": [
+    {
+      "dataset": "breast_cancer_wisconsin_diagnostic",
+      "model": "extra_trees",
+      "seed_results": [
+        {
+          "seed": 42,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 8
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 8
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9380530973451328,
+          "sklearn_outer_test_accuracy": 0.9380530973451328,
+          "outer_test_label_agreement": 0.9823008849557522
+        },
+        {
+          "seed": 2026,
+          "automl_configuration": {
+            "n_estimators": 64,
+            "max_depth": 8
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 8
+          },
+          "selected_config_match": false,
+          "automl_outer_test_accuracy": 0.9646017699115044,
+          "sklearn_outer_test_accuracy": 0.9823008849557522,
+          "outer_test_label_agreement": 0.9823008849557522
+        },
+        {
+          "seed": 2027,
+          "automl_configuration": {
+            "n_estimators": 64,
+            "max_depth": 8
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": false,
+          "automl_outer_test_accuracy": 0.9469026548672567,
+          "sklearn_outer_test_accuracy": 0.9203539823008849,
+          "outer_test_label_agreement": 0.9734513274336283
+        }
+      ]
+    },
+    {
+      "dataset": "breast_cancer_wisconsin_diagnostic",
+      "model": "random_forest",
+      "seed_results": [
+        {
+          "seed": 42,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9469026548672567,
+          "sklearn_outer_test_accuracy": 0.9380530973451328,
+          "outer_test_label_agreement": 0.9734513274336283
+        },
+        {
+          "seed": 2026,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9292035398230089,
+          "sklearn_outer_test_accuracy": 0.9380530973451328,
+          "outer_test_label_agreement": 0.9380530973451328
+        },
+        {
+          "seed": 2027,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 8
+          },
+          "selected_config_match": false,
+          "automl_outer_test_accuracy": 0.9469026548672567,
+          "sklearn_outer_test_accuracy": 0.9469026548672567,
+          "outer_test_label_agreement": 1.0
+        }
+      ]
+    },
+    {
+      "dataset": "iris",
+      "model": "extra_trees",
+      "seed_results": [
+        {
+          "seed": 42,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.8666666666666667,
+          "sklearn_outer_test_accuracy": 0.8666666666666667,
+          "outer_test_label_agreement": 1.0
+        },
+        {
+          "seed": 2026,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9333333333333333,
+          "sklearn_outer_test_accuracy": 1.0,
+          "outer_test_label_agreement": 0.9333333333333333
+        },
+        {
+          "seed": 2027,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 1.0,
+          "sklearn_outer_test_accuracy": 0.9666666666666667,
+          "outer_test_label_agreement": 0.9666666666666667
+        }
+      ]
+    },
+    {
+      "dataset": "iris",
+      "model": "random_forest",
+      "seed_results": [
+        {
+          "seed": 42,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9,
+          "sklearn_outer_test_accuracy": 0.8666666666666667,
+          "outer_test_label_agreement": 0.9666666666666667
+        },
+        {
+          "seed": 2026,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9333333333333333,
+          "sklearn_outer_test_accuracy": 0.9666666666666667,
+          "outer_test_label_agreement": 0.9666666666666667
+        },
+        {
+          "seed": 2027,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 1.0,
+          "sklearn_outer_test_accuracy": 0.9333333333333333,
+          "outer_test_label_agreement": 0.9333333333333333
+        }
+      ]
+    },
+    {
+      "dataset": "wine",
+      "model": "extra_trees",
+      "seed_results": [
+        {
+          "seed": 42,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9444444444444444,
+          "sklearn_outer_test_accuracy": 0.9444444444444444,
+          "outer_test_label_agreement": 0.9444444444444444
+        },
+        {
+          "seed": 2026,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 1.0,
+          "sklearn_outer_test_accuracy": 0.9722222222222222,
+          "outer_test_label_agreement": 0.9722222222222222
+        },
+        {
+          "seed": 2027,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9444444444444444,
+          "sklearn_outer_test_accuracy": 0.9722222222222222,
+          "outer_test_label_agreement": 0.9722222222222222
+        }
+      ]
+    },
+    {
+      "dataset": "wine",
+      "model": "random_forest",
+      "seed_results": [
+        {
+          "seed": 42,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9722222222222222,
+          "sklearn_outer_test_accuracy": 1.0,
+          "outer_test_label_agreement": 0.9722222222222222
+        },
+        {
+          "seed": 2026,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9444444444444444,
+          "sklearn_outer_test_accuracy": 0.9722222222222222,
+          "outer_test_label_agreement": 0.9166666666666666
+        },
+        {
+          "seed": 2027,
+          "automl_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "sklearn_configuration": {
+            "n_estimators": 16,
+            "max_depth": 4
+          },
+          "selected_config_match": true,
+          "automl_outer_test_accuracy": 0.9722222222222222,
+          "sklearn_outer_test_accuracy": 0.9722222222222222,
+          "outer_test_label_agreement": 1.0
+        }
+      ]
+    }
+  ]
+}

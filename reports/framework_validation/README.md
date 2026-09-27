@@ -71,6 +71,21 @@ split per dataset, and it does not establish framework superiority or a runtime 
 artifact recomputes all six test metrics and checks the shared grid, trial counts, source-row partitions,
 artifact hashes, and holdout predictions.
 
+### Matched-grid split-seed follow-up (2026-09-27)
+
+The same protocol was repeated at split seeds 2026 and 2027, in addition to
+seed 42. All three per-seed verifiers pass. Across three seeds, two models, and
+three datasets, both implementations completed 108 candidate fits each.
+Selected configurations agreed in 15/18 case-seed observations, including
+all Iris and Wine observations; the mismatches were confined to Wisconsin
+Diagnostic tree cases. Wisconsin Diagnostic selections also changed across
+seeds. Outer-test label agreement ranged from 0.917 to 1.000. These results
+show split and implementation sensitivity in a small fixed-grid diagnostic;
+they do not estimate optimizer quality or support a framework winner. The
+per-seed runs, combined CSV/JSON, and reproduction commands are in the
+[`matched-grid-search-multi-seed-2026-09-27/`](matched-grid-search-multi-seed-2026-09-27/README.md)
+report.
+
 ### Fixed-configuration match boundary
 
 The isolated per-case resource matrix uses one configured fit per model and

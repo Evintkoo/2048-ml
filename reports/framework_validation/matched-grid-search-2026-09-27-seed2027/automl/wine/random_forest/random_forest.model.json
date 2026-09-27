@@ -1,0 +1,2298 @@
+{
+  "config": {
+    "task_type": "MultiClassification",
+    "model_type": "RandomForest",
+    "target_column": "cultivar",
+    "feature_columns": null,
+    "validation_split": 0.1,
+    "cv_folds": 5,
+    "random_seed": 3028,
+    "early_stopping": true,
+    "early_stopping_rounds": 50,
+    "metric": "auto",
+    "n_jobs": null,
+    "verbose": false,
+    "max_depth": 4,
+    "min_samples_leaf": 5,
+    "n_estimators": 16,
+    "learning_rate": 0.1,
+    "max_iter": 1000,
+    "n_neighbors": 5,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_alpha": 0.01,
+    "reg_lambda": 1.0
+  },
+  "feature_names": [
+    "feature_0",
+    "feature_1",
+    "feature_2",
+    "feature_3",
+    "feature_4",
+    "feature_5",
+    "feature_6",
+    "feature_7",
+    "feature_8",
+    "feature_9",
+    "feature_10",
+    "feature_11",
+    "feature_12"
+  ],
+  "model": {
+    "RandomForestClassifier": {
+      "trees": [
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 11,
+              "threshold": 2.19,
+              "left": {
+                "Split": {
+                  "feature_idx": 10,
+                  "threshold": 0.97,
+                  "left": {
+                    "Leaf": {
+                      "value": 2.0,
+                      "n_samples": 39
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 5
+                    }
+                  },
+                  "n_samples": 44,
+                  "impurity": 0.20144628099173556
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 6,
+                  "threshold": 2.3,
+                  "left": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 29
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 10,
+                      "threshold": 1.1549999999999998,
+                      "left": {
+                        "Split": {
+                          "feature_idx": 2,
+                          "threshold": 1.87,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 39
+                            }
+                          },
+                          "n_samples": 40,
+                          "impurity": 0.04628205128205131
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 12,
+                          "threshold": 867.0,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 9
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 8
+                            }
+                          },
+                          "n_samples": 17,
+                          "impurity": 0.49826989619377154
+                        }
+                      },
+                      "n_samples": 57,
+                      "impurity": 0.0962069777125995
+                    }
+                  },
+                  "n_samples": 86,
+                  "impurity": 0.2911199035989108
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.267629383139222
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.0,
+              0.0,
+              0.02190932815439705,
+              0.0,
+              0.0,
+              0.0,
+              0.296296703486905,
+              0.0,
+              0.0,
+              0.0,
+              0.16979727184467042,
+              0.4117500068325106,
+              0.1002466896815168
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "1": 1,
+            "0": 0,
+            "2": 2
+          },
+          "seed": 3028
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 11,
+              "threshold": 2.19,
+              "left": {
+                "Split": {
+                  "feature_idx": 1,
+                  "threshold": 1.17,
+                  "left": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 5
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 12,
+                      "threshold": 465.0,
+                      "left": {
+                        "Split": {
+                          "feature_idx": 4,
+                          "threshold": 90.0,
+                          "left": {
+                            "Leaf": {
+                              "value": 2.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "n_samples": 2,
+                          "impurity": 0.5
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 28
+                        }
+                      },
+                      "n_samples": 30,
+                      "impurity": 0.031111111111111193
+                    }
+                  },
+                  "n_samples": 35,
+                  "impurity": 0.22884353741496577
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 12,
+                  "threshold": 772.5,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 8,
+                      "threshold": 0.85,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 1
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 7,
+                          "threshold": 0.33,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 19
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 30
+                            }
+                          },
+                          "n_samples": 49,
+                          "impurity": 0.001315241456410661
+                        }
+                      },
+                      "n_samples": 50,
+                      "impurity": 0.0384163265306123
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 3,
+                      "threshold": 27.5,
+                      "left": {
+                        "Leaf": {
+                          "value": 0.0,
+                          "n_samples": 43
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 2
+                        }
+                      },
+                      "n_samples": 45,
+                      "impurity": 0.08493827160493822
+                    }
+                  },
+                  "n_samples": 95,
+                  "impurity": 0.42728962757771627
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.19864572674289266
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.0,
+              0.09747883149475636,
+              0.0,
+              0.04651784110966575,
+              0.012170365406598606,
+              0.0,
+              0.0,
+              0.0007843414869988091,
+              0.023377036572838007,
+              0.0,
+              0.0,
+              0.31428684051964423,
+              0.5053847434094982
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "2": 2,
+            "1": 1,
+            "0": 0
+          },
+          "seed": 3029
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 9,
+              "threshold": 3.82,
+              "left": {
+                "Split": {
+                  "feature_idx": 2,
+                  "threshold": 2.5949999999999998,
+                  "left": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 38
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 2,
+                      "threshold": 2.615,
+                      "left": {
+                        "Leaf": {
+                          "value": 0.0,
+                          "n_samples": 2
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 3
+                        }
+                      },
+                      "n_samples": 5,
+                      "impurity": 0.48
+                    }
+                  },
+                  "n_samples": 43,
+                  "impurity": 0.03288263926446727
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 12,
+                  "threshold": 870.0,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 1,
+                      "threshold": 1.225,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 4
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 6,
+                          "threshold": 1.385,
+                          "left": {
+                            "Leaf": {
+                              "value": 2.0,
+                              "n_samples": 45
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 5
+                            }
+                          },
+                          "n_samples": 50,
+                          "impurity": 0.13679999999999987
+                        }
+                      },
+                      "n_samples": 54,
+                      "impurity": 0.11901234567901231
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "value": 0.0,
+                      "n_samples": 33
+                    }
+                  },
+                  "n_samples": 87,
+                  "impurity": 0.37640375214691507
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.2622717717788966
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.0,
+              0.0765780629391995,
+              0.045445825250996524,
+              0.0,
+              0.0,
+              0.0,
+              0.08150320806599443,
+              0.0,
+              0.0,
+              0.4062688307115813,
+              0.0,
+              0.0,
+              0.3902040730322282
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "0": 0,
+            "1": 1,
+            "2": 2
+          },
+          "seed": 3030
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 12,
+              "threshold": 772.5,
+              "left": {
+                "Split": {
+                  "feature_idx": 6,
+                  "threshold": 1.2349999999999999,
+                  "left": {
+                    "Leaf": {
+                      "value": 2.0,
+                      "n_samples": 37
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 10,
+                      "threshold": 0.6599999999999999,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 3
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 9,
+                          "threshold": 4.08,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 31
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 7
+                            }
+                          },
+                          "n_samples": 38,
+                          "impurity": 0.024535021764938825
+                        }
+                      },
+                      "n_samples": 41,
+                      "impurity": 0.1288706596950434
+                    }
+                  },
+                  "n_samples": 78,
+                  "impurity": 0.4070172062667372
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 11,
+                  "threshold": 2.255,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 8,
+                      "threshold": 1.2999999999999998,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 3
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 1
+                        }
+                      },
+                      "n_samples": 4,
+                      "impurity": 0.375
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 4,
+                      "threshold": 135.5,
+                      "left": {
+                        "Split": {
+                          "feature_idx": 7,
+                          "threshold": 0.175,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 45
+                            }
+                          },
+                          "n_samples": 46,
+                          "impurity": 0.04253308128544426
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 2
+                        }
+                      },
+                      "n_samples": 48,
+                      "impurity": 0.0764266304347826
+                    }
+                  },
+                  "n_samples": 52,
+                  "impurity": 0.10484467455621294
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.25445759368836296
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.04387093880452209,
+              0.0,
+              0.37966306542977124,
+              0.023397834029078468,
+              0.017938339422293482,
+              0.011149644553205044,
+              0.06318716736171144,
+              0.06519896443872049,
+              0.39559404596069786
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "2": 2,
+            "0": 0,
+            "1": 1
+          },
+          "seed": 3031
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 11,
+              "threshold": 2.365,
+              "left": {
+                "Split": {
+                  "feature_idx": 1,
+                  "threshold": 1.52,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 10,
+                      "threshold": 0.87,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 4
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 9
+                        }
+                      },
+                      "n_samples": 13,
+                      "impurity": 0.42603550295857984
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "value": 2.0,
+                      "n_samples": 36
+                    }
+                  },
+                  "n_samples": 49,
+                  "impurity": 0.1868452247460993
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 4,
+                  "threshold": 94.5,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 3,
+                      "threshold": 18.9,
+                      "left": {
+                        "Split": {
+                          "feature_idx": 0,
+                          "threshold": 13.205,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 5
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 6
+                            }
+                          },
+                          "n_samples": 11,
+                          "impurity": 0.22038567493112945
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 24
+                        }
+                      },
+                      "n_samples": 35,
+                      "impurity": 0.05699443413729127
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 0,
+                      "threshold": 12.635,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 9
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 4,
+                          "threshold": 133.5,
+                          "left": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 36
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "n_samples": 37,
+                          "impurity": 0.05259313367421467
+                        }
+                      },
+                      "n_samples": 46,
+                      "impurity": 0.29796147754559854
+                    }
+                  },
+                  "n_samples": 81,
+                  "impurity": 0.21920912298439588
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.23820108801793782
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.19320895124762233,
+              0.10966253823396677,
+              0.0,
+              0.02389355116627844,
+              0.2359869506755524,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.06633906633906635,
+              0.3709089423375138,
+              0.0
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "1": 1,
+            "2": 2,
+            "0": 0
+          },
+          "seed": 3032
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 0,
+              "threshold": 12.795,
+              "left": {
+                "Split": {
+                  "feature_idx": 11,
+                  "threshold": 2.06,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 6,
+                      "threshold": 1.0050000000000001,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 6
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 1
+                        }
+                      },
+                      "n_samples": 7,
+                      "impurity": 0.24489795918367352
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 57
+                    }
+                  },
+                  "n_samples": 64,
+                  "impurity": 0.1431361607142857
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 12,
+                  "threshold": 747.5,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 6,
+                      "threshold": 1.5899999999999999,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 23
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 10,
+                          "threshold": 0.97,
+                          "left": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 3
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 3
+                            }
+                          },
+                          "n_samples": 6,
+                          "impurity": 0.5
+                        }
+                      },
+                      "n_samples": 29,
+                      "impurity": 0.24613555291319844
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 10,
+                      "threshold": 1.28,
+                      "left": {
+                        "Leaf": {
+                          "value": 0.0,
+                          "n_samples": 36
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 1
+                        }
+                      },
+                      "n_samples": 37,
+                      "impurity": 0.05259313367421467
+                    }
+                  },
+                  "n_samples": 66,
+                  "impurity": 0.34262261691728785
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.28222745203514427
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.44601121557826245,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.10761063936224997,
+              0.0,
+              0.0,
+              0.0,
+              0.060124646808768716,
+              0.11136084319645195,
+              0.2748926550542669
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "0": 0,
+            "2": 2,
+            "1": 1
+          },
+          "seed": 3033
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 12,
+              "threshold": 755.0,
+              "left": {
+                "Split": {
+                  "feature_idx": 10,
+                  "threshold": 0.92,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 6,
+                      "threshold": 1.2349999999999999,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 37
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 11,
+                          "threshold": 1.725,
+                          "left": {
+                            "Leaf": {
+                              "value": 2.0,
+                              "n_samples": 2
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 7
+                            }
+                          },
+                          "n_samples": 9,
+                          "impurity": 0.3033509700176366
+                        }
+                      },
+                      "n_samples": 46,
+                      "impurity": 0.16708674648183153
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 45
+                    }
+                  },
+                  "n_samples": 91,
+                  "impurity": 0.36881179021647253
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 9,
+                  "threshold": 3.315,
+                  "left": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 3
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "value": 0.0,
+                      "n_samples": 36
+                    }
+                  },
+                  "n_samples": 39,
+                  "impurity": 0.1420118343195265
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.2623668639053254
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.09191110420417711,
+              0.0,
+              0.0,
+              0.06623038713238187,
+              0.4013417481119884,
+              0.03264795979453394,
+              0.40786880075691867
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "0": 0,
+            "2": 2,
+            "1": 1
+          },
+          "seed": 3034
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 10,
+              "threshold": 0.785,
+              "left": {
+                "Leaf": {
+                  "value": 2.0,
+                  "n_samples": 33
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 0,
+                  "threshold": 12.825,
+                  "left": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 43
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 6,
+                      "threshold": 2.11,
+                      "left": {
+                        "Split": {
+                          "feature_idx": 2,
+                          "threshold": 2.0549999999999997,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 2
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 2.0,
+                              "n_samples": 11
+                            }
+                          },
+                          "n_samples": 13,
+                          "impurity": 0.2603550295857988
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 6,
+                          "threshold": 3.165,
+                          "left": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 31
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 10
+                            }
+                          },
+                          "n_samples": 41,
+                          "impurity": 0.0036882807852469807
+                        }
+                      },
+                      "n_samples": 54,
+                      "impurity": 0.30790977900282324
+                    }
+                  },
+                  "n_samples": 97,
+                  "impurity": 0.36577665985679597
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.2236905996461902
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.4187800690751951,
+              0.0,
+              0.03994915562011986,
+              0.0,
+              0.0,
+              0.0,
+              0.19803751454377938,
+              0.0,
+              0.0,
+              0.0,
+              0.3432332607609057,
+              0.0,
+              0.0
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "1": 1,
+            "2": 2,
+            "0": 0
+          },
+          "seed": 3035
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 9,
+              "threshold": 3.46,
+              "left": {
+                "Leaf": {
+                  "value": 1.0,
+                  "n_samples": 43
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 6,
+                  "threshold": 1.6949999999999998,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 0,
+                      "threshold": 12.1,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 1
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 36
+                        }
+                      },
+                      "n_samples": 37,
+                      "impurity": 0.0525931336742147
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 4,
+                      "threshold": 88.0,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 8
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 12,
+                          "threshold": 572.5,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 3
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 39
+                            }
+                          },
+                          "n_samples": 42,
+                          "impurity": 0.13265306122448978
+                        }
+                      },
+                      "n_samples": 50,
+                      "impurity": 0.23177142857142854
+                    }
+                  },
+                  "n_samples": 87,
+                  "impurity": 0.3891904746601538
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.24689247092430122
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.02287691924154211,
+              0.0,
+              0.0,
+              0.0,
+              0.1362375009689171,
+              0.0,
+              0.39805970956830694,
+              0.0,
+              0.0,
+              0.3773270716784853,
+              0.0,
+              0.0,
+              0.06549879854274859
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "1": 1,
+            "2": 2,
+            "0": 0
+          },
+          "seed": 3036
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 9,
+              "threshold": 3.49,
+              "left": {
+                "Leaf": {
+                  "value": 1.0,
+                  "n_samples": 44
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 5,
+                  "threshold": 2.335,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 10,
+                      "threshold": 0.97,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 36
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 10
+                        }
+                      },
+                      "n_samples": 46,
+                      "impurity": 0.3402646502835538
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 4,
+                      "threshold": 88.0,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 3
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 0.0,
+                          "n_samples": 37
+                        }
+                      },
+                      "n_samples": 40,
+                      "impurity": 0.13874999999999993
+                    }
+                  },
+                  "n_samples": 86,
+                  "impurity": 0.37028299668445935
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.24200908215219485
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.06567449481157835,
+              0.37682176433026177,
+              0.0,
+              0.0,
+              0.0,
+              0.37228777429201654,
+              0.18521596656614345,
+              0.0,
+              0.0
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "0": 0,
+            "1": 1,
+            "2": 2
+          },
+          "seed": 3037
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 12,
+              "threshold": 744.0,
+              "left": {
+                "Split": {
+                  "feature_idx": 11,
+                  "threshold": 2.115,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 3,
+                      "threshold": 16.75,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 3
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 32
+                        }
+                      },
+                      "n_samples": 35,
+                      "impurity": 0.15673469387755112
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 12,
+                      "threshold": 581.0,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 38
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 0,
+                          "threshold": 12.825,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 7
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 2
+                            }
+                          },
+                          "n_samples": 9,
+                          "impurity": 0.2592592592592592
+                        }
+                      },
+                      "n_samples": 47,
+                      "impurity": 0.011468236004225002
+                    }
+                  },
+                  "n_samples": 82,
+                  "impurity": 0.3811183095892046
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 9,
+                  "threshold": 3.435,
+                  "left": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 4
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "value": 0.0,
+                      "n_samples": 44
+                    }
+                  },
+                  "n_samples": 48,
+                  "impurity": 0.15277777777777787
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.28694664934815023
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.027696615534453364,
+              0.0,
+              0.0,
+              0.06511530835855164,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.08704650596542493,
+              0.0,
+              0.3709570106118445,
+              0.44918455952972547
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "1": 1,
+            "2": 2,
+            "0": 0
+          },
+          "seed": 3038
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 12,
+              "threshold": 755.0,
+              "left": {
+                "Split": {
+                  "feature_idx": 11,
+                  "threshold": 2.19,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 9,
+                      "threshold": 3.56,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 4
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 8,
+                          "threshold": 0.65,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 2
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 2.0,
+                              "n_samples": 35
+                            }
+                          },
+                          "n_samples": 37,
+                          "impurity": 0.1022644265887509
+                        }
+                      },
+                      "n_samples": 41,
+                      "impurity": 0.15756386964001481
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 10,
+                      "threshold": 0.785,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 1
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 42
+                        }
+                      },
+                      "n_samples": 43,
+                      "impurity": 0.045429962141698275
+                    }
+                  },
+                  "n_samples": 84,
+                  "impurity": 0.3445888849016635
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 8,
+                  "threshold": 1.21,
+                  "left": {
+                    "Leaf": {
+                      "value": 2.0,
+                      "n_samples": 3
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 9,
+                      "threshold": 3.435,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 2
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 0.0,
+                          "n_samples": 41
+                        }
+                      },
+                      "n_samples": 43,
+                      "impurity": 0.08869659275283934
+                    }
+                  },
+                  "n_samples": 46,
+                  "impurity": 0.1165208598936124
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.27555147193943175
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.10615169084262313,
+              0.1192739220101492,
+              0.022678468331138894,
+              0.33603416888070775,
+              0.41586174993538105
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "0": 0,
+            "1": 1,
+            "2": 2
+          },
+          "seed": 3039
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 12,
+              "threshold": 755.0,
+              "left": {
+                "Split": {
+                  "feature_idx": 6,
+                  "threshold": 1.2349999999999999,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 8,
+                      "threshold": 0.485,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 1
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 31
+                        }
+                      },
+                      "n_samples": 32,
+                      "impurity": 0.060546875
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 3,
+                      "threshold": 17.75,
+                      "left": {
+                        "Split": {
+                          "feature_idx": 2,
+                          "threshold": 2.135,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 4
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "n_samples": 5,
+                          "impurity": 0.31999999999999984
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 35
+                        }
+                      },
+                      "n_samples": 40,
+                      "impurity": 0.008750000000000091
+                    }
+                  },
+                  "n_samples": 72,
+                  "impurity": 0.45179398148148137
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 0,
+                  "threshold": 12.57,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 11,
+                      "threshold": 1.9100000000000001,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 2
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 2
+                        }
+                      },
+                      "n_samples": 4,
+                      "impurity": 0.5
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 10,
+                      "threshold": 1.28,
+                      "left": {
+                        "Leaf": {
+                          "value": 0.0,
+                          "n_samples": 52
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 2
+                        }
+                      },
+                      "n_samples": 54,
+                      "impurity": 0.07133058984910852
+                    }
+                  },
+                  "n_samples": 58,
+                  "impurity": 0.08935570528911768
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.2897840576753043
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.060883970529545216,
+              0.0,
+              0.018796313030905468,
+              0.004111693475510616,
+              0.0,
+              0.0,
+              0.38214274956322664,
+              0.0,
+              0.0227611603108621,
+              0.0,
+              0.04525038322255032,
+              0.023495391288631845,
+              0.44255833857876764
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "0": 0,
+            "1": 1,
+            "2": 2
+          },
+          "seed": 3040
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 0,
+              "threshold": 12.809999999999999,
+              "left": {
+                "Split": {
+                  "feature_idx": 5,
+                  "threshold": 1.625,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 10,
+                      "threshold": 0.815,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 6
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 4
+                        }
+                      },
+                      "n_samples": 10,
+                      "impurity": 0.48
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 11,
+                      "threshold": 1.585,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 2
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 9,
+                          "threshold": 6.75,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 48
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 2.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "n_samples": 49,
+                          "impurity": 0.039983340274885495
+                        }
+                      },
+                      "n_samples": 51,
+                      "impurity": 0.07231127745215728
+                    }
+                  },
+                  "n_samples": 61,
+                  "impurity": 0.0802820241238125
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 10,
+                  "threshold": 0.79,
+                  "left": {
+                    "Leaf": {
+                      "value": 2.0,
+                      "n_samples": 16
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 11,
+                      "threshold": 2.525,
+                      "left": {
+                        "Split": {
+                          "feature_idx": 11,
+                          "threshold": 2.285,
+                          "left": {
+                            "Leaf": {
+                              "value": 2.0,
+                              "n_samples": 4
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 2
+                            }
+                          },
+                          "n_samples": 6,
+                          "impurity": 0.4444444444444444
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 12,
+                          "threshold": 545.0,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 46
+                            }
+                          },
+                          "n_samples": 47,
+                          "impurity": 0.04164780443639661
+                        }
+                      },
+                      "n_samples": 53,
+                      "impurity": 0.15055962471185563
+                    }
+                  },
+                  "n_samples": 69,
+                  "impurity": 0.2869858480658496
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.2787273537544933
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.4314427805871897,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.058310720947227807,
+              0.0,
+              0.0,
+              0.0,
+              0.023327887667248637,
+              0.292934883417354,
+              0.17067652046520926,
+              0.02330720691577059
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "2": 2,
+            "0": 0,
+            "1": 1
+          },
+          "seed": 3041
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 9,
+              "threshold": 3.46,
+              "left": {
+                "Leaf": {
+                  "value": 1.0,
+                  "n_samples": 47
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 6,
+                  "threshold": 2.165,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 1,
+                      "threshold": 1.595,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 3
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 37
+                        }
+                      },
+                      "n_samples": 40,
+                      "impurity": 0.13874999999999993
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 4,
+                      "threshold": 88.0,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 1
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "value": 0.0,
+                          "n_samples": 42
+                        }
+                      },
+                      "n_samples": 43,
+                      "impurity": 0.045429962141698275
+                    }
+                  },
+                  "n_samples": 83,
+                  "impurity": 0.4524909950814747
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.3140928209880942
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.0,
+              0.06461579795808703,
+              0.0,
+              0.0,
+              0.022743461254889255,
+              0.0,
+              0.43725397070832117,
+              0.0,
+              0.0,
+              0.4753867700787026,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "1": 1,
+            "0": 0,
+            "2": 2
+          },
+          "seed": 3042
+        },
+        {
+          "root": {
+            "Split": {
+              "feature_idx": 11,
+              "threshold": 2.115,
+              "left": {
+                "Split": {
+                  "feature_idx": 10,
+                  "threshold": 0.97,
+                  "left": {
+                    "Leaf": {
+                      "value": 2.0,
+                      "n_samples": 39
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "value": 1.0,
+                      "n_samples": 4
+                    }
+                  },
+                  "n_samples": 43,
+                  "impurity": 0.1687398593834506
+                }
+              },
+              "right": {
+                "Split": {
+                  "feature_idx": 0,
+                  "threshold": 13.04,
+                  "left": {
+                    "Split": {
+                      "feature_idx": 8,
+                      "threshold": 0.8200000000000001,
+                      "left": {
+                        "Leaf": {
+                          "value": 2.0,
+                          "n_samples": 3
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 11,
+                          "threshold": 3.51,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 43
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "n_samples": 44,
+                          "impurity": 0.044421487603305776
+                        }
+                      },
+                      "n_samples": 47,
+                      "impurity": 0.11685666076793289
+                    }
+                  },
+                  "right": {
+                    "Split": {
+                      "feature_idx": 5,
+                      "threshold": 2.1500000000000004,
+                      "left": {
+                        "Leaf": {
+                          "value": 1.0,
+                          "n_samples": 1
+                        }
+                      },
+                      "right": {
+                        "Split": {
+                          "feature_idx": 2,
+                          "threshold": 1.87,
+                          "left": {
+                            "Leaf": {
+                              "value": 1.0,
+                              "n_samples": 1
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "value": 0.0,
+                              "n_samples": 38
+                            }
+                          },
+                          "n_samples": 39,
+                          "impurity": 0.047371881379978685
+                        }
+                      },
+                      "n_samples": 40,
+                      "impurity": 0.04387820512820503
+                    }
+                  },
+                  "n_samples": 87,
+                  "impurity": 0.37908279291511
+                }
+              },
+              "n_samples": 130,
+              "impurity": 0.2527652480351265
+            }
+          },
+          "max_depth": 4,
+          "min_samples_split": 2,
+          "min_samples_leaf": 1,
+          "max_features": 4,
+          "criterion": "Gini",
+          "n_features": 13,
+          "feature_importances": {
+            "v": 1,
+            "dim": [
+              13
+            ],
+            "data": [
+              0.39194517542281965,
+              0.0,
+              0.02195620306841553,
+              0.0,
+              0.0,
+              0.02085839291499465,
+              0.0,
+              0.0,
+              0.06527146021684836,
+              0.0,
+              0.08622995056301683,
+              0.41373881781390504,
+              0.0
+            ]
+          },
+          "is_classification": true,
+          "classes": [
+            0.0,
+            1.0,
+            2.0
+          ],
+          "class_to_idx": {
+            "1": 1,
+            "2": 2,
+            "0": 0
+          },
+          "seed": 3043
+        }
+      ],
+      "n_estimators": 16,
+      "max_depth": 4,
+      "min_samples_split": 2,
+      "min_samples_leaf": 1,
+      "max_features": "Sqrt",
+      "bootstrap": true,
+      "oob_score": false,
+      "criterion": "Gini",
+      "random_state": 3028,
+      "is_classification": true,
+      "oob_score_value": null,
+      "feature_importances": {
+        "v": 1,
+        "dim": [
+          13
+        ],
+        "data": [
+          0.12455285607603937,
+          0.02177095191412561,
+          0.009253551570302155,
+          0.008727399631875405,
+          0.03229273199512862,
+          0.02849942988703027,
+          0.14827991655829578,
+          0.0015113859697548301,
+          0.014718730460341568,
+          0.12114367463057474,
+          0.10852080083295718,
+          0.1638159666362296,
+          0.21691260383734506
+        ]
+      },
+      "n_features": 13,
+      "classes": [
+        0.0,
+        1.0,
+        2.0
+      ]
+    }
+  },
+  "model_bytes": null,
+  "metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "auc_roc": null,
+    "log_loss": null,
+    "mse": null,
+    "rmse": null,
+    "mae": null,
+    "r2": null,
+    "training_time_secs": 0.006292541,
+    "n_features": 13,
+    "n_samples": 142
+  },
+  "is_fitted": true,
+  "training_history": [],
+  "epoch_history": []
+}

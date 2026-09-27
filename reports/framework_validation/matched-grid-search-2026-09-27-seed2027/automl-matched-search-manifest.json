@@ -1,0 +1,21 @@
+{
+  "automl_commit": "82d848323eed5e2af86d046d529916c448f2442c",
+  "created_utc": "2026-09-27T04:32:25.784720+00:00",
+  "host": {
+    "architecture": "aarch64",
+    "os": "macos"
+  },
+  "interpretation_limitations": [
+    "The six shared configurations are a matched grid, not a comparison of the frameworks' optimizer algorithms",
+    "The single inner validation holdout and outer test split are fixed-split diagnostics",
+    "Model implementations and defaults differ even when tree count and depth are equal",
+    "One process and one split do not establish runtime superiority or population-level performance"
+  ],
+  "protocol_file": "reports/framework_validation/matched-grid-search-2026-09-27-seed2027/matched-search-protocol.json",
+  "protocol_sha256": "7beefd95e35abfc520c380163f04bce03659b699d5cbcd778bcc6a1f02c92d37",
+  "results_file": "reports/framework_validation/matched-grid-search-2026-09-27-seed2027/automl-matched-search-results.json",
+  "results_sha256": "db5c38c9e7459b5c7370d438e88877e6288f9e3e5ec831236d597aaed25b4013",
+  "root_worktree_dirty": false,
+  "source_revision": "1a2877d6889a7fac8a80d629e64d31b082d350c1",
+  "successful_cases": 6
+}

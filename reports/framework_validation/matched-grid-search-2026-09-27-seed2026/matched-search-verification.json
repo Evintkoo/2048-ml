@@ -1,0 +1,133 @@
+{
+  "status": "pass",
+  "protocol_sha256": "f9fec486aa2b20699b8265edc389158f556f5da5b4563463e296408e7201b4be",
+  "automl_manifest_sha256": "47a991cebd97dfe0cdc2ebe34bc460cbd7b826c3190393866e60103072cf631c",
+  "sklearn_manifest_sha256": "9bd13c158b74fc3661d141db65e4793c35080374e134b748015d12f29b112560",
+  "matched_cases": 6,
+  "grid_trials_per_case_per_implementation": 6,
+  "trial_fits_per_implementation": 36,
+  "outer_test_used_for_selection": false,
+  "inferential_tests_performed": false,
+  "comparisons": [
+    {
+      "dataset": "iris",
+      "model": "random_forest",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 1.0,
+      "sklearn_validation_accuracy": 1.0,
+      "automl_outer_test_accuracy": 0.9333333333333333,
+      "sklearn_outer_test_accuracy": 0.9666666666666667,
+      "automl_outer_test_macro_f1": 0.9333333333333332,
+      "sklearn_outer_test_macro_f1": 0.9665831244778612,
+      "outer_test_label_agreement": 0.9666666666666667
+    },
+    {
+      "dataset": "iris",
+      "model": "extra_trees",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 1.0,
+      "sklearn_validation_accuracy": 1.0,
+      "automl_outer_test_accuracy": 0.9333333333333333,
+      "sklearn_outer_test_accuracy": 1.0,
+      "automl_outer_test_macro_f1": 0.9326599326599326,
+      "sklearn_outer_test_macro_f1": 1.0,
+      "outer_test_label_agreement": 0.9333333333333333
+    },
+    {
+      "dataset": "wine",
+      "model": "random_forest",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 1.0,
+      "sklearn_validation_accuracy": 1.0,
+      "automl_outer_test_accuracy": 0.9444444444444444,
+      "sklearn_outer_test_accuracy": 0.9722222222222222,
+      "automl_outer_test_macro_f1": 0.9484126984126985,
+      "sklearn_outer_test_macro_f1": 0.974320987654321,
+      "outer_test_label_agreement": 0.9166666666666666
+    },
+    {
+      "dataset": "wine",
+      "model": "extra_trees",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 1.0,
+      "sklearn_validation_accuracy": 1.0,
+      "automl_outer_test_accuracy": 1.0,
+      "sklearn_outer_test_accuracy": 0.9722222222222222,
+      "automl_outer_test_macro_f1": 1.0,
+      "sklearn_outer_test_macro_f1": 0.974320987654321,
+      "outer_test_label_agreement": 0.9722222222222222
+    },
+    {
+      "dataset": "breast_cancer_wisconsin_diagnostic",
+      "model": "random_forest",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 4
+      },
+      "automl_validation_accuracy": 0.9777777777777777,
+      "sklearn_validation_accuracy": 0.9777777777777777,
+      "automl_outer_test_accuracy": 0.9292035398230089,
+      "sklearn_outer_test_accuracy": 0.9380530973451328,
+      "automl_outer_test_macro_f1": 0.9234417344173442,
+      "sklearn_outer_test_macro_f1": 0.9318866787221217,
+      "outer_test_label_agreement": 0.9380530973451328
+    },
+    {
+      "dataset": "breast_cancer_wisconsin_diagnostic",
+      "model": "extra_trees",
+      "shared_grid_trials_per_implementation": 6,
+      "automl_selected_configuration": {
+        "n_estimators": 64,
+        "max_depth": 8
+      },
+      "sklearn_selected_configuration": {
+        "n_estimators": 16,
+        "max_depth": 8
+      },
+      "automl_validation_accuracy": 1.0,
+      "sklearn_validation_accuracy": 0.9777777777777777,
+      "automl_outer_test_accuracy": 0.9646017699115044,
+      "sklearn_outer_test_accuracy": 0.9823008849557522,
+      "automl_outer_test_macro_f1": 0.9613013698630137,
+      "sklearn_outer_test_macro_f1": 0.9808604336043361,
+      "outer_test_label_agreement": 0.9823008849557522
+    }
+  ]
+}
