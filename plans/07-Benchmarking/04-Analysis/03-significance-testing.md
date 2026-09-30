@@ -1,6 +1,6 @@
 # Plan 03 — Significance Testing: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Several test and effect-size helpers feed comparison reports; power analysis and a predeclared winner study are pending.
+> **Status: PARTIAL (2026-09-30).** Test and effect-size helpers feed two exploratory disjoint-seed policy reports; power analysis and a predeclared winner study are pending.
 
 **Goal:** State the current implementation and evidence boundary for significance testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is partial.** Implemented comparisons choose an independent Mann–Whitney U test or a paired exact sign test based on seed-set equality, apply Holm adjustment, and report bootstrap mean-difference intervals with an effect size matched to the design. An exploratory seven-agent 10,000-seed analysis is retained in `reports/action-frequency/disjoint-seeds/README.md`: its sign tests, bootstrap intervals, and Cohen's dz use matched seed pairs. There is no validated winner result or power analysis.
+**This plan is partial.** Implemented comparisons choose an independent Mann–Whitney U test or a paired exact sign test based on seed-set equality, apply Holm adjustment, and report bootstrap mean-difference intervals with an effect size matched to the design. Two exploratory seven-agent 10,000-seed analyses are retained for policies trained on 20- and 50-game corpora; their sign tests, bootstrap intervals, and Cohen's dz use matched seed pairs. There is no validated winner result or power analysis.
 
 ## 1. Purpose
 

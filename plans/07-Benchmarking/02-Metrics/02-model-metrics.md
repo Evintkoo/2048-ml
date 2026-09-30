@@ -1,6 +1,6 @@
 # Plan 02 — Model Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Score summaries and reusable classification diagnostics exist, with a 391-row 2048 pilot holdout report; adequate-sample and legal-action analyses remain pending.
+> **Status: PARTIAL (2026-09-30).** Score summaries and reusable classification diagnostics exist, with 391/903-row 2048 pilot holdout reports and 10,000-game policy scores; adequate repeated-fit and legal-action analyses remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats score summaries and reusable classification diagnostics as implemented, with one bounded 2048 classifier report.** `src/evaluation.rs` computes accuracy, per-class F1, macro precision/recall/F1, and a confusion matrix from fixed label arrays; it also has a separate helper for the fraction of 2048 predictions that choose a legal action. The root training CLI reports raw-label diagnostics on 391 chronological pilot holdout rows, but does not report valid-action behavior or an adequate-sample evaluation. Classical `TrainEngine::fit` does not expose an epoch training curve in the root workflow.
+**Score summaries and reusable classification diagnostics are implemented, with bounded 2048 reports.** `src/evaluation.rs` computes accuracy, per-class F1, macro precision/recall/F1, confusion matrices, and a helper for the fraction of 2048 predictions that choose a legal action. The root training CLI reports raw-label diagnostics on 391- and 903-row chronological pilot holdouts, but does not report valid-action behavior or an adequate repeated-fit evaluation. Separate 10,000-game policy score sets exist; they are exploratory and use one fit per candidate/corpus. Classical `TrainEngine::fit` does not expose an epoch training curve in the root workflow.
 
 ## 1. Purpose
 

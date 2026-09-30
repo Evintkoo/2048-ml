@@ -1,6 +1,6 @@
 # Plan 00 — Literature Review: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Core HPO, AutoML-system, and selected 2048 references are verified; Rust-ecosystem and broader claim-to-source review remain incomplete.
+> **Status: PARTIAL (2026-09-30).** Core HPO, AutoML-system, and selected 2048 references are verified; Rust-ecosystem and broader claim-to-source review remain incomplete.
 
 **Goal:** State the current implementation and evidence boundary for literature review.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -99,7 +99,7 @@ The linked AutoML and 2048 sources above have verified records for the limited c
 
 ## Implementation Record
 
-- Review topics and a source-verification policy are outlined. Primary records for random search, TPE, Hyperband, Auto-WEKA, auto-sklearn, TPOT, and selected 2048 search/RL work have been checked and linked. A limited architecture comparison is now stated. Rust ecosystem performance, reproducibility literature, 2048 history, and broader claim-to-source coverage remain pending; historical scores and categorical Rust performance assertions remain excluded.
+- Review topics and a source-verification policy are outlined. Primary records for random search, TPE, Hyperband, Auto-WEKA, auto-sklearn, TPOT, and selected 2048 search/RL work have been checked and linked. Current framework evidence includes four repeated split seeds, fixed-configuration process resource probes, and a corrected candidate-grid study; these are descriptive protocol results, not literature claims or superiority evidence. Rust ecosystem performance, reproducibility literature, 2048 history, and broader claim-to-source coverage remain pending; historical scores and categorical Rust performance assertions remain excluded.
 
 ---
 

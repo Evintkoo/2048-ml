@@ -1,6 +1,6 @@
 # Plan 02 — Methodology: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** This redirect points to a proposed design; UCI diagnostics and an exploratory 2048 comparison exist, but no confirmatory protocol has been executed.
+> **Status: PARTIAL (2026-09-30).** This redirect points to a proposed design; four-seed UCI diagnostics and two exploratory 2048 comparisons exist, but no confirmatory protocol has been executed.
 
 **Goal:** State the current implementation and evidence boundary for methodology.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a redirect ticket.** It points to the current design document and distinguishes diagnostics from the proposed confirmatory protocol. An exploratory seven-agent score comparison ran on training-disjoint matched seeds using paired intervals and Cohen's dz. The candidate ordering comes from one small-corpus fit per model and is not confirmatory. Sample-size rationale, preregistration, and winner criteria remain open.
+**This is a redirect ticket.** It points to the current design document and distinguishes diagnostics from the proposed confirmatory protocol. Two exploratory seven-agent score comparisons ran on training-disjoint matched seeds using paired intervals and Cohen's dz; one matrix is based on 20-game training data and one on 50-game data. The candidate ordering comes from one fit per model and corpus and is not confirmatory. Sample-size rationale, preregistration, and winner criteria remain open.
 
 > **This file is a 25-line redirect. Do not duplicate flowcharts or expand scope here. All protocol, variables, and gates are defined in `02-Methodology/01-experimental-design.md`.**
 

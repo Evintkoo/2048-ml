@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-benchmarking-framework](01-benchmarking-framework.md) | Benchmarking Framework | PARTIAL — trained-model ranking pending |
-| [02-evaluation-methodology](02-evaluation-methodology.md) | Evaluation Methodology | PARTIAL — holdout/power plan pending |
-| [03-performance-testing](03-performance-testing.md) | Performance Testing | PARTIAL — whole-run time only |
+| [01-benchmarking-framework](01-benchmarking-framework.md) | Benchmarking Framework | PARTIAL — 10,000-game baselines and 20/50-game-trained pilot policy matrices exist; confirmatory ranking pending |
+| [02-evaluation-methodology](02-evaluation-methodology.md) | Evaluation Methodology | PARTIAL — disjoint-seed exploratory comparisons exist; final holdout/power plan pending |
+| [03-performance-testing](03-performance-testing.md) | Performance Testing | PARTIAL — whole-run timing retained; controlled performance, per-move, and feature timings absent |
 
 ## Reading paths
 

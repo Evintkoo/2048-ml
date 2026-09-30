@@ -1,16 +1,8 @@
 use clap::{Parser, Subcommand};
-
-pub mod actions;
-pub mod collection;
-pub mod data_pipeline;
-pub mod evaluation;
-mod framework_validation;
-pub mod game_engine;
-pub mod hyperopt_config;
-pub mod policy;
-pub mod seeds;
-pub mod state;
-pub mod training;
+use game2048_ml::{
+    collection, data_pipeline, evaluation, framework_validation, game_engine, hyperopt_config,
+    policy, seeds, state, training,
+};
 
 #[derive(Debug, Parser)]
 #[command(
@@ -56,6 +48,9 @@ enum Commands {
         seed: u64,
         #[arg(long, default_value_t = 0.2)]
         test_fraction: f64,
+        /// Sample process RSS during each fit and report fit-phase incremental peak memory.
+        #[arg(long, default_value_t = false)]
+        profile_fit_memory: bool,
     },
     /// Compare AutoML and reference implementations under the same fixed grid-search budget.
     FrameworkSearchValidate {
@@ -318,15 +313,28 @@ fn main() {
             dataset,
             seed,
             test_fraction,
+            profile_fit_memory,
         }) => {
-            if let Err(error) = framework_validation::benchmark::run_standard_datasets(
-                &data_dir,
-                &output_dir,
-                model.as_deref(),
-                dataset.as_deref(),
-                seed,
-                test_fraction,
-            ) {
+            let result = if profile_fit_memory {
+                framework_validation::benchmark::run_standard_datasets_with_memory(
+                    &data_dir,
+                    &output_dir,
+                    model.as_deref(),
+                    dataset.as_deref(),
+                    seed,
+                    test_fraction,
+                )
+            } else {
+                framework_validation::benchmark::run_standard_datasets(
+                    &data_dir,
+                    &output_dir,
+                    model.as_deref(),
+                    dataset.as_deref(),
+                    seed,
+                    test_fraction,
+                )
+            };
+            if let Err(error) = result {
                 eprintln!("framework validation failed: {error:#}");
                 std::process::exit(2);
             }
@@ -475,7 +483,7 @@ fn main() {
             if data_pipeline::validate_csv(&data).is_err() {
                 eprintln!(
                     "training input must satisfy the canonical {}-column schema",
-                    crate::state::STATE_FEATURES + 1
+                    state::STATE_FEATURES + 1
                 );
                 std::process::exit(2);
             }
@@ -688,7 +696,7 @@ fn main() {
                 "model_artifact_sha256": sha256_file(&output).ok(),
                 "training_data": data,
                 "dataset_schema": "2048-action-policy-v2",
-                "state_feature_count": crate::state::STATE_FEATURES,
+                "state_feature_count": state::STATE_FEATURES,
                 "training_data_sha256": sha256_file(&data).ok(),
                 "metadata": metadata,
                 "metadata_sha256": metadata.as_ref().and_then(|path| sha256_file(path).ok()),
@@ -697,7 +705,7 @@ fn main() {
                     "schema_version": 1,
                     "task_type": "MultiClassification",
                     "target_column": "action",
-                    "state_feature_count": crate::state::STATE_FEATURES,
+                "state_feature_count": state::STATE_FEATURES,
                     "model": model,
                     "cv_strategy": "GroupKFold",
                     "cv_folds": cv_folds,

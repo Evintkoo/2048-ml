@@ -1,6 +1,6 @@
 # Plan 01 — Algorithm Research: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Framework API checks and repeated standard-dataset diagnostics are recorded; a same-split five-candidate 2048 classifier pilot now exists, while matched framework comparisons and confirmatory 2048 ranking remain pending.
+> **Status: PARTIAL (2026-09-30).** Framework API checks and repeated standard-dataset diagnostics are recorded; five-candidate 2048 classifier and disjoint-seed policy-score diagnostics now exist, while matched framework comparisons and confirmatory ranking remain pending.
 
 **Goal:** State the current implementation and evidence boundary for algorithm research.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -186,7 +186,8 @@ flowchart TD
 
 - `src/framework_validation.rs` smoke-checks 13 model/task combinations and confirms the four-class probability subset: RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes.
 - Fixed-protocol diagnostics across three standard datasets and five candidates are retained in `reports/framework_validation/`. Seed 42 succeeded in all 15 cases and reproduced predictions exactly in all 15. Seed 2026 has two exact repeated process runs, also 15/15; seed 2027 completed 15/15 once. AutoML label agreement with the seed-42 comparison baseline is 8/15; this is not a superiority result. These are fixed-split diagnostics, not matched-budget framework comparisons. A trained 2048 candidate ranking remains incomplete; no winner or threshold pass is claimed.
-- A five-candidate exploratory classifier pilot on the same 20-game corpus is retained under `reports/candidate_classifier_pilot/2026-09-27/`. All candidates used the same 17 development groups, five grouped-CV folds, seed, and 391-row chronological holdout. The report contains fold metrics, holdout predictions, model/data provenance, and independent metric/digest verification. The pilot does not evaluate valid-action rate or game score, and it does not select a model.
+- Five-candidate classifier-label diagnostics are retained for the 20-game and 50-game corpora under `reports/candidate_classifier_pilot/`. The 50-game report uses 40 development groups and a disjoint chronological 10-game holdout (903 rows); RandomForest leads holdout accuracy (0.3001), while AdaBoost leads macro-F1 (0.2785). A separate 25-game diagnostic trains on 20 games and holds out five new game seeds. These are one-fit-per-candidate classifier-label diagnostics, not valid-action or confirmatory policy comparisons.
+- Five policies trained on the 20-game corpus, plus random and heuristic baselines, were compared on shared seeds 94024–104023; the corresponding 50-game fits were compared on disjoint seeds 104024–114023. Both retained 10,000-game score sets and paired comparisons. On the latter set the heuristic baseline mean was 8,047.04, random baseline 1,097.38, and candidate means ranged from 711.35 to 903.67. Fits were not repeated across independent training corpora, and unequal corpus sizes were not a randomized or learning-curve experiment. These are exploratory application diagnostics and do not support a stable winner claim.
 
 ---
 

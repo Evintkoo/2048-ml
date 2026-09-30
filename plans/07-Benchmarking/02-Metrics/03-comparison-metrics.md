@@ -1,6 +1,6 @@
 # Plan 03 — Comparison Metrics: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Score-file comparisons and adjusted statistics are implemented; no multi-model held-out ranking has been produced.
+> **Status: PARTIAL (2026-09-30).** Score-file comparisons and adjusted statistics are implemented, and exploratory 20/50-game-trained policy matrices exist; no confirmatory model ranking has been produced.
 
 **Goal:** State the current implementation and evidence boundary for comparison metrics.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats pairwise score comparison tooling as implemented with ranking execution pending.** The benchmark compare command ranks inputs by mean score and emits paired sign or independent Mann–Whitney tests, Holm-adjusted p-values, paired-difference or independent bootstrap intervals, and Cohen's dz or d according to the seed design. It does not establish a winner without comparable held-out game data.
+**Pairwise score comparison tooling and exploratory ranking runs exist; confirmatory selection remains pending.** The benchmark compare command ranks inputs by mean score and emits paired sign or independent Mann–Whitney tests, Holm-adjusted p-values, paired-difference or independent bootstrap intervals, and Cohen's dz or d according to the seed design. Retained 10,000-game score matrices compare five candidate policies against random and heuristic baselines on shared disjoint seeds. They do not establish a winner because fits are single and training corpora are small.
 
 ## 1. Purpose
 

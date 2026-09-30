@@ -1,6 +1,6 @@
 # Plan 02 — Training Pipeline Configuration: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Root policy fitting and grouped CV explicitly disable unsupported tree early stopping and record this in the manifest; illustrative YAML loading and fitted preprocessing remain unimplemented.
+> **Status: PARTIAL (2026-09-30).** Root policy fitting and grouped CV explicitly disable unsupported tree early stopping and record this in the manifest; illustrative YAML loading and fitted preprocessing remain unimplemented.
 
 **Goal:** State the current implementation and evidence boundary for training pipeline configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -11,7 +11,7 @@
 
 ## Decision and evidence
 
-**This plan treats its subject as partial or pending work, not as a research finding.** Preprocessing examples use the pinned API, but the root does not call `DataPreprocessor`; the canonical encoder produces deterministic numeric features directly. The illustrative training YAML remains unconsumed by the CLI. Optional tuning is instead a separate versioned JSON search contract for RandomForest/ExtraTrees, with grouped-CV objective, derived seed, selected settings, saved study, and training manifest. The manifest records data digests, the actual checked-out AutoML revision, and that early stopping is disabled for the classical tree policy. YAML parsing, fitted preprocessing, and experiments that justify changing the feature protocol remain pending.
+**The runtime configuration is the CSV schema plus explicit CLI arguments.** The YAML example is a field sketch, not a supported input contract, and is not parsed. Canonical features are generated directly by the 17-value state encoder; no fitted preprocessor is used. Optional RandomForest/ExtraTrees tuning is configured through the separate schema-v1 JSON contract, and its training manifest records configuration/data digests, checked-out AutoML revision, and disabled tree early stopping. Adding YAML or fitted preprocessing would require a separately specified schema and leakage-safe fold behavior; neither is implemented here.
 
 ## 1. Pipeline Stages
 

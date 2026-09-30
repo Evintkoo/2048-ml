@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-dataset-storage](01-dataset-storage.md) | Dataset Storage | PARTIAL — local CSV implemented; catalog/Parquet absent |
-| [02-data-versioning](02-data-versioning.md) | Data Versioning | PARTIAL — provenance recorded; immutable registry absent |
+| [01-dataset-storage](01-dataset-storage.md) | Dataset Storage | PARTIAL — local CSV/metadata/checkpoints retained for 125 pilot games; catalog/Parquet absent |
+| [02-data-versioning](02-data-versioning.md) | Data Versioning | PARTIAL — run provenance and digests retained; immutable registry/toolchain capture absent |
 
 ## Reading paths
 

@@ -1,6 +1,6 @@
 # Plan 01 — Unit Testing: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Core engine/state/data/evaluation tests are present; coverage target and several proposed cases remain unmeasured or incomplete.
+> **Status: PARTIAL (2026-09-30).** Core engine/state/data/evaluation tests are present (39 pass locally); coverage target and several proposed cases remain unmeasured or incomplete.
 
 **Goal:** State the current implementation and evidence boundary for unit testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

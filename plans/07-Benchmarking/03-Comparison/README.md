@@ -6,10 +6,10 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-model-comparison](01-model-comparison.md) | Model Comparison | PARTIAL — exploratory disjoint-seed matrix covers five fixed policies and two baselines; confirmatory ranking pending |
-| [02-algorithm-comparison](02-algorithm-comparison.md) | Algorithm Comparison | PARTIAL — seven-agent paired score matrix exists; repeated-fit confirmatory study pending |
-| [03-automl-benchmark](03-automl-benchmark.md) | Rust-Native AutoML Benchmark | PARTIAL — fixed-split diagnostic runner exists; matched baselines and resource study pending |
-| [04-framework-validation](04-framework-validation.md) | Rust-Native AutoML Framework Validation | PARTIAL — pinned matrices across three twice-repeated splits match 15/15 with save/load equivalence; matched baselines, per-model resources, and API parity pending |
+| [01-model-comparison](01-model-comparison.md) | Model Comparison | PARTIAL — separate 20/50-game-trained disjoint-seed matrices retained; confirmatory ranking pending |
+| [02-algorithm-comparison](02-algorithm-comparison.md) | Algorithm Comparison | PARTIAL — two seven-agent paired score matrices exist; repeated-fit confirmatory study pending |
+| [03-automl-benchmark](03-automl-benchmark.md) | Rust-Native AutoML Benchmark | PARTIAL — four repeated split seeds and a corrected equal-fit-count grid; optimizer comparison remains pending |
+| [04-framework-validation](04-framework-validation.md) | Rust-Native AutoML Framework Validation | PARTIAL — 15-case CLI/API parity and isolated fit-phase RSS profiles retained; manual/optimizer budget comparison and model-object memory remain open |
 
 ## Reading paths
 

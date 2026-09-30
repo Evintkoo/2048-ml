@@ -1,6 +1,6 @@
 # Plan 05 — Sensitivity Analysis: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Sensitivity analyses are proposed; UCI split diagnostics exist, but no 2048 model, data-size, or training-seed sensitivity sweep has run.
+> **Status: PARTIAL (2026-09-30).** Sensitivity analyses are proposed; UCI split diagnostics and a fixed-corpus 25-fit classifier seed diagnostic exist, but policy-score, data-size, and independent-corpus sensitivity remain unmeasured.
 
 **Goal:** State the current implementation and evidence boundary for sensitivity analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**No sensitivity result is claimed.** The proposed 35-run seed matrix and follow-up sweeps are not based on an approved resource budget or power rationale.
+**No confirmatory sensitivity result is claimed.** Five candidate classifiers were each refit five times with different training seeds on one fixed 25-game dataset and holdout. This measures classifier-label sensitivity to fit seeds on that fixed corpus; it does not measure independent-corpus variation, policy-score variation, or data-size sensitivity. Proposed larger matrices are not based on an approved resource budget or power rationale.
 
 > Hardware acceleration sensitivity is outside the current protocol. Model/seed/data sensitivity requires the actual supported candidates and a declared budget.
 
@@ -43,7 +43,7 @@ Ablation and data-size results answer different questions. Neither alone establi
 
 ## Implementation Record
 
-- No 2048 model, data-size, label-perturbation, feature, or training-seed sensitivity sweep has been run. The UCI framework split-seed diagnostics are separate and are not policy sensitivity results; proposed thresholds and sample counts are not evidence.
+- No policy-score, data-size, label-perturbation, feature, or independent-corpus sensitivity sweep has been run. The retained five-by-five repeated classifier fit diagnostic uses a fixed dataset/holdout and reports raw-label sensitivity only; UCI split-seed diagnostics are a separate framework study. Proposed thresholds and sample counts are not evidence.
 
 ---
 

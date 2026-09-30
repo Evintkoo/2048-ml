@@ -1,6 +1,6 @@
 # Plan 02 — Feature Engineering: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** The canonical 17-value encoder is implemented; derived metrics are excluded from model input.
+> **Status: PARTIAL (2026-09-30).** The canonical 17-value encoder is used in retained 125-game datasets; heuristic metrics remain separate from model input.
 
 **Goal:** State the current implementation and evidence boundary for feature engineering.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

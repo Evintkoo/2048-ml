@@ -1,6 +1,6 @@
 # Plan 02 — Glossary: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Terms are compiled, but several definitions need qualifiers and baseline scores must be tied to their local protocol.
+> **Status: PARTIAL (2026-09-30).** Terms are compiled, but observed baseline/model scores must identify which of the two local corpus protocols they describe.
 
 **Goal:** State the current implementation and evidence boundary for glossary.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -43,9 +43,9 @@ mindmap
 | Move | Slide operation (up/down/left/right) |
 | Score | Sum of all merge values during a game |
 | Game Over | Board is full with no valid moves |
-| Heuristic Baseline | Local policy using heuristic board evaluation; measured mean is protocol-specific (8,096.70 in the disjoint-seed 10k diagnostic) |
-| Fitted Pilot Policy | Five candidate policies were each fit once on a 20-game rollout-labeled corpus; observed ML candidate means ranged from 765.62 to 914.14 in a disjoint-seed diagnostic, not a confirmatory winner result |
-| Random Baseline | Agent selecting a legal move uniformly; measured mean is protocol-specific (1,086.52 in the disjoint-seed 10k diagnostic) |
+| Heuristic Baseline | Local policy using heuristic board evaluation; measured means were 8,096.70 (20-game matrix) and 8,047.04 (50-game matrix), each over its own disjoint 10k seed set |
+| Fitted Pilot Policy | Five candidates were each fit once on 20- and 50-game rollout-labeled corpora; their means were 765.62–914.14 and 711.35–903.67 respectively, exploratory only |
+| Random Baseline | Agent selecting a legal move uniformly; measured means were 1,086.52 (20-game matrix) and 1,097.38 (50-game matrix) on separate disjoint 10k seed sets |
 | Case-study winner | Model with the highest held-out mean score under the declared 2048 protocol; not a globally optimal policy |
 
 ## 4. ML Terminology

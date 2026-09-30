@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-results-analysis](01-results-analysis.md) | Results Analysis | PARTIAL — UCI diagnostics and exploratory paired 2048 comparison summarized; confirmatory corpus/trend analysis pending |
-| [02-statistical-analysis](02-statistical-analysis.md) | Statistical Analysis | PARTIAL — score inference and generic class metrics exist; power and broader methods pending |
-| [03-significance-testing](03-significance-testing.md) | Significance Testing | PARTIAL — pairwise helpers and exploratory pilot exist; no winner study or power analysis |
+| [01-results-analysis](01-results-analysis.md) | Results Analysis | PARTIAL — UCI diagnostics and two exploratory 2048 policy matrices summarized; confirmatory/trend analysis pending |
+| [02-statistical-analysis](02-statistical-analysis.md) | Statistical Analysis | PARTIAL — inference methods used in exploratory matrices; power and broader methods pending |
+| [03-significance-testing](03-significance-testing.md) | Significance Testing | PARTIAL — pairwise helpers and two exploratory matrices exist; no winner study or power analysis |
 
 ## Reading paths
 

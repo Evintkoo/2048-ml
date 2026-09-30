@@ -1,6 +1,6 @@
 # Plan 01 — Experimental Design: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Two-track design remains proposed. UCI diagnostics span three split seeds, and an exploratory 2048 policy comparison is retained; matched budgets, resource profiles, power rationale, and confirmatory policy experiments remain pending.
+> **Status: PARTIAL (2026-09-30).** Two-track design remains proposed. UCI diagnostics span four split seeds; process-resource probes and two exploratory 2048 policy matrices are retained. Matched search budgets, power rationale, and confirmatory policy experiments remain pending.
 
 **Goal:** State the current implementation and evidence boundary for experimental design.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a proposed design, not a preregistered confirmatory experiment.** UCI diagnostics cover three datasets, five model variants, and split seeds 42, 2026, and 2027 under `reports/framework_validation/`; repeated runs on seeds 42, 2026, and 2027 matched all 15 prediction sets and save/load equivalence. An exploratory 10,000-seed 2048 comparison of Random, Heuristic, and a small-corpus fitted policy is retained separately; its bootstrap intervals resample paired differences and its effect size is Cohen's dz. The earlier `88a86bf` discrepancy is historical. Matched-budget baselines, per-model resources, confirmatory policy evaluation, sample-size rationale, and analysis assumptions remain open.
+**This is a proposed design, not a preregistered confirmatory experiment.** UCI diagnostics cover three datasets, five model variants, and split seeds 42, 2026, 2027, and 2028 under `reports/framework_validation/`; repeated runs match all 15 prediction sets and save/load equivalence. Fixed-configuration per-case process-resource probes and a corrected matched candidate-grid diagnostic exist, but neither is a matched optimizer-budget study. Two exploratory 10,000-seed 2048 matrices compare five candidate policies and random/heuristic baselines using distinct training-disjoint seed sets for 20- and 50-game training corpora. Fits are single; paired intervals and Cohen's dz describe evaluation-game differences, not training variation. The earlier `88a86bf` discrepancy is historical. Confirmatory policy evaluation, sample-size rationale, and analysis assumptions remain open.
 
 ## 1. Purpose
 

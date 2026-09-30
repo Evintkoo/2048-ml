@@ -1,6 +1,6 @@
 # Plan 01 — Introduction: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Repeated UCI diagnostics and an exploratory disjoint-seed score matrix for five 2048 policies exist; matched framework comparisons, confirmatory case-study experiments, and broader literature review remain pending.
+> **Status: PARTIAL (2026-09-30).** Four-seed UCI diagnostics, fixed resource/grid studies, and two exploratory disjoint-seed matrices for five 2048 policies exist; matched framework budgets, confirmatory case-study experiments, and broader literature review remain pending.
 
 **Goal:** State the current implementation and evidence boundary for introduction.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is a research framing document, not a findings report.** Framework checks remain partial. An exploratory 10,000-seed comparison of Random, Heuristic, and one small-corpus fitted policy is retained, but it does not meet the selected-model study protocol. Broader literature review and claim verification remain incomplete.
+**This plan is a research framing document, not a findings report.** Framework checks remain partial. Four twice-repeated fixed splits, fixed-configuration resource probes, and a corrected candidate-grid diagnostic are retained; matched search budgets and CLI/library parity remain open. Two exploratory 10,000-game policy matrices compare five candidate fits and random/heuristic baselines for 20- and 50-game training corpora. These do not meet a repeated-fit selected-model protocol. Broader literature review and claim verification remain incomplete.
 
 > The primary contribution is the design and validation of a Rust-native AutoML architecture. The 2048 ML system is the implementation and principal case study used to evaluate that architecture.
 

@@ -1,6 +1,6 @@
 # Plan 04 — Failure Analysis: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Failure categories are prospective; framework defect history and pilot outcomes are retained, but no systematic policy-failure study exists.
+> **Status: PARTIAL (2026-09-30).** Failure categories are prospective; framework defect history and two exploratory policy matrices are retained, but no systematic policy-failure study exists.
 
 **Goal:** State the current implementation and evidence boundary for failure analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is primarily a failure-analysis protocol; no trained-policy failure study has run.** A small-corpus fitted policy and exploratory benchmark exist, but do not provide systematic failure coverage. A historical framework failure is recorded: AutoML `88a86bf` produced KNN/ExtraTrees nondeterminism and a Wine KNN save/load mismatch. AutoML `82d8483` fixes deterministic tie handling; repeated matrices matched 15/15 predictions and save/load outputs at seeds 42, 2026, and 2027. See the framework and pilot reports.
+**This is primarily a failure-analysis protocol; no trained-policy failure study has run.** Two small-corpus policy matrices exist, but do not provide systematic failure coverage. A historical framework failure is recorded: AutoML `88a86bf` produced KNN/ExtraTrees nondeterminism and a Wine KNN save/load mismatch. AutoML `82d8483` fixes deterministic tie handling; repeated matrices matched 15/15 predictions and save/load outputs at seeds 42, 2026, 2027, and 2028. See the framework and pilot reports.
 
 > **Note:** This section anticipates potential failures and defines response protocols. Probability estimates are illustrative, not empirically determined. No trained-policy failure data exists yet.
 

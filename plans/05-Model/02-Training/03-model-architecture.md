@@ -1,6 +1,6 @@
 # Plan 03 — Model Architecture: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** The integration uses AutoML classical classifiers; five four-class candidates have exploratory same-split pilot metrics, but adequate performance evidence and final selection remain open.
+> **Status: PARTIAL (2026-09-30).** The integration uses AutoML classical classifiers; five four-class candidates have exploratory 20/50-game classifier-label and disjoint-seed score diagnostics, but adequate repeated-fit evidence and final selection remain open.
 
 **Goal:** State the current implementation and evidence boundary for model architecture.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

@@ -1,6 +1,6 @@
 # Plan 03 — Rust-Native AutoML Benchmark: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Fixed-protocol diagnostics on three acquired UCI datasets exist; matched-budget baselines, per-model resource comparisons, and search-efficiency results remain pending.
+> **Status: PARTIAL (2026-09-30).** Fixed-protocol diagnostics on three acquired UCI datasets cover four repeated split seeds; fixed-configuration resource matrices and corrected matched-grid diagnostics exist, while matched search-budget comparisons remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl benchmark.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats capability checks and bounded standard-dataset diagnostics as implemented, with matched framework benchmarking pending.** The root tests check selected AutoML APIs, model output shapes, grouped CV, optimization primitives, and model save/load. Retained fixed-protocol runs cover Iris, Wine, and Wisconsin Diagnostic with five models and split seeds 42, 2026, and 2027; they do not establish matched-budget framework superiority.
+**Capability checks and bounded standard-dataset diagnostics are implemented; matched-budget framework benchmarking remains pending.** The root tests check selected AutoML APIs, model output shapes, grouped CV, optimization primitives, and model save/load. Retained fixed-protocol runs cover Iris, Wine, and Wisconsin Diagnostic with five models and split seeds 42, 2026, 2027, and 2028, each with exact two-process repeat predictions. Fixed-configuration per-case resource probes and a corrected matched candidate-grid diagnostic also exist; these do not establish matched optimizer-budget or framework superiority.
 
 ## 1. Purpose
 

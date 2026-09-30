@@ -1,6 +1,6 @@
 # Plan 03 — Multi-Game Simulation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Fixed-thread collection, metadata, manifests, batched checkpoints/resume, and live progress are implemented. Independent action-frequency artifact validation is complete; plan-scale rollout collection remains pending.
+> **Status: PARTIAL (2026-09-30).** Fixed-thread collection, metadata, manifests, batched checkpoints/resume, and live progress are implemented. Independent action-frequency artifact validation and 125-game bounded throughput pilots are complete; plan-scale rollout collection remains pending.
 
 **Goal:** State the current implementation and evidence boundary for multi-game simulation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -101,7 +101,7 @@ Game(i, seed.wrapping_add(i)) → 17 state values + u8 per valid move → checkp
 | Goal | Sample-size basis | Evidence / note |
 |------|-------------------|-----------------|
 | Baseline / benchmark | Protocol-specific precision and budget | The retained random/heuristic action-frequency study used 10,000 games per agent; this is the completed protocol, not a universal minimum. |
-| Training | Learning-curve and label-quality study, plus budget | No training-corpus size has been established. The retained 20-game collection pilot is a throughput smoke, not a training-size determination. |
+| Training | Learning-curve and label-quality study, plus budget | No training-corpus size has been established. The retained 125-game pilots are throughput diagnostics, not a training-size determination. |
 | Evaluation intervals or tests | Target estimand, observed variation, precision/power, and dependence structure | No game count guarantees a particular confidence interval width or p-value. See `07-Benchmarking/` for protocol-specific analysis. |
 
 > Throughput and total runtime must be measured for the configured workload; do not treat `games_per_second: 1000` or `total_time_10k` as acceptance targets.
@@ -134,7 +134,7 @@ cargo run --release -- data-collector collect --n-games <n_games> --rollouts 100
   --checkpoint-every 1000 --output data/raw/policy.csv
 # After interruption, rerun the same arguments and add --resume.
 # Select the game count only after setting a study goal and compute budget.
-# The retained 20-game pilot projects ~238.16 hours for 20,000 games by linear
+# The 125-game pilot series projects ~214.09 hours for 20,000 games by linear
 # extrapolation; this estimate is highly uncertain and is not a runtime promise.
 ```
 
@@ -154,7 +154,7 @@ cargo run --release -- data-collector collect --n-games <n_games> --rollouts 100
 - The collector now writes per-batch data/metadata parts and an atomic, config-checked JSON checkpoint; `--resume` continues from the next game ID. Indicatif reports live game completion. Final assembly validates both row-aligned files.
 - Baseline and fitted-policy evidence: [`reports/action-frequency/README.md`](../../../reports/action-frequency/README.md) records 10,000 random and 10,000 heuristic games, raw per-game action-count CSVs, manifests, independent raw-CSV verification, and 2,000-replicate whole-game bootstrap 95% intervals. These runs establish case-study baselines only; they do not establish framework superiority.
 - Artifact validation (2026-09-27): each of the three CSVs contains 10,000 game rows plus a header and matches its manifest SHA-256. Baseline score means and medians were independently recomputed from raw score columns. All per-game action counts sum to move count; `examples/recompute_action_frequencies.rs` independently re-read the CSV rows and reproduced the manifest pooled counts, proportions, and Rust-seeded 2,000-replicate game-cluster bootstrap intervals exactly for random (1,182,944 moves), heuristic (5,215,195), and fitted policy (1,022,704).
-- Collection throughput evidence: [`reports/collection_pilots/2026-09-27-20-game/README.md`](../../../reports/collection_pilots/2026-09-27-20-game/README.md) documents a 20-game rollout pilot (2,447 rows, 857,100 rollout evaluations, 857.36 seconds). Its linear projection is approximately 238.16 hours for 20,000 games and is highly uncertain; the prior 103-hour estimate is superseded. A larger pilot and declared compute budget precede plan-scale collection.
+- Collection throughput evidence: the retained 20-game, five-game continuation, and two 50-game pilots under `reports/collection_pilots/` cover 125 games, 13,552 rows, and 4,763,400 rollout evaluations in 4,817.23 seconds. The 50-game runs each completed within a declared one-hour envelope. The rough 214.09-hour projection for 20,000 games remains uncertain and does not establish training sufficiency or authorize plan-scale collection; a declared compute budget is still required.
 - Validation: deterministic batch coverage and checkpoint/resume tests pass. The Planout checker is part of the ticket verification.
 
 ---

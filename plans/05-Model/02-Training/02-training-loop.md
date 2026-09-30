@@ -1,6 +1,6 @@
 # Plan 02 — Training Loop: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Classical fit/save/load, grouped CV with fold-level class metrics, and a five-candidate small chronological holdout classifier diagnostic are implemented; adequate-corpus diagnostics and the final refit/test workflow remain pending.
+> **Status: PARTIAL (2026-09-30).** Classical fit/save/load, grouped CV with fold-level class metrics, and verified five-candidate 20/50-game chronological holdout diagnostics are implemented; adequate-corpus diagnostics and final refit/test workflow remain pending.
 
 **Goal:** State the current implementation and evidence boundary for training loop.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

@@ -1,6 +1,6 @@
 # Plan 02 — Evaluation Methodology: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Benchmark CLI records seeds and score summaries; final selected-model holdout protocol and prospective sample-size analysis remain pending.
+> **Status: PARTIAL (2026-09-30).** Benchmark CLI records seeds and score summaries; exploratory disjoint-seed policy matrices exist, while final selected-model holdout and prospective sample-size analysis remain pending.
 
 **Goal:** State the current implementation and evidence boundary for evaluation methodology.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -33,7 +33,7 @@ Use the same simulator configuration, candidate data/split, seed design, and dec
 
 ## Implementation Record
 
-- The evaluation CLI records seeded conditions and score summaries. A 10,000-game fitted pilot-policy run is retained, but the policy was trained on a small corpus and does not satisfy the pending model-selection/holdout protocol. The prior CI-width arithmetic and assumed standard deviation were planning illustrations, not prospective power results.
+- The evaluation CLI records seeded conditions and score summaries. Five policies trained on the 20-game corpus and five on the 50-game corpus have disjoint 10,000-game comparisons with random/heuristic baselines. These are exploratory: one fit per model/corpus, no selected final model, and no prospectively justified sample-size analysis. Prior CI-width arithmetic and assumed standard deviation remain illustrations, not power results.
 
 ---
 

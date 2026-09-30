@@ -1,6 +1,6 @@
 # Plan 01 — Training Pipeline: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** CLI CSV/metadata loading, chronological holdout, grouped CV, fitting, export, and a small retained holdout classifier diagnostic exist; the complete final evaluation/refit workflow remains pending.
+> **Status: PARTIAL (2026-09-30).** CLI CSV/metadata loading, chronological holdout, grouped CV, fitting, export, and verified 20/50-game holdout classifier diagnostics exist; the adequate-data final refit workflow remains pending.
 
 **Goal:** State the current implementation and evidence boundary for training pipeline.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the executable training path as implemented with evaluation lifecycle gaps.** The root CLI loads the canonical CSV and aligned sidecar, holds out later game IDs, runs group-aware CV on development rows, fits an AutoML model, and saves it. It consumes the fixed 17 numeric values directly without a fitted preprocessing stage. A 391-row diagnostic on three chronological pilot games now records accuracy, macro metrics, confusion matrix, and row-level predictions; an adequate corpus and selected-model refitting remain pending.
+**The executable training path is implemented with evaluation lifecycle gaps.** The root CLI loads the canonical CSV and aligned sidecar, holds out later game IDs, runs group-aware CV on development rows, fits an AutoML model, and saves it. It consumes the fixed 17 numeric values directly without fitted preprocessing. Verified diagnostics now include 391 held-out rows from the 20-game corpus and 903 held-out rows from the 50-game corpus. These are rollout-label classification results; a declared adequate corpus, final refit protocol, and confirmatory policy evaluation remain pending.
 
 ## 1. Purpose
 

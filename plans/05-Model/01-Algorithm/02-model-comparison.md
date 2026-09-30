@@ -1,6 +1,6 @@
 # Plan 02 — Model Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Runnable candidates, standard-dataset diagnostics, and a same-split five-candidate 2048 classifier pilot are documented; adequate game-score comparison remains pending.
+> **Status: PARTIAL (2026-09-30).** Runnable candidates, standard-dataset diagnostics, classifier-label pilots, and disjoint-seed game-score comparisons are documented; adequate repeated-fit evaluation remains pending.
 
 **Goal:** State the current implementation and evidence boundary for model comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats candidate compatibility and a bounded classifier comparison as audited, with the 2048 policy comparison pending.** The root smoke verifies 13 estimator/task combinations; only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes currently produce the four-class probability output used by `ModelPolicy`. A same-configuration, one-split standard-dataset diagnostic exists across three datasets. A separate five-candidate 2048 pilot compares raw rollout-label classification on identical folds and holdout rows, but it is too small to rank game policies and does not evaluate game scores.
+**Candidate compatibility and exploratory policy comparisons are recorded; confirmatory ranking remains pending.** The root smoke verifies 13 estimator/task combinations; only RandomForest, ExtraTrees, AdaBoost, KNN, and NaiveBayes currently produce the four-class probability output used by `ModelPolicy`. A same-configuration, one-split standard-dataset diagnostic exists across three datasets. Five-candidate rollout-label diagnostics use common folds and chronological holdouts. Separate 10,000-game policy-score comparisons evaluate fits on shared disjoint seeds with random/heuristic baselines. They remain exploratory because each candidate has one fit per corpus, the corpora differ in size, and training data is limited.
 
 > This comparison characterizes AutoML-supported models and the 2048 case study. It does not define the primary framework contribution.
 

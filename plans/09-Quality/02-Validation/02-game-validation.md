@@ -1,6 +1,6 @@
 # Plan 02 — Game Validation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Source-level game rules and automated tests are present; no independent oracle-based validation report or continuous validation workflow exists.
+> **Status: PARTIAL (2026-09-30).** Source-level game rules and 39 passing root tests are present; no independent oracle-based validation report exists.
 
 **Goal:** State the current implementation and evidence boundary for game validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

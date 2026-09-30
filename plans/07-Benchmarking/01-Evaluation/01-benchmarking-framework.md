@@ -1,6 +1,6 @@
 # Plan 01 — Benchmarking Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Seeded benchmark/compare commands and disjoint 10,000-game score runs for two baselines and five pilot policies exist; a confirmatory model ranking and performance profiling remain pending.
+> **Status: PARTIAL (2026-09-30).** Seeded benchmark/compare commands and disjoint 10,000-game score runs for two baselines and five policies trained on 20/50-game corpora exist; confirmatory ranking and per-move profiling remain pending.
 
 **Goal:** State the current implementation and evidence boundary for benchmarking framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

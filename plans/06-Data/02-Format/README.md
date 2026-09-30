@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-data-schema](01-data-schema.md) | Data Schema | PARTIAL — canonical 17-feature CSV v2; Parquet unsupported |
-| [02-data-format](02-data-format.md) | Data Format | PARTIAL — CSV implemented; Parquet absent |
-| [03-data-standard](03-data-standard.md) | Data Standard | PARTIAL — split/trainer protocols differ; feature values above one accepted |
+| [01-data-schema](01-data-schema.md) | Data Schema | PARTIAL — canonical 17-feature CSV v2 and metadata sidecar; Parquet unsupported |
+| [02-data-format](02-data-format.md) | Data Format | PARTIAL — CSV and sidecar used in bounded collection artifacts; Parquet absent |
+| [03-data-standard](03-data-standard.md) | Data Standard | PARTIAL — split/trainer protocols differ; 391/903-row pilots retained; values above one accepted |
 
 ## Reading paths
 

@@ -1,6 +1,6 @@
 # Plan 06 — Published Baseline Comparison: the repository status is explicit and evidence based
 
-> **Status: NOT APPLICABLE to the required core execution (2026-09-27).** Published-agent reproduction is explicitly optional; no literature scores are used as measured results.
+> **Status: NOT APPLICABLE to the required core execution (2026-09-30).** Published-agent reproduction is explicitly optional; the retained random/heuristic comparisons are local measurements, and no literature scores are used as results.
 
 **Goal:** State the current implementation and evidence boundary for published baseline comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

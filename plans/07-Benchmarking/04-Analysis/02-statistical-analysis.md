@@ -1,6 +1,6 @@
 # Plan 02 — Statistical Analysis: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Descriptive summaries, pairwise score tests, and reusable classification metrics exist; power planning and broader tests remain absent.
+> **Status: PARTIAL (2026-09-30).** Descriptive summaries, pairwise score tests, and reusable classification metrics support two exploratory 10,000-game matrices; power planning and broader tests remain absent.
 
 **Goal:** State the current implementation and evidence boundary for statistical analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is partial.** Available inference consists of independent Mann–Whitney U or paired exact sign tests, design-matched percentile bootstrap intervals and effect sizes, and Holm adjustment. These helpers do not constitute the broader analysis plan or a completed research report.
+**This plan is partial.** Available inference consists of independent Mann–Whitney U or paired exact sign tests, design-matched percentile bootstrap intervals and effect sizes, and Holm adjustment. These methods were used in two exploratory 10,000-game policy matrices on different training corpora. Since each candidate/corpus fit is single, the analyses do not estimate training-run variation or constitute a confirmatory research report.
 
 > **Distinct focus vs `03-significance-testing.md`:** This file = descriptive foundations (distributions, CIs, test assumptions). `03-significance-testing.md` = winner determination protocol (adjusted α, ranking, power). No duplication — cross-ref there for ranking.
 

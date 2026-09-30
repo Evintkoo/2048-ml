@@ -6,7 +6,7 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-hyperparameter-search](01-hyperparameter-search.md) | Hyperparameter Search | PARTIAL — two integer parameters wired for two model families; research results and pruning integration pending |
+| [01-hyperparameter-search](01-hyperparameter-search.md) | Hyperparameter Search | PARTIAL — two integer parameters wired for two model families with repeated synthetic smoke; research results and pruning integration pending |
 | [02-search-space](02-search-space.md) | Search Space | COMPLETE — versioned two-parameter contract matches the root adapters |
 | [03-pruning-strategy](03-pruning-strategy.md) | Pruning Strategy | PARTIAL — framework pruners are exposed; root reporter integration is absent |
 

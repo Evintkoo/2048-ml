@@ -1,6 +1,6 @@
 # Plan 01 — Data Schema: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Versioned CSV columns and sidecar are validated; Parquet is unsupported.
+> **Status: PARTIAL (2026-09-30).** Versioned CSV columns and sidecar are validated in 125-game pilot artifacts; Parquet is unsupported.
 
 **Goal:** State the current implementation and evidence boundary for data schema.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -206,7 +206,7 @@ and retains row-aligned provenance separately.
 
 ## Implementation Record
 
-- Exact 17-feature plus integer-action CSV schema is implemented, with separate score/game/move metadata. Validation rejects wrong header/width, non-finite or negative features, and invalid action IDs.
+- Exact 17-feature plus integer-action CSV schema is implemented, with separate score/game/move metadata. Validation rejects wrong header/width, non-finite or negative features, and invalid action IDs. The retained 125-game collection series uses the same schema; manifests and checkpoint artifacts preserve source provenance and digests.
 - Parquet is not implemented. CSV labels are not rechecked for legality against source boards because boards are not in the canonical training table. Features above one are accepted when tiles exceed 32768 or scores exceed 1,000,000.
 
 ---

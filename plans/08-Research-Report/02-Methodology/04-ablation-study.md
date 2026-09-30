@@ -1,6 +1,6 @@
 # Plan 04 — Ablation Study: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Candidate removals are mapped to the canonical 17-value state; feature-removal training and evaluation are not implemented.
+> **Status: PARTIAL (2026-09-30).** Candidate removals are mapped to the canonical 17-value state; feature-removal training and evaluation are not implemented, and no ablation budget or protocol is approved.
 
 **Goal:** State the current implementation and evidence boundary for ablation study.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

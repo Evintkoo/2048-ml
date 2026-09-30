@@ -6,13 +6,13 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-key-findings](01-key-findings.md) | Key Findings | PARTIAL — reporting template only |
-| [02-insights](02-insights.md) | Insights | PARTIAL — random, heuristic, and fitted-pilot action frequencies; broader policy insights pending |
-| [03-limitations](03-limitations.md) | Limitations | PARTIAL — protocol-specific baseline/pilot evidence and implementation boundaries |
-| [04-failure-analysis](04-failure-analysis.md) | Failure Analysis | PARTIAL — prospective protocol; no study log |
-| [05-sensitivity-analysis](05-sensitivity-analysis.md) | Sensitivity Analysis | PARTIAL — sweeps not run |
-| [06-cross-validation](06-cross-validation.md) | Cross-Validation | PARTIAL — grouped CV and small pilot holdout diagnostic; plan-scale split study pending |
-| [07-computational-budget](07-computational-budget.md) | Computational Budget | PARTIAL — baseline timings and 20-game collection projection; no approved full budget |
+| [01-key-findings](01-key-findings.md) | Key Findings | PARTIAL — findings checklist remains unpopulated; exploratory artifacts are not confirmatory |
+| [02-insights](02-insights.md) | Insights | PARTIAL — random/heuristic and five fitted-policy frequencies; board/step analysis pending |
+| [03-limitations](03-limitations.md) | Limitations | PARTIAL — two policy matrices, four framework splits, and process-resource evidence; confirmatory gaps remain |
+| [04-failure-analysis](04-failure-analysis.md) | Failure Analysis | PARTIAL — framework defect history exists; systematic policy-failure study absent |
+| [05-sensitivity-analysis](05-sensitivity-analysis.md) | Sensitivity Analysis | PARTIAL — fixed-corpus repeated classifier fits only; policy/data-size sensitivity pending |
+| [06-cross-validation](06-cross-validation.md) | Cross-Validation | PARTIAL — 20/50-game grouped CV and 391/903-row holdouts; scale protocol pending |
+| [07-computational-budget](07-computational-budget.md) | Computational Budget | PARTIAL — 125-game throughput series and process-resource probes; comprehensive budget absent |
 
 ## Reading paths
 

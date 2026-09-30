@@ -259,9 +259,10 @@ python3 scripts/compare_framework_fit_timings.py
 Thread count, seed, splits, and top-level estimator settings are aligned, but
 model-specific defaults and implementation details differ, and no optimizer
 search budget is compared. These two-run, one-host measurements are descriptive
-only: the timing ratios do not establish a general speed advantage. Matched
-search-budget profiling, model-only memory, and broader hardware repetitions
-remain open.
+only: the timing ratios do not establish a general speed advantage. Optimizer-
+algorithm and manual-selection budgets, model-object-only memory, and broader
+hardware repetitions remain open. A narrower corrected equal-fit-count grid
+is reported below, and the newer sampled fit-phase RSS is not model-only memory.
 
 ### Isolated per-case process resources (2026-09-27)
 
@@ -305,6 +306,45 @@ python3 scripts/verify_framework_case_resource_matrix.py
 This verifier checks resource-artifact integrity and the fixed-split protocol;
 it does not turn process RSS into a model-only memory estimate.
 
+## CLI/API parity and fit-phase RSS profiles (2026-09-30)
+
+`cargo test --test framework_validation_api_parity` compares the public Rust API
+with the `framework-validate` CLI on seed 42, all three datasets, and all five
+models. Metrics, labels, split manifests, and prediction CSV bytes match for
+all 15 cases. Fit duration and output paths are excluded. Serialized model
+JSON hashes differ across the two invocations, so the check does not claim
+byte-identical model serialization.
+
+The opt-in `--profile-fit-memory` flag samples RSS every 5 ms during
+`TrainEngine::fit`. Each case runs in a fresh process after the dataset frames
+and configuration are ready. Peak fit-phase RSS minus the pre-fit RSS is
+reported as an incremental process-memory diagnostic; it includes fit
+temporaries and allocator retention and does not isolate the persistent model
+object. A 5 ms sample interval may miss short peaks.
+
+The retained matrix covers all 15 combinations of three UCI datasets and five
+models at seed 42. Incremental sampled RSS ranges from 3,391,488 to 8,798,208
+bytes on the recorded macOS arm64 host. The runner, per-case result/manifest
+files, summary CSV, and aggregate manifest are under
+[`model-memory-matrix-2026-09-30/`](model-memory-matrix-2026-09-30/). Reproduce
+the matrix after `cargo build` with:
+
+```sh
+python3 scripts/run_framework_fit_memory_profiles.py \
+  --output-dir reports/framework_validation/model-memory-matrix-2026-09-30
+```
+
+Recheck all 15 per-case outputs, source/result/split hashes, manifest rows, and RSS arithmetic with:
+
+```sh
+python3 scripts/verify_framework_fit_memory_profiles.py
+```
+
+The summary SHA-256 is `4e49f097f0044f778d54d8d52ae7b2e5f7a609c8ffd3fff9229de82d8c217a4a`;
+the aggregate manifest SHA-256 is `49c624698f490bad500f36cfbfba91b443f4eb70c2f7d4610d216c8040e7bb6c`.
+The single-seed RSS measurements are descriptive and are not a framework
+superiority result.
+
 ## Diagnosis and fix
 
 The preceding pinned commit `88a86bf44a0cb03664931f7ef15201b95fa11255`
@@ -322,11 +362,11 @@ diagnostic evidence and must not be conflated with the current pinned result.
 
 ## Limits
 
-The fixed-configuration sklearn matrix is not a matched search-budget study.
+The fixed-configuration sklearn matrix is not a matched optimizer-search study.
 The corrected shared-grid pilot matches six candidate configurations per run
 for RandomForest and ExtraTrees on three UCI datasets and three split seeds; it
-does not compare optimizer algorithms or cover all five candidates. Isolated
-per-case process RSS is available, but it does not isolate
-model allocations. CLI/API equivalence and independent replication remain
-untested. Scores are not a framework superiority result, and game scores
-remain separate application evidence.
+does not compare optimizer algorithms or manual selection. Fit-phase RSS is
+available for all 15 cases but does not isolate model allocations. Functional
+CLI/API parity passes, while serialized model bytes differ. Independent
+replication remains untested. Scores are not a framework superiority result,
+and game scores remain separate application evidence.

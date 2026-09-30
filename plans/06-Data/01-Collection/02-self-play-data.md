@@ -1,6 +1,6 @@
 # Plan 02 — Self-Play Data: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** The simulator can run a supplied single-agent policy, but it does not capture policy-state rows; the collector has no policy-source mode or self-play corpus. Proposed rollout labeling also awaits a compute budget.
+> **Status: PARTIAL (2026-09-30).** The simulator can run a supplied single-agent policy, but it does not capture policy-state rows; the collector has no policy-source mode or self-play corpus. No policy-source collection budget or protocol has been declared.
 
 **Goal:** State the current implementation and evidence boundary for self-play data.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

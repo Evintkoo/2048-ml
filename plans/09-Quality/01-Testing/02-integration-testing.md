@@ -1,6 +1,6 @@
 # Plan 02 — Integration Testing: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** CLI paths and focused integration smokes exist; the proposed end-to-end suite and Parquet path do not.
+> **Status: PARTIAL (2026-09-30).** CLI paths and focused integration smokes exist (root suite: 39/39); a dedicated end-to-end suite and Parquet path do not.
 
 **Goal:** State the current implementation and evidence boundary for integration testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

@@ -1,8 +1,8 @@
 # Plan 04 — Rust-Native AutoML Framework Contribution: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Fixed-configuration sklearn comparisons, three repeated split seeds,
-> a corrected matched-grid diagnostic, two-run per-case timings, and isolated per-case process RSS probes
-> are retained. Broader matched-budget comparisons, model-only memory, CLI/library parity, and independent
+> **Status: PARTIAL (2026-09-30).** Fixed-configuration sklearn comparisons, four repeated split seeds,
+> a corrected matched-grid diagnostic, per-case timings, fit-phase RSS profiles, and 15-case CLI/API parity
+> evidence are retained. Matched optimizer/manual-selection budgets, model-only memory, and independent
 > replication remain pending.
 
 **Goal:** State the current implementation and evidence boundary for rust-native automl framework
@@ -19,8 +19,8 @@ and API limitations are recorded in [04-framework-architecture.md](04-framework-
 42, two diagnostic process runs on three named standard datasets and five AutoML models succeeded for all
 15 cases and matched predictions exactly in all 15 pairs. Separate one-process diagnostics using seeds
 2026 and 2027 each succeeded in all 15 cases on their own stratified splits. A
-second seed-2026 process run matched all 15 prediction files exactly. Seed 2027 also has two
-independent process runs with matching splits and predictions in 15/15 cases. Two fixed-configuration
+second seed-2026 process run matched all 15 prediction files exactly. Seeds 2027 and 2028 also have two
+independent process runs each with matching splits and predictions in 15/15 cases. Two fixed-configuration
 scikit-learn runs used the seed-42 outer splits and AutoML inner holdback, succeeded in 15/15 cases, and
 repeated metrics and prediction CSVs exactly; their predicted labels agreed with AutoML in 8/15 cases.
 One single-thread aggregate resource probe per implementation is retained. A later isolated process matrix
@@ -153,8 +153,8 @@ establish general AutoML superiority.
   run.
 - [x] Repeated fixed-split diagnostic on pinned AutoML `82d8483`: 15/15 successful cases in each of two
   runs; exact predictions 15/15; save/load equivalence passes for every case.
-- [x] Two additional fixed-protocol stratified split diagnostics on seeds 2026 and 2027: both completed
-  all 15 dataset/model cases; seeds 2026 and 2027 were each repeated in a second process with matching split assignments
+- [x] Four fixed-protocol stratified split diagnostics on seeds 42, 2026, 2027, and 2028: each completed
+  all 15 dataset/model cases; each split was repeated in a second process with matching split assignments
   and exact predictions in 15/15 pairs. Full split, prediction, model, digest, comparison, and provenance
   artifacts are retained.
 - [x] Aggregate single-thread process resource probe retained for the same 15-case fixed-split matrix:
@@ -163,13 +163,18 @@ establish general AutoML superiority.
 - [x] Per-case fit/predict timings summarized from both seed-42 process runs for all 15 dataset/model
   cases; source measurements, reproduction script, and CSV are retained in `reports/framework_validation/`.
   Timings are descriptive and do not include peak memory.
-- [x] Same-split process repeats now cover seeds 42 and 2026; repeated-fit evidence remains bounded to
-  these fixed candidate/configuration matrices.
+- [x] Same-split process repeats now cover seeds 42, 2026, 2027, and 2028; repeated-fit evidence remains
+  bounded to these fixed candidate/configuration matrices.
 - [x] Isolated per-case process wall time and peak-RSS matrix repeated twice across all 15
   dataset/model cases for AutoML and scikit-learn; `scripts/verify_framework_case_resource_matrix.py`
   rechecks all 60 run records, manifests/results hashes, split lineage, prediction equality across
   repeats, and recomputed summaries. Startup/runtime/dependency overhead remains in scope.
-- [ ] Model-only memory profiles and CLI/library equivalence evidence collected.
+- [x] CLI/public-API semantic output parity passes for all 15 dataset/model combinations; metrics, split
+  assignments, and prediction CSV bytes match. Timing, path, hash, and serialized-model byte equality are
+  excluded from this parity check.
+- [x] Baseline-adjusted fit-phase RSS profiles retained for all 15 dataset/model cases, one case per
+  process. This is process memory during fitting, not isolated model-object memory.
+- [ ] Matched optimizer/manual-selection budgets and model-object-only memory profiles collected.
 - [ ] Independent replication or validation completed.
 
 The original 2026-09-24 root smoke failed once in 20 repetitions. Follow-up checks isolated three issues
@@ -185,10 +190,9 @@ Validation after the fixes: focused tie tests passed; the same-seed synthetic re
 process runs with 20 refits compared per run; and the RandomForest save/load smoke passed 20/20 process
 runs with exact model-state and prediction checks. The full AutoML library suite passes 712/712. On the
 seed-42 fixed split, both independent AutoML runs at `82d8483` passed all 15 model/dataset cases, matched
-predictions 15/15, and passed save/load equivalence. Seeds 2026 and 2027 each passed all 15 cases in a
-single process on their own stratified splits; these runs broaden split coverage.
-Seed-2026 and seed-2027 predictions also match exactly in two processes per
-split. Two scikit-learn 1.6.1 runs succeeded and
+predictions 15/15, and passed save/load equivalence. Seeds 2026, 2027, and 2028 each passed all 15 cases
+in a single process on their own stratified splits; these runs broaden split coverage. Each seed has two
+processes with exactly matching predictions. Two scikit-learn 1.6.1 runs succeeded and
 repeated metrics and prediction CSVs in 15/15 cases. The report retains their side-by-side metrics,
 exact-label agreement of 8/15, fixed dependencies, and the explicit limits of this one-split comparison.
 Per-case fit/predict timings from the two seed-42 runs are summarized in
@@ -201,17 +205,21 @@ process startup and implementations differ, these are not framework performance 
 matched-grid diagnostic selects the same configuration in 13/18 dataset-seed observations after fixing a
 validation-leak flaw in its withdrawn predecessor; see
 [`matched-grid-search-corrected-multi-seed-2026-09-27/`](../../../reports/framework_validation/matched-grid-search-corrected-multi-seed-2026-09-27/README.md).
-Matched optimizer budgets, model-only memory profiles, API/CLI parity, and
-independent replication remain outstanding.
+Matched optimizer/manual-selection budgets, model-only memory profiles, and independent replication
+remain outstanding. Functional CLI/API parity now passes all 15 combinations in
+`tests/framework_validation_api_parity.rs`; metrics, split manifests, and prediction bytes match, while
+serialized model hashes differ and are not claimed equivalent. Fit-phase RSS profiles cover all 15
+dataset/model cases in separate processes but do not isolate model-object memory.
 
 ## Open questions
 
 - **The evidence remains bounded by fixed-split diagnostics.** Three standard datasets and five AutoML
-  models have one split each under seeds 42, 2026, and 2027; each split has two exact-repeat runs
+  models have one split each under seeds 42, 2026, 2027, and 2028; each split has two exact-repeat runs
   with save/load equivalence. A comparison-only sklearn matrix, aggregate single-thread probe, per-case
   two-repeat process resource matrix, and corrected matched candidate-grid study are retained. There is no
-  matched optimizer-budget comparison, model-only memory profile, broad dataset study, CLI/library
-  equivalence, or independent replication.
+  optimizer/manual-selection budget comparison, model-only memory profile, broad dataset study, or independent
+  replication. Functional CLI/API parity is checked for 15 dataset/model combinations, but serialized model
+  hashes differ between entry points.
   Further experiments require a declared
   compute budget; retain configurations, seeds, dependency versions, raw metrics, and analysis artifacts.
 
@@ -219,7 +227,8 @@ independent replication remain outstanding.
 
 - **Complete the framework-validation program in
   `plans/07-Benchmarking/03-Comparison/04-framework-validation.md` (ticket #103, after earlier tickets
-  are processed). Its matched-budget baselines, per-model resource measurements and CLI/library
-  equivalence work must be completed before returning here to update contribution conclusions.
+  are processed). Its optimizer/manual-selection budget comparison and model-object-only memory measurements must be
+  completed before returning here to update contribution conclusions. Functional CLI/API parity and sampled
+  fit-phase RSS are retained but do not close those gaps.
 - Independent replication remains a separate open acceptance item after #103; repeated processes by the
   same implementation do not count as an independent replication.

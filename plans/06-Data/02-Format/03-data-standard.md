@@ -1,6 +1,6 @@
 # Plan 03 — Data Standard: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** CSV schema validation and game-group split utilities exist; the training/evaluation lifecycle is not aligned end to end.
+> **Status: PARTIAL (2026-09-30).** CSV schema validation and game-group split utilities exist; the training/evaluation lifecycle is not aligned end to end.
 
 **Goal:** State the current implementation and evidence boundary for data standard.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -29,7 +29,7 @@ Canonical header (17 features + action = 18 columns): `grid_0,...,grid_15,score_
 ## Implementation Record
 
 - The canonical 18-column header, action ID range, finite/nonnegative checks, metadata alignment, and standalone chronological 70/15/15 game split are implemented. The splitter requires at least three games and keeps groups intact.
-- Training uses a chronological test tail then grouped CV on development games; AutoML also applies a seeded row-level validation split. The CLI retains a 391-row pilot holdout classifier diagnostic, but a small diagnostic does not align the lifecycle with the standalone 70/15/15 splitter. The CSV validator cannot check action legality without board snapshots. Values above one are valid under the canonical encoding.
+- Training uses a chronological test tail then grouped CV on development games; AutoML also applies a seeded row-level validation split. The CLI retains 391-row and 903-row pilot holdout classifier diagnostics, but these do not align the lifecycle with the standalone 70/15/15 splitter. The CSV validator cannot check action legality without board snapshots. Values above one are valid under the canonical encoding.
 
 ---
 

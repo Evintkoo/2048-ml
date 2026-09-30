@@ -1,0 +1,52 @@
+[
+  {
+    "dataset": "iris",
+    "model": "naive_bayes",
+    "status": "success",
+    "error": null,
+    "seed": 42,
+    "train_rows": 120,
+    "test_rows": 30,
+    "class_labels": [
+      "Iris-setosa",
+      "Iris-versicolor",
+      "Iris-virginica"
+    ],
+    "accuracy": 0.9,
+    "macro_precision": 0.9023569023569024,
+    "macro_recall": 0.9,
+    "macro_f1": 0.899749373433584,
+    "per_class_f1": [
+      1.0,
+      0.8421052631578948,
+      0.8571428571428572
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        8,
+        2
+      ],
+      [
+        0,
+        1,
+        9
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.006852333,
+    "fit_baseline_rss_bytes": 16465920,
+    "fit_peak_rss_bytes": 19857408,
+    "fit_peak_incremental_rss_bytes": 3391488,
+    "save_load_equivalent": true,
+    "serialized_model": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/model-memory-matrix-2026-09-30/iris/naive_bayes/iris__naive_bayes.model.json",
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/model-memory-matrix-2026-09-30/iris/naive_bayes/iris__naive_bayes.predictions.csv",
+    "model_sha256": "7593c54fe4b620ee024fbb7c5dd08affa8895a67c722ea3e488a7b6b132c39a5",
+    "predictions_sha256": "bbd3c447cd669408244d2ceeae555bbe7d0c6a461dfa3330e61fd0a721c4b7eb"
+  }
+]

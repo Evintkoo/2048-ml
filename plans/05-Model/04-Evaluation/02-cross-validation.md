@@ -1,6 +1,6 @@
 # Plan 02 — Cross-Validation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Root group-aware CV implementation is present; fold-level classification metrics are reported, while per-fold predictions and adequate-corpus evaluation remain pending.
+> **Status: PARTIAL (2026-09-30).** Root group-aware CV implementation and fold-level classification metrics are retained for 20/50-game pilots; per-fold predictions, temporal whole-game folds, and adequate-corpus evaluation remain pending.
 
 **Goal:** State the current implementation and evidence boundary for cross-validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats group-aware fold execution as implemented, with results and broader temporal protocols pending.** The root wrapper obtains group folds, verifies no game overlap, fits each fold, and reports accuracy, macro precision/recall/F1, per-action F1, and a four-class confusion matrix per fold. The five-candidate pilot retains these metrics; GroupKFold preserves game membership but does not guarantee chronological ordering.
+**Group-aware fold execution and pilot results are implemented; broader protocols remain pending.** The root wrapper obtains group folds, verifies no game overlap, fits each fold, and reports accuracy, macro precision/recall/F1, per-action F1, and a four-class confusion matrix per fold. Five candidates have retained grouped-CV diagnostics on 20- and 50-game corpora. GroupKFold preserves game membership but does not guarantee chronological ordering; each corpus remains a small pilot.
 
 ## 1. Purpose
 
@@ -327,7 +327,7 @@ flowchart LR
 ## Implementation Record
 
 - The project wrapper runs seeded group folds, explicitly checks there is no game ID overlap, fits each training fold, and reports fold and mean accuracy. It does not provide chronological forward-chaining folds, stratified-temporal folds, F1, or per-fold game-score metrics. The outer chronological holdout is a separate CLI split.
-- The retained five-candidate pilot exercised the new fold diagnostics on 2,056 rows across 17 development game groups. Its fold class metrics are small-pilot diagnostics, not adequate-corpus results. Per-fold predictions and game-score metrics remain unimplemented.
+- The 20-game pilot exercised fold diagnostics on 2,056 rows across 17 development groups; the 50-game pilot used 4,415 rows across 40 development groups. These fold class metrics remain small-corpus diagnostics. Per-fold predictions, game-score metrics by fold, and chronological group-preserving cross-validation remain unimplemented.
 
 ---
 

@@ -1,6 +1,6 @@
 # Plan 02 — Algorithm Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Random/heuristic/model score runners and an exploratory seven-agent comparison exist; confirmatory model selection remains pending.
+> **Status: PARTIAL (2026-09-30).** Random/heuristic/model score runners and two exploratory seven-agent comparisons exist for separate 20- and 50-game training corpora; confirmatory model selection remains pending.
 
 **Goal:** State the current implementation and evidence boundary for algorithm comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -46,7 +46,7 @@ pub struct AlgorithmComparison {
 
 ## Implementation Record
 
-- Random, heuristic, and five once-fitted candidate policies have retained 10,000-game runs on disjoint seeds 94024–104023. The seven-agent pairwise comparison applies Holm adjustment across 21 paired tests; the artifacts and limits are in `reports/action-frequency/disjoint-seeds/README.md`. Repeated fits, a scale-appropriate corpus, and predeclared confirmatory model selection remain pending.
+- Random, heuristic, and five once-fitted candidate policies have retained 10,000-game runs on seeds 94024–104023 for the 20-game training corpus and 104024–114023 for the 50-game corpus. Each seven-agent pairwise matrix applies Holm adjustment across 21 paired tests. Reports are under `reports/action-frequency/disjoint-seeds/` and `reports/action-frequency/50-game-disjoint-seeds/`. Repeated fits, a scale-appropriate corpus, and predeclared confirmatory selection remain pending.
 
 ---
 

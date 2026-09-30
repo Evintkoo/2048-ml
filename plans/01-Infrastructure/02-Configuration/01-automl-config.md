@@ -1,6 +1,6 @@
 # Plan 01 — AutoML Configuration: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Optional HyperOptX tuning runs grouped CV for RandomForest/ExtraTrees with a versioned JSON search contract and retained repeat smoke; pruner integration remains pending because the pinned optimizer exposes no intermediate reporting hook.
+> **Status: PARTIAL (2026-09-30).** Optional HyperOptX tuning runs grouped CV for RandomForest/ExtraTrees with a versioned JSON search contract and retained repeat smoke; pruner integration remains pending because the pinned optimizer exposes no intermediate reporting hook.
 
 **Goal:** State the current implementation and evidence boundary for automl configuration.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -73,9 +73,11 @@ let opt_config = OptimizationConfig::default()
 // Verified in automl/src/optimizer/pruners.rs:85,93 — `minimize: bool` field, false keeps higher values
 let pruner = MedianPruner::new(false); // false = maximize → prunes trials below median; true would be for minimize (loss)
 
-// Capability note: the pinned HyperOptX API does not accept this pruner in
-// OptimizationConfig. The root CLI can run HyperOptX, but cannot wire this
-// standalone pruner into trials yet.
+// Capability note: the pinned HyperOptX::optimize API accepts an objective
+// returning one completed scalar per trial. It does not provide an
+// intermediate-reporting callback for this standalone pruner. The root sets
+// OptimizationConfig.pruning=false and cannot wire fold values into pruning
+// without a framework API change.
 
 let search_space = SearchSpace::new()
     .int("n_estimators", 50, 300)
@@ -99,7 +101,7 @@ Alternatively, use the tracked, versioned search contract with `--hyperopt-confi
 
 Current wiring smoke (2026-09-27): the deterministic fixture generator in `scripts/create_hyperopt_smoke_data.py` selected source states from the retained two-game rollout pilot and reused them across ten synthetic game IDs. The 80-row fixture has eight rows per group and two rows per action in each group; it is explicitly not ten independent trajectories. Two trials on two grouped folds ran twice on pinned AutoML `82d8483`, reserved synthetic groups 8–9 as the test tail, selected `n_estimators=2` and `max_depth=1` both times, and reproduced trial scores (0.28125 and 0.296875). The selected model's semantic JSON matched after ignoring elapsed-training time; study parameters and values matched after ignoring measured durations. The current CLI also emitted identical held-out metrics and 16-row prediction sidecars across runs (accuracy 0.3125, macro-F1 0.2053). Data, metadata, config, study/model files, holdout predictions, runner hashes, and manifests are retained under `reports/configuration_smokes/2026-09-27/`. This verifies plumbing only. Reused rows across groups make all fixture scores unsuitable as evaluation evidence.
 
-The trial score is grouped-CV row accuracy, not held-out game score. The earlier intermittent RandomForest repeatability defect was found on a prior AutoML revision and is fixed at `82d8483`; the seed-42 and seed-2026 standard-dataset process repeats each match predictions 15/15; a one-process diagnostic is retained for seed 2027. This does not demonstrate broad tuning reproducibility, and the synthetic fixture does not support policy-quality claims. The optimizer's completed-scalar objective still cannot report fold-level intermediate values to a pruner.
+The trial score is grouped-CV row accuracy, not held-out game score. The earlier intermittent RandomForest repeatability defect was found on a prior AutoML revision and is fixed at `82d8483`; the seed-42 and seed-2026 standard-dataset process repeats each match predictions 15/15; seed 2027 also has repeated exact process results. This does not demonstrate broad tuning reproducibility, and the synthetic fixture does not support policy-quality claims. The optimizer's completed-scalar objective still cannot report fold-level intermediate values to a pruner.
 
 ## 4. Inference Configuration
 

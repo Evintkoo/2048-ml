@@ -1,6 +1,6 @@
 # Plan 00 — Theoretical Framework: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** The policy-learning formulation is outlined; several formal claims are unsound or unverified and are excluded pending review.
+> **Status: PARTIAL (2026-09-30).** The policy-learning formulation is outlined; four-split framework diagnostics and process-resource probes exist, while several formal claims remain unverified and excluded.
 
 **Goal:** State the current implementation and evidence boundary for theoretical framework.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -54,7 +54,7 @@ PSPACE-hardness, Markov-blanket sufficiency, and feature-sufficiency claims are 
 
 ## 6. Summary
 
-Architecture documentation and capability checks exist, but matched framework benchmarks, resource measurements, and broad reproducibility evidence remain pending. The 2048 formulation supplies application context; the theoretical appendix does not establish formal bounds.
+Architecture documentation, capability checks, four repeated fixed-split diagnostics, corrected candidate-grid analysis, and fixed-configuration process-resource measurements exist. Matched optimizer-budget benchmarks, model-only resource measurements, broad independent replication, and CLI/library parity remain pending. The 2048 formulation supplies application context; the theoretical appendix does not establish formal bounds.
 
 ## Implementation Record
 

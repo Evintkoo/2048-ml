@@ -6,8 +6,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-data-cleaning](01-data-cleaning.md) | Data Cleaning | PARTIAL — validation only; cleaning/deduplication and board-dependent legality checks absent |
-| [02-feature-engineering](02-feature-engineering.md) | Feature Engineering | PARTIAL — five heuristic measurements are baseline-only; configurable model feature pipeline and separate feature study absent |
+| [01-data-cleaning](01-data-cleaning.md) | Data Cleaning | PARTIAL — schema validation applies to retained pilots; cleaning/deduplication and board-dependent legality checks absent |
+| [02-feature-engineering](02-feature-engineering.md) | Feature Engineering | PARTIAL — canonical 17-value encoder used in pilots; five heuristic measurements remain baseline-only |
 | [03-data-normalization](03-data-normalization.md) | Data Normalization | COMPLETE — canonical deterministic 17-value scales validated; fitted model-specific preprocessing is outside the current protocol |
 
 ## Reading paths

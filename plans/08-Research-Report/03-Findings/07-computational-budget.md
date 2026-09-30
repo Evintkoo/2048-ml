@@ -1,6 +1,6 @@
 # Plan 07 — Computational Budget: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Baseline timings and a 20-game rollout-collection pilot exist; no comprehensive study budget is approved.
+> **Status: PARTIAL (2026-09-30).** Baseline timings, 125 rollout-labeled pilot games, and framework process-resource probes exist; no comprehensive study budget is approved.
 
 **Goal:** State the current implementation and evidence boundary for computational budget.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -11,7 +11,7 @@
 
 **Budget figures must be tied to measured commands and hardware.** Most former resource tables were speculative and are removed. A rollout-labeled corpus estimate is a planning prerequisite, not an approved run.
 
-> A 20-game rollout pilot projects to approximately 238.16 hours for 20,000 games by linear extrapolation. This estimate is highly uncertain, depends on configuration and machine, and is not a runtime promise; a larger pilot and declared compute budget are required before collection.
+> The 125-game pilot series projects to approximately 214.09 hours for 20,000 games by linear extrapolation. This estimate is highly uncertain, depends on configuration and machine, and is not a runtime promise; a declared compute budget is still required before scale collection.
 
 ## 1. Measured Evidence
 
@@ -21,9 +21,9 @@ The action-frequency baseline report records local sequential development-profil
 |----------|----------|--------|
 | Random baseline | 10,000 games; 27.89 seconds in recorded environment | Measured once under stated protocol |
 | Heuristic baseline | 10,000 games; 201.99 seconds in recorded environment | Measured once under stated protocol |
-| Rollout-labeled collection | 20 games, 2,447 rows, 857,100 rollout evaluations, 857.36 seconds; ~238.16 hours projected for 20,000 games by linear extrapolation | Tiny-sample projection is highly uncertain; larger pilot/budget pending |
+| Rollout-labeled collection | 125 games, 13,552 rows, 4,763,400 rollout evaluations, 4,817.23 seconds; ~214.09 hours projected for 20,000 games by linear extrapolation | Same-host pilots; projection is highly uncertain; no scale budget approved |
 | Model training and inference | No representative plan-scale profile | Pending |
-| Framework datasets and matched baselines | No resource profile | Pending |
+| Framework datasets and matched baselines | Fixed-configuration per-case process wall/RSS probes retained; corrected candidate-grid pilot retained | Matched search-budget study and model-only memory remain pending |
 | Ablation / multi-seed studies | No run matrix or budget | Pending |
 
 ## 2. Budget Requirements Before Execution
@@ -44,7 +44,7 @@ The plan-scale collection, framework dataset matrix, model comparison, and ablat
 
 ## Implementation Record
 
-- Baseline timing evidence is available in the action-frequency report. The latest 20-game collection pilot recorded 857.36 seconds for 2,447 rows and 857,100 rollout evaluations; its linear estimate is roughly 238.16 hours for 20,000 games and is highly uncertain. No comprehensive budget, Docker workflow, or framework/model resource profile exists.
+- Baseline timing evidence is available in the action-frequency report. The 125-game pilot series recorded 4,817.23 seconds for 13,552 rows and 4,763,400 rollout evaluations; its linear estimate is roughly 214.09 hours for 20,000 games and is highly uncertain. Two 50-game pilots each used a one-hour envelope. Fixed framework process-resource probes exist, but no comprehensive study budget, matched search-budget comparison, or model-only resource profile exists.
 
 ---
 

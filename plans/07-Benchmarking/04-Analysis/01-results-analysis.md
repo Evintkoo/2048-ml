@@ -1,6 +1,6 @@
 # Plan 01 — Results Analysis: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Initial UCI framework results and repeated-run comparison are retained; 2048 model rankings and trend/anomaly analysis remain pending.
+> **Status: PARTIAL (2026-09-30).** Four repeated-seed UCI framework diagnostics and two exploratory 2048 policy score matrices are retained; confirmatory ranking and trend/anomaly analysis remain pending.
 
 **Goal:** State the current implementation and evidence boundary for results analysis.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan is partial.** Seed-42 UCI results and a two-run repeatability comparison are now retained in `reports/framework_validation/`. They are one-split framework diagnostics; they do not populate the 2048 application result corpus and do not support trend analysis or framework-superiority claims.
+**This plan is partial.** UCI framework diagnostics cover four repeated split seeds and fixed comparison/resource studies in `reports/framework_validation/`. Separate 2048 policy score matrices cover five candidate models trained on 20- and 50-game corpora, with shared 10,000-game disjoint seeds and random/heuristic baselines. Both are exploratory because each model/corpus combination has one fit. These artifacts do not support trend analysis, confirmatory model selection, or framework-superiority claims.
 
 ## 1. Purpose
 
@@ -45,7 +45,7 @@ Full scores are retained in source reports; no heavy-tail property or anomaly de
 
 ## 6. Comparative Analysis
 
-The comparison command selects an exact paired sign test when seed sets match and independent Mann–Whitney U otherwise. For matched seeds it resamples paired differences and reports Cohen's dz; for unmatched samples it uses an independent bootstrap and Cohen's d. Both paths report Holm-adjusted p-values. The exploratory seven-agent 10,000-seed score matrix in `reports/action-frequency/disjoint-seeds/README.md` uses paired methods and is not confirmatory model selection.
+The comparison command selects an exact paired sign test when seed sets match and independent Mann–Whitney U otherwise. For matched seeds it resamples paired differences and reports Cohen's dz; for unmatched samples it uses an independent bootstrap and Cohen's d. Both paths report Holm-adjusted p-values. Two exploratory seven-agent 10,000-seed score matrices are retained for the 20- and 50-game training corpora; neither is confirmatory model selection.
 
 ## 7. Analysis Conclusions
 
@@ -61,7 +61,7 @@ All analysis results are compiled into:
 ## Implementation Record
 
 - `src/evaluation.rs` implements the score summary fields and bootstrap intervals; `src/main.rs` writes score reports and comparison CSV/JSON manifests. No populated plan-scale trained-model result corpus, trend analysis, anomaly investigation, plots, or defensible model conclusion exists.
-- `reports/framework_validation/README.md` summarizes the initial fixed-split UCI matrix and repeatability finding. `reports/action-frequency/disjoint-seeds/README.md` retains five-candidate scores with paired bootstrap intervals and Cohen's dz on matched, training-disjoint seeds. No confirmatory model corpus or ranking is available; no trend, anomaly, or causal conclusion is claimed.
+- `reports/framework_validation/README.md` summarizes the fixed-split UCI matrix, resource probes, and corrected candidate-grid diagnostic. `reports/action-frequency/disjoint-seeds/README.md` and `reports/action-frequency/50-game-disjoint-seeds/README.md` retain the two exploratory five-candidate score matrices, each with random/heuristic baselines and paired comparisons. No confirmatory model corpus or ranking is available; no trend, anomaly, or causal conclusion is claimed.
 
 ---
 

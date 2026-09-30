@@ -1,6 +1,6 @@
 # Plan 01 — Data Cleaning: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** CSV validation exists; cleaning, exact-duplicate removal, and board-dependent action legality checks are not implemented.
+> **Status: PARTIAL (2026-09-30).** CSV validation covers the retained pilot files; cleaning, exact-duplicate removal, and board-dependent action legality checks are not implemented.
 
 **Goal:** State the current implementation and evidence boundary for data cleaning.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

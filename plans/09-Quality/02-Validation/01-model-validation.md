@@ -1,6 +1,6 @@
 # Plan 01 — Model Validation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Model loading/benchmark and score comparison paths exist; classification quality gates and an approval report do not.
+> **Status: PARTIAL (2026-09-30).** Model loading/benchmark, 391/903-row classifier diagnostics, and disjoint-seed score matrices exist; adequate repeated-fit quality gates and approval report do not.
 
 **Goal:** State the current implementation and evidence boundary for model validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

@@ -1,6 +1,6 @@
 # Plan 03 — Limitations: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Design limitations and a bounded small-corpus trained-policy pilot are documented; confirmatory policy and full framework limitations remain unresolved.
+> **Status: PARTIAL (2026-09-30).** Design limitations, two small-corpus trained-policy matrices, four-split framework diagnostics, and process-resource probes are documented; confirmatory and matched-budget limitations remain unresolved.
 
 **Goal:** State the current implementation and evidence boundary for limitations.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan combines known scope limits with open empirical limits.** A 10,000-game action-frequency study and an exploratory seven-agent score comparison on training-disjoint seeds exist. The five fitted policies each use one fit from the same 20-game labeled corpus; the score ordering is descriptive, not confirmatory model selection or full framework evidence.
+**This plan combines known scope limits with open empirical limits.** A 10,000-game action-frequency study and two exploratory seven-agent score comparisons on training-disjoint seeds exist. Five fitted policies were each fit once on the 20-game corpus and again once on the 50-game corpus; the score orderings are descriptive, not confirmatory model selection or full framework evidence.
 
 > Limits below distinguish observed implementation boundaries from questions that require the planned studies.
 
@@ -61,7 +61,7 @@ flowchart TD
 - **Limited game variants:** Only standard 4×4 2048 tested
 - **No external data:** All data from game simulation
 - **Fixed evaluation criteria:** May not capture all performance aspects
-- **Sample size:** game count does not establish power or cover rare outcomes; the 20-game training corpus and 10,000-game pilot evaluation are not a confirmatory model study
+- **Sample size:** game count does not establish power or cover rare outcomes; the 20/50-game training corpora and 10,000-game pilot evaluations are not a confirmatory model study
 - **Label quality:** Depends on rollout simulation accuracy
 - **Feature completeness:** the fixed 17-value input may omit information relevant to the policy; no sufficiency claim is established
 - **Supervised learning only:** No reward shaping or policy gradient methods
@@ -142,7 +142,7 @@ No power or precision claim can be made from the planned 10,000-game number. Rar
 
 Known implementation and evidence limits are recorded explicitly:
 
-1. An earlier 10,000-game report used seeds that overlapped 20 rollout-training games and is superseded. The corrected disjoint-seed evaluation covers five once-fitted pilot candidates plus random/heuristic baselines; its models share one 20-game corpus and are not a confirmatory ranking.
+1. An earlier 10,000-game report used seeds that overlapped 20 rollout-training games and is superseded. The corrected disjoint-seed evaluations cover five once-fitted pilot candidates plus random/heuristic baselines on two seed sets; the matrices use 20- and 50-game corpora and are not confirmatory rankings.
 2. Results are specific to the 2048 game domain
 3. Generalizability to other games is untested
 4. Computational constraints may affect optimal model selection
@@ -151,7 +151,7 @@ Known implementation and evidence limits are recorded explicitly:
 7. The fitted-policy score run is exploratory and does not establish selected-model performance
 8. Feature contribution is unknown; no ablation study has run
 9. Multi-seed validation is planned but not yet completed
-10. Standard-dataset framework validation remains partial despite repeated 15/15 prediction matches at three splits; matched budgets and per-model resource measurements remain incomplete
+10. Standard-dataset framework validation remains partial despite repeated 15/15 prediction matches at four splits; fixed process-resource measurements exist, but matched search budgets and model-only memory remain incomplete
 11. PSPACE-hardness is outside core scope and not established here
 
 ## 8. Mitigation Strategies (Trimmed — No Generic Filler)

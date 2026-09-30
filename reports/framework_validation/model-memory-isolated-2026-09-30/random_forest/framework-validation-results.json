@@ -1,0 +1,43 @@
+[
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "random_forest",
+    "status": "success",
+    "error": null,
+    "seed": 42,
+    "train_rows": 456,
+    "test_rows": 113,
+    "class_labels": [
+      "B",
+      "M"
+    ],
+    "accuracy": 0.9469026548672567,
+    "macro_precision": 0.9431589537223339,
+    "macro_recall": 0.9431589537223339,
+    "macro_f1": 0.9431589537223339,
+    "per_class_f1": [
+      0.9577464788732394,
+      0.9285714285714286
+    ],
+    "confusion_matrix": [
+      [
+        68,
+        3
+      ],
+      [
+        3,
+        39
+      ]
+    ],
+    "positive_class_roc_auc": 0.9654594232059021,
+    "fit_predict_seconds": 0.266436542,
+    "fit_baseline_rss_bytes": 17072128,
+    "fit_peak_rss_bytes": 25640960,
+    "fit_peak_incremental_rss_bytes": 8568832,
+    "save_load_equivalent": true,
+    "serialized_model": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/model-memory-isolated-2026-09-30/random_forest/breast_cancer_wisconsin_diagnostic__random_forest.model.json",
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/model-memory-isolated-2026-09-30/random_forest/breast_cancer_wisconsin_diagnostic__random_forest.predictions.csv",
+    "model_sha256": "b091cd022f1c836c8f9b7341d4363c2f3946cce42bb874d58c7baa5eed68e878",
+    "predictions_sha256": "87a6e5be5cbb9f9d8acced116c523db9d057a8e250815402222e71867d23ddb1"
+  }
+]

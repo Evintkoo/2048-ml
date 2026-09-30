@@ -1,6 +1,6 @@
 # Plan 03 — Reproduction Validation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Seeded simulator/collection checks and run manifests exist; independent full-training reproduction has not been demonstrated.
+> **Status: PARTIAL (2026-09-30).** Seeded simulator/collection checks, four repeated framework split seeds, and run manifests exist; independent full-training reproduction has not been demonstrated.
 
 **Goal:** State the current implementation and evidence boundary for reproduction validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

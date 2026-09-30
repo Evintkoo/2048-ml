@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-model-evaluation](01-model-evaluation.md) | Model Evaluation | PARTIAL — 391-row pilot classifier diagnostic retained; adequate-corpus and policy-quality evaluation pending |
-| [02-cross-validation](02-cross-validation.md) | Cross-Validation | PARTIAL — group wrapper reports fold classification metrics; corpus evaluation pending |
-| [03-metrics](03-metrics.md) | Metrics | PARTIAL — generic summaries and a 391-row 2048 pilot report exist; adequate-sample and valid-action analyses pending |
+| [01-model-evaluation](01-model-evaluation.md) | Model Evaluation | PARTIAL — 20/50-game classifier and disjoint-seed score diagnostics exist; legal-action and confirmatory evaluation pending |
+| [02-cross-validation](02-cross-validation.md) | Cross-Validation | PARTIAL — grouped fold metrics retained for 20/50-game pilots; temporal folds and adequate corpus pending |
+| [03-metrics](03-metrics.md) | Metrics | PARTIAL — generic summaries, 391/903-row classifier reports, and 10k-game score comparisons exist; valid-action analysis pending |
 
 ## Reading paths
 

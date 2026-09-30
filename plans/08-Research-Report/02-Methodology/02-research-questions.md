@@ -1,6 +1,6 @@
 # Plan 02 — Research Questions: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Research questions are defined but unanswered. Standard-dataset diagnostics cover three split seeds; an exploratory disjoint-seed 2048 score matrix also exists. Matched-budget framework baselines and confirmatory application evidence remain pending.
+> **Status: PARTIAL (2026-09-30).** Research questions are defined but unanswered. Standard-dataset diagnostics cover four split seeds; two exploratory disjoint-seed 2048 score matrices exist. Matched-budget framework baselines and confirmatory application evidence remain pending.
 
 **Goal:** State the current implementation and evidence boundary for research questions.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Research questions are framing, not findings.** Framework diagnostics and an exploratory seven-agent score comparison on training-disjoint seeds exist, but validation is incomplete. Five candidate models were each fit once on a small corpus; the score ordering is not a confirmatory model winner. No confirmatory baseline superiority or robustness result is claimed.
+**Research questions are framing, not findings.** Framework diagnostics cover four repeated fixed splits, with process-resource and corrected candidate-grid studies; validation remains incomplete. Two exploratory seven-agent score comparisons on training-disjoint seeds exist, using five candidates each fit once on the 20- or 50-game corpus. Their ordering is not a confirmatory model winner. No confirmatory baseline superiority or robustness result is claimed.
 
 > **Canonical mapping:** 4 RQs, with the Rust-native AutoML architecture as the primary contribution and 2048 as the principal case study. Speculative theory is not treated as a primary research question.
 

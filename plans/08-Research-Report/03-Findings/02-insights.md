@@ -1,6 +1,6 @@
 # Plan 02 — Insights: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Baseline and one fitted pilot action-frequency outputs exist; broader model-policy and step-level insights remain unimplemented.
+> **Status: PARTIAL (2026-09-30).** Baseline and five fitted pilot-policy action-frequency outputs exist; broader model-policy and step-level insights remain unimplemented.
 
 **Goal:** State the current implementation and evidence boundary for insights.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**No model-quality or causal policy insight is claimed.** Action-frequency reports cover Random, Heuristic, and one fitted RandomForest pilot. These pooled action summaries are descriptive; there is no trained-policy per-move board/action timeline or confirmatory policy analysis.
+**No model-quality or causal policy insight is claimed.** Action-frequency reports cover Random, Heuristic, and five once-fitted candidate policies. These pooled action summaries are descriptive; there is no trained-policy per-move board/action timeline or confirmatory policy analysis.
 
 > The following are candidate analyses. The proposed Parquet file and general per-step model-log export do not exist.
 
@@ -32,7 +32,7 @@ No insights generator exists. Preserve input manifests and analysis code for any
 
 ## Implementation Record
 
-- Per-game action-frequency artifacts and independent recomputations are retained for random, heuristic, and one small-corpus fitted pilot policy. These pooled summaries do not provide per-move state/action trajectories. Board-position analyses, correlations, bimodality tests, and general insight generation remain unimplemented.
+- Per-game action-frequency artifacts and independent recomputations are retained for random, heuristic, and five small-corpus fitted policies. These pooled summaries do not provide per-move state/action trajectories. Board-position analyses, correlations, bimodality tests, and general insight generation remain unimplemented.
 
 ---
 

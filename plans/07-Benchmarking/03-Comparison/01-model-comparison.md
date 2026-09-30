@@ -1,6 +1,6 @@
 # Plan 01 — Model Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** A disjoint-seed exploratory score matrix covers five fixed pilot policies and two baselines; a confirmatory ranking with repeated training remains pending.
+> **Status: PARTIAL (2026-09-30).** Separate disjoint-seed exploratory score matrices cover five policies trained on 20- and 50-game corpora plus two baselines; repeated-training confirmatory ranking remains pending.
 
 **Goal:** State the current implementation and evidence boundary for model comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -56,7 +56,7 @@ evaluation seed set, not a general model winner.
 
 ## Implementation Record
 
-- CLI has model/agent score comparison and statistical primitives. All five pilot candidates and both baselines have 10,000-game disjoint-seed score summaries; the full matrix and 21-pair adjusted analysis are retained. Repeated training corpora, predeclared selection, and an independent final test remain absent.
+- CLI has model/agent score comparison and statistical primitives. Five 20-game-trained candidates plus baselines have a 10,000-game shared-seed matrix at 94024–104023; five 50-game-trained candidates plus baselines have a separate 10,000-game matrix at 104024–114023. Each matrix retains paired comparisons and manifests. Each training corpus/model has one fit, so neither comparison is confirmatory; repeated fits, predeclared selection, and an independent final test remain absent.
 
 ---
 

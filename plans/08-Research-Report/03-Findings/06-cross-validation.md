@@ -1,6 +1,6 @@
 # Plan 06 — Cross-Validation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Game-disjoint chronological holdout and grouped CV helpers are implemented and used in a small pilot diagnostic; plan-scale split protocol validation remains pending.
+> **Status: PARTIAL (2026-09-30).** Game-disjoint chronological holdout and grouped CV helpers are used in 20/50-game pilot diagnostics; plan-scale split protocol validation remains pending.
 
 **Goal:** State the current implementation and evidence boundary for cross-validation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**Implementation exists, with a bounded pilot diagnostic rather than a canonical corpus.** Root training reserved later game IDs and applied grouped CV to earlier games in the 20-game pilot. Split semantics and metrics must be reported accurately; the pilot is too small for confirmatory quality claims.
+**Implementation exists, with bounded pilot diagnostics rather than a canonical corpus.** Root training reserved later game IDs and applied grouped CV to earlier games in the 20-game and 50-game pilots. The 20-game run used 17 development groups (2,056 rows) and 3 chronological holdout groups (391 rows); the 50-game run used 40 development groups (4,415 rows) and 10 holdout groups (903 rows). These small pilots do not support confirmatory quality claims.
 
 > `split_csv_by_game` assigns whole game IDs to chronological 70/15/15 train/validation/test partitions. Root training can reserve final game groups and perform GroupKFold on earlier groups. GroupKFold is group-disjoint, not chronological.
 
@@ -46,7 +46,7 @@ The current code supports configurable grouped folds and reserves chronological 
 
 ## Implementation Record
 
-- `src/data_pipeline.rs` implements whole-game chronological 70/15/15 splitting; `src/training.rs` implements GroupKFold and held-out fold action accuracy. The 20-game pilot retained grouped five-fold CV and a 391-row chronological held-out classifier diagnostic; neither is a plan-scale split study. The former stub example and inaccurate chronology wording were removed.
+- `src/data_pipeline.rs` implements whole-game chronological 70/15/15 splitting; `src/training.rs` implements GroupKFold and fold class metrics. The 20-game and 50-game pilots retain grouped five-fold CV and 391-/903-row chronological held-out classifier diagnostics; neither is a plan-scale split study. The former stub example and inaccurate chronology wording were removed.
 
 ---
 

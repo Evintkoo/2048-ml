@@ -1,6 +1,6 @@
 # Plan 03 — Hypotheses: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Hypotheses remain provisional and untested. UCI diagnostics on AutoML `82d8483` include repeated fixed splits at seeds 42, 2026, and 2027 (15/15 prediction matches per repeated split). An exploratory 2048 comparison exists but is not confirmatory; statistical tests, effect thresholds, and study power require a finalized protocol.
+> **Status: PARTIAL (2026-09-30).** Hypotheses remain provisional and untested. UCI diagnostics on AutoML `82d8483` include repeated fixed splits at seeds 42, 2026, 2027, and 2028 (15/15 prediction matches per repeated split). Two exploratory 2048 comparisons exist but are not confirmatory; effect thresholds and study power require a finalized protocol.
 
 **Goal:** State the current implementation and evidence boundary for hypotheses.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan records questions for future testing, not confirmatory hypothesis evidence.** The study protocol is not finalized; UCI diagnostics are not a matched-budget benchmark. The exploratory 2048 comparison does not resolve H1 or H2 because it uses an unselected pilot policy, and its intervals and effect sizes use matched seed pairs. Planned sample sizes do not establish power, and several named tests are not implemented.
+**This plan records questions for future testing, not confirmatory hypothesis evidence.** The study protocol is not finalized; UCI diagnostics are not a matched-budget benchmark. The two exploratory 2048 comparisons do not resolve H1 or H2 because they use one fit per small training corpus, and their intervals/effect sizes use matched evaluation seed pairs. Planned sample sizes do not establish power, and several named tests are not implemented.
 
 > **Note:** This section defines hypotheses to be tested. The retained exploratory 2048 comparison is descriptive context only; no confirmatory hypothesis decision is claimed.
 

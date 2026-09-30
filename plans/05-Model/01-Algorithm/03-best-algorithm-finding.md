@@ -1,6 +1,6 @@
 # Plan 03 — Best Algorithm Finding: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** No winner is selected; the comparison depends on a predeclared protocol and adequate evaluation data.
+> **Status: PARTIAL (2026-09-30).** No winner is selected; exploratory policy-score comparisons exist, but repeated fits and adequate training data are absent.
 
 **Goal:** State the current implementation and evidence boundary for best algorithm finding.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan records a pending result, not an inferred winner.** A five-candidate classifier pilot has been run on one common split of the 20-game corpus, but it covers only three held-out games and uses rollout-derived action labels. No matched game-score comparison on adequate evaluation data exists. The canonical scope requires separating 2048 case-study evidence from general framework claims; it defines no universal score or classification thresholds.
+**This plan records a pending result, not an inferred winner.** Five candidates have common-split classifier diagnostics, and their fitted policies have exploratory comparisons on shared 10,000-game disjoint seed sets against random and heuristic baselines. The 20-game and 50-game training corpora remain small, each candidate has one fit per corpus, and classifier and score comparisons do not define a stable selection. The canonical scope separates 2048 application evidence from framework claims and defines no universal score or classification thresholds.
 
 ## 1. Purpose
 

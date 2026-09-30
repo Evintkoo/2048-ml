@@ -1,6 +1,6 @@
 # Plan 05 — State-of-the-Art Comparison: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Random and heuristic baselines and a fitted-policy runner exist; an exploratory comparison is retained, while selected-policy comparison and external-agent reproduction remain incomplete.
+> **Status: PARTIAL (2026-09-30).** Random and heuristic baselines and fitted-policy runners exist; two exploratory 20/50-game-trained policy comparisons are retained, while selected-policy analysis remains incomplete.
 
 **Goal:** State the current implementation and evidence boundary for state-of-the-art comparison.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This is a comparison plan, not a winner claim.** Local random/heuristic and five fitted-policy runs exist on matched, training-disjoint seeds, with exploratory paired analyses retained. Each model came from one fit on a small corpus, and selection was not predeclared; no confirmatory result exists. Published methods and their quoted score ranges are not local measured baselines.
+**This is a comparison plan, not a winner claim.** Local random/heuristic and five fitted-policy runs exist in two matched, training-disjoint seed sets, with exploratory paired analyses retained. One candidate set was trained on 20 games and the other on 50; each model/corpus has one fit and selection was not predeclared. No confirmatory result exists. Published methods and their quoted score ranges are not local measured baselines.
 
 ## 1. Purpose
 

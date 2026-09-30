@@ -1,6 +1,6 @@
 # Plan 01 — Hyperparameter Search: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Versioned HyperOptX search is wired for RandomForest/ExtraTrees over grouped-CV accuracy; pruning and broader candidates remain unsupported.
+> **Status: PARTIAL (2026-09-30).** Versioned HyperOptX search is wired for RandomForest/ExtraTrees over grouped-CV accuracy and has a repeated CLI smoke; pruning, retained objective-error details, and broader candidates remain unsupported.
 
 **Goal:** State the current implementation and evidence boundary for hyperparameter search.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -118,7 +118,7 @@ The root integration maps sampled `n_estimators` and `max_depth` into grouped-CV
 
 ## Implementation Record
 
-- HyperOptX trains grouped-CV objectives for RandomForest/ExtraTrees and applies the selected integer parameters to final fitting. It saves a study artifact and records configuration/seed data in the manifest.
+- HyperOptX trains grouped-CV objectives for RandomForest/ExtraTrees and applies the selected integer parameters to final fitting. It saves a study artifact and records configuration/seed data in the manifest. The retained two-trial/two-fold synthetic smoke ran twice with matching parameters, scores, and 16-row held-out predictions (accuracy 0.3125, macro-F1 0.2053); this is wiring evidence only.
 - Pruning is disabled because there is no intermediate-reporting hook. The pinned optimizer marks objective errors as pruned trials with a worst-value score but does not retain the error text in `TrialResult`; trial failure diagnostics remain limited. No best configuration is claimed beyond each exploratory run.
 
 ---

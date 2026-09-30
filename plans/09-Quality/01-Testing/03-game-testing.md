@@ -1,6 +1,6 @@
 # Plan 03 — Game Testing: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Game-engine unit tests cover core rules and seeded randomness; edge-case matrix is incomplete, though the existing suite passed.
+> **Status: PARTIAL (2026-09-30).** Game-engine unit tests cover core rules, overflow atomicity, and seeded randomness (39 root tests pass); formal tile-bound proof and independent oracle remain absent.
 
 **Goal:** State the current implementation and evidence boundary for game testing.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.

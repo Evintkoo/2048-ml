@@ -1,6 +1,6 @@
 # Plan 01 — Model Evaluation: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Seeded game-score and paired-score evaluation tooling exists; a small pilot classifier diagnostic is retained, while adequate-sample classification and held-out policy results remain pending.
+> **Status: PARTIAL (2026-09-30).** Seeded game-score and paired-score evaluation tooling exists; 20/50-game classifier diagnostics and disjoint-seed policy-score comparisons are retained, while adequate-sample and legal-action analyses remain pending.
 
 **Goal:** State the current implementation and evidence boundary for model evaluation.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats evaluation tooling as partially implemented and outcome claims as pending.** Root tooling can benchmark a saved policy on seeded games and compute score summaries and paired statistics. It now emits a small 391-row chronological classifier diagnostic for the retained pilot, but has no qualitative analyses and no trained model has been evaluated on an adequate held-out corpus. The separate standard-dataset runner reports classifier metrics, but those results do not substitute for game-policy evaluation.
+**Evaluation tooling is implemented, with exploratory outcomes and missing diagnostics.** Root tooling can benchmark saved policies on seeded games and compute score summaries and paired statistics. Five candidates have verified classifier-label diagnostics on chronological 20- and 50-game corpus holdouts; five fitted policies also have exploratory comparisons on shared 10,000-game seed sets. Training sets are small and each corpus/model has one fit. The 50-game classifier report does not include board legality analysis, and the score comparisons do not establish confirmatory policy quality. Standard-dataset results remain a separate framework-validation track.
 
 ## 1. Purpose
 
@@ -178,8 +178,8 @@ flowchart LR
 
 ## Implementation Record
 
-- Root tooling can benchmark a saved model on seeded games, collect score summaries, compare paired results, and compute bootstrap/nonparametric statistics. The standard-dataset diagnostic reports confusion/F1 for tabular tasks. The 2048 case-study path now retains a small pilot classifier confusion/F1 diagnostic; valid-action diagnostics, corner-state and score-binned analyses remain pending.
-- No trained model has been evaluated on an adequate held-out dataset. No performance gates are established by canonical scope.
+- Root tooling can benchmark a saved model on seeded games, collect score summaries, compare paired results, and compute bootstrap/nonparametric statistics. The 2048 path retains five-candidate classifier confusion/F1 diagnostics on 391 rows from the 20-game pilot and 903 rows from the 50-game pilot. Separate policy score evaluations include 10,000 shared seeds per candidate and random/heuristic baselines. These data remain exploratory; each candidate has one fit per corpus.
+- Valid-action rate from held-out board states, corner-conditioned and predeclared score-binned analyses remain absent. No adequate independent repeated-fit estimate or predeclared performance gate exists.
 
 ---
 

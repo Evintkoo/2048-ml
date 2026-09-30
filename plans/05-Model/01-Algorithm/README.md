@@ -6,9 +6,9 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 
 | Plan | Subject | Status |
 |---|---|---|
-| [01-algorithm-research](01-algorithm-research.md) | Algorithm Research | PARTIAL — standard-dataset diagnostics and same-split five-candidate 2048 classifier pilot retained; confirmatory ranking pending |
-| [02-model-comparison](02-model-comparison.md) | Model Comparison | PARTIAL — five-candidate raw-label classifier metrics recorded on a small common holdout; game-outcome comparison pending |
-| [03-best-algorithm-finding](03-best-algorithm-finding.md) | Best Algorithm Finding | PARTIAL — five candidates have exploratory pilot metrics; no case-study winner or adequate held-out game scores |
+| [01-algorithm-research](01-algorithm-research.md) | Algorithm Research | PARTIAL — classifier-label and disjoint-seed policy-score diagnostics retained; confirmatory ranking pending |
+| [02-model-comparison](02-model-comparison.md) | Model Comparison | PARTIAL — common classifier diagnostics and 10,000-game disjoint-seed score comparisons exist; repeated-fit evaluation pending |
+| [03-best-algorithm-finding](03-best-algorithm-finding.md) | Best Algorithm Finding | PARTIAL — exploratory scores exist, but limited corpus/repeated fits do not support a case-study winner |
 
 ## Reading paths
 

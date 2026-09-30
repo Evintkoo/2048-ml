@@ -1,0 +1,52 @@
+[
+  {
+    "dataset": "wine",
+    "model": "adaboost",
+    "status": "success",
+    "error": null,
+    "seed": 42,
+    "train_rows": 142,
+    "test_rows": 36,
+    "class_labels": [
+      "cultivar_1",
+      "cultivar_2",
+      "cultivar_3"
+    ],
+    "accuracy": 0.9444444444444444,
+    "macro_precision": 0.9523809523809524,
+    "macro_recall": 0.9523809523809524,
+    "macro_f1": 0.9487179487179486,
+    "per_class_f1": [
+      0.923076923076923,
+      0.923076923076923,
+      1.0
+    ],
+    "confusion_matrix": [
+      [
+        12,
+        0,
+        0
+      ],
+      [
+        2,
+        12,
+        0
+      ],
+      [
+        0,
+        0,
+        10
+      ]
+    ],
+    "positive_class_roc_auc": null,
+    "fit_predict_seconds": 0.093415041,
+    "fit_baseline_rss_bytes": 16613376,
+    "fit_peak_rss_bytes": 21168128,
+    "fit_peak_incremental_rss_bytes": 4554752,
+    "save_load_equivalent": true,
+    "serialized_model": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/model-memory-matrix-2026-09-30/wine/adaboost/wine__adaboost.model.json",
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/model-memory-matrix-2026-09-30/wine/adaboost/wine__adaboost.predictions.csv",
+    "model_sha256": "cf0dbedf87a22f18454d2002603cb0e5e729db06efdd82cd102c2bf921e10c4c",
+    "predictions_sha256": "2886aa3811fb43e201ce1168bb47215940f176919945e7453264f1175822910c"
+  }
+]

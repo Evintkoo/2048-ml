@@ -1,0 +1,43 @@
+[
+  {
+    "dataset": "breast_cancer_wisconsin_diagnostic",
+    "model": "extra_trees",
+    "status": "success",
+    "error": null,
+    "seed": 42,
+    "train_rows": 456,
+    "test_rows": 113,
+    "class_labels": [
+      "B",
+      "M"
+    ],
+    "accuracy": 0.9380530973451328,
+    "macro_precision": 0.9356368563685638,
+    "macro_recall": 0.9312541918175721,
+    "macro_f1": 0.9333558008256804,
+    "per_class_f1": [
+      0.951048951048951,
+      0.9156626506024096
+    ],
+    "confusion_matrix": [
+      [
+        68,
+        3
+      ],
+      [
+        4,
+        38
+      ]
+    ],
+    "positive_class_roc_auc": 0.9837357478202549,
+    "fit_predict_seconds": 0.128765916,
+    "fit_baseline_rss_bytes": 17186816,
+    "fit_peak_rss_bytes": 22872064,
+    "fit_peak_incremental_rss_bytes": 5685248,
+    "save_load_equivalent": true,
+    "serialized_model": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/model-memory-isolated-2026-09-30/extra_trees/breast_cancer_wisconsin_diagnostic__extra_trees.model.json",
+    "predictions_csv": "/Users/evintleovonzko/Documents/projects/evint/2048-ml/reports/framework_validation/model-memory-isolated-2026-09-30/extra_trees/breast_cancer_wisconsin_diagnostic__extra_trees.predictions.csv",
+    "model_sha256": "e5f33c80be0fd8a5ad2c01a333f9f92ea2d7c2827538057fa8a8a8bf6a4c5031",
+    "predictions_sha256": "f2b2ce1a2c53684405c4c63583ff721383df1b52b77252d361e0e62fc74a9a57"
+  }
+]

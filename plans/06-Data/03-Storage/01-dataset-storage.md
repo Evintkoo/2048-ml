@@ -1,6 +1,6 @@
 # Plan 01 — Dataset Storage: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Local CSV, metadata, checkpoint, and manifest outputs exist; catalog/version management and Parquet are absent.
+> **Status: PARTIAL (2026-09-30).** Local CSV, metadata, checkpoint, and manifest outputs are retained for 125 pilot games; catalog/version management and Parquet are absent.
 
 **Goal:** State the current implementation and evidence boundary for dataset storage.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats local artifact storage as implemented with optional infrastructure absent.** The collector writes training CSV, aligned metadata, checkpoint chunks, and a JSON manifest to a caller-selected path. Parquet, dataset cataloging, and managed archival are not implemented.
+**Local artifact storage is implemented; optional infrastructure is absent.** The collector writes training CSV, aligned metadata, checkpoint chunks, and a JSON manifest to a caller-selected path. Retained 20-, 5-, and two 50-game runs preserve these artifacts and hashes. Parquet, dataset cataloging, and managed archival are not implemented.
 
 ## 1. Purpose
 

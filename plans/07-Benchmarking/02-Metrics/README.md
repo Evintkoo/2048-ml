@@ -7,8 +7,8 @@ This index lists ordered tickets, their evidence, and remaining acceptance work.
 | Plan | Subject | Status |
 |---|---|---|
 | [01-score-metrics](01-score-metrics.md) | Score Metrics | PARTIAL — current summary field set documented |
-| [02-model-metrics](02-model-metrics.md) | Model Metrics | PARTIAL — generic diagnostics and a 391-row pilot holdout report exist; adequate-sample and legal-action results pending |
-| [03-comparison-metrics](03-comparison-metrics.md) | Comparison Metrics | PARTIAL — comparison utility exists; ranking evidence absent |
+| [02-model-metrics](02-model-metrics.md) | Model Metrics | PARTIAL — generic diagnostics, 391/903-row holdouts, and 10k-game policy scores exist; legal-action/repeated-fit results pending |
+| [03-comparison-metrics](03-comparison-metrics.md) | Comparison Metrics | PARTIAL — exploratory 10k-game score matrices exist; confirmatory ranking pending |
 
 ## Reading paths
 

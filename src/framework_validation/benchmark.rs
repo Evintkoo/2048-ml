@@ -11,6 +11,9 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::io::Write;
 use std::path::Path;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::{mpsc, Arc};
+use std::thread;
 use std::time::Instant;
 
 #[derive(Clone, Debug)]
@@ -226,11 +229,20 @@ struct RunRecord {
     confusion_matrix: Option<Vec<Vec<u64>>>,
     positive_class_roc_auc: Option<f64>,
     fit_predict_seconds: Option<f64>,
+    fit_baseline_rss_bytes: Option<u64>,
+    fit_peak_rss_bytes: Option<u64>,
+    fit_peak_incremental_rss_bytes: Option<u64>,
     save_load_equivalent: Option<bool>,
     serialized_model: Option<String>,
     predictions_csv: Option<String>,
     model_sha256: Option<String>,
     predictions_sha256: Option<String>,
+}
+
+struct RunOptions<'a> {
+    seed: u64,
+    output_dir: &'a Path,
+    profile_fit_memory: bool,
 }
 
 fn roc_auc_binary(actual: &[usize], positive_scores: &[f64]) -> Option<f64> {
@@ -275,14 +287,59 @@ fn sha256(path: &Path) -> Result<String> {
     Ok(format!("{:x}", sha2::Sha256::digest(bytes)))
 }
 
+fn profile_process_rss<T>(fit: impl FnOnce() -> Result<T>) -> Result<(T, u64, u64)> {
+    let pid = sysinfo::get_current_pid().map_err(anyhow::Error::msg)?;
+    let stop = Arc::new(AtomicBool::new(false));
+    let peak = Arc::new(AtomicU64::new(0));
+    let (baseline_tx, baseline_rx) = mpsc::channel();
+    let sampler_stop = Arc::clone(&stop);
+    let sampler_peak = Arc::clone(&peak);
+    let sampler = thread::spawn(move || -> Result<u64> {
+        let mut system = sysinfo::System::new();
+        if !system.refresh_process(pid) {
+            bail!("could not sample current process RSS before fit");
+        }
+        let baseline = system
+            .process(pid)
+            .context("current process missing from sysinfo snapshot")?
+            .memory();
+        sampler_peak.store(baseline, Ordering::Relaxed);
+        baseline_tx
+            .send(baseline)
+            .context("send baseline RSS to fit thread")?;
+        while !sampler_stop.load(Ordering::Relaxed) {
+            thread::sleep(std::time::Duration::from_millis(5));
+            if system.refresh_process(pid) {
+                if let Some(process) = system.process(pid) {
+                    sampler_peak.fetch_max(process.memory(), Ordering::Relaxed);
+                }
+            }
+        }
+        if system.refresh_process(pid) {
+            if let Some(process) = system.process(pid) {
+                sampler_peak.fetch_max(process.memory(), Ordering::Relaxed);
+            }
+        }
+        Ok(sampler_peak.load(Ordering::Relaxed))
+    });
+    let baseline = baseline_rx
+        .recv()
+        .context("receive baseline RSS from sampler")?;
+    let fit_result = fit();
+    stop.store(true, Ordering::Relaxed);
+    let peak_rss = sampler
+        .join()
+        .map_err(|_| anyhow::anyhow!("RSS sampler thread panicked"))??;
+    Ok((fit_result?, baseline, peak_rss))
+}
+
 fn run_one(
     dataset: &Dataset,
     model_name: &str,
     model_type: ModelType,
     train_indices: &[usize],
     test_indices: &[usize],
-    seed: u64,
-    output_dir: &Path,
+    options: RunOptions<'_>,
 ) -> RunRecord {
     let class_labels = dataset
         .labels
@@ -294,7 +351,7 @@ fn run_one(
         model: model_name.to_owned(),
         status: "failed",
         error: None,
-        seed,
+        seed: options.seed,
         train_rows: train_indices.len(),
         test_rows: test_indices.len(),
         class_labels,
@@ -306,6 +363,9 @@ fn run_one(
         confusion_matrix: None,
         positive_class_roc_auc: None,
         fit_predict_seconds: None,
+        fit_baseline_rss_bytes: None,
+        fit_peak_rss_bytes: None,
+        fit_peak_incremental_rss_bytes: None,
         save_load_equivalent: None,
         serialized_model: None,
         predictions_csv: None,
@@ -322,15 +382,26 @@ fn run_one(
         };
         let mut config = TrainingConfig::new(task, dataset.target_name)
             .with_model(model_type)
-            .with_random_state(seed)
+            .with_random_state(options.seed)
             .with_n_estimators(32)
             .with_max_depth(8);
         config.validation_split = 0.1;
         let mut engine = TrainEngine::new(config);
         let started = Instant::now();
-        engine
-            .fit(&train)
-            .context("fit AutoML model on outer training rows")?;
+        if options.profile_fit_memory {
+            let (_, baseline, peak) = profile_process_rss(|| {
+                engine
+                    .fit(&train)
+                    .context("fit AutoML model on outer training rows")
+            })?;
+            record.fit_baseline_rss_bytes = Some(baseline);
+            record.fit_peak_rss_bytes = Some(peak);
+            record.fit_peak_incremental_rss_bytes = Some(peak.saturating_sub(baseline));
+        } else {
+            engine
+                .fit(&train)
+                .context("fit AutoML model on outer training rows")?;
+        }
         let predicted = engine
             .predict(&test)
             .context("predict untouched outer holdout")?;
@@ -352,7 +423,9 @@ fn run_one(
         .context("invalid class labels returned by AutoML model")?;
 
         let artifact_stem = format!("{}__{}", dataset.name, model_name);
-        let model_path = output_dir.join(format!("{artifact_stem}.model.json"));
+        let model_path = options
+            .output_dir
+            .join(format!("{artifact_stem}.model.json"));
         engine
             .save(model_path.to_str().context("model path is not UTF-8")?)
             .context("save model artifact")?;
@@ -363,7 +436,9 @@ fn run_one(
             .context("predict with reloaded model")?;
         let save_load_equivalent = reloaded_predictions == predicted;
 
-        let predictions_path = output_dir.join(format!("{artifact_stem}.predictions.csv"));
+        let predictions_path = options
+            .output_dir
+            .join(format!("{artifact_stem}.predictions.csv"));
         let mut predictions_file = fs::File::create(&predictions_path)?;
         writeln!(
             predictions_file,
@@ -731,6 +806,46 @@ pub fn run_standard_datasets(
     seed: u64,
     test_fraction: f64,
 ) -> Result<()> {
+    run_standard_datasets_internal(
+        data_dir,
+        output_dir,
+        model_filter,
+        dataset_filter,
+        seed,
+        test_fraction,
+        false,
+    )
+}
+
+/// Run the fixed-split study while sampling process RSS around each model fit.
+pub fn run_standard_datasets_with_memory(
+    data_dir: &Path,
+    output_dir: &Path,
+    model_filter: Option<&str>,
+    dataset_filter: Option<&str>,
+    seed: u64,
+    test_fraction: f64,
+) -> Result<()> {
+    run_standard_datasets_internal(
+        data_dir,
+        output_dir,
+        model_filter,
+        dataset_filter,
+        seed,
+        test_fraction,
+        true,
+    )
+}
+
+fn run_standard_datasets_internal(
+    data_dir: &Path,
+    output_dir: &Path,
+    model_filter: Option<&str>,
+    dataset_filter: Option<&str>,
+    seed: u64,
+    test_fraction: f64,
+    profile_fit_memory: bool,
+) -> Result<()> {
     fs::create_dir_all(output_dir).with_context(|| format!("create {}", output_dir.display()))?;
     let all_candidates = [
         ("random_forest", ModelType::RandomForest),
@@ -793,8 +908,11 @@ pub fn run_standard_datasets(
                 model_type,
                 &train_indices,
                 &test_indices,
-                seed,
-                output_dir,
+                RunOptions {
+                    seed,
+                    output_dir,
+                    profile_fit_memory,
+                },
             );
             eprintln!(
                 "framework_validation dataset={} model={} status={} accuracy={:?} error={:?}",
@@ -833,7 +951,8 @@ pub fn run_standard_datasets(
         "failed_runs": failed,
         "host": {"os": std::env::consts::OS, "architecture": std::env::consts::ARCH,
             "logical_cpus": std::thread::available_parallelism().map(|count| count.get()).ok()},
-        "limitations": ["No external framework baseline", "No memory profile", "One seed only", "ROC-AUC is reported only when binary class probabilities are available", "No CLI versus API equivalence study"]
+        "fit_phase_memory_profile": if profile_fit_memory { Some(serde_json::json!({"method": "sysinfo RSS sampled every 5 ms during TrainEngine::fit", "baseline": "process RSS after dataset frames and model configuration are ready, immediately before fit", "reported_value": "peak fit-phase RSS minus baseline RSS", "includes": ["AutoML fit temporaries", "Rust allocator retention", "RSS sampler state"], "does_not_isolate": "model object allocations alone"})) } else { None },
+        "limitations": ["No external framework baseline in the standard-dataset runner", "Fit-phase RSS is process-incremental and is not model-object-only memory", "One seed only", "ROC-AUC is reported only when binary class probabilities are available", "CLI/API parity is validated on one declared Iris/RandomForest case"]
     });
     fs::write(&manifest_path, serde_json::to_vec_pretty(&manifest)?)?;
     println!(

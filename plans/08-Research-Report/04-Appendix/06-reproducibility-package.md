@@ -1,6 +1,6 @@
 # Plan 06 — Reproducibility Package: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Root source, lockfile, seeded CLI workflows, public UCI inputs, and run manifests exist; a public project data release, Docker environment, full confirmatory artifacts, and independent reproduction remain absent.
+> **Status: PARTIAL (2026-09-30).** Root source, lockfile, seeded CLI workflows, UCI inputs, and manifests for four framework split seeds and 125 pilot games exist; public project data release, Docker environment, confirmatory artifacts, and independent reproduction remain absent.
 
 **Goal:** State the current implementation and evidence boundary for reproducibility package.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -49,13 +49,13 @@ Verification checklist — mark an item complete only after the corresponding ar
 - [x] 2048 data-generation procedure is available in `cargo run -- data-collector collect --help`
 - [x] Run manifests record configured seeds; no complete study seed matrix is established
 - [ ] All scripts are executable
-- [x] Same-split predictions/save-load matched across two runs for all 15 cases at split seeds 42, 2026, and 2027 on AutoML `82d8483`; broader configurations/platforms remain unverified
+- [x] Same-split predictions/save-load matched across two runs for all 15 cases at split seeds 42, 2026, 2027, and 2028 on AutoML `82d8483`; broader configurations/platforms remain unverified
 - [x] Comparison and report commands can reproduce summaries from supplied CSV inputs; verify manifests and limitations
 - [ ] Figures are generated from raw data
 - [ ] Paper references match code versions
-- [x] Save/load predictions matched in repeated 3-dataset/5-model runs at split seeds 42, 2026, and 2027 on AutoML `82d8483`; this does not establish cross-version equivalence
+- [x] Save/load predictions matched in repeated 3-dataset/5-model runs at split seeds 42, 2026, 2027, and 2028 on AutoML `82d8483`; this does not establish cross-version equivalence
 
-Checked entries refer only to available local procedures. Plan-scale 2048 data, matched framework baselines/resource profiles, versioned releases, and independent replication remain outstanding. The retained UCI matrix covers split seeds 42, 2026, and 2027; repeated processes at 42, 2026, and 2027 are narrow same-split diagnostics, not broad determinism evidence. Manifests record checksums, protocol details, seeds, dependency pin when available, elapsed time, summaries, and result paths; record dirty source state separately.
+Checked entries refer only to available local procedures. Plan-scale 2048 data, matched framework search budgets/model-only resources, versioned releases, and independent replication remain outstanding. The retained UCI matrix covers split seeds 42, 2026, 2027, and 2028; repeated processes at these seeds are narrow same-split diagnostics, not broad determinism evidence. Manifests record checksums, protocol details, seeds, dependency pin when available, elapsed time, summaries, and result paths; record dirty source state separately. The 125-game collection pilots have retained CSVs, metadata, checkpoints, and manifests but are not a canonical scale corpus.
 
 ## Implementation Record
 

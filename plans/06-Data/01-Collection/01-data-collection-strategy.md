@@ -1,6 +1,6 @@
 # Plan 01 — Data Collection Strategy: the repository status is explicit and evidence based
 
-> **Status: PARTIAL (2026-09-27).** Checkpointed random-play collection and rollout relabeling exist; self-play, canonical corpus, post-split relabeling, and cache remain pending.
+> **Status: PARTIAL (2026-09-30).** Checkpointed random-play collection and rollout relabeling exist; 125-game bounded pilots are retained, while self-play, canonical corpus, post-split relabeling, and cache remain pending.
 
 **Goal:** State the current implementation and evidence boundary for data collection strategy.
 **Builds on:** [00](../../00-scope-and-traceability.md) — the project is supervised 4×4 2048 policy learning, and framework evaluation is a separate research track.
@@ -9,7 +9,7 @@
 
 ## Decision and evidence
 
-**This plan treats the random collection path as implemented with corpus and protocol gaps.** The CLI records random trajectories, relabels each state using seeded rollouts, and writes checkpointed CSV, metadata, and manifest. There is no separate configurable self-play source or persistent label cache; relabeling currently occurs before any train/test split.
+**The random collection path is implemented with corpus and protocol gaps.** The CLI records random trajectories, relabels each state using seeded rollouts, and writes checkpointed CSV, metadata, and manifest. Bounded pilots now cover 125 games, 13,552 rows, and 4,763,400 rollout evaluations across three seed ranges on one host. There is no separate configurable self-play source or persistent label cache; relabeling currently occurs before any train/test split.
 
 ## 1. Purpose
 
@@ -219,7 +219,7 @@ Files in `06-Data/01-Collection/`: `01-data-collection-strategy.md` (this hub), 
 
 ## Open questions
 
-- The proposed 20,000-game rollout-labeled corpus is unrun. The retained 20-game pilot (2,447 rows, 857,100 rollout evaluations, 857.36 seconds) projects about 238.16 hours by linear extrapolation; this estimate is highly uncertain, and a declared compute budget is required. Checkpoint/resume support exists. Resolve whether labeling must follow the train/test split before describing a canonical run. See `reports/collection_pilots/2026-09-27-20-game/README.md`.
+- The proposed 20,000-game rollout-labeled corpus is unrun. The 125-game pilot series totals 13,552 rows and 4,763,400 rollout evaluations in 4,817.23 seconds; its rough linear projection is about 214.09 hours and is highly uncertain. A declared compute budget is required. Checkpoint/resume exists, but labeling precedes splitting and there is no persistent cache. Resolve the intended post-split protocol before describing a canonical run; see the `reports/collection_pilots/` run READMEs.
 
 ## Later
 

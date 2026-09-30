@@ -1,0 +1,108 @@
+{
+  "schema": "2048-ml.framework-fit-memory-profile",
+  "schema_version": 1,
+  "dataset": "UCI Breast Cancer Wisconsin (Diagnostic)",
+  "dataset_source_sha256": "d606af411f3e5be8a317a5a8b652b425aaf0ff38ca683d5327ffff94c3695f4a",
+  "seed": 42,
+  "test_fraction": 0.2,
+  "models": [
+    "random_forest",
+    "extra_trees",
+    "adaboost",
+    "knn",
+    "naive_bayes"
+  ],
+  "process_boundary": "one fresh process per model; one model fit per process",
+  "memory_metric": "peak process RSS sampled every 5 ms during fit minus RSS immediately before fit",
+  "memory_limits": [
+    "Incremental fit-phase RSS includes AutoML fit temporaries and allocator retention",
+    "It does not isolate the persistent model object's allocation",
+    "5 ms polling may miss shorter peaks; use as a sampled lower bound",
+    "One host, one seed, and one process per model are descriptive only"
+  ],
+  "root_revision": "8049091b1ab9fee9d582231432fe49c979396e50",
+  "automl_revision": "82d848323eed5e2af86d046d529916c448f2442c",
+  "host": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "architecture": "arm64"
+  },
+  "summary_file": "fit-memory-summary.csv",
+  "summary_sha256": "35d97cc1a8add139fd988751903712ab73f910fb4a6792bb4f96af7446e09359",
+  "runs": [
+    {
+      "model": "random_forest",
+      "seed": 42,
+      "train_rows": 456,
+      "test_rows": 113,
+      "accuracy": 0.9469026548672567,
+      "macro_f1": 0.9431589537223339,
+      "baseline_rss_bytes": 17072128,
+      "peak_fit_rss_bytes": 25640960,
+      "peak_incremental_fit_rss_bytes": 8568832,
+      "result_sha256": "e21353306a7dc5ad1e298547f49f00e55e57bfa106af84ccaaa7187ada28b4ad",
+      "manifest_sha256": "74de419266fcfdea6316c24962e5ee5d19c448401dca37478102f52aa44c832b",
+      "split_sha256": "17dd7dbd39a56790d979296e40b715abbe599f5c69d76cefb2fde57afd336ffe",
+      "case_dir": "reports/framework_validation/model-memory-isolated-2026-09-30/random_forest"
+    },
+    {
+      "model": "extra_trees",
+      "seed": 42,
+      "train_rows": 456,
+      "test_rows": 113,
+      "accuracy": 0.9380530973451328,
+      "macro_f1": 0.9333558008256804,
+      "baseline_rss_bytes": 17186816,
+      "peak_fit_rss_bytes": 22872064,
+      "peak_incremental_fit_rss_bytes": 5685248,
+      "result_sha256": "f2fbbbd134d72272391d845af6cc5ab0a5d8b6dc2ea4ea485223d68a13481302",
+      "manifest_sha256": "7d97a879758efac7d096f84bf052997c2a37cfb9913eed9f06ded328ef49c431",
+      "split_sha256": "17dd7dbd39a56790d979296e40b715abbe599f5c69d76cefb2fde57afd336ffe",
+      "case_dir": "reports/framework_validation/model-memory-isolated-2026-09-30/extra_trees"
+    },
+    {
+      "model": "adaboost",
+      "seed": 42,
+      "train_rows": 456,
+      "test_rows": 113,
+      "accuracy": 0.9203539823008849,
+      "macro_f1": 0.9151439299123905,
+      "baseline_rss_bytes": 17203200,
+      "peak_fit_rss_bytes": 21004288,
+      "peak_incremental_fit_rss_bytes": 3801088,
+      "result_sha256": "ebbe54ab0116705c14fb3725cfb49fa7e64931405d40cf6913d13118da1d403a",
+      "manifest_sha256": "1fce1e0af1b8b622c63bf6cf7e0b5de959c921d61d5674c9c34ea7cbc4494ae5",
+      "split_sha256": "17dd7dbd39a56790d979296e40b715abbe599f5c69d76cefb2fde57afd336ffe",
+      "case_dir": "reports/framework_validation/model-memory-isolated-2026-09-30/adaboost"
+    },
+    {
+      "model": "knn",
+      "seed": 42,
+      "train_rows": 456,
+      "test_rows": 113,
+      "accuracy": 0.9292035398230089,
+      "macro_f1": 0.9226027397260275,
+      "baseline_rss_bytes": 17186816,
+      "peak_fit_rss_bytes": 22429696,
+      "peak_incremental_fit_rss_bytes": 5242880,
+      "result_sha256": "e58e09545fb9b74cc7d81691b64e188f5dc63033bb0b02b8d6b1e30d2584789f",
+      "manifest_sha256": "0c5a00eaaad9cb515c6cafad9a3cf3afa37786362b74cadd475f93e93bf20924",
+      "split_sha256": "17dd7dbd39a56790d979296e40b715abbe599f5c69d76cefb2fde57afd336ffe",
+      "case_dir": "reports/framework_validation/model-memory-isolated-2026-09-30/knn"
+    },
+    {
+      "model": "naive_bayes",
+      "seed": 42,
+      "train_rows": 456,
+      "test_rows": 113,
+      "accuracy": 0.9292035398230089,
+      "macro_f1": 0.9242119382964453,
+      "baseline_rss_bytes": 17022976,
+      "peak_fit_rss_bytes": 20889600,
+      "peak_incremental_fit_rss_bytes": 3866624,
+      "result_sha256": "7213b77c8a5973cc3bd96744f7c0e7df42b3d8ef2c9c60376aab9de6f091ca88",
+      "manifest_sha256": "a44926f20fb3b7f6ceb2404d90a3dc98fa9c171a6932728114cf417fde85d199",
+      "split_sha256": "17dd7dbd39a56790d979296e40b715abbe599f5c69d76cefb2fde57afd336ffe",
+      "case_dir": "reports/framework_validation/model-memory-isolated-2026-09-30/naive_bayes"
+    }
+  ]
+}
